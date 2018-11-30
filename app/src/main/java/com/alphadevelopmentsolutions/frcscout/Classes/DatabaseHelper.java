@@ -24,11 +24,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
             "CREATE TABLE teams (" +
                     "Id INTEGER PRIMARY KEY," +
                     "Name TEXT," +
-                    "Number TEXT," +
+                    "Number INTEGER," +
                     "City TEXT," +
                     "StateProvince TEXT," +
                     "Country TEXT," +
-                    "RookieYear TEXT," +
+                    "RookieYear INTEGER," +
                     "Website TEXT)";
 
     private final String CREATE_ROBOTS_TABLE =
