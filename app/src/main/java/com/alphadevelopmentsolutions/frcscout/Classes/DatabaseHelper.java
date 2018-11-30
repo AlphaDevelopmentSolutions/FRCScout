@@ -12,11 +12,30 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     private final String CREATE_EVENTS_TABLE =
             "CREATE TABLE events (" +
-                    "id INTEGER PRIMARY KEY," +
-                    "name TEXT," +
-                    "location TEXT," +
-                    "startDate TEXT," +
-                    "endDate TEXT)";
+                    "Id INTEGER PRIMARY KEY," +
+                    "Name TEXT," +
+                    "City TEXT," +
+                    "StateProvince TEXT," +
+                    "Country TEXT," +
+                    "StartDate TEXT," +
+                    "EndDate TEXT)";
+
+    private final String CREATE_TEAMS_TABLE =
+            "CREATE TABLE teams (" +
+                    "Id INTEGER PRIMARY KEY," +
+                    "Name TEXT," +
+                    "Number TEXT," +
+                    "City TEXT," +
+                    "StateProvince TEXT," +
+                    "Country TEXT," +
+                    "RookieYear TEXT," +
+                    "Website TEXT)";
+
+    private final String CREATE_ROBOTS_TABLE =
+            "CREATE TABLE robots (" +
+                    "Id INTEGER PRIMARY KEY," +
+                    "Name TEXT," +
+                    "TeamNumber TEXT)";
 
     public DatabaseHelper(Context context)
     {
@@ -27,6 +46,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public void onCreate(SQLiteDatabase db)
     {
         db.execSQL(CREATE_EVENTS_TABLE);
+        db.execSQL(CREATE_TEAMS_TABLE);
+        db.execSQL(CREATE_ROBOTS_TABLE);
     }
 
     @Override
