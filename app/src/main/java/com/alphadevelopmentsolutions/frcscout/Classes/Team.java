@@ -4,6 +4,17 @@ import android.content.Context;
 
 public class Team
 {
+
+    public static final String TABLE_NAME = "teams";
+    public static final String COLUMN_NAME_ID = "Id";
+    public static final String COLUMN_NAME_NAME = "Name";
+    public static final String COLUMN_NAME_NUMBER = "Number";
+    public static final String COLUMN_NAME_CITY = "City";
+    public static final String COLUMN_NAME_STATEPROVINCE = "StateProvince";
+    public static final String COLUMN_NAME_COUNTRY = "Country";
+    public static final String COLUMN_NAME_ROOKIEYEAR = "RookieYear";
+    public static final String COLUMN_NAME_WEBSITE = "Website";
+
     private int id;
     private String name;
     private int number;
@@ -159,20 +170,20 @@ public class Team
     /**
      * Saves the team into the database
      * @param context used for opening the DB
-     * @return boolean if successful
+     * @return int id of the saved team
      */
-    public boolean save(Context context)
+    public int save(Context context)
     {
-        boolean successful = false;
+        int id = -1;
         Database database = new Database(context);
 
         if(database.open())
         {
-            successful = database.setTeam(this);
+            id = (int) database.setTeam(this);
             database.close();
         }
 
-        return successful;
+        return id;
     }
 
     /**

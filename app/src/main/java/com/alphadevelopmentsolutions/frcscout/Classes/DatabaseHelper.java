@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.Classes;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.BaseColumns;
 
 public class DatabaseHelper extends SQLiteOpenHelper
 {
@@ -10,32 +11,33 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final int DB_VERSION = 1;
     private static final String DB_NAME = "FRCScout.db";
 
+
     private final String CREATE_EVENTS_TABLE =
-            "CREATE TABLE events (" +
-                    "Id INTEGER PRIMARY KEY," +
-                    "Name TEXT," +
-                    "City TEXT," +
-                    "StateProvince TEXT," +
-                    "Country TEXT," +
-                    "StartDate TEXT," +
-                    "EndDate TEXT)";
+            "CREATE TABLE " + Event.TABLE_NAME + " (" +
+                    Event.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    Event.COLUMN_NAME_NAME + " TEXT," +
+                    Event.COLUMN_NAME_CITY + " TEXT," +
+                    Event.COLUMN_NAME_STATEPROVINCE + " TEXT," +
+                    Event.COLUMN_NAME_COUNTRY + " TEXT," +
+                    Event.COLUMN_NAME_STARTDATE + " INTEGER," +
+                    Event.COLUMN_NAME_ENDDATE + " INTEGER)";
 
     private final String CREATE_TEAMS_TABLE =
-            "CREATE TABLE teams (" +
-                    "Id INTEGER PRIMARY KEY," +
-                    "Name TEXT," +
-                    "Number INTEGER," +
-                    "City TEXT," +
-                    "StateProvince TEXT," +
-                    "Country TEXT," +
-                    "RookieYear INTEGER," +
-                    "Website TEXT)";
+            "CREATE TABLE " + Team.TABLE_NAME + " (" +
+                    Team.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    Team.COLUMN_NAME_NAME + " TEXT," +
+                    Team.COLUMN_NAME_NUMBER + " INTEGER," +
+                    Team.COLUMN_NAME_CITY + " TEXT," +
+                    Team.COLUMN_NAME_STATEPROVINCE + " TEXT," +
+                    Team.COLUMN_NAME_COUNTRY + " TEXT," +
+                    Team.COLUMN_NAME_ROOKIEYEAR + " INTEGER," +
+                    Team.COLUMN_NAME_WEBSITE + " TEXT)";
 
     private final String CREATE_ROBOTS_TABLE =
-            "CREATE TABLE robots (" +
-                    "Id INTEGER PRIMARY KEY," +
-                    "Name TEXT," +
-                    "TeamNumber TEXT)";
+            "CREATE TABLE " + Robot.TABLE_NAME +" (" +
+                    Robot.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    Robot.TABLE_NAME + " TEXT," +
+                    Robot.COLUMN_NAME_TEAMNUMBER + " INTEGER)";
 
     public DatabaseHelper(Context context)
     {

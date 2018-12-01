@@ -6,11 +6,23 @@ import java.util.Date;
 
 public class Event
 {
+
+    public static final String TABLE_NAME = "events";
+    public static final String COLUMN_NAME_ID = "Id";
+    public static final String COLUMN_NAME_NAME = "Name";
+    public static final String COLUMN_NAME_CITY = "City";
+    public static final String COLUMN_NAME_STATEPROVINCE = "StateProvince";
+    public static final String COLUMN_NAME_COUNTRY = "Country";
+    public static final String COLUMN_NAME_STARTDATE = "StartDate";
+    public static final String COLUMN_NAME_ENDDATE = "EndDate";
+
     private int id;
+
     private String name;
     private String city;
     private String stateProvince;
     private String country;
+
     private Date startDate;
     private Date endDate;
 
@@ -148,20 +160,20 @@ public class Event
     /**
      * Saves the event into the database
      * @param context used for opening the DB
-     * @return boolean if successful
+     * @return int id of the saved event
      */
-    public boolean save(Context context)
+    public int save(Context context)
     {
-        boolean successful = false;
+        int id = -1;
         Database database = new Database(context);
 
         if(database.open())
         {
-            successful = database.setEvent(this);
+            id = (int) database.setEvent(this);
             database.close();
         }
 
-        return successful;
+        return id;
     }
 
     /**

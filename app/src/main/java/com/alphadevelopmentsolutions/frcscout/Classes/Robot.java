@@ -4,6 +4,11 @@ import android.content.Context;
 
 public class Robot
 {
+    public static final String TABLE_NAME = "robots";
+    public static final String COLUMN_NAME_ID = "Id";
+    public static final String COLUMN_NAME_NAME = "Name";
+    public static final String COLUMN_NAME_TEAMNUMBER = "TeamNumber";
+
     private int id;
     private String name;
     private int teamNumber;
@@ -92,18 +97,18 @@ public class Robot
      * @param context used for opening the DB
      * @return boolean if successful
      */
-    public boolean save(Context context)
+    public int save(Context context)
     {
-        boolean successful = false;
+        int id = -1;
         Database database = new Database(context);
 
         if(database.open())
         {
-            successful = database.setRobot(this);
+            id = (int) database.setRobot(this);
             database.close();
         }
 
-        return successful;
+        return id;
     }
 
     /**
