@@ -26,14 +26,14 @@ public class Event
     private Date startDate;
     private Date endDate;
 
-    Event(
-        int id,
-        String name,
-        String city,
-        String stateProvince,
-        String country,
-        Date startDate,
-        Date endDate)
+    public Event(
+            int id,
+            String name,
+            String city,
+            String stateProvince,
+            String country,
+            Date startDate,
+            Date endDate)
     {
         this.id = id;
         this.name = name;
