@@ -12,21 +12,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
-import com.alphadevelopmentsolutions.frcscout.Fragments.TeamsFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.ArrayList;
 
-public class TeamsRecyclerViewAdapter extends RecyclerView.Adapter<TeamsRecyclerViewAdapter.ViewHolder>
+public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRecyclerViewAdapter.ViewHolder>
 {
 
     private MainActivity context;
 
     private ArrayList<Team> teamList;
 
-    public TeamsRecyclerViewAdapter(ArrayList<Team> teamList, MainActivity context)
+    public TeamListRecyclerViewAdapter(ArrayList<Team> teamList, MainActivity context)
     {
         this.context = context;
         this.teamList = teamList;
@@ -57,11 +56,11 @@ public class TeamsRecyclerViewAdapter extends RecyclerView.Adapter<TeamsRecycler
         //Inflate the event layout for the each item in the list
         View view  = LayoutInflater.from(context).inflate(R.layout.layout_team, viewGroup, false);
 
-        return new TeamsRecyclerViewAdapter.ViewHolder(view);
+        return new TeamListRecyclerViewAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TeamsRecyclerViewAdapter.ViewHolder viewHolder, int position)
+    public void onBindViewHolder(@NonNull TeamListRecyclerViewAdapter.ViewHolder viewHolder, int position)
     {
         //Set the content on the card
         viewHolder.teamNameTextView.setText(teamList.get(position).getName());
@@ -81,7 +80,7 @@ public class TeamsRecyclerViewAdapter extends RecyclerView.Adapter<TeamsRecycler
                 //swap fragments
                 FragmentManager fragmentManager = context.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.MainFrame, new TeamsFragment());
+                fragmentTransaction.replace(R.id.MainFrame, new TeamListFragment());
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }

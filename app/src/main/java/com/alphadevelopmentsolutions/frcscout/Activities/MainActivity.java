@@ -7,13 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
-import com.alphadevelopmentsolutions.frcscout.Fragments.EventsFragment;
-import com.alphadevelopmentsolutions.frcscout.Fragments.TeamsFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 public class MainActivity extends AppCompatActivity implements
-        EventsFragment.OnFragmentInteractionListener,
-        TeamsFragment.OnFragmentInteractionListener
+        EventListFragment.OnFragmentInteractionListener,
+        TeamListFragment.OnFragmentInteractionListener
 {
 
     private Database database;
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements
         //Swap to the events fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.MainFrame, new EventsFragment());
+        fragmentTransaction.replace(R.id.MainFrame, new EventListFragment());
         fragmentTransaction.commit();
     }
 

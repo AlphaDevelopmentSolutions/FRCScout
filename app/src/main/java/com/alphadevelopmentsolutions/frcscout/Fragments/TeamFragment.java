@@ -3,32 +3,22 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Adapters.EventsRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Adapters.TeamsRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Classes.Event;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
-
-import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TeamsFragment.OnFragmentInteractionListener} interface
+ * {@link TeamFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link TeamsFragment#newInstance} factory method to
+ * Use the {@link TeamFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TeamsFragment extends Fragment
+public class TeamFragment extends Fragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,7 +31,7 @@ public class TeamsFragment extends Fragment
 
     private OnFragmentInteractionListener mListener;
 
-    public TeamsFragment()
+    public TeamFragment()
     {
         // Required empty public constructor
     }
@@ -52,12 +42,12 @@ public class TeamsFragment extends Fragment
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment TeamsFragment.
+     * @return A new instance of fragment TeamFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TeamsFragment newInstance(String param1, String param2)
+    public static TeamFragment newInstance(String param1, String param2)
     {
-        TeamsFragment fragment = new TeamsFragment();
+        TeamFragment fragment = new TeamFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -76,27 +66,12 @@ public class TeamsFragment extends Fragment
         }
     }
 
-    private RecyclerView teamsRecyclerView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_teams, container, false);
-
-        //get the parent activity
-        MainActivity context = (MainActivity) getActivity();
-
-        teamsRecyclerView = view.findViewById(R.id.TeamsRecyclerView);
-
-        ArrayList<Team> teamList = new ArrayList<>();
-        teamList.add(new Team(1, "Wiredcats", 5885, "city", "statte", "country", 2013, "wiredcats5885.ca", "test"));
-        TeamsRecyclerViewAdapter teamsRecyclerViewAdapter = new TeamsRecyclerViewAdapter(teamList, context);
-
-        teamsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        teamsRecyclerView.setAdapter(teamsRecyclerViewAdapter);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_team, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

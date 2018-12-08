@@ -1,6 +1,5 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -12,20 +11,19 @@ import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
-import com.alphadevelopmentsolutions.frcscout.Fragments.EventsFragment;
-import com.alphadevelopmentsolutions.frcscout.Fragments.TeamsFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.ArrayList;
 
-public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecyclerViewAdapter.ViewHolder>
+public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventListRecyclerViewAdapter.ViewHolder>
 {
 
     private MainActivity context;
 
     private ArrayList<Event> eventList;
 
-    public EventsRecyclerViewAdapter(ArrayList<Event> eventList, MainActivity context)
+    public EventListRecyclerViewAdapter(ArrayList<Event> eventList, MainActivity context)
     {
         this.context = context;
         this.eventList = eventList;
@@ -56,11 +54,11 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
         //Inflate the event layout for the each item in the list
         View view  = LayoutInflater.from(context).inflate(R.layout.layout_event, viewGroup, false);
 
-        return new EventsRecyclerViewAdapter.ViewHolder(view);
+        return new EventListRecyclerViewAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EventsRecyclerViewAdapter.ViewHolder viewHolder, int position)
+    public void onBindViewHolder(@NonNull EventListRecyclerViewAdapter.ViewHolder viewHolder, int position)
     {
         //Set the content on the card
         viewHolder.eventTitleTextView.setText(eventList.get(position).getName());
@@ -76,7 +74,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsRecycl
                 //swap fragments
                 FragmentManager fragmentManager = context.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.MainFrame, new TeamsFragment());
+                fragmentTransaction.replace(R.id.MainFrame, new TeamListFragment());
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }
