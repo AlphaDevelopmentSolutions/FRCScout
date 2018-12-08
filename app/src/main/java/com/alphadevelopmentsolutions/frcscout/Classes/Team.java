@@ -1,6 +1,9 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
-import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.File;
 
 public class Team
 {
@@ -14,6 +17,7 @@ public class Team
     public static final String COLUMN_NAME_COUNTRY = "Country";
     public static final String COLUMN_NAME_ROOKIE_YEAR = "RookieYear";
     public static final String COLUMN_NAME_WEBSITE = "Website";
+    public static final String COLUMN_NAME_IMAGE_FILE_URI = "ImageFileURI";
 
     private int id;
     private String name;
@@ -23,24 +27,28 @@ public class Team
     private String country;
     private int rookieYear;
     private String website;
+    private String imageFileURI;
 
-    Team(
-        int id,
-        String name,
-        int number,
-        String city,
-        String stateProvince,
-        String country,
-        int rookieYear,
-        String website)
+    public Team(
+            int id,
+            String name,
+            int number,
+            String city,
+            String stateProvince,
+            String country,
+            int rookieYear,
+            String website,
+            String imageFileURI)
     {
         this.id = id;
         this.name = name;
+        this.number = number;
         this.city = city;
         this.stateProvince = stateProvince;
         this.country = country;
         this.rookieYear = rookieYear;
         this.website = website;
+        this.imageFileURI = imageFileURI;
     }
 
     Team(int id)
@@ -90,6 +98,25 @@ public class Team
         return website;
     }
 
+    public String getImageFileURI()
+    {
+        return imageFileURI;
+    }
+
+    /**
+     * Returns the bitmap from the specified file location
+     * @return null if no image found, bitmap if image found
+     */
+    public Bitmap getImageBitmap()
+    {
+        File file = new File(getImageFileURI());
+
+        //check if the image exists
+        if(file.exists()) return BitmapFactory.decodeFile(file.getAbsolutePath());
+
+        return null;
+    }
+
     //endregion
 
     //region Setters
@@ -134,6 +161,11 @@ public class Team
         this.website = website;
     }
 
+    public void setImageFileURI(String imageFileURI)
+    {
+        this.imageFileURI = imageFileURI;
+    }
+
     //endregion
 
     //region Load, Save & Delete
@@ -162,6 +194,7 @@ public class Team
                 setCountry(team.getCountry());
                 setRookieYear(team.getRookieYear());
                 setWebsite(team.getWebsite());
+                setImageFileURI(team.getImageFileURI());
                 return true;
             }
         }

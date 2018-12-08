@@ -30,7 +30,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     Team.COLUMN_NAME_STATEPROVINCE + " TEXT," +
                     Team.COLUMN_NAME_COUNTRY + " TEXT," +
                     Team.COLUMN_NAME_ROOKIE_YEAR + " INTEGER," +
-                    Team.COLUMN_NAME_WEBSITE + " TEXT)";
+                    Team.COLUMN_NAME_WEBSITE + " TEXT," +
+                    Team.COLUMN_NAME_IMAGE_FILE_URI + " TEXT)";
 
     private final String CREATE_ROBOTS_TABLE =
             "CREATE TABLE " + Robot.TABLE_NAME +" (" +

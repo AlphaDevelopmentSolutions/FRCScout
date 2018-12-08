@@ -8,9 +8,12 @@ import android.os.Bundle;
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventsFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.TeamsFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
 
-public class MainActivity extends AppCompatActivity implements EventsFragment.OnFragmentInteractionListener
+public class MainActivity extends AppCompatActivity implements
+        EventsFragment.OnFragmentInteractionListener,
+        TeamsFragment.OnFragmentInteractionListener
 {
 
     private Database database;

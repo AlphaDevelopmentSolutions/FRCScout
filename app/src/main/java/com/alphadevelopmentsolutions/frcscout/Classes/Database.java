@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.io.File;
 import java.util.Date;
 
 public class Database
@@ -188,7 +189,8 @@ public class Database
                         Team.COLUMN_NAME_STATEPROVINCE,
                         Team.COLUMN_NAME_COUNTRY,
                         Team.COLUMN_NAME_ROOKIE_YEAR,
-                        Team.COLUMN_NAME_WEBSITE
+                        Team.COLUMN_NAME_WEBSITE,
+                        Team.COLUMN_NAME_IMAGE_FILE_URI
                 };
 
         //where statement
@@ -218,10 +220,11 @@ public class Database
             String country = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_COUNTRY));
             int rookieYear = Integer.parseInt(cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_ROOKIE_YEAR)));
             String website = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_WEBSITE));
+            String imageFileURI = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_IMAGE_FILE_URI));
 
             cursor.close();
 
-            return new Team(team.getId(), name, number, city, stateProvince, country, rookieYear, website);
+            return new Team(team.getId(), name, number, city, stateProvince, country, rookieYear, website, imageFileURI);
         }
 
 
@@ -244,6 +247,7 @@ public class Database
         contentValues.put(Team.COLUMN_NAME_COUNTRY, team.getCountry());
         contentValues.put(Team.COLUMN_NAME_ROOKIE_YEAR, team.getRookieYear());
         contentValues.put(Team.COLUMN_NAME_WEBSITE, team.getWebsite());
+        contentValues.put(Team.COLUMN_NAME_IMAGE_FILE_URI, team.getImageFileURI());
 
         //team already exists in DB, update
         if(team.getId() > 0)
