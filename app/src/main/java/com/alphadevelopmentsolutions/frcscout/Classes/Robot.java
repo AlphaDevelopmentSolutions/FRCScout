@@ -7,7 +7,7 @@ public class Robot
     public static final String TABLE_NAME = "robots";
     public static final String COLUMN_NAME_ID = "Id";
     public static final String COLUMN_NAME_NAME = "Name";
-    public static final String COLUMN_NAME_TEAMNUMBER = "TeamNumber";
+    public static final String COLUMN_NAME_TEAM_NUMBER = "TeamNumber";
 
     private int id;
     private String name;
@@ -70,13 +70,15 @@ public class Robot
 
     /**
      * Loads the robot from the database and populates all values
-     * @param context used for opening the DB
+     * @param database used for interacting with the SQLITE db
      * @return boolean if successful
      */
-    public boolean load(Context context)
+    public boolean load(Database database)
     {
-        Database database = new Database(context);
-        if(database.open())
+        //try to open the DB if it is not open
+        if(!database.isOpen()) database.open();
+
+        if(database.isOpen())
         {
             Robot robot = database.getRobot(this);
             database.close();
@@ -94,15 +96,17 @@ public class Robot
 
     /**
      * Saves the robot into the database
-     * @param context used for opening the DB
+     * @param database used for interacting with the SQLITE db
      * @return boolean if successful
      */
-    public int save(Context context)
+    public int save(Database database)
     {
         int id = -1;
-        Database database = new Database(context);
 
-        if(database.open())
+        //try to open the DB if it is not open
+        if(!database.isOpen()) database.open();
+
+        if(database.isOpen())
         {
             id = (int) database.setRobot(this);
             database.close();
@@ -113,15 +117,17 @@ public class Robot
 
     /**
      * Deletes robot team from the database
-     * @param context used for opening the DB
+     * @param database used for interacting with the SQLITE db
      * @return boolean if successful
      */
-    public boolean delete(Context context)
+    public boolean delete(Database database)
     {
         boolean successful = false;
-        Database database = new Database(context);
 
-        if(database.open())
+        //try to open the DB if it is not open
+        if(!database.isOpen()) database.open();
+
+        if(database.isOpen())
         {
             successful = database.deleteRobot(this);
             database.close();

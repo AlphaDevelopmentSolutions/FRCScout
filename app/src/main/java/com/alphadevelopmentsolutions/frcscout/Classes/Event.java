@@ -131,13 +131,15 @@ public class Event
 
     /**
      * Loads the event from the database and populates all values
-     * @param context used for opening the DB
+     * @param database used for interacting with the SQLITE db
      * @return boolean if successful
      */
-    public boolean load(Context context)
+    public boolean load(Database database)
     {
-        Database database = new Database(context);
-        if(database.open())
+        //try to open the DB if it is not open
+        if(!database.isOpen()) database.open();
+
+        if(database.isOpen())
         {
             Event event = database.getEvent(this);
             database.close();
@@ -159,15 +161,17 @@ public class Event
 
     /**
      * Saves the event into the database
-     * @param context used for opening the DB
+     * @param database used for interacting with the SQLITE db
      * @return int id of the saved event
      */
-    public int save(Context context)
+    public int save(Database database)
     {
         int id = -1;
-        Database database = new Database(context);
 
-        if(database.open())
+        //try to open the DB if it is not open
+        if(!database.isOpen()) database.open();
+
+        if(database.isOpen())
         {
             id = (int) database.setEvent(this);
             database.close();
@@ -178,15 +182,17 @@ public class Event
 
     /**
      * Deletes the event from the database
-     * @param context used for opening the DB
+     * @param database used for interacting with the SQLITE db
      * @return boolean if successful
      */
-    public boolean delete(Context context)
+    public boolean delete(Database database)
     {
         boolean successful = false;
-        Database database = new Database(context);
 
-        if(database.open())
+        //try to open the DB if it is not open
+        if(!database.isOpen()) database.open();
+
+        if(database.isOpen())
         {
             successful = database.deleteEvent(this);
             database.close();

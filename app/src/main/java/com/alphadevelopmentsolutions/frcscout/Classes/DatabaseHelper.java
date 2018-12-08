@@ -3,7 +3,6 @@ package com.alphadevelopmentsolutions.frcscout.Classes;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.BaseColumns;
 
 public class DatabaseHelper extends SQLiteOpenHelper
 {
@@ -30,14 +29,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     Team.COLUMN_NAME_CITY + " TEXT," +
                     Team.COLUMN_NAME_STATEPROVINCE + " TEXT," +
                     Team.COLUMN_NAME_COUNTRY + " TEXT," +
-                    Team.COLUMN_NAME_ROOKIEYEAR + " INTEGER," +
+                    Team.COLUMN_NAME_ROOKIE_YEAR + " INTEGER," +
                     Team.COLUMN_NAME_WEBSITE + " TEXT)";
 
     private final String CREATE_ROBOTS_TABLE =
             "CREATE TABLE " + Robot.TABLE_NAME +" (" +
                     Robot.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
                     Robot.TABLE_NAME + " TEXT," +
-                    Robot.COLUMN_NAME_TEAMNUMBER + " INTEGER)";
+                    Robot.COLUMN_NAME_TEAM_NUMBER + " INTEGER)";
 
     public DatabaseHelper(Context context)
     {

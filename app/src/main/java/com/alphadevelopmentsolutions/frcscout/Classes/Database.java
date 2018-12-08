@@ -13,7 +13,7 @@ public class Database
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase db;
 
-    Database(Context context)
+    public Database(Context context)
     {
         databaseHelper = new DatabaseHelper(context);
     }
@@ -33,6 +33,16 @@ public class Database
         {
             return false;
         }
+
+    }
+
+    /**
+     * Checks if the database is currently open
+     * @return boolean if database is open
+     */
+    public boolean isOpen()
+    {
+        return db == null;
 
     }
 
@@ -177,7 +187,7 @@ public class Database
                         Team.COLUMN_NAME_CITY,
                         Team.COLUMN_NAME_STATEPROVINCE,
                         Team.COLUMN_NAME_COUNTRY,
-                        Team.COLUMN_NAME_ROOKIEYEAR,
+                        Team.COLUMN_NAME_ROOKIE_YEAR,
                         Team.COLUMN_NAME_WEBSITE
                 };
 
@@ -206,7 +216,7 @@ public class Database
             String city = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_CITY));
             String stateProvince = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_STATEPROVINCE));
             String country = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_COUNTRY));
-            int rookieYear = Integer.parseInt(cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_ROOKIEYEAR)));
+            int rookieYear = Integer.parseInt(cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_ROOKIE_YEAR)));
             String website = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_WEBSITE));
 
             cursor.close();
@@ -232,7 +242,7 @@ public class Database
         contentValues.put(Team.COLUMN_NAME_CITY, team.getCity());
         contentValues.put(Team.COLUMN_NAME_STATEPROVINCE, team.getStateProvince());
         contentValues.put(Team.COLUMN_NAME_COUNTRY, team.getCountry());
-        contentValues.put(Team.COLUMN_NAME_ROOKIEYEAR, team.getRookieYear());
+        contentValues.put(Team.COLUMN_NAME_ROOKIE_YEAR, team.getRookieYear());
         contentValues.put(Team.COLUMN_NAME_WEBSITE, team.getWebsite());
 
         //team already exists in DB, update
@@ -283,7 +293,7 @@ public class Database
         String[] columns =
                 {
                         Robot.COLUMN_NAME_NAME,
-                        Robot.COLUMN_NAME_TEAMNUMBER
+                        Robot.COLUMN_NAME_TEAM_NUMBER
                 };
 
         //where statement
@@ -307,7 +317,7 @@ public class Database
             cursor.moveToFirst();
 
             String name = cursor.getString(cursor.getColumnIndex(Robot.COLUMN_NAME_NAME));
-            int teamNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(Robot.COLUMN_NAME_TEAMNUMBER)));
+            int teamNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(Robot.COLUMN_NAME_TEAM_NUMBER)));
 
             cursor.close();
 
@@ -328,7 +338,7 @@ public class Database
         //set all the values
         ContentValues contentValues = new ContentValues();
         contentValues.put(Robot.COLUMN_NAME_NAME, robot.getName());
-        contentValues.put(Robot.COLUMN_NAME_TEAMNUMBER, robot.getTeamNumber());
+        contentValues.put(Robot.COLUMN_NAME_TEAM_NUMBER, robot.getTeamNumber());
 
         //robot already exists in DB, update
         if(robot.getId() > 0)

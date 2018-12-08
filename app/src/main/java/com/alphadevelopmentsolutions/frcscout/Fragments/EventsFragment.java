@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Adapters.EventsRecyclerViewAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.R;
@@ -69,21 +70,24 @@ public class EventsFragment extends Fragment {
     }
 
     private RecyclerView eventsRecyclerView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_events, container, false);
 
+        //get the parent activity
+        MainActivity context = (MainActivity) getActivity();
+
         eventsRecyclerView = view.findViewById(R.id.EventsRecyclerView);
 
         ArrayList<Event> events = new ArrayList<>();
         events.add(new Event(1, "name", "city", "province", "country", new Date(0), new Date(0)));
-        EventsRecyclerViewAdapter eventsRecyclerViewAdapter = new EventsRecyclerViewAdapter(events, getActivity());
+        EventsRecyclerViewAdapter eventsRecyclerViewAdapter = new EventsRecyclerViewAdapter(events, context);
 
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         eventsRecyclerView.setAdapter(eventsRecyclerViewAdapter);
-
 
         return view;
     }

@@ -12,7 +12,7 @@ public class Team
     public static final String COLUMN_NAME_CITY = "City";
     public static final String COLUMN_NAME_STATEPROVINCE = "StateProvince";
     public static final String COLUMN_NAME_COUNTRY = "Country";
-    public static final String COLUMN_NAME_ROOKIEYEAR = "RookieYear";
+    public static final String COLUMN_NAME_ROOKIE_YEAR = "RookieYear";
     public static final String COLUMN_NAME_WEBSITE = "Website";
 
     private int id;
@@ -140,13 +140,15 @@ public class Team
 
     /**
      * Loads the team from the database and populates all values
-     * @param context used for opening the DB
+     * @param database used for interacting with the SQLITE db
      * @return boolean if successful
      */
-    public boolean load(Context context)
+    public boolean load(Database database)
     {
-        Database database = new Database(context);
-        if(database.open())
+        //try to open the DB if it is not open
+        if(!database.isOpen()) database.open();
+
+        if(database.isOpen())
         {
             Team team = database.getTeam(this);
             database.close();
@@ -169,15 +171,17 @@ public class Team
 
     /**
      * Saves the team into the database
-     * @param context used for opening the DB
+     * @param database used for interacting with the SQLITE db
      * @return int id of the saved team
      */
-    public int save(Context context)
+    public int save(Database database)
     {
         int id = -1;
-        Database database = new Database(context);
 
-        if(database.open())
+        //try to open the DB if it is not open
+        if(!database.isOpen()) database.open();
+
+        if(database.isOpen())
         {
             id = (int) database.setTeam(this);
             database.close();
@@ -188,15 +192,17 @@ public class Team
 
     /**
      * Deletes the team from the database
-     * @param context used for opening the DB
+     * @param database used for interacting with the SQLITE db
      * @return boolean if successful
      */
-    public boolean delete(Context context)
+    public boolean delete(Database database)
     {
         boolean successful = false;
-        Database database = new Database(context);
 
-        if(database.open())
+        //try to open the DB if it is not open
+        if(!database.isOpen()) database.open();
+
+        if(database.isOpen())
         {
             successful = database.deleteTeam(this);
             database.close();
