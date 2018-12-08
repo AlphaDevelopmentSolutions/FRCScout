@@ -75,7 +75,7 @@ public class EventListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_events, container, false);
+        View view =  inflater.inflate(R.layout.fragment_event_list, container, false);
 
         //get the parent activity
         MainActivity context = (MainActivity) getActivity();

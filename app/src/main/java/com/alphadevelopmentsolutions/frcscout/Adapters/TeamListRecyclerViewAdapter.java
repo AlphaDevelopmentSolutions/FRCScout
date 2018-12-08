@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
+import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
 
@@ -54,7 +55,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType)
     {
         //Inflate the event layout for the each item in the list
-        View view  = LayoutInflater.from(context).inflate(R.layout.layout_team, viewGroup, false);
+        View view  = LayoutInflater.from(context).inflate(R.layout.layout_team_card, viewGroup, false);
 
         return new TeamListRecyclerViewAdapter.ViewHolder(view);
     }
@@ -80,7 +81,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
                 //swap fragments
                 FragmentManager fragmentManager = context.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.MainFrame, new TeamListFragment());
+                fragmentTransaction.replace(R.id.MainFrame, new TeamFragment());
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }

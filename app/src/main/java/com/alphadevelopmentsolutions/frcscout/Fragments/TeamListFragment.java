@@ -79,7 +79,7 @@ public class TeamListFragment extends Fragment
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_teams, container, false);
+        View view =  inflater.inflate(R.layout.fragment_team_list, container, false);
 
         //get the parent activity
         MainActivity context = (MainActivity) getActivity();
