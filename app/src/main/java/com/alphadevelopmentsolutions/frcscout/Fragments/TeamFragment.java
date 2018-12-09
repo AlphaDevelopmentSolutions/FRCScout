@@ -150,6 +150,14 @@ public class TeamFragment extends Fragment
 
         Match match = new Match(1,  new Date(111111), 5885, 1234, 2345, 200, 400, 610, 875, 123);
         matchList.add(match);
+        matchList.add(match);
+        matchList.add(match);
+        matchList.add(match);
+        matchList.add(match);
+        matchList.add(match);
+        matchList.add(match);
+        matchList.add(match);
+        matchList.add(match);
 
         MatchListRecyclerViewAdapter matchListRecyclerViewAdapter = new MatchListRecyclerViewAdapter(team, matchList, context);
 

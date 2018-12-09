@@ -107,8 +107,8 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
         }
 
         //set scores
-        viewHolder.blueAllianceScoreTextView.setText(matchList.get(position).getBlueAllianceScore());
-        viewHolder.blueAllianceScoreTextView.setText(matchList.get(position).getRedAllianceScore());
+        viewHolder.blueAllianceScoreTextView.setText(String.valueOf(matchList.get(position).getBlueAllianceScore()));
+        viewHolder.redAllianceScoreTextView.setText(String.valueOf(matchList.get(position).getRedAllianceScore()));
 
         //blue team won, bold the score textview
         if(matchList.get(position).getOutcomeStatus(AllianceColor.BLUE).equals(GameScoreStatuses.WIN)) viewHolder.blueAllianceScoreTextView.setTypeface(viewHolder.blueAllianceScoreTextView.getTypeface(), Typeface.BOLD);
@@ -118,14 +118,14 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
 
 
         //set blue team numbers
-        viewHolder.blueAllianceTeamOneNumberTextView.setText(matchList.get(position).getBlueAllianceTeamOneId());
-        viewHolder.blueAllianceTeamTwoNumberTextView.setText(matchList.get(position).getBlueAllianceTeamTwoId());
-        viewHolder.blueAllianceTeamThreeNumberTextView.setText(matchList.get(position).getBlueAllianceTeamThreeId());
+        viewHolder.blueAllianceTeamOneNumberTextView.setText(String.valueOf(matchList.get(position).getBlueAllianceTeamOneId()));
+        viewHolder.blueAllianceTeamTwoNumberTextView.setText(String.valueOf(matchList.get(position).getBlueAllianceTeamTwoId()));
+        viewHolder.blueAllianceTeamThreeNumberTextView.setText(String.valueOf(matchList.get(position).getBlueAllianceTeamThreeId()));
 
         //set red team numbers
-        viewHolder.redAllianceTeamOneNumberTextView.setText(matchList.get(position).getRedAllianceTeamOneId());
-        viewHolder.redAllianceTeamTwoNumberTextView.setText(matchList.get(position).getRedAllianceTeamTwoId());
-        viewHolder.redAllianceTeamThreeNumberTextView.setText(matchList.get(position).getRedAllianceTeamThreeId());
+        viewHolder.redAllianceTeamOneNumberTextView.setText(String.valueOf(matchList.get(position).getRedAllianceTeamOneId()));
+        viewHolder.redAllianceTeamTwoNumberTextView.setText(String.valueOf(matchList.get(position).getRedAllianceTeamTwoId()));
+        viewHolder.redAllianceTeamThreeNumberTextView.setText(String.valueOf(matchList.get(position).getRedAllianceTeamThreeId()));
 
 
         //Opens an option menu for various options on that score card
