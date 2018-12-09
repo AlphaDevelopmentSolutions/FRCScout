@@ -379,4 +379,120 @@ public class Database
         return false;
     }
     //endregion
+
+    //region Scout Card Logic
+    /**
+     * Gets a specific scoutCard from the database and returns it
+     * @param scoutCard with specified ID
+     * @return scoutCard based off given ID
+     */
+    public ScoutCard getScoutCard(ScoutCard scoutCard)
+    {
+        //insert columns you are going to use here
+        String[] columns =
+                {
+                        ScoutCard.COLUMN_NAME_TEAM_ID,
+                        ScoutCard.COLUMN_NAME_PARTNER_ONE_ID,
+                        ScoutCard.COLUMN_NAME_PARTNER_TWO_ID,
+                        ScoutCard.COLUMN_NAME_ALLIANCE_COLOR,
+                        ScoutCard.COLUMN_NAME_SCORE,
+                        ScoutCard.COLUMN_NAME_OPPONENT_SCORE,
+                        ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_ONE,
+                        ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_TWO,
+                        ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_THREE
+                };
+
+        //where statement
+        String whereStatement = ScoutCard.COLUMN_NAME_ID + " = ?";
+        String[] whereArgs = {scoutCard.getId() + ""};
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                ScoutCard.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if(cursor != null)
+        {
+            //move to the first result in the set
+            cursor.moveToFirst();
+
+            int teamId = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID)));
+            int partnerOneId = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_PARTNER_ONE_ID)));
+            int partnerTwoId = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_PARTNER_TWO_ID)));
+            AllianceColor allianceColor = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR)) == AllianceColor.BLUE.name() ? AllianceColor.BLUE : AllianceColor.RED;
+            int score = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_SCORE)));
+            int opponentScore = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OPPONENT_SCORE)));
+            int opponentAlliancePartnerOne = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_ONE)));
+            int opponentAlliancePartnerTwo = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_TWO)));
+            int opponentAlliancePartnerThree = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_THREE)));
+
+            cursor.close();
+
+            return new ScoutCard(scoutCard.getId(), teamId, partnerOneId, partnerTwoId, allianceColor, score, opponentScore, opponentAlliancePartnerOne, opponentAlliancePartnerTwo, opponentAlliancePartnerThree);
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Saves a specific scoutCard from the database and returns it
+     * @param scoutCard with specified ID
+     * @return id of the saved scoutCard
+     */
+    public long setScoutCard(ScoutCard scoutCard)
+    {
+        //set all the values
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ScoutCard.COLUMN_NAME_TEAM_ID, scoutCard.getTeamId());
+        contentValues.put(ScoutCard.COLUMN_NAME_PARTNER_ONE_ID, scoutCard.getPartnerOneId());
+        contentValues.put(ScoutCard.COLUMN_NAME_PARTNER_TWO_ID, scoutCard.getPartnerTwoId());
+        contentValues.put(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR, scoutCard.getAllianceColor().name());
+        contentValues.put(ScoutCard.COLUMN_NAME_SCORE, scoutCard.getScore());
+        contentValues.put(ScoutCard.COLUMN_NAME_OPPONENT_SCORE, scoutCard.getOpponentScore());
+        contentValues.put(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_ONE, scoutCard.getOpponentAlliancePartnerOne());
+        contentValues.put(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_TWO, scoutCard.getOpponentAlliancePartnerTwo());
+        contentValues.put(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_THREE, scoutCard.getOpponentAlliancePartnerThree());
+
+        //ScoutCard already exists in DB, update
+        if(scoutCard.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = ScoutCard.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {scoutCard.getId() + ""};
+
+            //update
+            return db.update(ScoutCard.TABLE_NAME, contentValues, whereStatement, whereArgs);
+        }
+        //insert new ScoutCard in db
+        else return db.insert(ScoutCard.TABLE_NAME, null, contentValues);
+
+    }
+
+    /**
+     * Deletes a specific scoutCard from the database
+     * @param scoutCard with specified ID
+     * @return successful delete
+     */
+    public boolean deleteScoutCard(ScoutCard scoutCard)
+    {
+        if(scoutCard.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = ScoutCard.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {scoutCard.getId() + ""};
+
+            //delete
+            return db.delete(ScoutCard.TABLE_NAME, whereStatement, whereArgs) >= 1;
+        }
+
+        return false;
+    }
+    //endregion
 }

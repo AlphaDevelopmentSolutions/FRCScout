@@ -36,8 +36,21 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private final String CREATE_ROBOTS_TABLE =
             "CREATE TABLE " + Robot.TABLE_NAME +" (" +
                     Robot.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                    Robot.TABLE_NAME + " TEXT," +
+                    Robot.COLUMN_NAME_NAME + " TEXT," +
                     Robot.COLUMN_NAME_TEAM_NUMBER + " INTEGER)";
+
+    private final String CREATE_SCOUT_CARDS_TABLE =
+            "CREATE TABLE " + ScoutCard.TABLE_NAME +" (" +
+                    ScoutCard.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    ScoutCard.COLUMN_NAME_TEAM_ID + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_PARTNER_ONE_ID + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_PARTNER_TWO_ID + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_ALLIANCE_COLOR + " TEXT," +
+                    ScoutCard.COLUMN_NAME_SCORE + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_OPPONENT_SCORE + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_ONE + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_TWO + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_THREE + " INTEGER)";
 
     public DatabaseHelper(Context context)
     {
@@ -50,6 +63,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL(CREATE_EVENTS_TABLE);
         db.execSQL(CREATE_TEAMS_TABLE);
         db.execSQL(CREATE_ROBOTS_TABLE);
+        db.execSQL(CREATE_SCOUT_CARDS_TABLE);
     }
 
     @Override
