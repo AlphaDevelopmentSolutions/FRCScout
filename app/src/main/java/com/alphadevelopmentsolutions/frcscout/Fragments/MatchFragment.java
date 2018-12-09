@@ -4,28 +4,21 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Adapters.TeamListRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
-
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TeamListFragment.OnFragmentInteractionListener} interface
+ * {@link MatchFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link TeamListFragment#newInstance} factory method to
+ * Use the {@link MatchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TeamListFragment extends Fragment
+public class MatchFragment extends Fragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -38,7 +31,7 @@ public class TeamListFragment extends Fragment
 
     private OnFragmentInteractionListener mListener;
 
-    public TeamListFragment()
+    public MatchFragment()
     {
         // Required empty public constructor
     }
@@ -49,12 +42,12 @@ public class TeamListFragment extends Fragment
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment TeamListFragment.
+     * @return A new instance of fragment MatchFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TeamListFragment newInstance(String param1, String param2)
+    public static MatchFragment newInstance(String param1, String param2)
     {
-        TeamListFragment fragment = new TeamListFragment();
+        MatchFragment fragment = new MatchFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -73,25 +66,14 @@ public class TeamListFragment extends Fragment
         }
     }
 
-    private RecyclerView teamsRecyclerView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_team_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_match, container, false);
 
-        //get the parent activity
-        MainActivity context = (MainActivity) getActivity();
 
-        teamsRecyclerView = view.findViewById(R.id.TeamsRecyclerView);
-
-        ArrayList<Team> teamList = new ArrayList<>();
-        teamList.add(new Team(5885, "Villanova WiredCats", "city", "statte", "country", 2013, "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "test"));
-        TeamListRecyclerViewAdapter teamListRecyclerViewAdapter = new TeamListRecyclerViewAdapter(teamList, context);
-
-        teamsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        teamsRecyclerView.setAdapter(teamListRecyclerViewAdapter);
 
         return view;
     }

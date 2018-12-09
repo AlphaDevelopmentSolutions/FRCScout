@@ -1,7 +1,5 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
-import android.content.Context;
-
 import java.util.Date;
 
 public class Event

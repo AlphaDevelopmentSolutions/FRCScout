@@ -7,58 +7,29 @@ public class ScoutCard
 
     public static final String TABLE_NAME = "scout_cards";
     public static final String COLUMN_NAME_ID = "Id";
+    public static final String COLUMNS_NAME_MATCH_ID = "MatchId";
+    public static final String COLUMN_NAME_TEAM_ID = "TeamId";
     public static final String COLUMN_NAME_COMPLETED_BY = "CompletedBy";
     public static final String COLUMN_NAME_COMPLETED_DATE = "CompletedDate";
-    public static final String COLUMN_NAME_TEAM_ID = "TeamId";
-    public static final String COLUMN_NAME_PARTNER_ONE_ID = "PartnerOneId";
-    public static final String COLUMN_NAME_PARTNER_TWO_ID = "PartnerTwoId";
-    public static final String COLUMN_NAME_ALLIANCE_COLOR = "AllianceColor";
-    public static final String COLUMN_NAME_SCORE = "Score";
-    public static final String COLUMN_NAME_OPPONENT_SCORE = "OpponentScore";
-    public static final String COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_ONE = "OpponentAlliancePartnerOne";
-    public static final String COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_TWO = "OpponentAlliancePartnerTwo";
-    public static final String COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_THREE = "OpponentAlliancePartnerThree";
 
     private int id;
+    private int matchId;
+    private int teamId;
     private String completedBy;
     private Date completedDate;
-    private int teamId;
-    private int partnerOneId;
-    private int partnerTwoId;
-    private AllianceColor allianceColor;
-    private int score;
-    private int opponentScore;
-    private int opponentAlliancePartnerOne;
-    private int opponentAlliancePartnerTwo;
-    private int opponentAlliancePartnerThree;
-
 
     public ScoutCard(
             int id,
-            String completedBy,
-            Date completedDate,
+            int matchId,
             int teamId,
-            int partnerOneId,
-            int partnerTwoId,
-            AllianceColor allianceColor,
-            int score,
-            int opponentScore,
-            int opponentAlliancePartnerOne,
-            int opponentAlliancePartnerTwo,
-            int opponentAlliancePartnerThree)
+            String completedBy,
+            Date completedDate)
     {
         this.id = id;
+        this.matchId = matchId;
+        this.teamId = teamId;
         this.completedBy = completedBy;
         this.completedDate = completedDate;
-        this.teamId = teamId;
-        this.partnerOneId = partnerOneId;
-        this.partnerTwoId = partnerTwoId;
-        this.allianceColor = allianceColor;
-        this.score = score;
-        this.opponentScore = opponentScore;
-        this.opponentAlliancePartnerOne = opponentAlliancePartnerOne;
-        this.opponentAlliancePartnerTwo = opponentAlliancePartnerTwo;
-        this.opponentAlliancePartnerThree = opponentAlliancePartnerThree;
     }
 
     /**
@@ -77,6 +48,16 @@ public class ScoutCard
         return id;
     }
 
+    public int getMatchId()
+    {
+        return matchId;
+    }
+
+    public int getTeamId()
+    {
+        return teamId;
+    }
+
     public String getCompletedBy()
     {
         return completedBy;
@@ -87,77 +68,6 @@ public class ScoutCard
         return completedDate;
     }
 
-    public int getTeamId()
-    {
-        return teamId;
-    }
-
-    public int getPartnerOneId()
-    {
-        return partnerOneId;
-    }
-
-    public int getPartnerTwoId()
-    {
-        return partnerTwoId;
-    }
-
-    public AllianceColor getAllianceColor()
-    {
-        return allianceColor;
-    }
-
-    public int getScore()
-    {
-        return score;
-    }
-
-    public int getOpponentScore()
-    {
-        return opponentScore;
-    }
-
-    public int getOpponentAlliancePartnerOne()
-    {
-        return opponentAlliancePartnerOne;
-    }
-
-    public int getOpponentAlliancePartnerTwo()
-    {
-        return opponentAlliancePartnerTwo;
-    }
-
-    public int getOpponentAlliancePartnerThree()
-    {
-        return opponentAlliancePartnerThree;
-    }
-
-    /**
-     * Returns whether the current team in question won
-     * @return boolean if team won
-     */
-    public boolean teamWon()
-    {
-        return getScore() > getOpponentScore();
-    }
-
-    /**
-     * Returns whether the current team in question lost
-     * @return boolean if team lost
-     */
-    public boolean teamLost()
-    {
-        return getScore() < getOpponentScore();
-    }
-
-    /**
-     * Returns whether the current team in question tied
-     * @return boolean if team tied
-     */
-    public boolean teamTied()
-    {
-        return getScore() == getOpponentScore();
-    }
 
     //endregion
 
@@ -168,9 +78,9 @@ public class ScoutCard
         this.id = id;
     }
 
-    public void setCompletedBy(String completedBy)
+    public void setMatchId(int matchId)
     {
-        this.completedBy = completedBy;
+        this.matchId = matchId;
     }
 
     public void setTeamId(int teamId)
@@ -178,49 +88,14 @@ public class ScoutCard
         this.teamId = teamId;
     }
 
-    public void setPartnerOneId(int partnerOneId)
+    public void setCompletedBy(String completedBy)
     {
-        this.partnerOneId = partnerOneId;
-    }
-
-    public void setPartnerTwoId(int partnerTwoId)
-    {
-        this.partnerTwoId = partnerTwoId;
-    }
-
-    public void setAllianceColor(AllianceColor allianceColor)
-    {
-        this.allianceColor = allianceColor;
+        this.completedBy = completedBy;
     }
 
     public void setCompletedDate(Date completedDate)
     {
         this.completedDate = completedDate;
-    }
-
-    public void setScore(int score)
-    {
-        this.score = score;
-    }
-
-    public void setOpponentScore(int opponentScore)
-    {
-        this.opponentScore = opponentScore;
-    }
-
-    public void setOpponentAlliancePartnerOne(int opponentAlliancePartnerOne)
-    {
-        this.opponentAlliancePartnerOne = opponentAlliancePartnerOne;
-    }
-
-    public void setOpponentAlliancePartnerTwo(int opponentAlliancePartnerTwo)
-    {
-        this.opponentAlliancePartnerTwo = opponentAlliancePartnerTwo;
-    }
-
-    public void setOpponentAlliancePartnerThree(int opponentAlliancePartnerThree)
-    {
-        this.opponentAlliancePartnerThree = opponentAlliancePartnerThree;
     }
 
 
@@ -245,17 +120,10 @@ public class ScoutCard
 
             if (scoutCard != null)
             {
+                setMatchId(scoutCard.getMatchId());
                 setTeamId(scoutCard.getTeamId());
                 setCompletedBy(scoutCard.getCompletedBy());
                 setCompletedDate(scoutCard.getCompletedDate());
-                setPartnerOneId(scoutCard.getPartnerOneId());
-                setPartnerTwoId(scoutCard.getPartnerTwoId());
-                setAllianceColor(scoutCard.getAllianceColor());
-                setScore(scoutCard.getScore());
-                setOpponentScore(scoutCard.getOpponentScore());
-                setOpponentAlliancePartnerOne(scoutCard.getOpponentAlliancePartnerOne());
-                setOpponentAlliancePartnerTwo(scoutCard.getOpponentAlliancePartnerTwo());
-                setOpponentAlliancePartnerThree(scoutCard.getOpponentAlliancePartnerThree());
                 return true;
             }
         }

@@ -11,7 +11,6 @@ public class Team
     public static final String TABLE_NAME = "teams";
     public static final String COLUMN_NAME_ID = "Id";
     public static final String COLUMN_NAME_NAME = "Name";
-    public static final String COLUMN_NAME_NUMBER = "Number";
     public static final String COLUMN_NAME_CITY = "City";
     public static final String COLUMN_NAME_STATEPROVINCE = "StateProvince";
     public static final String COLUMN_NAME_COUNTRY = "Country";
@@ -25,7 +24,6 @@ public class Team
 
     private int id;
     private String name;
-    private int number;
     private String city;
     private String stateProvince;
     private String country;
@@ -40,7 +38,6 @@ public class Team
     public Team(
             int id,
             String name,
-            int number,
             String city,
             String stateProvince,
             String country,
@@ -54,7 +51,6 @@ public class Team
     {
         this.id = id;
         this.name = name;
-        this.number = number;
         this.city = city;
         this.stateProvince = stateProvince;
         this.country = country;
@@ -86,11 +82,6 @@ public class Team
     public String getName()
     {
         return name;
-    }
-
-    public int getNumber()
-    {
-        return number;
     }
 
     public String getCity()
@@ -171,11 +162,6 @@ public class Team
         this.name = name;
     }
 
-    public void setNumber(int number)
-    {
-        this.number = number;
-    }
-
     public void setCity(String city)
     {
         this.city = city;
@@ -248,7 +234,6 @@ public class Team
             if (team != null)
             {
                 setName(team.getName());
-                setNumber(team.getNumber());
                 setCity(team.getCity());
                 setStateProvince(team.getStateProvince());
                 setCountry(team.getCountry());

@@ -3,7 +3,10 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,11 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Adapters.ScoutCardListRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Adapters.TeamListRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Adapters.MatchListRecyclerViewAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
 import com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeIcon;
-import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
 
@@ -73,13 +75,15 @@ public class TeamFragment extends Fragment
 
     private Team team;
 
-    private RecyclerView scoutCardsRecyclerView;
+    private RecyclerView matchesRecyclerView;
 
     private FontAwesomeIcon facebookFontAwesomeBrandIcon;
     private FontAwesomeIcon twitterFontAwesomeBrandIcon;
     private FontAwesomeIcon instagramFontAwesomeBrandIcon;
     private FontAwesomeIcon youtubeFontAwesomeBrandIcon;
     private FontAwesomeIcon websiteFontAwesomeSolidIcon;
+
+    private FloatingActionButton addMatchFloatingActionButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,7 +92,7 @@ public class TeamFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_team, container, false);
 
-        MainActivity context = (MainActivity) getActivity();
+        final MainActivity context = (MainActivity) getActivity();
 
         //gets rid of the shadow on the actionbar
         ActionBar actionBar = context.getSupportActionBar();
@@ -104,6 +108,8 @@ public class TeamFragment extends Fragment
         instagramFontAwesomeBrandIcon = view.findViewById(R.id.InstagramFontAwesomeBrandIcon);
         youtubeFontAwesomeBrandIcon = view.findViewById(R.id.YoutubeFontAwesomeBrandIcon);
         websiteFontAwesomeSolidIcon = view.findViewById(R.id.WebsiteFontAwesomeSolidIcon);
+
+        addMatchFloatingActionButton = view.findViewById(R.id.AddMatchFloatingActionButton);
 
         //checks to see if the team has a valid URL for each social media, if not hide the icon
         if(team.getFacebookURL() != null && !team.getFacebookURL().equals("")) facebookFontAwesomeBrandIcon.setURL(team.getFacebookURL());
@@ -121,19 +127,34 @@ public class TeamFragment extends Fragment
         if(team.getWebsiteURL() != null && !team.getWebsiteURL().equals("")) websiteFontAwesomeSolidIcon.setURL(team.getWebsiteURL());
         else websiteFontAwesomeSolidIcon.hide();
 
+        //logic for adding a new match
+        addMatchFloatingActionButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                //swap fragments
+                FragmentManager fragmentManager = context.getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.MainFrame, new TeamFragment());
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
+
 
         //SCOUT CARD GARBAGE
-        scoutCardsRecyclerView = view.findViewById(R.id.ScoutCardsRecyclerView);
+        matchesRecyclerView = view.findViewById(R.id.MatchesRecyclerView);
 
-        ArrayList<ScoutCard> scoutCardList = new ArrayList<>();
+        ArrayList<Match> matchList = new ArrayList<>();
 
-        ScoutCard scoutCard = new ScoutCard(1, "Griffin", new Date(111111), 5885, 1234, 2345, AllianceColor.RED, 200, 400, 610, 875, 123);
-        scoutCardList.add(scoutCard);
+        Match match = new Match(1,  new Date(111111), 5885, 1234, 2345, 200, 400, 610, 875, 123);
+        matchList.add(match);
 
-        ScoutCardListRecyclerViewAdapter scoutCardListRecyclerViewAdapter = new ScoutCardListRecyclerViewAdapter(scoutCardList, context);
+        MatchListRecyclerViewAdapter matchListRecyclerViewAdapter = new MatchListRecyclerViewAdapter(team, matchList, context);
 
-        scoutCardsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        scoutCardsRecyclerView.setAdapter(scoutCardListRecyclerViewAdapter);
+        matchesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        matchesRecyclerView.setAdapter(matchListRecyclerViewAdapter);
 
         return view;
     }

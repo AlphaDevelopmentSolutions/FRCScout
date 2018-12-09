@@ -183,7 +183,6 @@ public class Database
         String[] columns =
                 {
                         Team.COLUMN_NAME_NAME,
-                        Team.COLUMN_NAME_NUMBER,
                         Team.COLUMN_NAME_CITY,
                         Team.COLUMN_NAME_STATEPROVINCE,
                         Team.COLUMN_NAME_COUNTRY,
@@ -217,7 +216,6 @@ public class Database
             cursor.moveToFirst();
 
             String name = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_NAME));
-            int number = cursor.getInt(cursor.getColumnIndex(Team.COLUMN_NAME_NUMBER));
             String city = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_CITY));
             String stateProvince = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_STATEPROVINCE));
             String country = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_COUNTRY));
@@ -231,7 +229,7 @@ public class Database
 
             cursor.close();
 
-            return new Team(team.getId(), name, number, city, stateProvince, country, rookieYear, facebookURL, twitterURL, instagramURL, youtubeURL, websiteURL, imageFileURI);
+            return new Team(team.getId(), name, city, stateProvince, country, rookieYear, facebookURL, twitterURL, instagramURL, youtubeURL, websiteURL, imageFileURI);
         }
 
 
@@ -248,7 +246,6 @@ public class Database
         //set all the values
         ContentValues contentValues = new ContentValues();
         contentValues.put(Team.COLUMN_NAME_NAME, team.getName());
-        contentValues.put(Team.COLUMN_NAME_NUMBER, team.getCity());
         contentValues.put(Team.COLUMN_NAME_CITY, team.getCity());
         contentValues.put(Team.COLUMN_NAME_STATEPROVINCE, team.getStateProvince());
         contentValues.put(Team.COLUMN_NAME_COUNTRY, team.getCountry());
@@ -391,6 +388,122 @@ public class Database
     }
     //endregion
 
+    //region Match Logic
+    /**
+     * Gets a specific match from the database and returns it
+     * @param match with specified ID
+     * @return match based off given ID
+     */
+    public Match getMatch(Match match)
+    {
+        //insert columns you are going to use here
+        String[] columns =
+                {
+                        Match.COLUMN_NAME_DATE,
+                        Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID,
+                        Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID,
+                        Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID,
+                        Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE,
+                        Match.COLUMN_NAME_RED_ALLIANCE_SCORE,
+                        Match.COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_ONE_ID,
+                        Match.COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_TWO_ID,
+                        Match.COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_THREE_ID
+                };
+
+        //where statement
+        String whereStatement = Match.COLUMN_NAME_ID + " = ?";
+        String[] whereArgs = {match.getId() + ""};
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                Match.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if(cursor != null)
+        {
+            //move to the first result in the set
+            cursor.moveToFirst();
+
+            Date date = new Date(cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_DATE)));
+            int alliancePartnerOneId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID));
+            int alliancePartnerTwoId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID));
+            int alliancePartnerThreeId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID));
+            int score = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE));
+            int opponentScore = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_SCORE));
+            int opponentAlliancePartnerOne = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_ONE_ID));
+            int opponentAlliancePartnerTwo = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_TWO_ID));
+            int opponentAlliancePartnerThree = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_THREE_ID));
+
+            cursor.close();
+
+            return new Match(match.getId(), date, alliancePartnerOneId, alliancePartnerTwoId, alliancePartnerThreeId, score, opponentScore, opponentAlliancePartnerOne, opponentAlliancePartnerTwo, opponentAlliancePartnerThree);
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Saves a specific match from the database and returns it
+     * @param match with specified ID
+     * @return id of the saved match
+     */
+    public long setMatch(Match match)
+    {
+        //set all the values
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Match.COLUMN_NAME_DATE, match.getDate().getTime());
+        contentValues.put(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID, match.getBlueAllianceTeamOneId());
+        contentValues.put(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID, match.getBlueAllianceTeamTwoId());
+        contentValues.put(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID, match.getBlueAllianceTeamThreeId());
+        contentValues.put(Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE, match.getBlueAllianceScore());
+        contentValues.put(Match.COLUMN_NAME_RED_ALLIANCE_SCORE, match.getRedAllianceScore());
+        contentValues.put(Match.COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_ONE_ID, match.getRedAllianceTeamOneId());
+        contentValues.put(Match.COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_TWO_ID, match.getRedAllianceTeamTwoId());
+        contentValues.put(Match.COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_THREE_ID, match.getRedAllianceTeamThreeId());
+
+        //Match already exists in DB, update
+        if(match.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = Match.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {match.getId() + ""};
+
+            //update
+            return db.update(Match.TABLE_NAME, contentValues, whereStatement, whereArgs);
+        }
+        //insert new Match in db
+        else return db.insert(Match.TABLE_NAME, null, contentValues);
+
+    }
+
+    /**
+     * Deletes a specific match from the database
+     * @param match with specified ID
+     * @return successful delete
+     */
+    public boolean deleteMatch(Match match)
+    {
+        if(match.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = Match.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {match.getId() + ""};
+
+            //delete
+            return db.delete(Match.TABLE_NAME, whereStatement, whereArgs) >= 1;
+        }
+
+        return false;
+    }
+    //endregion
+
     //region Scout Card Logic
     /**
      * Gets a specific scoutCard from the database and returns it
@@ -402,17 +515,10 @@ public class Database
         //insert columns you are going to use here
         String[] columns =
                 {
+                        ScoutCard.COLUMNS_NAME_MATCH_ID,
                         ScoutCard.COLUMN_NAME_TEAM_ID,
                         ScoutCard.COLUMN_NAME_COMPLETED_BY,
-                        ScoutCard.COLUMN_NAME_COMPLETED_DATE,
-                        ScoutCard.COLUMN_NAME_PARTNER_ONE_ID,
-                        ScoutCard.COLUMN_NAME_PARTNER_TWO_ID,
-                        ScoutCard.COLUMN_NAME_ALLIANCE_COLOR,
-                        ScoutCard.COLUMN_NAME_SCORE,
-                        ScoutCard.COLUMN_NAME_OPPONENT_SCORE,
-                        ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_ONE,
-                        ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_TWO,
-                        ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_THREE
+                        ScoutCard.COLUMN_NAME_COMPLETED_DATE
                 };
 
         //where statement
@@ -435,21 +541,13 @@ public class Database
             //move to the first result in the set
             cursor.moveToFirst();
 
+            int matchId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMNS_NAME_MATCH_ID));
             int teamId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID));
             String completedBy = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_BY));
             Date completedDate = new Date(cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)));
-            int partnerOneId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_PARTNER_ONE_ID));
-            int partnerTwoId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_PARTNER_TWO_ID));
-            AllianceColor allianceColor = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR)) == AllianceColor.BLUE.name() ? AllianceColor.BLUE : AllianceColor.RED;
-            int score = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_SCORE));
-            int opponentScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OPPONENT_SCORE));
-            int opponentAlliancePartnerOne = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_ONE));
-            int opponentAlliancePartnerTwo = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_TWO));
-            int opponentAlliancePartnerThree = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_THREE));
-
             cursor.close();
 
-            return new ScoutCard(scoutCard.getId(), completedBy, completedDate, teamId, partnerOneId, partnerTwoId, allianceColor, score, opponentScore, opponentAlliancePartnerOne, opponentAlliancePartnerTwo, opponentAlliancePartnerThree);
+            return new ScoutCard(scoutCard.getId(), matchId, teamId, completedBy, completedDate);
         }
 
 
@@ -465,20 +563,12 @@ public class Database
     {
         //set all the values
         ContentValues contentValues = new ContentValues();
+        contentValues.put(ScoutCard.COLUMNS_NAME_MATCH_ID, scoutCard.getMatchId());
         contentValues.put(ScoutCard.COLUMN_NAME_TEAM_ID, scoutCard.getTeamId());
         contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_BY, scoutCard.getCompletedBy());
         contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_DATE, scoutCard.getCompletedDate().getTime());
-        contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_DATE, scoutCard.getCompletedBy());
-        contentValues.put(ScoutCard.COLUMN_NAME_PARTNER_ONE_ID, scoutCard.getPartnerOneId());
-        contentValues.put(ScoutCard.COLUMN_NAME_PARTNER_TWO_ID, scoutCard.getPartnerTwoId());
-        contentValues.put(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR, scoutCard.getAllianceColor().name());
-        contentValues.put(ScoutCard.COLUMN_NAME_SCORE, scoutCard.getScore());
-        contentValues.put(ScoutCard.COLUMN_NAME_OPPONENT_SCORE, scoutCard.getOpponentScore());
-        contentValues.put(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_ONE, scoutCard.getOpponentAlliancePartnerOne());
-        contentValues.put(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_TWO, scoutCard.getOpponentAlliancePartnerTwo());
-        contentValues.put(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_THREE, scoutCard.getOpponentAlliancePartnerThree());
 
-        //ScoutCard already exists in DB, update
+        //scoutCard already exists in DB, update
         if(scoutCard.getId() > 0)
         {
             //create the where statement
@@ -488,7 +578,7 @@ public class Database
             //update
             return db.update(ScoutCard.TABLE_NAME, contentValues, whereStatement, whereArgs);
         }
-        //insert new ScoutCard in db
+        //insert new scoutCard in db
         else return db.insert(ScoutCard.TABLE_NAME, null, contentValues);
 
     }

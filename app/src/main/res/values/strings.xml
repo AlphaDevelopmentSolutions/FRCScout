@@ -6,4 +6,6 @@
     <string name="placeholder">\???</string>
     <string name="view">view</string>
     <string name="team_logo">Team Logo</string>
+    <string name="versus">VS</string>
+    <string name="more_button">More Button</string>
 </resources>

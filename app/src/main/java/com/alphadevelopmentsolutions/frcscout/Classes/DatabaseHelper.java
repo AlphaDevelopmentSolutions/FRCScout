@@ -25,7 +25,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
             "CREATE TABLE " + Team.TABLE_NAME + " (" +
                     Team.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
                     Team.COLUMN_NAME_NAME + " TEXT," +
-                    Team.COLUMN_NAME_NUMBER + " INTEGER," +
                     Team.COLUMN_NAME_CITY + " TEXT," +
                     Team.COLUMN_NAME_STATEPROVINCE + " TEXT," +
                     Team.COLUMN_NAME_COUNTRY + " TEXT," +
@@ -43,20 +42,18 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     Robot.COLUMN_NAME_NAME + " TEXT," +
                     Robot.COLUMN_NAME_TEAM_NUMBER + " INTEGER)";
 
-    private final String CREATE_SCOUT_CARDS_TABLE =
-            "CREATE TABLE " + ScoutCard.TABLE_NAME +" (" +
-                    ScoutCard.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                    ScoutCard.COLUMN_NAME_COMPLETED_BY + " TEXT," +
-                    ScoutCard.COLUMN_NAME_COMPLETED_DATE + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_TEAM_ID + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_PARTNER_ONE_ID + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_PARTNER_TWO_ID + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_ALLIANCE_COLOR + " TEXT," +
-                    ScoutCard.COLUMN_NAME_SCORE + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_OPPONENT_SCORE + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_ONE + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_TWO + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_THREE + " INTEGER)";
+    private final String CREATE_MATCHES_TABLE =
+            "CREATE TABLE " + Match.TABLE_NAME +" (" +
+                    Match.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    Match.COLUMN_NAME_DATE + " INTEGER," +
+                    Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID + " INTEGER," +
+                    Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID + " INTEGER," +
+                    Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID + " INTEGER," +
+                    Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE + " INTEGER," +
+                    Match.COLUMN_NAME_RED_ALLIANCE_SCORE + " INTEGER," +
+                    Match.COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_ONE_ID + " INTEGER," +
+                    Match.COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_TWO_ID + " INTEGER," +
+                    Match.COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_THREE_ID + " INTEGER)";
 
     public DatabaseHelper(Context context)
     {
@@ -69,7 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL(CREATE_EVENTS_TABLE);
         db.execSQL(CREATE_TEAMS_TABLE);
         db.execSQL(CREATE_ROBOTS_TABLE);
-        db.execSQL(CREATE_SCOUT_CARDS_TABLE);
+        db.execSQL(CREATE_MATCHES_TABLE);
     }
 
     @Override

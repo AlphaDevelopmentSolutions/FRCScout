@@ -64,7 +64,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
     {
         //Set the content on the card
         viewHolder.teamNameTextView.setText(teamList.get(position).getName());
-        viewHolder.teamNumberTextView.setText(String.valueOf(teamList.get(position).getNumber()));
+        viewHolder.teamNumberTextView.setText(String.valueOf(teamList.get(position).getId()));
 
         //make sure there is a bitmap found when you try and update the image view
         Bitmap teamLogo = teamList.get(position).getImageBitmap();
