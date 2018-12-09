@@ -30,7 +30,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     Team.COLUMN_NAME_STATEPROVINCE + " TEXT," +
                     Team.COLUMN_NAME_COUNTRY + " TEXT," +
                     Team.COLUMN_NAME_ROOKIE_YEAR + " INTEGER," +
-                    Team.COLUMN_NAME_WEBSITE + " TEXT," +
+                    Team.COLUMN_NAME_FACEBOOK_URL + " TEXT," +
+                    Team.COLUMN_NAME_TWITTER_URL + " TEXT," +
+                    Team.COLUMN_NAME_INSTAGRAM_URL + " TEXT," +
+                    Team.COLUMN_NAME_YOUTUBE_URL + " TEXT," +
+                    Team.COLUMN_NAME_WEBSITE_URL + " TEXT," +
                     Team.COLUMN_NAME_IMAGE_FILE_URI + " TEXT)";
 
     private final String CREATE_ROBOTS_TABLE =
@@ -42,6 +46,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private final String CREATE_SCOUT_CARDS_TABLE =
             "CREATE TABLE " + ScoutCard.TABLE_NAME +" (" +
                     ScoutCard.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    ScoutCard.COLUMN_NAME_COMPLETED_BY + " TEXT," +
+                    ScoutCard.COLUMN_NAME_COMPLETED_DATE + " INTEGER," +
                     ScoutCard.COLUMN_NAME_TEAM_ID + " INTEGER," +
                     ScoutCard.COLUMN_NAME_PARTNER_ONE_ID + " INTEGER," +
                     ScoutCard.COLUMN_NAME_PARTNER_TWO_ID + " INTEGER," +

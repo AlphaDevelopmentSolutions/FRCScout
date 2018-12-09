@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment;
-import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.ArrayList;
@@ -72,7 +71,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
         if(teamLogo != null) viewHolder.teamLogoImageView.setImageBitmap(teamLogo);
 
 
-        //set the onlick for the view button
+        //Sends you to the team fragment
         viewHolder.viewTeamButton.setOnClickListener(new View.OnClickListener()
         {
             @Override

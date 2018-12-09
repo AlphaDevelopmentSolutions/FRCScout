@@ -5,12 +5,23 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
+import com.alphadevelopmentsolutions.frcscout.Adapters.ScoutCardListRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Adapters.TeamListRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
+import com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeIcon;
+import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,14 +33,10 @@ import com.alphadevelopmentsolutions.frcscout.R;
  */
 public class TeamFragment extends Fragment
 {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM1 = "teamId";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int teamId;
 
     private OnFragmentInteractionListener mListener;
 
@@ -42,17 +49,14 @@ public class TeamFragment extends Fragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param teamId id of team to show
      * @return A new instance of fragment TeamFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static TeamFragment newInstance(String param1, String param2)
+    public static TeamFragment newInstance(int teamId)
     {
         TeamFragment fragment = new TeamFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(ARG_PARAM1, teamId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,10 +67,19 @@ public class TeamFragment extends Fragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            teamId = getArguments().getInt(ARG_PARAM1);
         }
     }
+
+    private Team team;
+
+    private RecyclerView scoutCardsRecyclerView;
+
+    private FontAwesomeIcon facebookFontAwesomeBrandIcon;
+    private FontAwesomeIcon twitterFontAwesomeBrandIcon;
+    private FontAwesomeIcon instagramFontAwesomeBrandIcon;
+    private FontAwesomeIcon youtubeFontAwesomeBrandIcon;
+    private FontAwesomeIcon websiteFontAwesomeSolidIcon;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,20 +88,54 @@ public class TeamFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_team, container, false);
 
+        MainActivity context = (MainActivity) getActivity();
+
         //gets rid of the shadow on the actionbar
-        ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
+        ActionBar actionBar = context.getSupportActionBar();
         actionBar.setElevation(0);
 
-        return view;
-    }
+        //load the current team you are viewing
+        team = new Team(teamId);
+        //team.load(context.getDatabase());
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri)
-    {
-        if (mListener != null)
-        {
-            mListener.onFragmentInteraction(uri);
-        }
+        //assign the vars to the views on the page
+        facebookFontAwesomeBrandIcon = view.findViewById(R.id.FacebookFontAwesomeBrandIcon);
+        twitterFontAwesomeBrandIcon = view.findViewById(R.id.TwitterFontAwesomeBrandIcon);
+        instagramFontAwesomeBrandIcon = view.findViewById(R.id.InstagramFontAwesomeBrandIcon);
+        youtubeFontAwesomeBrandIcon = view.findViewById(R.id.YoutubeFontAwesomeBrandIcon);
+        websiteFontAwesomeSolidIcon = view.findViewById(R.id.WebsiteFontAwesomeSolidIcon);
+
+        //checks to see if the team has a valid URL for each social media, if not hide the icon
+        if(team.getFacebookURL() != null && !team.getFacebookURL().equals("")) facebookFontAwesomeBrandIcon.setURL(team.getFacebookURL());
+        else facebookFontAwesomeBrandIcon.hide();
+
+        if(team.getTwitterURL() != null && !team.getTwitterURL().equals("")) twitterFontAwesomeBrandIcon.setURL(team.getTwitterURL());
+        else twitterFontAwesomeBrandIcon.hide();
+
+        if(team.getInstagramURL() != null && !team.getInstagramURL().equals("")) instagramFontAwesomeBrandIcon.setURL(team.getInstagramURL());
+        else instagramFontAwesomeBrandIcon.hide();
+
+        if(team.getYoutubeURL() != null && !team.getYoutubeURL().equals("")) youtubeFontAwesomeBrandIcon.setURL(team.getYoutubeURL());
+        else youtubeFontAwesomeBrandIcon.hide();
+
+        if(team.getWebsiteURL() != null && !team.getWebsiteURL().equals("")) websiteFontAwesomeSolidIcon.setURL(team.getWebsiteURL());
+        else websiteFontAwesomeSolidIcon.hide();
+
+
+        //SCOUT CARD GARBAGE
+        scoutCardsRecyclerView = view.findViewById(R.id.ScoutCardsRecyclerView);
+
+        ArrayList<ScoutCard> scoutCardList = new ArrayList<>();
+
+        ScoutCard scoutCard = new ScoutCard(1, "Griffin", new Date(111111), 5885, 1234, 2345, AllianceColor.RED, 200, 400, 610, 875, 123);
+        scoutCardList.add(scoutCard);
+
+        ScoutCardListRecyclerViewAdapter scoutCardListRecyclerViewAdapter = new ScoutCardListRecyclerViewAdapter(scoutCardList, context);
+
+        scoutCardsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        scoutCardsRecyclerView.setAdapter(scoutCardListRecyclerViewAdapter);
+
+        return view;
     }
 
     @Override

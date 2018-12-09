@@ -16,7 +16,11 @@ public class Team
     public static final String COLUMN_NAME_STATEPROVINCE = "StateProvince";
     public static final String COLUMN_NAME_COUNTRY = "Country";
     public static final String COLUMN_NAME_ROOKIE_YEAR = "RookieYear";
-    public static final String COLUMN_NAME_WEBSITE = "Website";
+    public static final String COLUMN_NAME_FACEBOOK_URL = "FacebookURL";
+    public static final String COLUMN_NAME_TWITTER_URL = "TwitterURL";
+    public static final String COLUMN_NAME_INSTAGRAM_URL = "InstagramURL";
+    public static final String COLUMN_NAME_YOUTUBE_URL = "YoutubeURL";
+    public static final String COLUMN_NAME_WEBSITE_URL = "WebsiteURL";
     public static final String COLUMN_NAME_IMAGE_FILE_URI = "ImageFileURI";
 
     private int id;
@@ -26,7 +30,11 @@ public class Team
     private String stateProvince;
     private String country;
     private int rookieYear;
-    private String website;
+    private String facebookURL;
+    private String twitterURL;
+    private String instagramURL;
+    private String youtubeURL;
+    private String websiteURL;
     private String imageFileURI;
 
     public Team(
@@ -37,7 +45,11 @@ public class Team
             String stateProvince,
             String country,
             int rookieYear,
-            String website,
+            String facebookURL,
+            String twitterURL,
+            String instagramURL,
+            String youtubeURL,
+            String websiteURL,
             String imageFileURI)
     {
         this.id = id;
@@ -47,11 +59,19 @@ public class Team
         this.stateProvince = stateProvince;
         this.country = country;
         this.rookieYear = rookieYear;
-        this.website = website;
+        this.facebookURL = facebookURL;
+        this.twitterURL = twitterURL;
+        this.instagramURL = instagramURL;
+        this.youtubeURL = youtubeURL;
+        this.websiteURL = websiteURL;
         this.imageFileURI = imageFileURI;
     }
 
-    Team(int id)
+    /**
+     * Used for loading
+     * @param id to load
+     */
+    public Team(int id)
     {
         this.id = id;
     }
@@ -93,9 +113,29 @@ public class Team
         return rookieYear;
     }
 
-    public String getWebsite()
+    public String getFacebookURL()
     {
-        return website;
+        return facebookURL;
+    }
+
+    public String getTwitterURL()
+    {
+        return twitterURL;
+    }
+
+    public String getInstagramURL()
+    {
+        return instagramURL;
+    }
+
+    public String getYoutubeURL()
+    {
+        return youtubeURL;
+    }
+
+    public String getWebsiteURL()
+    {
+        return websiteURL;
     }
 
     public String getImageFileURI()
@@ -156,9 +196,29 @@ public class Team
         this.rookieYear = rookieYear;
     }
 
-    public void setWebsite(String website)
+    public void setFacebookURL(String facebookURL)
     {
-        this.website = website;
+        this.facebookURL = facebookURL;
+    }
+
+    public void setTwitterURL(String twitterURL)
+    {
+        this.twitterURL = twitterURL;
+    }
+
+    public void setInstagramURL(String instagramURL)
+    {
+        this.instagramURL = instagramURL;
+    }
+
+    public void setYoutubeURL(String youtubeURL)
+    {
+        this.youtubeURL = youtubeURL;
+    }
+
+    public void setWebsiteURL(String websiteURL)
+    {
+        this.websiteURL = websiteURL;
     }
 
     public void setImageFileURI(String imageFileURI)
@@ -193,7 +253,11 @@ public class Team
                 setStateProvince(team.getStateProvince());
                 setCountry(team.getCountry());
                 setRookieYear(team.getRookieYear());
-                setWebsite(team.getWebsite());
+                setFacebookURL(team.getFacebookURL());
+                setTwitterURL(team.getTwitterURL());
+                setInstagramURL(team.getInstagramURL());
+                setYoutubeURL(team.getYoutubeURL());
+                setWebsiteURL(team.getWebsiteURL());
                 setImageFileURI(team.getImageFileURI());
                 return true;
             }

@@ -1,10 +1,14 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import java.util.Date;
+
 public class ScoutCard
 {
 
     public static final String TABLE_NAME = "scout_cards";
     public static final String COLUMN_NAME_ID = "Id";
+    public static final String COLUMN_NAME_COMPLETED_BY = "CompletedBy";
+    public static final String COLUMN_NAME_COMPLETED_DATE = "CompletedDate";
     public static final String COLUMN_NAME_TEAM_ID = "TeamId";
     public static final String COLUMN_NAME_PARTNER_ONE_ID = "PartnerOneId";
     public static final String COLUMN_NAME_PARTNER_TWO_ID = "PartnerTwoId";
@@ -16,6 +20,8 @@ public class ScoutCard
     public static final String COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_THREE = "OpponentAlliancePartnerThree";
 
     private int id;
+    private String completedBy;
+    private Date completedDate;
     private int teamId;
     private int partnerOneId;
     private int partnerTwoId;
@@ -29,6 +35,8 @@ public class ScoutCard
 
     public ScoutCard(
             int id,
+            String completedBy,
+            Date completedDate,
             int teamId,
             int partnerOneId,
             int partnerTwoId,
@@ -40,6 +48,8 @@ public class ScoutCard
             int opponentAlliancePartnerThree)
     {
         this.id = id;
+        this.completedBy = completedBy;
+        this.completedDate = completedDate;
         this.teamId = teamId;
         this.partnerOneId = partnerOneId;
         this.partnerTwoId = partnerTwoId;
@@ -65,6 +75,16 @@ public class ScoutCard
     public int getId()
     {
         return id;
+    }
+
+    public String getCompletedBy()
+    {
+        return completedBy;
+    }
+
+    public Date getCompletedDate()
+    {
+        return completedDate;
     }
 
     public int getTeamId()
@@ -112,6 +132,32 @@ public class ScoutCard
         return opponentAlliancePartnerThree;
     }
 
+    /**
+     * Returns whether the current team in question won
+     * @return boolean if team won
+     */
+    public boolean teamWon()
+    {
+        return getScore() > getOpponentScore();
+    }
+
+    /**
+     * Returns whether the current team in question lost
+     * @return boolean if team lost
+     */
+    public boolean teamLost()
+    {
+        return getScore() < getOpponentScore();
+    }
+
+    /**
+     * Returns whether the current team in question tied
+     * @return boolean if team tied
+     */
+    public boolean teamTied()
+    {
+        return getScore() == getOpponentScore();
+    }
 
     //endregion
 
@@ -120,6 +166,11 @@ public class ScoutCard
     public void setId(int id)
     {
         this.id = id;
+    }
+
+    public void setCompletedBy(String completedBy)
+    {
+        this.completedBy = completedBy;
     }
 
     public void setTeamId(int teamId)
@@ -140,6 +191,11 @@ public class ScoutCard
     public void setAllianceColor(AllianceColor allianceColor)
     {
         this.allianceColor = allianceColor;
+    }
+
+    public void setCompletedDate(Date completedDate)
+    {
+        this.completedDate = completedDate;
     }
 
     public void setScore(int score)
@@ -190,6 +246,8 @@ public class ScoutCard
             if (scoutCard != null)
             {
                 setTeamId(scoutCard.getTeamId());
+                setCompletedBy(scoutCard.getCompletedBy());
+                setCompletedDate(scoutCard.getCompletedDate());
                 setPartnerOneId(scoutCard.getPartnerOneId());
                 setPartnerTwoId(scoutCard.getPartnerTwoId());
                 setAllianceColor(scoutCard.getAllianceColor());

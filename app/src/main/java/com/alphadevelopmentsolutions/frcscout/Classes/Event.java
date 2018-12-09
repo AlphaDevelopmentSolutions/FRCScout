@@ -44,6 +44,10 @@ public class Event
         this.endDate = endDate;
     }
 
+    /**
+     * Used for loading
+     * @param id to load
+     */
     Event(int id)
     {
         this.id = id;

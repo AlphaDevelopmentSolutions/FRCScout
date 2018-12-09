@@ -6,7 +6,10 @@ import android.util.AttributeSet;
 
 import com.alphadevelopmentsolutions.frcscout.R;
 
-public class FontAwesomeSolidIcon extends android.support.v7.widget.AppCompatTextView
+/**
+ * This class is used to display FontAwesome Solid icons to the app as textviews
+ */
+public class FontAwesomeSolidIcon extends FontAwesomeIcon
 {
 
     private Context context;
@@ -39,7 +42,7 @@ public class FontAwesomeSolidIcon extends android.support.v7.widget.AppCompatTex
      * Sets the typeface to the FontAwesomeBrands.otf font
      * Icon ascii vals are stored in the font_awesome_image_codes.xml under values dir
      */
-    private void init()
+    void init()
     {
         setTypeface(ResourcesCompat.getFont(context, R.font.font_awesome_solids));
     }

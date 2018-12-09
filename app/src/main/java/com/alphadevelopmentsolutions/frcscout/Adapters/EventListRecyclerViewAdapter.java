@@ -63,9 +63,9 @@ public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventList
         //Set the content on the card
         viewHolder.eventTitleTextView.setText(eventList.get(position).getName());
         viewHolder.eventLocationTextView.setText(eventList.get(position).getCity() + ", " + eventList.get(position).getStateProvince() + ", " + eventList.get(position).getCountry());
-        viewHolder.eventDateTextView.setText(eventList.get(position).getStartDate().getTime() + " - " + eventList.get(position).getEndDate().getTime());
+        viewHolder.eventDateTextView.setText(eventList.get(position).getStartDate().getTime() + " - " + eventList.get(position).getEndDate().getTime()); //TODO: Format date
 
-        //set the onlick for the view button
+        //Sends you to the teamlist fragment
         viewHolder.viewEventButton.setOnClickListener(new View.OnClickListener()
         {
             @Override

@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.io.File;
 import java.util.Date;
 
 public class Database
@@ -189,7 +188,11 @@ public class Database
                         Team.COLUMN_NAME_STATEPROVINCE,
                         Team.COLUMN_NAME_COUNTRY,
                         Team.COLUMN_NAME_ROOKIE_YEAR,
-                        Team.COLUMN_NAME_WEBSITE,
+                        Team.COLUMN_NAME_FACEBOOK_URL,
+                        Team.COLUMN_NAME_TWITTER_URL,
+                        Team.COLUMN_NAME_INSTAGRAM_URL,
+                        Team.COLUMN_NAME_YOUTUBE_URL,
+                        Team.COLUMN_NAME_WEBSITE_URL,
                         Team.COLUMN_NAME_IMAGE_FILE_URI
                 };
 
@@ -214,17 +217,21 @@ public class Database
             cursor.moveToFirst();
 
             String name = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_NAME));
-            int number = Integer.parseInt(cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_NUMBER)));
+            int number = cursor.getInt(cursor.getColumnIndex(Team.COLUMN_NAME_NUMBER));
             String city = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_CITY));
             String stateProvince = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_STATEPROVINCE));
             String country = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_COUNTRY));
-            int rookieYear = Integer.parseInt(cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_ROOKIE_YEAR)));
-            String website = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_WEBSITE));
+            int rookieYear = cursor.getInt(cursor.getColumnIndex(Team.COLUMN_NAME_ROOKIE_YEAR));
+            String facebookURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_FACEBOOK_URL));
+            String twitterURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_TWITTER_URL));
+            String instagramURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_INSTAGRAM_URL));
+            String youtubeURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_YOUTUBE_URL));
+            String websiteURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_WEBSITE_URL));
             String imageFileURI = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_IMAGE_FILE_URI));
 
             cursor.close();
 
-            return new Team(team.getId(), name, number, city, stateProvince, country, rookieYear, website, imageFileURI);
+            return new Team(team.getId(), name, number, city, stateProvince, country, rookieYear, facebookURL, twitterURL, instagramURL, youtubeURL, websiteURL, imageFileURI);
         }
 
 
@@ -246,7 +253,11 @@ public class Database
         contentValues.put(Team.COLUMN_NAME_STATEPROVINCE, team.getStateProvince());
         contentValues.put(Team.COLUMN_NAME_COUNTRY, team.getCountry());
         contentValues.put(Team.COLUMN_NAME_ROOKIE_YEAR, team.getRookieYear());
-        contentValues.put(Team.COLUMN_NAME_WEBSITE, team.getWebsite());
+        contentValues.put(Team.COLUMN_NAME_FACEBOOK_URL, team.getFacebookURL());
+        contentValues.put(Team.COLUMN_NAME_TWITTER_URL, team.getTwitterURL());
+        contentValues.put(Team.COLUMN_NAME_INSTAGRAM_URL, team.getInstagramURL());
+        contentValues.put(Team.COLUMN_NAME_YOUTUBE_URL, team.getYoutubeURL());
+        contentValues.put(Team.COLUMN_NAME_WEBSITE_URL, team.getWebsiteURL());
         contentValues.put(Team.COLUMN_NAME_IMAGE_FILE_URI, team.getImageFileURI());
 
         //team already exists in DB, update
@@ -321,7 +332,7 @@ public class Database
             cursor.moveToFirst();
 
             String name = cursor.getString(cursor.getColumnIndex(Robot.COLUMN_NAME_NAME));
-            int teamNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(Robot.COLUMN_NAME_TEAM_NUMBER)));
+            int teamNumber = cursor.getInt(cursor.getColumnIndex(Robot.COLUMN_NAME_TEAM_NUMBER));
 
             cursor.close();
 
@@ -392,6 +403,8 @@ public class Database
         String[] columns =
                 {
                         ScoutCard.COLUMN_NAME_TEAM_ID,
+                        ScoutCard.COLUMN_NAME_COMPLETED_BY,
+                        ScoutCard.COLUMN_NAME_COMPLETED_DATE,
                         ScoutCard.COLUMN_NAME_PARTNER_ONE_ID,
                         ScoutCard.COLUMN_NAME_PARTNER_TWO_ID,
                         ScoutCard.COLUMN_NAME_ALLIANCE_COLOR,
@@ -422,19 +435,21 @@ public class Database
             //move to the first result in the set
             cursor.moveToFirst();
 
-            int teamId = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID)));
-            int partnerOneId = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_PARTNER_ONE_ID)));
-            int partnerTwoId = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_PARTNER_TWO_ID)));
+            int teamId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID));
+            String completedBy = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_BY));
+            Date completedDate = new Date(cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)));
+            int partnerOneId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_PARTNER_ONE_ID));
+            int partnerTwoId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_PARTNER_TWO_ID));
             AllianceColor allianceColor = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR)) == AllianceColor.BLUE.name() ? AllianceColor.BLUE : AllianceColor.RED;
-            int score = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_SCORE)));
-            int opponentScore = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OPPONENT_SCORE)));
-            int opponentAlliancePartnerOne = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_ONE)));
-            int opponentAlliancePartnerTwo = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_TWO)));
-            int opponentAlliancePartnerThree = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_THREE)));
+            int score = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_SCORE));
+            int opponentScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OPPONENT_SCORE));
+            int opponentAlliancePartnerOne = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_ONE));
+            int opponentAlliancePartnerTwo = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_TWO));
+            int opponentAlliancePartnerThree = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OPPONENT_ALLIANCE_PARTNER_THREE));
 
             cursor.close();
 
-            return new ScoutCard(scoutCard.getId(), teamId, partnerOneId, partnerTwoId, allianceColor, score, opponentScore, opponentAlliancePartnerOne, opponentAlliancePartnerTwo, opponentAlliancePartnerThree);
+            return new ScoutCard(scoutCard.getId(), completedBy, completedDate, teamId, partnerOneId, partnerTwoId, allianceColor, score, opponentScore, opponentAlliancePartnerOne, opponentAlliancePartnerTwo, opponentAlliancePartnerThree);
         }
 
 
@@ -451,6 +466,9 @@ public class Database
         //set all the values
         ContentValues contentValues = new ContentValues();
         contentValues.put(ScoutCard.COLUMN_NAME_TEAM_ID, scoutCard.getTeamId());
+        contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_BY, scoutCard.getCompletedBy());
+        contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_DATE, scoutCard.getCompletedDate().getTime());
+        contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_DATE, scoutCard.getCompletedBy());
         contentValues.put(ScoutCard.COLUMN_NAME_PARTNER_ONE_ID, scoutCard.getPartnerOneId());
         contentValues.put(ScoutCard.COLUMN_NAME_PARTNER_TWO_ID, scoutCard.getPartnerTwoId());
         contentValues.put(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR, scoutCard.getAllianceColor().name());

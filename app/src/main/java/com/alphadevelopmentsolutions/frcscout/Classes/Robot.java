@@ -23,6 +23,10 @@ public class Robot
         this.teamNumber = teamNumber;
     }
 
+    /**
+     * Used for loading
+     * @param id to load
+     */
     Robot(int id)
     {
         this.id = id;
