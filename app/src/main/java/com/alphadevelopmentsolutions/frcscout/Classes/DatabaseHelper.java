@@ -49,11 +49,17 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID + " INTEGER," +
                     Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID + " INTEGER," +
                     Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID + " INTEGER," +
+                    Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_SCOUT_CARD_ID + " INTEGER," +
+                    Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_SCOUT_CARD_ID + " INTEGER," +
+                    Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_SCOUT_CARD_ID + " INTEGER," +
                     Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE + " INTEGER," +
                     Match.COLUMN_NAME_RED_ALLIANCE_SCORE + " INTEGER," +
-                    Match.COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_ONE_ID + " INTEGER," +
-                    Match.COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_TWO_ID + " INTEGER," +
-                    Match.COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_THREE_ID + " INTEGER)";
+                    Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID + " INTEGER," +
+                    Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID + " INTEGER," +
+                    Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID + " INTEGER," +
+                    Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_SCOUT_CARD_ID + " INTEGER," +
+                    Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_SCOUT_CARD_ID + " INTEGER," +
+                    Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_SCOUT_CARD_ID + " INTEGER)";
 
     public DatabaseHelper(Context context)
     {

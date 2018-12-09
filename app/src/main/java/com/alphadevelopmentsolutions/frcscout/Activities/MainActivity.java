@@ -12,6 +12,7 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.EventFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchListFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
@@ -22,7 +23,8 @@ public class MainActivity extends AppCompatActivity implements
         TeamListFragment.OnFragmentInteractionListener,
         EventFragment.OnFragmentInteractionListener,
         MatchFragment.OnFragmentInteractionListener,
-        TeamFragment.OnFragmentInteractionListener
+        TeamFragment.OnFragmentInteractionListener,
+        ScoutCardFragment.OnFragmentInteractionListener
 {
 
     private Database database;

@@ -89,7 +89,7 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MatchListRecyclerViewAdapter.ViewHolder viewHolder, int position)
+    public void onBindViewHolder(@NonNull final MatchListRecyclerViewAdapter.ViewHolder viewHolder, int position)
     {
         //Set the OutcomeTextView
         if(team != null)
@@ -145,10 +145,22 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
             @Override
             public void onClick(View v)
             {
+                
+                //store the list of team ids
+                ArrayList<Integer> blueAllianceTeamIds = new ArrayList<>();
+                blueAllianceTeamIds.add(matchList.get(viewHolder.getAdapterPosition()).getBlueAllianceTeamOneId());
+                blueAllianceTeamIds.add(matchList.get(viewHolder.getAdapterPosition()).getBlueAllianceTeamTwoId());
+                blueAllianceTeamIds.add(matchList.get(viewHolder.getAdapterPosition()).getBlueAllianceTeamThreeId());
+
+                ArrayList<Integer> redAllianceTeamIds = new ArrayList<>();
+                redAllianceTeamIds.add(matchList.get(viewHolder.getAdapterPosition()).getRedAllianceTeamOneId());
+                redAllianceTeamIds.add(matchList.get(viewHolder.getAdapterPosition()).getRedAllianceTeamTwoId());
+                redAllianceTeamIds.add(matchList.get(viewHolder.getAdapterPosition()).getRedAllianceTeamThreeId());
+
                 //swap fragments
                 FragmentManager fragmentManager = context.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.MainFrame, new MatchFragment());
+                fragmentTransaction.replace(R.id.MainFrame, MatchFragment.newInstance(blueAllianceTeamIds, redAllianceTeamIds));
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }

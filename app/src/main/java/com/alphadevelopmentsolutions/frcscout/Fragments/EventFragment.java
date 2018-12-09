@@ -71,6 +71,10 @@ public class EventFragment extends Fragment
         }
     }
 
+    private ViewPager eventViewPager;
+
+    private TabLayout eventTabLayout;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -88,8 +92,8 @@ public class EventFragment extends Fragment
         eventViewPagerAdapter.addFragment(new MatchListFragment(), "Matches");
         eventViewPagerAdapter.addFragment(new TeamListFragment(), "Teams");
 
-        ViewPager eventViewPager = view.findViewById(R.id.EventViewPager);
-        TabLayout eventTabLayout = view.findViewById(R.id.EventTabLayout);
+        eventViewPager = view.findViewById(R.id.EventViewPager);
+        eventTabLayout = view.findViewById(R.id.EventTabLayout);
 
         eventViewPager.setAdapter(eventViewPagerAdapter);
         eventTabLayout.setupWithViewPager(eventViewPager);

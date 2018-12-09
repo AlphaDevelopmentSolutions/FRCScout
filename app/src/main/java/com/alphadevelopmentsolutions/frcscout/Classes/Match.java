@@ -11,22 +11,34 @@ public class Match
     public static final String COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID = "BlueAllianceTeamOneId";
     public static final String COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID = "BlueAllianceTeamTwoId";
     public static final String COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID = "BlueAllianceTeamThreeId";
+    public static final String COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_SCOUT_CARD_ID = "BlueAllianceTeamOneScoutCardId";
+    public static final String COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_SCOUT_CARD_ID = "BlueAllianceTeamTwoScoutCardId";
+    public static final String COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_SCOUT_CARD_ID = "BlueAllianceTeamThreeScoutCardId";
     public static final String COLUMN_NAME_BLUE_ALLIANCE_SCORE = "BlueAllianceScore";
     public static final String COLUMN_NAME_RED_ALLIANCE_SCORE = "RedAllianceScore";
-    public static final String COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_ONE_ID = "RedAllianceTeamOneId";
-    public static final String COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_TWO_ID = "RedAllianceTeamTwoId";
-    public static final String COLUMN_NAME_OPPONENT_ALLIANCE_TEAM_THREE_ID = "RedAllianceTeamThreeId";
+    public static final String COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID = "RedAllianceTeamOneId";
+    public static final String COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID = "RedAllianceTeamTwoId";
+    public static final String COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID = "RedAllianceTeamThreeId";
+    public static final String COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_SCOUT_CARD_ID = "RedAllianceTeamOneScoutCardId";
+    public static final String COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_SCOUT_CARD_ID = "RedAllianceTeamTwoScoutCardId";
+    public static final String COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_SCOUT_CARD_ID = "RedAllianceTeamThreeScoutCardId";
 
     private int id;
     private Date date;
     private int blueAllianceTeamOneId;
     private int blueAllianceTeamTwoId;
     private int blueAllianceTeamThreeId;
+    private int blueAllianceTeamOneScoutCardId;
+    private int blueAllianceTeamTwoScoutCardId;
+    private int blueAllianceTeamThreeScoutCardId;
     private int blueAllianceScore;
     private int redAllianceScore;
     private int redAllianceTeamOneId;
     private int redAllianceTeamTwoId;
     private int redAllianceTeamThreeId;
+    private int redAllianceTeamOneScoutCardId;
+    private int redAllianceTeamTwoScoutCardId;
+    private int redAllianceTeamThreeScoutCardId;
 
 
     public Match(
@@ -35,22 +47,34 @@ public class Match
             int blueAllianceTeamOneId,
             int blueAllianceTeamTwoId,
             int blueAllianceTeamThreeId,
+            int blueAllianceTeamOneScoutCardId,
+            int blueAllianceTeamTwoScoutCardId,
+            int blueAllianceTeamThreeScoutCardId,
             int blueAllianceScore,
             int redAllianceScore,
             int redAllianceTeamOneId,
             int redAllianceTeamTwoId,
-            int redAllianceTeamThreeId)
+            int redAllianceTeamThreeId,
+            int redAllianceTeamOneScoutCardId,
+            int redAllianceTeamTwoScoutCardId,
+            int redAllianceTeamThreeScoutCardId)
     {
         this.id = id;
         this.date = date;
         this.blueAllianceTeamOneId = blueAllianceTeamOneId;
         this.blueAllianceTeamTwoId = blueAllianceTeamTwoId;
         this.blueAllianceTeamThreeId = blueAllianceTeamThreeId;
+        this.blueAllianceTeamOneScoutCardId = blueAllianceTeamOneScoutCardId;
+        this.blueAllianceTeamTwoScoutCardId = blueAllianceTeamTwoScoutCardId;
+        this.blueAllianceTeamThreeScoutCardId = blueAllianceTeamThreeScoutCardId;
         this.blueAllianceScore = blueAllianceScore;
         this.redAllianceScore = redAllianceScore;
         this.redAllianceTeamOneId = redAllianceTeamOneId;
         this.redAllianceTeamTwoId = redAllianceTeamTwoId;
         this.redAllianceTeamThreeId = redAllianceTeamThreeId;
+        this.redAllianceTeamOneScoutCardId = redAllianceTeamOneScoutCardId;
+        this.redAllianceTeamTwoScoutCardId = redAllianceTeamTwoScoutCardId;
+        this.redAllianceTeamThreeScoutCardId = redAllianceTeamThreeScoutCardId;
     }
 
     /**
@@ -89,6 +113,21 @@ public class Match
         return blueAllianceTeamThreeId;
     }
 
+    public int getBlueAllianceTeamOneScoutCardId()
+    {
+        return blueAllianceTeamOneScoutCardId;
+    }
+
+    public int getBlueAllianceTeamTwoScoutCardId()
+    {
+        return blueAllianceTeamTwoScoutCardId;
+    }
+
+    public int getBlueAllianceTeamThreeScoutCardId()
+    {
+        return blueAllianceTeamThreeScoutCardId;
+    }
+
     public int getBlueAllianceScore()
     {
         return blueAllianceScore;
@@ -112,6 +151,21 @@ public class Match
     public int getRedAllianceTeamThreeId()
     {
         return redAllianceTeamThreeId;
+    }
+
+    public int getRedAllianceTeamOneScoutCardId()
+    {
+        return redAllianceTeamOneScoutCardId;
+    }
+
+    public int getRedAllianceTeamTwoScoutCardId()
+    {
+        return redAllianceTeamTwoScoutCardId;
+    }
+
+    public int getRedAllianceTeamThreeScoutCardId()
+    {
+        return redAllianceTeamThreeScoutCardId;
     }
 
     /**
@@ -200,6 +254,21 @@ public class Match
         this.blueAllianceTeamThreeId = blueAllianceTeamThreeId;
     }
 
+    public void setBlueAllianceTeamOneScoutCardId(int blueAllianceTeamOneScoutCardId)
+    {
+        this.blueAllianceTeamOneScoutCardId = blueAllianceTeamOneScoutCardId;
+    }
+
+    public void setBlueAllianceTeamTwoScoutCardId(int blueAllianceTeamTwoScoutCardId)
+    {
+        this.blueAllianceTeamTwoScoutCardId = blueAllianceTeamTwoScoutCardId;
+    }
+
+    public void setBlueAllianceTeamThreeScoutCardId(int blueAllianceTeamThreeScoutCardId)
+    {
+        this.blueAllianceTeamThreeScoutCardId = blueAllianceTeamThreeScoutCardId;
+    }
+
     public void setDate(Date date)
     {
         this.date = date;
@@ -230,6 +299,21 @@ public class Match
         this.redAllianceTeamThreeId = redAllianceTeamThreeId;
     }
 
+    public void setRedAllianceTeamOneScoutCardId(int redAllianceTeamOneScoutCardId)
+    {
+        this.redAllianceTeamOneScoutCardId = redAllianceTeamOneScoutCardId;
+    }
+
+    public void setRedAllianceTeamTwoScoutCardId(int redAllianceTeamTwoScoutCardId)
+    {
+        this.redAllianceTeamTwoScoutCardId = redAllianceTeamTwoScoutCardId;
+    }
+
+    public void setRedAllianceTeamThreeScoutCardId(int redAllianceTeamThreeScoutCardId)
+    {
+        this.redAllianceTeamThreeScoutCardId = redAllianceTeamThreeScoutCardId;
+    }
+
     //endregion
 
     //region Load, Save & Delete
@@ -251,15 +335,21 @@ public class Match
 
             if (match != null)
             {
-                setBlueAllianceTeamOneId(match.getBlueAllianceTeamOneId());
                 setDate(match.getDate());
+                setBlueAllianceTeamOneId(match.getBlueAllianceTeamOneId());
                 setBlueAllianceTeamTwoId(match.getBlueAllianceTeamTwoId());
                 setBlueAllianceTeamThreeId(match.getBlueAllianceTeamThreeId());
+                setBlueAllianceTeamOneScoutCardId(match.getBlueAllianceTeamOneScoutCardId());
+                setBlueAllianceTeamTwoScoutCardId(match.getBlueAllianceTeamTwoScoutCardId());
+                setBlueAllianceTeamThreeScoutCardId(match.getBlueAllianceTeamThreeScoutCardId());
                 setBlueAllianceScore(match.getBlueAllianceScore());
                 setRedAllianceScore(match.getRedAllianceScore());
                 setRedAllianceTeamOneId(match.getRedAllianceTeamOneId());
                 setRedAllianceTeamTwoId(match.getRedAllianceTeamTwoId());
                 setRedAllianceTeamThreeId(match.getRedAllianceTeamThreeId());
+                setRedAllianceTeamOneScoutCardId(match.getRedAllianceTeamOneScoutCardId());
+                setRedAllianceTeamTwoScoutCardId(match.getRedAllianceTeamTwoScoutCardId());
+                setRedAllianceTeamThreeScoutCardId(match.getRedAllianceTeamThreeScoutCardId());
                 return true;
             }
         }

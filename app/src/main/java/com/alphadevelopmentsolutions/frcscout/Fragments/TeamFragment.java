@@ -148,7 +148,7 @@ public class TeamFragment extends Fragment
 
         ArrayList<Match> matchList = new ArrayList<>();
 
-        Match match = new Match(1,  new Date(111111), 5885, 1234, 2345, 200, 400, 610, 875, 123);
+        Match match = new Match(1,  new Date(111111), 5885, 1234, 2345, 1, 1, 1, 200, 400, 610, 875, 123, 1, 1, 1);
         matchList.add(match);
         matchList.add(match);
         matchList.add(match);
