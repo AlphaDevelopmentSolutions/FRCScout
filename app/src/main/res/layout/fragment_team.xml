@@ -74,10 +74,10 @@
                     android:layout_marginRight="15dp"
                     android:gravity="center"
                     android:text="@string/icon_facebook"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/textSecondaryLight"
                     android:textSize="25sp"
                     tools:layout_editor_absoluteX="354dp"
-                    tools:layout_editor_absoluteY="338dp" />
+                    tools:layout_editor_absoluteY="338dp"/>
 
                 <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
                     android:id="@+id/TwitterFontAwesomeBrandIcon"
@@ -87,10 +87,10 @@
                     android:layout_marginRight="15dp"
                     android:gravity="center"
                     android:text="@string/icon_twitter"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/textSecondaryLight"
                     android:textSize="25sp"
                     tools:layout_editor_absoluteX="66dp"
-                    tools:layout_editor_absoluteY="138dp" />
+                    tools:layout_editor_absoluteY="138dp"/>
 
                 <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
                     android:id="@+id/InstagramFontAwesomeBrandIcon"
@@ -100,10 +100,10 @@
                     android:layout_marginRight="15dp"
                     android:gravity="center"
                     android:text="@string/icon_instagram"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/textSecondaryLight"
                     android:textSize="25sp"
                     tools:layout_editor_absoluteX="354dp"
-                    tools:layout_editor_absoluteY="238dp" />
+                    tools:layout_editor_absoluteY="238dp"/>
 
                 <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
                     android:id="@+id/YoutubeFontAwesomeBrandIcon"
@@ -113,10 +113,10 @@
                     android:layout_marginRight="15dp"
                     android:gravity="center"
                     android:text="@string/icon_youtube"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/textSecondaryLight"
                     android:textSize="25sp"
                     tools:layout_editor_absoluteX="354dp"
-                    tools:layout_editor_absoluteY="238dp" />
+                    tools:layout_editor_absoluteY="238dp"/>
 
                 <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeSolidIcon
                     android:id="@+id/WebsiteFontAwesomeSolidIcon"
@@ -126,10 +126,10 @@
                     android:layout_marginRight="15dp"
                     android:gravity="center"
                     android:text="@string/icon_website"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/textSecondaryLight"
                     android:textSize="25sp"
                     tools:layout_editor_absoluteX="354dp"
-                    tools:layout_editor_absoluteY="238dp" />
+                    tools:layout_editor_absoluteY="238dp"/>
 
             </LinearLayout>
 

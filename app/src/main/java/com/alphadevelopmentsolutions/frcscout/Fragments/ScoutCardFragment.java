@@ -7,8 +7,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 
 import com.alphadevelopmentsolutions.frcscout.R;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,7 +70,31 @@ public class ScoutCardFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_scout_card, container, false);
 
+        ArrayList<String> teamNumbers = new ArrayList<>();
+        teamNumbers.add("5885");
+        teamNumbers.add("1234");
+        teamNumbers.add("610");
+        teamNumbers.add("180");
+        teamNumbers.add("772");
+        teamNumbers.add("771");
 
+        ArrayList<String> scouterNames = new ArrayList<>();
+        teamNumbers.add("Griffin Sorrentino");
+        teamNumbers.add("Bob Hedrick");
+        teamNumbers.add("Stacey Greenwood");
+        teamNumbers.add("Scott Pilgrim");
+        teamNumbers.add("Pedro De Pezia");
+        teamNumbers.add("Alex Abruzezezezezezeze");
+        teamNumbers.add("Dan Cordario");
+        teamNumbers.add("Kathleen Beach");
+
+        ArrayAdapter<String> teamNumbersAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, teamNumbers);
+        AutoCompleteTextView teamNumberAutoCompleteTextView = view.findViewById(R.id.TeamNumberAutoCompleteTextView);
+        teamNumberAutoCompleteTextView.setAdapter(teamNumbersAdapter);
+
+        ArrayAdapter<String> scouterNameAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, teamNumbers);
+        AutoCompleteTextView scouterNameAutoCompleteTextView = view.findViewById(R.id.ScouterNameAutoCompleteTextView);
+        scouterNameAutoCompleteTextView.setAdapter(scouterNameAdapter);
 
         return view;
     }

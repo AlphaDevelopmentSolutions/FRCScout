@@ -113,19 +113,19 @@ public class TeamFragment extends Fragment
 
         //checks to see if the team has a valid URL for each social media, if not hide the icon
         if(team.getFacebookURL() != null && !team.getFacebookURL().equals("")) facebookFontAwesomeBrandIcon.setURL(team.getFacebookURL());
-        else facebookFontAwesomeBrandIcon.hide();
+//        else facebookFontAwesomeBrandIcon.hide();
 
         if(team.getTwitterURL() != null && !team.getTwitterURL().equals("")) twitterFontAwesomeBrandIcon.setURL(team.getTwitterURL());
-        else twitterFontAwesomeBrandIcon.hide();
+//        else twitterFontAwesomeBrandIcon.hide();
 
         if(team.getInstagramURL() != null && !team.getInstagramURL().equals("")) instagramFontAwesomeBrandIcon.setURL(team.getInstagramURL());
-        else instagramFontAwesomeBrandIcon.hide();
+//        else instagramFontAwesomeBrandIcon.hide();
 
         if(team.getYoutubeURL() != null && !team.getYoutubeURL().equals("")) youtubeFontAwesomeBrandIcon.setURL(team.getYoutubeURL());
-        else youtubeFontAwesomeBrandIcon.hide();
+//        else youtubeFontAwesomeBrandIcon.hide();
 
         if(team.getWebsiteURL() != null && !team.getWebsiteURL().equals("")) websiteFontAwesomeSolidIcon.setURL(team.getWebsiteURL());
-        else websiteFontAwesomeSolidIcon.hide();
+//        else websiteFontAwesomeSolidIcon.hide();
 
         //logic for adding a new match
         addMatchFloatingActionButton.setOnClickListener(new View.OnClickListener()

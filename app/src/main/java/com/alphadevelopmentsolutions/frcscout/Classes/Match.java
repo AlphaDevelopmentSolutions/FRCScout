@@ -206,9 +206,9 @@ public class Match
      */
     public String getOutcomeStatus(AllianceColor allianceColor)
     {
-        if(teamWon(allianceColor)) return GameScoreStatuses.WIN;
-        else if(teamLost(allianceColor)) return GameScoreStatuses.LOSE;
-        else return GameScoreStatuses.TIE;
+        if(teamWon(allianceColor)) return GameScoreStatus.WIN;
+        else if(teamLost(allianceColor)) return GameScoreStatus.LOSE;
+        else return GameScoreStatus.TIE;
     }
 
     /**

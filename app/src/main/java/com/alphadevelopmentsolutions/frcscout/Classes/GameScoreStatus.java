@@ -1,6 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
-public interface GameScoreStatuses
+public interface GameScoreStatus
 {
     String WIN = "WIN";
     String LOSE = "LOSE";

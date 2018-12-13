@@ -13,11 +13,10 @@ import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
-import com.alphadevelopmentsolutions.frcscout.Classes.GameScoreStatuses;
+import com.alphadevelopmentsolutions.frcscout.Classes.GameScoreStatus;
 import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchFragment;
-import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.ArrayList;
@@ -111,10 +110,10 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
         viewHolder.redAllianceScoreTextView.setText(String.valueOf(matchList.get(position).getRedAllianceScore()));
 
         //blue team won, bold the score textview
-        if(matchList.get(position).getOutcomeStatus(AllianceColor.BLUE).equals(GameScoreStatuses.WIN)) viewHolder.blueAllianceScoreTextView.setTypeface(viewHolder.blueAllianceScoreTextView.getTypeface(), Typeface.BOLD);
+        if(matchList.get(position).getOutcomeStatus(AllianceColor.BLUE).equals(GameScoreStatus.WIN)) viewHolder.blueAllianceScoreTextView.setTypeface(viewHolder.blueAllianceScoreTextView.getTypeface(), Typeface.BOLD);
 
         //red team won, bold the score textview
-        if(matchList.get(position).getOutcomeStatus(AllianceColor.RED).equals(GameScoreStatuses.WIN)) viewHolder.redAllianceScoreTextView.setTypeface(viewHolder.redAllianceScoreTextView.getTypeface(), Typeface.BOLD);
+        if(matchList.get(position).getOutcomeStatus(AllianceColor.RED).equals(GameScoreStatus.WIN)) viewHolder.redAllianceScoreTextView.setTypeface(viewHolder.redAllianceScoreTextView.getTypeface(), Typeface.BOLD);
 
 
         //set blue team numbers
