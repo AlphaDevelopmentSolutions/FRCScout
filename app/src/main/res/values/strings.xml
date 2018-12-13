@@ -8,4 +8,16 @@
     <string name="team_logo">Team Logo</string>
     <string name="versus">VS</string>
     <string name="more_button">More Button</string>
+    <string name="autonomous">Autonomous</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="teleop">Teleop</string>
+    <string name="cross_baseline">Cross Baseline</string>
+    <string name="plus_one">+1</string>
+    <string name="minus_one">-1</string>
+    <string name="end_game">End Game</string>
+    <string name="submit">Submit</string>
+    <string name="team_number">Team Number</string>
+    <string name="scouter">Scouter Name</string>
+    <string name="notes">Notes</string>
 </resources>

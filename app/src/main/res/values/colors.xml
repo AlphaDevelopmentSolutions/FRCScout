@@ -8,5 +8,5 @@
     <color name="textSecondary">#757575</color>
     <color name="textSecondaryLight">#dcdcdc</color>
     <color name="textLink">@color/primaryDark</color>
-    <color name="divider">#BDBDBD</color>
+    <color name="divider">#0C000000</color>
 </resources>

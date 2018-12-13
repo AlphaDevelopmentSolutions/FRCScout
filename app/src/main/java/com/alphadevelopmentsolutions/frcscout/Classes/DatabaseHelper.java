@@ -18,8 +18,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     Event.COLUMN_NAME_CITY + " TEXT," +
                     Event.COLUMN_NAME_STATEPROVINCE + " TEXT," +
                     Event.COLUMN_NAME_COUNTRY + " TEXT," +
-                    Event.COLUMN_NAME_STARTDATE + " INTEGER," +
-                    Event.COLUMN_NAME_ENDDATE + " INTEGER)";
+                    Event.COLUMN_NAME_START_DATE + " INTEGER," +
+                    Event.COLUMN_NAME_END_DATE + " INTEGER)";
 
     private final String CREATE_TEAMS_TABLE =
             "CREATE TABLE " + Team.TABLE_NAME + " (" +

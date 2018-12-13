@@ -11,8 +11,8 @@ public class Event
     public static final String COLUMN_NAME_CITY = "City";
     public static final String COLUMN_NAME_STATEPROVINCE = "StateProvince";
     public static final String COLUMN_NAME_COUNTRY = "Country";
-    public static final String COLUMN_NAME_STARTDATE = "StartDate";
-    public static final String COLUMN_NAME_ENDDATE = "EndDate";
+    public static final String COLUMN_NAME_START_DATE = "StartDate";
+    public static final String COLUMN_NAME_END_DATE = "EndDate";
 
     private int id;
 

@@ -79,8 +79,8 @@ public class Database
             Event.COLUMN_NAME_CITY,
             Event.COLUMN_NAME_STATEPROVINCE,
             Event.COLUMN_NAME_COUNTRY,
-            Event.COLUMN_NAME_STARTDATE,
-            Event.COLUMN_NAME_ENDDATE
+            Event.COLUMN_NAME_START_DATE,
+            Event.COLUMN_NAME_END_DATE
         };
 
         //where statement
@@ -107,8 +107,8 @@ public class Database
             String city = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_CITY));
             String stateProvince = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_STATEPROVINCE));
             String country = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_COUNTRY));
-            Date startDate = new Date(cursor.getInt(cursor.getColumnIndex(Event.COLUMN_NAME_STARTDATE)));
-            Date endDate = new Date(cursor.getInt(cursor.getColumnIndex(Event.COLUMN_NAME_ENDDATE)));
+            Date startDate = new Date(cursor.getInt(cursor.getColumnIndex(Event.COLUMN_NAME_START_DATE)));
+            Date endDate = new Date(cursor.getInt(cursor.getColumnIndex(Event.COLUMN_NAME_END_DATE)));
 
             cursor.close();
 
@@ -132,8 +132,8 @@ public class Database
         contentValues.put(Event.COLUMN_NAME_CITY, event.getCity());
         contentValues.put(Event.COLUMN_NAME_STATEPROVINCE, event.getStateProvince());
         contentValues.put(Event.COLUMN_NAME_COUNTRY, event.getCountry());
-        contentValues.put(Event.COLUMN_NAME_STARTDATE, event.getStartDate().getTime());
-        contentValues.put(Event.COLUMN_NAME_ENDDATE, event.getEndDate().getTime());
+        contentValues.put(Event.COLUMN_NAME_START_DATE, event.getStartDate().getTime());
+        contentValues.put(Event.COLUMN_NAME_END_DATE, event.getEndDate().getTime());
 
         //event already exists in DB, update
         if(event.getId() > 0)
