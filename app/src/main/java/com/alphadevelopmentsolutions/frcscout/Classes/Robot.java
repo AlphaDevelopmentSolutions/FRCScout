@@ -7,7 +7,7 @@ public class Robot
     public static final String TABLE_NAME = "robots";
     public static final String COLUMN_NAME_ID = "Id";
     public static final String COLUMN_NAME_NAME = "Name";
-    public static final String COLUMN_NAME_TEAM_NUMBER = "TeamNumber";
+    public static final String COLUMN_NAME_TEAM_NUMBER = "TeamId";
 
     private int id;
     private String name;
