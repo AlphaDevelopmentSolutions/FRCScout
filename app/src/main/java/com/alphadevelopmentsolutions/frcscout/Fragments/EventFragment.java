@@ -88,7 +88,7 @@ public class EventFragment extends Fragment
         ActionBar actionBar = context.getSupportActionBar();
         actionBar.setElevation(0);
 
-        EventViewPagerAdapter eventViewPagerAdapter = new EventViewPagerAdapter(getActivity().getSupportFragmentManager());
+        EventViewPagerAdapter eventViewPagerAdapter = new EventViewPagerAdapter(getChildFragmentManager());
         eventViewPagerAdapter.addFragment(new MatchListFragment(), "Matches");
         eventViewPagerAdapter.addFragment(new TeamListFragment(), "Teams");
 

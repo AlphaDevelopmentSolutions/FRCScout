@@ -91,7 +91,7 @@ public class MatchFragment extends Fragment
         matchViewPager = view.findViewById(R.id.MatchViewPager);
         matchTabLayout = view.findViewById(R.id.MatchTabLayout);
 
-        MatchViewPagerAdapter matchViewPagerAdapter = new MatchViewPagerAdapter(getActivity().getSupportFragmentManager());
+        MatchViewPagerAdapter matchViewPagerAdapter = new MatchViewPagerAdapter(getChildFragmentManager());
 
         //populate the viewPager with all the blue alliance teams
         for(int teamId : blueAllianceTeamIds)
