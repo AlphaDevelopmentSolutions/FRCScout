@@ -25,14 +25,37 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/team_number"
-                android:inputType="number" />
+                android:inputType="number"/>
 
             <AutoCompleteTextView
                 android:id="@+id/ScouterNameAutoCompleteTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="@string/scouter" />
+                android:hint="@string/scouter"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
+
+            <AutoCompleteTextView
+                android:id="@+id/MatchIdEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/match_number"
+                android:inputType="number"/>
+
+            <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/scouter"
+                android:visibility="invisible"/>
 
         </LinearLayout>
 

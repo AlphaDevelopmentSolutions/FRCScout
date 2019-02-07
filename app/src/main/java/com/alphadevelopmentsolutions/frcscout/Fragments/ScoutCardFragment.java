@@ -14,7 +14,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
+import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Team;
+import com.alphadevelopmentsolutions.frcscout.Classes.User;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.ArrayList;
@@ -71,7 +74,8 @@ public class ScoutCardFragment extends Fragment
     
     private AutoCompleteTextView teamNumberAutoCompleteTextView;
     private AutoCompleteTextView scouterNameAutoCompleteTextView;
-    
+
+    private EditText matchIdEditText;
     private EditText blueAllianceFinalScoreEditText;
     private EditText redAllianceFinalScoreEditText;
     private EditText matchNotesEditText;
@@ -142,9 +146,12 @@ public class ScoutCardFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_scout_card, container, false);
 
+        final Database database = ((MainActivity) getActivity()).getDatabase();
+
         teamNumberAutoCompleteTextView = view.findViewById(R.id.TeamNumberAutoCompleteTextView);
         scouterNameAutoCompleteTextView = view.findViewById(R.id.ScouterNameAutoCompleteTextView);
 
+        matchIdEditText = view.findViewById(R.id.MatchIdEditText);
         blueAllianceFinalScoreEditText = view.findViewById(R.id.BlueAllianceFinalScoreEditText);
         redAllianceFinalScoreEditText = view.findViewById(R.id.RedAllianceFinalScoreEditText);
         matchNotesEditText = view.findViewById(R.id.MatchNotesEditText);
@@ -352,9 +359,7 @@ public class ScoutCardFragment extends Fragment
 
 
         //endregion
-        
-        
-        
+
         scoutCardSaveButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -362,72 +367,40 @@ public class ScoutCardFragment extends Fragment
             {
                 ScoutCard scoutCard = new ScoutCard(
                         -1,
-                        -1,
-
-                        5885,
+                        Integer.parseInt(matchIdEditText.getText().toString()),
+                        Integer.parseInt(teamNumberAutoCompleteTextView.getText().toString()),
                         scouterNameAutoCompleteTextView.getText().toString(),
                         Integer.parseInt(blueAllianceFinalScoreEditText.getText().toString()),
                         Integer.parseInt(redAllianceFinalScoreEditText.getText().toString()),
-                        autonomousExitHabitatTextView.getText().toString().toLowerCase().equals(getActivity().getResources().getString(R.string.yes)),
+                        autonomousExitHabitatTextView.getText().toString().equals(getActivity().getResources().getString(R.string.yes)),
                         Integer.parseInt(autonomousHatchPanelsSecuredTextView.getText().toString()),
                         Integer.parseInt(autonomousCargoStoredTextView.getText().toString()),
                         Integer.parseInt(teleopHatchPanelsSecuredTextView.getText().toString()),
                         Integer.parseInt(teleopCargoStoredTextView.getText().toString()),
                         Integer.parseInt(teleopRocketsCompletedTextView.getText().toString()),
                         endGameReturnedToHabitatTextView.getText().toString(),
+                        matchNotesEditText.getText().toString(),
                         new Date(System.currentTimeMillis()));
-                scoutCard.save(((MainActivity) getActivity()).getDatabase());
+                scoutCard.save(database);
             }
         });
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
 
-        ArrayList<String> teamNumbers = new ArrayList<>();
-        teamNumbers.add("5885");
-        teamNumbers.add("1234");
-        teamNumbers.add("610");
-        teamNumbers.add("180");
-        teamNumbers.add("772");
-        teamNumbers.add("771");
 
+        ArrayList<Integer> teamNumbers = new ArrayList<>();
         ArrayList<String> scouterNames = new ArrayList<>();
-        teamNumbers.add("Griffin Sorrentino");
-        teamNumbers.add("Bob Hedrick");
-        teamNumbers.add("Stacey Greenwood");
-        teamNumbers.add("Scott Pilgrim");
-        teamNumbers.add("Pedro De Pezia");
-        teamNumbers.add("Alex Abruzezezezezezeze");
-        teamNumbers.add("Dan Cordario");
-        teamNumbers.add("Kathleen Beach");
 
-        ArrayAdapter<String> teamNumbersAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, teamNumbers);
-        AutoCompleteTextView teamNumberAutoCompleteTextView = view.findViewById(R.id.TeamNumberAutoCompleteTextView);
+
+        for(Team team : database.getTeams())
+            teamNumbers.add(team.getId());
+
+
+        for(User user : database.getUsers())
+            scouterNames.add(user.getName());
+
+        ArrayAdapter<Integer> teamNumbersAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, teamNumbers);
         teamNumberAutoCompleteTextView.setAdapter(teamNumbersAdapter);
 
-        ArrayAdapter<String> scouterNameAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, teamNumbers);
-        AutoCompleteTextView scouterNameAutoCompleteTextView = view.findViewById(R.id.ScouterNameAutoCompleteTextView);
+        ArrayAdapter<String> scouterNameAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, scouterNames);
         scouterNameAutoCompleteTextView.setAdapter(scouterNameAdapter);
 
         return view;

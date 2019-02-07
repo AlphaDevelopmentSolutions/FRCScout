@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.R;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Database
@@ -25,6 +26,7 @@ public class Database
 
     /**
      * Opens the database for usage
+     *
      * @return boolean if database was opened successfully
      */
     public boolean open()
@@ -33,8 +35,7 @@ public class Database
         {
             db = databaseHelper.getWritableDatabase();
             return true;
-        }
-        catch(SQLException e)
+        } catch (SQLException e)
         {
             return false;
         }
@@ -43,16 +44,21 @@ public class Database
 
     /**
      * Checks if the database is currently open
+     *
      * @return boolean if database is open
      */
     public boolean isOpen()
     {
-        return db != null;
+        if(db != null)
+            return db.isOpen();
+
+        return false;
 
     }
 
     /**
      * Closes the database after usage
+     *
      * @return boolean if database was closed successfully
      */
     public boolean close()
@@ -61,17 +67,33 @@ public class Database
         {
             databaseHelper.close();
             return true;
-        }
-        catch(SQLException e)
+        } catch (SQLException e)
         {
             return false;
         }
 
     }
 
+    public void clear()
+    {
+        ArrayList<String> tableNames = new ArrayList<>();
+
+        tableNames.add(Event.TABLE_NAME);
+        tableNames.add(Team.TABLE_NAME);
+        tableNames.add(Robot.TABLE_NAME);
+        tableNames.add(Match.TABLE_NAME);
+        tableNames.add(ScoutCard.TABLE_NAME);
+        tableNames.add(User.TABLE_NAME);
+
+        for(String tableName : tableNames)
+            db.execSQL("DELETE FROM " + tableName);
+    }
+
     //region Event Logic
+
     /**
      * Gets a specific event from the database and returns it
+     *
      * @param event with specified ID
      * @return event based off given ID
      */
@@ -79,14 +101,14 @@ public class Database
     {
         //insert columns you are going to use here
         String[] columns =
-        {
-            Event.COLUMN_NAME_NAME,
-            Event.COLUMN_NAME_CITY,
-            Event.COLUMN_NAME_STATEPROVINCE,
-            Event.COLUMN_NAME_COUNTRY,
-            Event.COLUMN_NAME_START_DATE,
-            Event.COLUMN_NAME_END_DATE
-        };
+                {
+                        Event.COLUMN_NAME_NAME,
+                        Event.COLUMN_NAME_CITY,
+                        Event.COLUMN_NAME_STATEPROVINCE,
+                        Event.COLUMN_NAME_COUNTRY,
+                        Event.COLUMN_NAME_START_DATE,
+                        Event.COLUMN_NAME_END_DATE
+                };
 
         //where statement
         String whereStatement = Event.COLUMN_NAME_ID + " = ?";
@@ -103,7 +125,7 @@ public class Database
                 null);
 
         //make sure the cursor isn't null, else we die
-        if(cursor != null)
+        if (cursor != null)
         {
             //move to the first result in the set
             cursor.moveToFirst();
@@ -126,6 +148,7 @@ public class Database
 
     /**
      * Saves a specific event from the database and returns it
+     *
      * @param event with specified ID
      * @return id of the saved event
      */
@@ -141,7 +164,7 @@ public class Database
         contentValues.put(Event.COLUMN_NAME_END_DATE, event.getEndDate().getTime());
 
         //event already exists in DB, update
-        if(event.getId() > 0)
+        if (event.getId() > 0)
         {
             //create the where statement
             String whereStatement = Event.COLUMN_NAME_ID + " = ?";
@@ -157,12 +180,13 @@ public class Database
 
     /**
      * Deletes a specific event from the database
+     *
      * @param event with specified ID
      * @return successful delete
      */
     public boolean deleteEvent(Event event)
     {
-        if(event.getId() > 0)
+        if (event.getId() > 0)
         {
             //create the where statement
             String whereStatement = Event.COLUMN_NAME_ID + " = ?";
@@ -177,8 +201,78 @@ public class Database
     //endregion
 
     //region Team Logic
+
+
+    /**
+     * Gets all teams in the database
+     *
+     * @return all teams inside database
+     */
+    public ArrayList<Team> getTeams()
+    {
+        ArrayList<Team> teams = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns =
+                {
+                        Team.COLUMN_NAME_ID,
+                        Team.COLUMN_NAME_NAME,
+                        Team.COLUMN_NAME_CITY,
+                        Team.COLUMN_NAME_STATEPROVINCE,
+                        Team.COLUMN_NAME_COUNTRY,
+                        Team.COLUMN_NAME_ROOKIE_YEAR,
+                        Team.COLUMN_NAME_FACEBOOK_URL,
+                        Team.COLUMN_NAME_TWITTER_URL,
+                        Team.COLUMN_NAME_INSTAGRAM_URL,
+                        Team.COLUMN_NAME_YOUTUBE_URL,
+                        Team.COLUMN_NAME_WEBSITE_URL,
+                        Team.COLUMN_NAME_IMAGE_FILE_URI
+                };
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                Team.TABLE_NAME,
+                columns,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while (cursor.moveToNext())
+            {
+
+                int id = cursor.getInt(cursor.getColumnIndex(Team.COLUMN_NAME_ID));
+                String name = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_NAME));
+                String city = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_CITY));
+                String stateProvince = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_STATEPROVINCE));
+                String country = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_COUNTRY));
+                int rookieYear = cursor.getInt(cursor.getColumnIndex(Team.COLUMN_NAME_ROOKIE_YEAR));
+                String facebookURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_FACEBOOK_URL));
+                String twitterURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_TWITTER_URL));
+                String instagramURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_INSTAGRAM_URL));
+                String youtubeURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_YOUTUBE_URL));
+                String websiteURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_WEBSITE_URL));
+                String imageFileURI = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_IMAGE_FILE_URI));
+
+                teams.add(new Team(id, name, city, stateProvince, country, rookieYear, facebookURL, twitterURL, instagramURL, youtubeURL, websiteURL, imageFileURI));
+            }
+
+            cursor.close();
+
+            return teams;
+        }
+
+
+        return null;
+    }
+
     /**
      * Gets a specific team from the database and returns it
+     *
      * @param team with specified ID
      * @return team based off given ID
      */
@@ -215,7 +309,7 @@ public class Database
                 null);
 
         //make sure the cursor isn't null, else we die
-        if(cursor != null)
+        if (cursor != null)
         {
             //move to the first result in the set
             cursor.moveToFirst();
@@ -243,6 +337,7 @@ public class Database
 
     /**
      * Saves a specific team from the database and returns it
+     *
      * @param team with specified ID
      * @return id of the saved team
      */
@@ -263,28 +358,55 @@ public class Database
         contentValues.put(Team.COLUMN_NAME_IMAGE_FILE_URI, team.getImageFileURI());
 
         //team already exists in DB, update
-        if(team.getId() > 0)
+        if (team.getId() > 0)
         {
             //create the where statement
             String whereStatement = Team.COLUMN_NAME_ID + " = ?";
             String whereArgs[] = {team.getId() + ""};
 
-            //update
-            return db.update(Team.TABLE_NAME, contentValues, whereStatement, whereArgs);
+            //insert columns you are going to use here
+            String[] columns =
+                    {
+                            Team.COLUMN_NAME_ID
+                    };
+
+
+            //select the info from the db
+            Cursor cursor = db.query(
+                    Team.TABLE_NAME,
+                    columns,
+                    whereStatement,
+                    whereArgs,
+                    null,
+                    null,
+                    null);
+
+            if(cursor.getCount() > 0)
+                //update
+                return db.update(Team.TABLE_NAME, contentValues, whereStatement, whereArgs);
+
+            //record doesn't exist yet, insert
+            else
+            {
+                contentValues.put(Team.COLUMN_NAME_ID, team.getId());
+                return db.insert(Team.TABLE_NAME, null, contentValues);
+            }
         }
         //insert new team in db
-        else return db.insert(Team.TABLE_NAME, null, contentValues);
+        else
+            return db.insert(Team.TABLE_NAME, null, contentValues);
 
     }
 
     /**
      * Deletes a specific team from the database
+     *
      * @param team with specified ID
      * @return successful delete
      */
     public boolean deleteTeam(Team team)
     {
-        if(team.getId() > 0)
+        if (team.getId() > 0)
         {
             //create the where statement
             String whereStatement = Team.COLUMN_NAME_ID + " = ?";
@@ -299,8 +421,10 @@ public class Database
     //endregion
 
     //region Robot Logic
+
     /**
      * Gets a specific robot from the database and returns it
+     *
      * @param robot with specified ID
      * @return robot based off given ID
      */
@@ -328,7 +452,7 @@ public class Database
                 null);
 
         //make sure the cursor isn't null, else we die
-        if(cursor != null)
+        if (cursor != null)
         {
             //move to the first result in the set
             cursor.moveToFirst();
@@ -347,6 +471,7 @@ public class Database
 
     /**
      * Saves a specific robot from the database and returns it
+     *
      * @param robot with specified ID
      * @return id of the saved robot
      */
@@ -358,7 +483,7 @@ public class Database
         contentValues.put(Robot.COLUMN_NAME_TEAM_NUMBER, robot.getTeamNumber());
 
         //robot already exists in DB, update
-        if(robot.getId() > 0)
+        if (robot.getId() > 0)
         {
             //create the where statement
             String whereStatement = Robot.COLUMN_NAME_ID + " = ?";
@@ -374,12 +499,13 @@ public class Database
 
     /**
      * Deletes a specific robot from the database
+     *
      * @param robot with specified ID
      * @return successful delete
      */
     public boolean deleteRobot(Robot robot)
     {
-        if(robot.getId() > 0)
+        if (robot.getId() > 0)
         {
             //create the where statement
             String whereStatement = Robot.COLUMN_NAME_ID + " = ?";
@@ -394,8 +520,10 @@ public class Database
     //endregion
 
     //region Match Logic
+
     /**
      * Gets a specific match from the database and returns it
+     *
      * @param match with specified ID
      * @return match based off given ID
      */
@@ -436,7 +564,7 @@ public class Database
                 null);
 
         //make sure the cursor isn't null, else we die
-        if(cursor != null)
+        if (cursor != null)
         {
             //move to the first result in the set
             cursor.moveToFirst();
@@ -468,6 +596,7 @@ public class Database
 
     /**
      * Saves a specific match from the database and returns it
+     *
      * @param match with specified ID
      * @return id of the saved match
      */
@@ -492,7 +621,7 @@ public class Database
         contentValues.put(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_SCOUT_CARD_ID, match.getRedAllianceTeamThreeScoutCardId());
 
         //Match already exists in DB, update
-        if(match.getId() > 0)
+        if (match.getId() > 0)
         {
             //create the where statement
             String whereStatement = Match.COLUMN_NAME_ID + " = ?";
@@ -508,12 +637,13 @@ public class Database
 
     /**
      * Deletes a specific match from the database
+     *
      * @param match with specified ID
      * @return successful delete
      */
     public boolean deleteMatch(Match match)
     {
-        if(match.getId() > 0)
+        if (match.getId() > 0)
         {
             //create the where statement
             String whereStatement = Match.COLUMN_NAME_ID + " = ?";
@@ -528,10 +658,12 @@ public class Database
     //endregion
 
     //region Scout Card Logic
+
     /**
-     * Gets a specific scoutCard from the database and returns it
+     * Gets a specific object from the database and returns it
+     *
      * @param scoutCard with specified ID
-     * @return scoutCard based off given ID
+     * @return scoutcard based off given ID
      */
     public ScoutCard getScoutCard(ScoutCard scoutCard)
     {
@@ -540,6 +672,7 @@ public class Database
                 {
                         ScoutCard.COLUMNS_NAME_MATCH_ID,
                         ScoutCard.COLUMN_NAME_TEAM_ID,
+                        ScoutCard.COLUMN_NAME_COMPLETED_BY,
                         ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE,
                         ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE,
                         ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT,
@@ -549,7 +682,7 @@ public class Database
                         ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED,
                         ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED,
                         ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT,
-                        ScoutCard.COLUMN_NAME_COMPLETED_BY,
+                        ScoutCard.COLUMN_NAME_NOTES,
                         ScoutCard.COLUMN_NAME_COMPLETED_DATE
                 };
 
@@ -568,7 +701,7 @@ public class Database
                 null);
 
         //make sure the cursor isn't null, else we die
-        if(cursor != null)
+        if (cursor != null)
         {
             //move to the first result in the set
             cursor.moveToFirst();
@@ -578,13 +711,14 @@ public class Database
             String completedBy = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_BY));
             int blueAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE));
             int redAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT));
-            boolean autonomousExitHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT)).toLowerCase().equals(context.getResources().getString(R.string.yes));
+            boolean autonomousExitHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT)).equals(context.getResources().getString(R.string.yes));
             int autonomousHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED));
             int autonomousCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED));
             int teleopHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED));
             int teleopCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED));
             int teleopRocketsCompleted = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED));
             String endGameReturnedToHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT));
+            String notes = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_NOTES));
             Date completedDate = new Date(cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)));
             cursor.close();
 
@@ -602,6 +736,7 @@ public class Database
                     teleopCargoStored,
                     teleopRocketsCompleted,
                     endGameReturnedToHabitat,
+                    notes,
                     completedDate);
         }
 
@@ -611,6 +746,7 @@ public class Database
 
     /**
      * Saves a specific scoutCard from the database and returns it
+     *
      * @param scoutCard with specified ID
      * @return id of the saved scoutCard
      */
@@ -622,18 +758,19 @@ public class Database
         contentValues.put(ScoutCard.COLUMN_NAME_TEAM_ID, scoutCard.getTeamId());
         contentValues.put(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE, scoutCard.getBlueAllianceFinalScore());
         contentValues.put(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE, scoutCard.getRedAllianceFinalScore());
-        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT, scoutCard.isAutonomousExitHabitat());
+        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT, scoutCard.isAutonomousExitHabitat() ? "1" : "0");
         contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED, scoutCard.getAutonomousHatchPanelsSecured());
         contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED, scoutCard.getAutonomousCargoStored());
         contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED, scoutCard.getTeleopHatchPanelsSecured());
         contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED, scoutCard.getTeleopCargoStored());
         contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED, scoutCard.getTeleopRocketsCompleted());
         contentValues.put(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT, scoutCard.getEndGameReturnedToHabitat());
+        contentValues.put(ScoutCard.COLUMN_NAME_NOTES, scoutCard.getNotes());
         contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_BY, scoutCard.getCompletedBy());
         contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_DATE, scoutCard.getCompletedDate().getTime());
 
         //scoutCard already exists in DB, update
-        if(scoutCard.getId() > 0)
+        if (scoutCard.getId() > 0)
         {
             //create the where statement
             String whereStatement = ScoutCard.COLUMN_NAME_ID + " = ?";
@@ -649,12 +786,13 @@ public class Database
 
     /**
      * Deletes a specific scoutCard from the database
+     *
      * @param scoutCard with specified ID
      * @return successful delete
      */
     public boolean deleteScoutCard(ScoutCard scoutCard)
     {
-        if(scoutCard.getId() > 0)
+        if (scoutCard.getId() > 0)
         {
             //create the where statement
             String whereStatement = ScoutCard.COLUMN_NAME_ID + " = ?";
@@ -662,6 +800,155 @@ public class Database
 
             //delete
             return db.delete(ScoutCard.TABLE_NAME, whereStatement, whereArgs) >= 1;
+        }
+
+        return false;
+    }
+    //endregion
+
+    //region User Logic
+
+    /**
+     * Gets all objects in the database
+     * @return all objects inside database
+     */
+    public ArrayList<User> getUsers()
+    {
+        ArrayList<User> users = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns =
+                {
+                        User.COLUMN_NAME_ID,
+                        User.COLUMN_NAME_FIRST_NAME,
+                        User.COLUMN_NAME_LAST_NAME
+                };
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                User.TABLE_NAME,
+                columns,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while (cursor.moveToNext())
+            {
+
+                int id = cursor.getInt(cursor.getColumnIndex(User.COLUMN_NAME_ID));
+                String firstName = cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME_FIRST_NAME));
+                String lastName = cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME_LAST_NAME));
+
+                users.add(new User(id, firstName, lastName));
+            }
+
+            cursor.close();
+
+            return users;
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Gets a specific object from the database and returns it
+     *
+     * @param user with specified ID
+     * @return user based off given ID
+     */
+    public User getUser(User user)
+    {
+        //insert columns you are going to use here
+        String[] columns =
+                {
+                        User.COLUMN_NAME_FIRST_NAME,
+                        User.COLUMN_NAME_LAST_NAME
+                };
+
+        //where statement
+        String whereStatement = User.COLUMN_NAME_ID + " = ?";
+        String[] whereArgs = {user.getId() + ""};
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                User.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            //move to the first result in the set
+            cursor.moveToFirst();
+
+            String firstName = cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME_FIRST_NAME));
+            String lastName = cursor.getString(cursor.getColumnIndex(User.COLUMN_NAME_LAST_NAME));
+
+            cursor.close();
+
+            return new User(
+                    user.getId(),
+                    firstName,
+                    lastName);
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Saves a specific scoutCard from the database and returns it
+     *
+     * @param user with specified ID
+     * @return id of the saved user
+     */
+    public long setUser(User user)
+    {
+        //set all the values
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(User.COLUMN_NAME_FIRST_NAME, user.getFirstName());
+        contentValues.put(User.COLUMN_NAME_LAST_NAME, user.getLastName());
+
+        //object already exists in DB, update
+        if (user.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = User.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {user.getId() + ""};
+
+            //update
+            return db.update(User.TABLE_NAME, contentValues, whereStatement, whereArgs);
+        }
+        //insert new object in db
+        else return db.insert(User.TABLE_NAME, null, contentValues);
+
+    }
+
+    /**
+     * Deletes a specific object from the database
+     * @param user with specified ID
+     * @return successful delete
+     */
+    public boolean deleteUser(User user)
+    {
+        if (user.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = User.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {user.getId() + ""};
+
+            //delete
+            return db.delete(User.TABLE_NAME, whereStatement, whereArgs) >= 1;
         }
 
         return false;

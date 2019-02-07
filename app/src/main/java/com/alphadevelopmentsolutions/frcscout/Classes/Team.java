@@ -229,7 +229,7 @@ public class Team
         if(database.isOpen())
         {
             Team team = database.getTeam(this);
-            database.close();
+
 
             if (team != null)
             {
@@ -261,12 +261,12 @@ public class Team
         int id = -1;
 
         //try to open the DB if it is not open
-        if(!database.isOpen()) database.open();
+        if(!database.isOpen())
+            database.open();
 
         if(database.isOpen())
         {
             id = (int) database.setTeam(this);
-            database.close();
         }
 
         return id;
@@ -287,7 +287,7 @@ public class Team
         if(database.isOpen())
         {
             successful = database.deleteTeam(this);
-            database.close();
+
         }
 
         return successful;

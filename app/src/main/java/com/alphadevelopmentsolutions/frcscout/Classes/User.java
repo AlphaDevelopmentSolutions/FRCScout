@@ -1,33 +1,33 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
-import android.content.Context;
+import java.util.Date;
 
-public class Robot
+public class User
 {
-    public static final String TABLE_NAME = "robots";
+    public static final String TABLE_NAME = "users";
     public static final String COLUMN_NAME_ID = "Id";
-    public static final String COLUMN_NAME_NAME = "Name";
-    public static final String COLUMN_NAME_TEAM_NUMBER = "TeamId";
+    public static final String COLUMN_NAME_FIRST_NAME = "FirstName";
+    public static final String COLUMN_NAME_LAST_NAME = "LastName";
 
     private int id;
-    private String name;
-    private int teamNumber;
+    private String firstName;
+    private String lastName;
 
-    Robot(
-        int id,
-        String name,
-        int teamNumber)
+    public User(
+            int id,
+            String firstName,
+            String lastName)
     {
         this.id = id;
-        this.name = name;
-        this.teamNumber = teamNumber;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     /**
      * Used for loading
      * @param id to load
      */
-    Robot(int id)
+    User(int id)
     {
         this.id = id;
     }
@@ -39,14 +39,20 @@ public class Robot
         return id;
     }
 
-    public String getName()
+
+    public String getFirstName()
     {
-        return name;
+        return firstName;
     }
 
-    public int getTeamNumber()
+    public String getLastName()
     {
-        return teamNumber;
+        return lastName;
+    }
+
+    public String getName()
+    {
+        return getFirstName() + " " + getLastName();
     }
 
     //endregion
@@ -58,22 +64,23 @@ public class Robot
         this.id = id;
     }
 
-    public void setName(String name)
+    public void setFirstName(String firstName)
     {
-        this.name = name;
+        this.firstName = firstName;
     }
 
-    public void setTeamNumber(int teamNumber)
+    public void setLastName(String lastName)
     {
-        this.teamNumber = teamNumber;
+        this.lastName = lastName;
     }
+
 
     //endregion
 
     //region Load, Save & Delete
 
     /**
-     * Loads the robot from the database and populates all values
+     * Loads the object from the database and populates all values
      * @param database used for interacting with the SQLITE db
      * @return boolean if successful
      */
@@ -84,13 +91,13 @@ public class Robot
 
         if(database.isOpen())
         {
-            Robot robot = database.getRobot(this);
+            User user = database.getUser(this);
 
 
-            if (robot != null)
+            if (user != null)
             {
-                setName(robot.getName());
-                setTeamNumber(robot.getTeamNumber());
+                setFirstName(user.getFirstName());
+                setLastName(user.getLastName());
                 return true;
             }
         }
@@ -99,9 +106,9 @@ public class Robot
     }
 
     /**
-     * Saves the robot into the database
+     * Saves the object into the database
      * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
+     * @return int id of the saved ScoutCard
      */
     public int save(Database database)
     {
@@ -112,7 +119,7 @@ public class Robot
 
         if(database.isOpen())
         {
-            id = (int) database.setRobot(this);
+            id = (int) database.setUser(this);
 
         }
 
@@ -120,7 +127,7 @@ public class Robot
     }
 
     /**
-     * Deletes robot team from the database
+     * Deletes the ScoutCard from the database
      * @param database used for interacting with the SQLITE db
      * @return boolean if successful
      */
@@ -133,7 +140,7 @@ public class Robot
 
         if(database.isOpen())
         {
-            successful = database.deleteRobot(this);
+            successful = database.deleteUser(this);
 
         }
 

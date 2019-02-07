@@ -9,6 +9,7 @@ public class ScoutCard
     public static final String COLUMN_NAME_ID = "Id";
     public static final String COLUMNS_NAME_MATCH_ID = "MatchId";
     public static final String COLUMN_NAME_TEAM_ID = "TeamId";
+    public static final String COLUMN_NAME_COMPLETED_BY = "CompletedBy";
     public static final String COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE = "BlueAllianceFinalScore";
     public static final String COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE = "RedAllianceFinalScore";
     public static final String COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT = "AutonomousExitHabitat";
@@ -18,7 +19,7 @@ public class ScoutCard
     public static final String COLUMN_NAME_TELEOP_CARGO_STORED = "TeleopCargoStored";
     public static final String COLUMN_NAME_TELEOP_ROCKETS_COMPLETED = "TeleopRocketsCompleted";
     public static final String COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT = "EndGameReturnedToHabitat";
-    public static final String COLUMN_NAME_COMPLETED_BY = "CompletedBy";
+    public static final String COLUMN_NAME_NOTES = "Notes";
     public static final String COLUMN_NAME_COMPLETED_DATE = "CompletedDate";
 
     private int id;
@@ -34,6 +35,7 @@ public class ScoutCard
     private int teleopCargoStored;
     private int teleopRocketsCompleted;
     private String endGameReturnedToHabitat;
+    private String notes;
     private Date completedDate;
 
     public ScoutCard(
@@ -50,6 +52,7 @@ public class ScoutCard
             int teleopCargoStored,
             int teleopRocketsCompleted,
             String endGameReturnedToHabitat,
+            String notes,
             Date completedDate)
     {
         this.id = id;
@@ -64,6 +67,7 @@ public class ScoutCard
         this.teleopCargoStored = teleopCargoStored;
         this.teleopRocketsCompleted = teleopRocketsCompleted;
         this.endGameReturnedToHabitat = endGameReturnedToHabitat;
+        this.notes = notes;
         this.completedBy = completedBy;
         this.completedDate = completedDate;
     }
@@ -149,6 +153,10 @@ public class ScoutCard
         return completedDate;
     }
 
+    public String getNotes()
+    {
+        return notes;
+    }
 
     //endregion
 
@@ -224,6 +232,10 @@ public class ScoutCard
         this.completedDate = completedDate;
     }
 
+    public void setNotes(String notes)
+    {
+        this.notes = notes;
+    }
 
     //endregion
 
@@ -242,7 +254,7 @@ public class ScoutCard
         if(database.isOpen())
         {
             ScoutCard scoutCard = database.getScoutCard(this);
-            database.close();
+
 
             if (scoutCard != null)
             {
@@ -257,6 +269,7 @@ public class ScoutCard
                 setTeleopCargoStored(scoutCard.getTeleopCargoStored());
                 setTeleopRocketsCompleted(scoutCard.getTeleopRocketsCompleted());
                 setEndGameReturnedToHabitat(scoutCard.getEndGameReturnedToHabitat());
+                setNotes(scoutCard.getNotes());
                 setCompletedBy(scoutCard.getCompletedBy());
                 setCompletedDate(scoutCard.getCompletedDate());
                 return true;
@@ -281,7 +294,7 @@ public class ScoutCard
         if(database.isOpen())
         {
             id = (int) database.setScoutCard(this);
-            database.close();
+
         }
 
         return id;
@@ -302,7 +315,7 @@ public class ScoutCard
         if(database.isOpen())
         {
             successful = database.deleteScoutCard(this);
-            database.close();
+
         }
 
         return successful;

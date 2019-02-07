@@ -144,7 +144,6 @@ public class Event
         if(database.isOpen())
         {
             Event event = database.getEvent(this);
-            database.close();
 
             if (event != null)
             {
@@ -176,7 +175,6 @@ public class Event
         if(database.isOpen())
         {
             id = (int) database.setEvent(this);
-            database.close();
         }
 
         return id;
@@ -197,7 +195,6 @@ public class Event
         if(database.isOpen())
         {
             successful = database.deleteEvent(this);
-            database.close();
         }
 
         return successful;

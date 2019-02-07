@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
+import com.alphadevelopmentsolutions.frcscout.Classes.Team;
+import com.alphadevelopmentsolutions.frcscout.Classes.User;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.LoginFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchFragment;
@@ -38,11 +40,28 @@ public class MainActivity extends AppCompatActivity implements
         database = new Database(this);
         database.open();
 
+        generateFakeData();
+
         //Swap to the events fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.MainFrame, new TeamListFragment());
         fragmentTransaction.commit();
+    }
+
+    private void generateFakeData()
+    {
+        getDatabase().clear();
+
+        (new User(-1, "Griffin", "Sorrentino")).save(getDatabase());
+        (new User(-1, "Bob", "Hedrick")).save(getDatabase());
+        (new User(-1, "Alex", "ABRUZESZEZEZEEZEZE")).save(getDatabase());
+        (new User(-1, "Stacey", "Greenwood")).save(getDatabase());
+
+        (new Team(5885, "Villanova WiredCats", "city", "statte", "country", 2013, "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "test")).save(getDatabase());
+        (new Team(610, "Villanova WiredCats", "city", "statte", "country", 2013, "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "test")).save(getDatabase());
+        (new Team(1234, "Villanova WiredCats", "city", "statte", "country", 2013, "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "test")).save(getDatabase());
+        (new Team(123, "Villanova WiredCats", "city", "statte", "country", 2013, "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "test")).save(getDatabase());
     }
 
     @Override

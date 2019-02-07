@@ -33,4 +33,5 @@
     <string name="returned_to_habitat">Returned To Habitat:\u0020</string>
     <string name="save">Save</string>
     <string name="number_placeholder">0</string>
+    <string name="match_number">Match Number</string>
 </resources>

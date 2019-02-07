@@ -331,7 +331,6 @@ public class Match
         if(database.isOpen())
         {
             Match match = database.getMatch(this);
-            database.close();
 
             if (match != null)
             {
@@ -372,7 +371,7 @@ public class Match
         if(database.isOpen())
         {
             id = (int) database.setMatch(this);
-            database.close();
+
         }
 
         return id;
@@ -393,7 +392,7 @@ public class Match
         if(database.isOpen())
         {
             successful = database.deleteMatch(this);
-            database.close();
+
         }
 
         return successful;
