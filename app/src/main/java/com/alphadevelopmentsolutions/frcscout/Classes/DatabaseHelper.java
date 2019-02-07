@@ -61,6 +61,23 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_SCOUT_CARD_ID + " INTEGER," +
                     Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_SCOUT_CARD_ID + " INTEGER)";
 
+    private final String CREATE_SCOUT_CARDS_TABLE =
+            "CREATE TABLE " + ScoutCard.TABLE_NAME +" (" +
+                    ScoutCard.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    ScoutCard.COLUMNS_NAME_MATCH_ID + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_TEAM_ID + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_COMPLETED_BY + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_COMPLETED_DATE + " INTEGER)";
+
     public DatabaseHelper(Context context)
     {
         super(context, DB_NAME, null, DB_VERSION);
@@ -73,6 +90,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL(CREATE_TEAMS_TABLE);
         db.execSQL(CREATE_ROBOTS_TABLE);
         db.execSQL(CREATE_MATCHES_TABLE);
+        db.execSQL(CREATE_SCOUT_CARDS_TABLE);
     }
 
     @Override

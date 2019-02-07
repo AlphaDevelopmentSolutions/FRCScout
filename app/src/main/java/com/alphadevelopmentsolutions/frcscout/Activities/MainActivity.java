@@ -7,9 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
-import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventFragment;
-import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.LoginFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
@@ -18,13 +17,13 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 public class MainActivity extends AppCompatActivity implements
-        EventListFragment.OnFragmentInteractionListener,
         MatchListFragment.OnFragmentInteractionListener,
         TeamListFragment.OnFragmentInteractionListener,
         EventFragment.OnFragmentInteractionListener,
         MatchFragment.OnFragmentInteractionListener,
         TeamFragment.OnFragmentInteractionListener,
-        ScoutCardFragment.OnFragmentInteractionListener
+        ScoutCardFragment.OnFragmentInteractionListener,
+        LoginFragment.OnFragmentInteractionListener
 {
 
     private Database database;
@@ -37,12 +36,12 @@ public class MainActivity extends AppCompatActivity implements
 
         //open the database as soon as the app starts
         database = new Database(this);
-        openDatabase();
+        database.open();
 
         //Swap to the events fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.MainFrame, new EventFragment());
+        fragmentTransaction.replace(R.id.MainFrame, new TeamListFragment());
         fragmentTransaction.commit();
     }
 
@@ -58,24 +57,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     public Database getDatabase()
     {
+        if(!database.isOpen()) database.open();
         return database;
-    }
-
-    /**
-     * Opens the current database instance
-     * @return boolean if the open was successful
-     */
-    public boolean openDatabase()
-    {
-        return database.open();
-    }
-
-    /**
-     * Closes the current database instance
-     * @return boolean if the close was successful
-     */
-    public boolean closeDatabase()
-    {
-        return database.close();
     }
 }

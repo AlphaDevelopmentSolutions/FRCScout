@@ -136,7 +136,7 @@ public class TeamFragment extends Fragment
                 //swap fragments
                 FragmentManager fragmentManager = context.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.MainFrame, new TeamFragment());
+                fragmentTransaction.replace(R.id.MainFrame, new ScoutCardFragment());
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }

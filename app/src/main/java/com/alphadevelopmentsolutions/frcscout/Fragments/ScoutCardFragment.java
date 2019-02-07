@@ -9,10 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
+import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
+import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,6 +68,72 @@ public class ScoutCardFragment extends Fragment
             scoutCardId = getArguments().getInt(ARG_PARAM1);
         }
     }
+    
+    private AutoCompleteTextView teamNumberAutoCompleteTextView;
+    private AutoCompleteTextView scouterNameAutoCompleteTextView;
+    
+    private EditText blueAllianceFinalScoreEditText;
+    private EditText redAllianceFinalScoreEditText;
+    private EditText matchNotesEditText;
+    
+    private Button scoutCardSaveButton;
+    
+    //region Autonomous
+    
+    //Exit Habitat
+    private TextView autonomousExitHabitatTextView;
+    
+    private Button autonomousExitHabitatYesButton;
+    private Button autonomousExitHabitatNoButton;
+
+    //Hatch Panels Secured
+    private TextView autonomousHatchPanelsSecuredTextView;
+
+    private Button autonomousHatchPanelsSecuredPlusOneButton;
+    private Button autonomousHatchPanelsSecuredMinusOneButton;
+    
+    //Cargo Stored
+    private TextView autonomousCargoStoredTextView;
+
+    private Button autonomousCargoStoredPlusOneButton;
+    private Button autonomousCargoStoredMinusOneButton;
+    
+    //endregion
+
+    //region Teleop
+
+    //Hatch Panels Secured
+    private TextView teleopHatchPanelsSecuredTextView;
+
+    private Button teleopHatchPanelsSecuredPlusOneButton;
+    private Button teleopHatchPanelsSecuredMinusOneButton;
+
+    //Cargo Stored
+    private TextView teleopCargoStoredTextView;
+
+    private Button teleopCargoStoredPlusOneButton;
+    private Button teleopCargoStoredMinusOneButton;
+
+
+    //Rockets Completed
+    private TextView teleopRocketsCompletedTextView;
+
+    private Button teleopRocketsCompletedPlusOneButton;
+    private Button teleopRocketsCompletedMinusOneButton;
+
+    //endregion
+
+    //region End Game
+
+    //Exit Habitat
+    private TextView endGameReturnedToHabitatTextView;
+
+    private Button endGameReturnedToHabitatNoButton;
+    private Button endGameReturnedToHabitatLevelOneButton;
+    private Button endGameReturnedToHabitatLevelTwoButton;
+    private Button endGameReturnedToHabitatLevelThreeButton;
+
+    //endregion
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,6 +141,268 @@ public class ScoutCardFragment extends Fragment
     {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_scout_card, container, false);
+
+        teamNumberAutoCompleteTextView = view.findViewById(R.id.TeamNumberAutoCompleteTextView);
+        scouterNameAutoCompleteTextView = view.findViewById(R.id.ScouterNameAutoCompleteTextView);
+
+        blueAllianceFinalScoreEditText = view.findViewById(R.id.BlueAllianceFinalScoreEditText);
+        redAllianceFinalScoreEditText = view.findViewById(R.id.RedAllianceFinalScoreEditText);
+        matchNotesEditText = view.findViewById(R.id.MatchNotesEditText);
+
+        scoutCardSaveButton = view.findViewById(R.id.ScoutCardSaveButton);
+
+        //region Autonomous
+
+        //Exit Habitat
+        autonomousExitHabitatTextView = view.findViewById(R.id.AutonomousExitHabitatTextView);
+
+        autonomousExitHabitatYesButton = view.findViewById(R.id.AutonomousExitHabitatYesButton);
+        autonomousExitHabitatNoButton = view.findViewById(R.id.AutonomousExitHabitatNoButton);
+
+        autonomousExitHabitatYesButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                autonomousExitHabitatTextView.setText(R.string.yes);
+            }
+        });
+
+        autonomousExitHabitatNoButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                autonomousExitHabitatTextView.setText(R.string.no);
+            }
+        });
+
+        //Hatch Panels Secured
+        autonomousHatchPanelsSecuredTextView = view.findViewById(R.id.AutonomousHatchPanelsSecuredTextView);
+
+        autonomousHatchPanelsSecuredPlusOneButton = view.findViewById(R.id.AutonomousHatchPanelsSecurePlusOneButton);
+        autonomousHatchPanelsSecuredMinusOneButton = view.findViewById(R.id.AutonomousHatchPanelsSecureMinusOneButton);
+
+        autonomousHatchPanelsSecuredPlusOneButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                autonomousHatchPanelsSecuredTextView.setText((Integer.parseInt(autonomousHatchPanelsSecuredTextView.getText().toString()) + 1) + "");
+            }
+        });
+
+        autonomousHatchPanelsSecuredMinusOneButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                autonomousHatchPanelsSecuredTextView.setText((Integer.parseInt(autonomousHatchPanelsSecuredTextView.getText().toString()) - 1) + "");
+            }
+        });
+
+        //Cargo Stored
+        autonomousCargoStoredTextView = view.findViewById(R.id.AutonomousCargoStoredTextView);
+
+        autonomousCargoStoredPlusOneButton = view.findViewById(R.id.AutonomousCargoStoredPlusOneButton);
+        autonomousCargoStoredMinusOneButton = view.findViewById(R.id.AutonomousCargoStoredMinusOneButton);
+
+        autonomousCargoStoredPlusOneButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                autonomousCargoStoredTextView.setText((Integer.parseInt(autonomousCargoStoredTextView.getText().toString()) + 1) + "");
+            }
+        });
+
+        autonomousCargoStoredMinusOneButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                autonomousCargoStoredTextView.setText((Integer.parseInt(autonomousCargoStoredTextView.getText().toString()) - 1) + "");
+            }
+        });
+
+        //endregion
+
+        //region Teleop
+
+        //Hatch Panels Secured
+        teleopHatchPanelsSecuredTextView = view.findViewById(R.id.TeleopHatchPanelsSecuredTextView);
+
+        teleopHatchPanelsSecuredPlusOneButton = view.findViewById(R.id.TeleopHatchPanelsSecurePlusOneButton);
+        teleopHatchPanelsSecuredMinusOneButton = view.findViewById(R.id.TeleopHatchPanelsSecureMinusOneButton);
+
+        teleopHatchPanelsSecuredPlusOneButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                teleopHatchPanelsSecuredTextView.setText((Integer.parseInt(teleopHatchPanelsSecuredTextView.getText().toString()) + 1) + "");
+            }
+        });
+
+        teleopHatchPanelsSecuredMinusOneButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                teleopHatchPanelsSecuredTextView.setText((Integer.parseInt(teleopHatchPanelsSecuredTextView.getText().toString()) - 1) + "");
+            }
+        });
+
+        //Cargo Stored
+        teleopCargoStoredTextView = view.findViewById(R.id.TeleopCargoStoredTextView);
+
+        teleopCargoStoredPlusOneButton = view.findViewById(R.id.TeleopCargoStoredPlusOneButton);
+        teleopCargoStoredMinusOneButton = view.findViewById(R.id.TeleopCargoStoredMinusOneButton);
+
+        teleopCargoStoredPlusOneButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                teleopCargoStoredTextView.setText((Integer.parseInt(teleopCargoStoredTextView.getText().toString()) + 1) + "");
+            }
+        });
+
+        teleopCargoStoredMinusOneButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                teleopCargoStoredTextView.setText((Integer.parseInt(teleopCargoStoredTextView.getText().toString()) - 1) + "");
+            }
+        });
+
+
+        //Rockets Completed
+        teleopRocketsCompletedTextView = view.findViewById(R.id.TeleopRocketsCompletedTextView);
+
+        teleopRocketsCompletedPlusOneButton = view.findViewById(R.id.TeleopRocketsCompletedPlusOneButton);
+        teleopRocketsCompletedMinusOneButton = view.findViewById(R.id.TeleopRocketsCompletedMinusOneButton);
+
+        teleopRocketsCompletedPlusOneButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                teleopRocketsCompletedTextView.setText((Integer.parseInt(teleopRocketsCompletedTextView.getText().toString()) + 1) + "");
+            }
+        });
+
+        teleopRocketsCompletedMinusOneButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                teleopRocketsCompletedTextView.setText((Integer.parseInt(teleopRocketsCompletedTextView.getText().toString()) - 1) + "");
+            }
+        });
+
+        //endregion
+
+        //region End Game
+
+        //Exit Habitat
+        endGameReturnedToHabitatTextView = view.findViewById(R.id.EndGameReturnedToHabitatTextView);
+
+        endGameReturnedToHabitatNoButton = view.findViewById(R.id.EndGameReturnedToHabitatNoButton);
+        endGameReturnedToHabitatLevelOneButton = view.findViewById(R.id.EndGameReturnedToHabitatLevelOneButton);
+        endGameReturnedToHabitatLevelTwoButton = view.findViewById(R.id.EndGameReturnedToHabitatLevelTwoButton);
+        endGameReturnedToHabitatLevelThreeButton = view.findViewById(R.id.EndGameReturnedToHabitatLevelThreeButton);
+
+        endGameReturnedToHabitatNoButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                endGameReturnedToHabitatTextView.setText(R.string.no);
+            }
+        });
+
+        endGameReturnedToHabitatLevelOneButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                endGameReturnedToHabitatTextView.setText(R.string.level_1);
+            }
+        });
+
+        endGameReturnedToHabitatLevelTwoButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                endGameReturnedToHabitatTextView.setText(R.string.level_2);
+            }
+        });
+
+        endGameReturnedToHabitatLevelThreeButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                endGameReturnedToHabitatTextView.setText(R.string.level_3);
+            }
+        });
+
+
+        //endregion
+        
+        
+        
+        scoutCardSaveButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                ScoutCard scoutCard = new ScoutCard(
+                        -1,
+                        -1,
+
+                        5885,
+                        scouterNameAutoCompleteTextView.getText().toString(),
+                        Integer.parseInt(blueAllianceFinalScoreEditText.getText().toString()),
+                        Integer.parseInt(redAllianceFinalScoreEditText.getText().toString()),
+                        autonomousExitHabitatTextView.getText().toString().toLowerCase().equals(getActivity().getResources().getString(R.string.yes)),
+                        Integer.parseInt(autonomousHatchPanelsSecuredTextView.getText().toString()),
+                        Integer.parseInt(autonomousCargoStoredTextView.getText().toString()),
+                        Integer.parseInt(teleopHatchPanelsSecuredTextView.getText().toString()),
+                        Integer.parseInt(teleopCargoStoredTextView.getText().toString()),
+                        Integer.parseInt(teleopRocketsCompletedTextView.getText().toString()),
+                        endGameReturnedToHabitatTextView.getText().toString(),
+                        new Date(System.currentTimeMillis()));
+                scoutCard.save(((MainActivity) getActivity()).getDatabase());
+            }
+        });
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
         ArrayList<String> teamNumbers = new ArrayList<>();
         teamNumbers.add("5885");

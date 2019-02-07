@@ -17,6 +17,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.GameScoreStatus;
 import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.ArrayList;
@@ -159,7 +160,7 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
                 //swap fragments
                 FragmentManager fragmentManager = context.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.MainFrame, MatchFragment.newInstance(blueAllianceTeamIds, redAllianceTeamIds));
+                fragmentTransaction.replace(R.id.MainFrame, ScoutCardFragment.newInstance(team.getId()));
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }

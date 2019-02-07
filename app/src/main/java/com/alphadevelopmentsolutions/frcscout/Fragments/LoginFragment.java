@@ -3,41 +3,35 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Adapters.EventViewPagerAdapter;
-import com.alphadevelopmentsolutions.frcscout.Adapters.MatchViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.R;
-
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MatchFragment.OnFragmentInteractionListener} interface
+ * {@link LoginFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link MatchFragment#newInstance} factory method to
+ * Use the {@link LoginFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MatchFragment extends Fragment
+public class LoginFragment extends Fragment
 {
+    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "BlueAllianceTeamIds";
-    private static final String ARG_PARAM2 = "RedAllianceTeamIds";
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
-    private ArrayList<Integer> blueAllianceTeamIds;
-    private ArrayList<Integer> redAllianceTeamIds;
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
-    public MatchFragment()
+    public LoginFragment()
     {
         // Required empty public constructor
     }
@@ -45,16 +39,18 @@ public class MatchFragment extends Fragment
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     * @param blueAllianceTeamIds Ids of all blue alliance teams
-     * @param redAllianceTeamIds Ids of all red alliance teams
-     * @return A new instance of fragment MatchFragment.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment LoginFragment.
      */
-    public static MatchFragment newInstance(ArrayList<Integer> blueAllianceTeamIds, ArrayList<Integer> redAllianceTeamIds)
+    // TODO: Rename and change types and number of parameters
+    public static LoginFragment newInstance(String param1, String param2)
     {
-        MatchFragment fragment = new MatchFragment();
+        LoginFragment fragment = new LoginFragment();
         Bundle args = new Bundle();
-        args.putIntegerArrayList(ARG_PARAM1, blueAllianceTeamIds);
-        args.putIntegerArrayList(ARG_PARAM2, redAllianceTeamIds);
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,49 +61,17 @@ public class MatchFragment extends Fragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            blueAllianceTeamIds = getArguments().getIntegerArrayList(ARG_PARAM1);
-            redAllianceTeamIds = getArguments().getIntegerArrayList(ARG_PARAM2);
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
-    private ViewPager matchViewPager;
-
-    private TabLayout matchTabLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_match, container, false);
-
-        MainActivity context = (MainActivity) getActivity();
-
-        //gets rid of the shadow on the actionbar
-        ActionBar actionBar = context.getSupportActionBar();
-        actionBar.setElevation(0);
-
-        matchViewPager = view.findViewById(R.id.MatchViewPager);
-        matchTabLayout = view.findViewById(R.id.MatchTabLayout);
-
-        MatchViewPagerAdapter matchViewPagerAdapter = new MatchViewPagerAdapter(getChildFragmentManager());
-
-        //populate the viewPager with all the blue alliance teams
-        for(int teamId : blueAllianceTeamIds)
-        {
-            matchViewPagerAdapter.addFragment(ScoutCardFragment.newInstance(teamId), String.valueOf(teamId));
-        }
-
-        //populate the viewPager with all the red alliance teams
-        for(int teamId : redAllianceTeamIds)
-        {
-            matchViewPagerAdapter.addFragment(ScoutCardFragment.newInstance(teamId), String.valueOf(teamId));
-        }
-
-        matchViewPager.setAdapter(matchViewPagerAdapter);
-        matchTabLayout.setupWithViewPager(matchViewPager);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

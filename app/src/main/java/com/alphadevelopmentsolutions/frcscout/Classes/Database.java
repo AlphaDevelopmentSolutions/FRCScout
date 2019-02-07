@@ -6,16 +6,21 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
+import com.alphadevelopmentsolutions.frcscout.R;
+
 import java.util.Date;
 
 public class Database
 {
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase db;
+    private Context context;
 
     public Database(Context context)
     {
         databaseHelper = new DatabaseHelper(context);
+        this.context = context;
     }
 
     /**
@@ -42,7 +47,7 @@ public class Database
      */
     public boolean isOpen()
     {
-        return db == null;
+        return db != null;
 
     }
 
@@ -535,6 +540,15 @@ public class Database
                 {
                         ScoutCard.COLUMNS_NAME_MATCH_ID,
                         ScoutCard.COLUMN_NAME_TEAM_ID,
+                        ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE,
+                        ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE,
+                        ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT,
+                        ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED,
+                        ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED,
+                        ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED,
+                        ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED,
+                        ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED,
+                        ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT,
                         ScoutCard.COLUMN_NAME_COMPLETED_BY,
                         ScoutCard.COLUMN_NAME_COMPLETED_DATE
                 };
@@ -562,10 +576,33 @@ public class Database
             int matchId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMNS_NAME_MATCH_ID));
             int teamId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID));
             String completedBy = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_BY));
+            int blueAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE));
+            int redAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT));
+            boolean autonomousExitHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT)).toLowerCase().equals(context.getResources().getString(R.string.yes));
+            int autonomousHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED));
+            int autonomousCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED));
+            int teleopHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED));
+            int teleopCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED));
+            int teleopRocketsCompleted = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED));
+            String endGameReturnedToHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT));
             Date completedDate = new Date(cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)));
             cursor.close();
 
-            return new ScoutCard(scoutCard.getId(), matchId, teamId, completedBy, completedDate);
+            return new ScoutCard(
+                    scoutCard.getId(),
+                    matchId,
+                    teamId,
+                    completedBy,
+                    blueAllianceFinalScore,
+                    redAllianceFinalScore,
+                    autonomousExitHabitat,
+                    autonomousHatchPanelsSecured,
+                    autonomousCargoStored,
+                    teleopHatchPanelsSecured,
+                    teleopCargoStored,
+                    teleopRocketsCompleted,
+                    endGameReturnedToHabitat,
+                    completedDate);
         }
 
 
@@ -583,6 +620,15 @@ public class Database
         ContentValues contentValues = new ContentValues();
         contentValues.put(ScoutCard.COLUMNS_NAME_MATCH_ID, scoutCard.getMatchId());
         contentValues.put(ScoutCard.COLUMN_NAME_TEAM_ID, scoutCard.getTeamId());
+        contentValues.put(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE, scoutCard.getBlueAllianceFinalScore());
+        contentValues.put(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE, scoutCard.getRedAllianceFinalScore());
+        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT, scoutCard.isAutonomousExitHabitat());
+        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED, scoutCard.getAutonomousHatchPanelsSecured());
+        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED, scoutCard.getAutonomousCargoStored());
+        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED, scoutCard.getTeleopHatchPanelsSecured());
+        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED, scoutCard.getTeleopCargoStored());
+        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED, scoutCard.getTeleopRocketsCompleted());
+        contentValues.put(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT, scoutCard.getEndGameReturnedToHabitat());
         contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_BY, scoutCard.getCompletedBy());
         contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_DATE, scoutCard.getCompletedDate().getTime());
 

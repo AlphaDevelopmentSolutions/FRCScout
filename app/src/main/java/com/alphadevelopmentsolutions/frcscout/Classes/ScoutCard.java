@@ -9,6 +9,15 @@ public class ScoutCard
     public static final String COLUMN_NAME_ID = "Id";
     public static final String COLUMNS_NAME_MATCH_ID = "MatchId";
     public static final String COLUMN_NAME_TEAM_ID = "TeamId";
+    public static final String COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE = "BlueAllianceFinalScore";
+    public static final String COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE = "RedAllianceFinalScore";
+    public static final String COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT = "AutonomousExitHabitat";
+    public static final String COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED = "AutonomousHatchPanelsSecured";
+    public static final String COLUMN_NAME_AUTONOMOUS_CARGO_STORED = "AutonomousCargoStored";
+    public static final String COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED = "TeleopHatchPanelsSecured";
+    public static final String COLUMN_NAME_TELEOP_CARGO_STORED = "TeleopCargoStored";
+    public static final String COLUMN_NAME_TELEOP_ROCKETS_COMPLETED = "TeleopRocketsCompleted";
+    public static final String COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT = "EndGameReturnedToHabitat";
     public static final String COLUMN_NAME_COMPLETED_BY = "CompletedBy";
     public static final String COLUMN_NAME_COMPLETED_DATE = "CompletedDate";
 
@@ -16,6 +25,15 @@ public class ScoutCard
     private int matchId;
     private int teamId;
     private String completedBy;
+    private int blueAllianceFinalScore;
+    private int redAllianceFinalScore;
+    private boolean autonomousExitHabitat;
+    private int autonomousHatchPanelsSecured;
+    private int autonomousCargoStored;
+    private int teleopHatchPanelsSecured;
+    private int teleopCargoStored;
+    private int teleopRocketsCompleted;
+    private String endGameReturnedToHabitat;
     private Date completedDate;
 
     public ScoutCard(
@@ -23,11 +41,29 @@ public class ScoutCard
             int matchId,
             int teamId,
             String completedBy,
+            int blueAllianceFinalScore,
+            int redAllianceFinalScore,
+            boolean autonomousExitHabitat,
+            int autonomousHatchPanelsSecured,
+            int autonomousCargoStored,
+            int teleopHatchPanelsSecured,
+            int teleopCargoStored,
+            int teleopRocketsCompleted,
+            String endGameReturnedToHabitat,
             Date completedDate)
     {
         this.id = id;
         this.matchId = matchId;
         this.teamId = teamId;
+        this.blueAllianceFinalScore = blueAllianceFinalScore;
+        this.redAllianceFinalScore = redAllianceFinalScore;
+        this.autonomousExitHabitat = autonomousExitHabitat;
+        this.autonomousHatchPanelsSecured = autonomousHatchPanelsSecured;
+        this.autonomousCargoStored = autonomousCargoStored;
+        this.teleopHatchPanelsSecured = teleopHatchPanelsSecured;
+        this.teleopCargoStored = teleopCargoStored;
+        this.teleopRocketsCompleted = teleopRocketsCompleted;
+        this.endGameReturnedToHabitat = endGameReturnedToHabitat;
         this.completedBy = completedBy;
         this.completedDate = completedDate;
     }
@@ -58,6 +94,51 @@ public class ScoutCard
         return teamId;
     }
 
+    public int getBlueAllianceFinalScore()
+    {
+        return blueAllianceFinalScore;
+    }
+
+    public int getRedAllianceFinalScore()
+    {
+        return redAllianceFinalScore;
+    }
+
+    public boolean isAutonomousExitHabitat()
+    {
+        return autonomousExitHabitat;
+    }
+
+    public int getAutonomousHatchPanelsSecured()
+    {
+        return autonomousHatchPanelsSecured;
+    }
+
+    public int getAutonomousCargoStored()
+    {
+        return autonomousCargoStored;
+    }
+
+    public int getTeleopHatchPanelsSecured()
+    {
+        return teleopHatchPanelsSecured;
+    }
+
+    public int getTeleopCargoStored()
+    {
+        return teleopCargoStored;
+    }
+
+    public int getTeleopRocketsCompleted()
+    {
+        return teleopRocketsCompleted;
+    }
+
+    public String getEndGameReturnedToHabitat()
+    {
+        return endGameReturnedToHabitat;
+    }
+
     public String getCompletedBy()
     {
         return completedBy;
@@ -86,6 +167,51 @@ public class ScoutCard
     public void setTeamId(int teamId)
     {
         this.teamId = teamId;
+    }
+
+    public void setBlueAllianceFinalScore(int blueAllianceFinalScore)
+    {
+        this.blueAllianceFinalScore = blueAllianceFinalScore;
+    }
+
+    public void setRedAllianceFinalScore(int redAllianceFinalScore)
+    {
+        this.redAllianceFinalScore = redAllianceFinalScore;
+    }
+
+    public void setAutonomousExitHabitat(boolean autonomousExitHabitat)
+    {
+        this.autonomousExitHabitat = autonomousExitHabitat;
+    }
+
+    public void setAutonomousHatchPanelsSecured(int autonomousHatchPanelsSecured)
+    {
+        this.autonomousHatchPanelsSecured = autonomousHatchPanelsSecured;
+    }
+
+    public void setAutonomousCargoStored(int autonomousCargoStored)
+    {
+        this.autonomousCargoStored = autonomousCargoStored;
+    }
+
+    public void setTeleopHatchPanelsSecured(int teleopHatchPanelsSecured)
+    {
+        this.teleopHatchPanelsSecured = teleopHatchPanelsSecured;
+    }
+
+    public void setTeleopCargoStored(int teleopCargoStored)
+    {
+        this.teleopCargoStored = teleopCargoStored;
+    }
+
+    public void setTeleopRocketsCompleted(int teleopRocketsCompleted)
+    {
+        this.teleopRocketsCompleted = teleopRocketsCompleted;
+    }
+
+    public void setEndGameReturnedToHabitat(String endGameReturnedToHabitat)
+    {
+        this.endGameReturnedToHabitat = endGameReturnedToHabitat;
     }
 
     public void setCompletedBy(String completedBy)
@@ -122,6 +248,15 @@ public class ScoutCard
             {
                 setMatchId(scoutCard.getMatchId());
                 setTeamId(scoutCard.getTeamId());
+                setBlueAllianceFinalScore(scoutCard.getBlueAllianceFinalScore());
+                setRedAllianceFinalScore(scoutCard.getRedAllianceFinalScore());
+                setAutonomousExitHabitat(scoutCard.isAutonomousExitHabitat());
+                setAutonomousHatchPanelsSecured(scoutCard.getAutonomousHatchPanelsSecured());
+                setAutonomousCargoStored(scoutCard.getAutonomousCargoStored());
+                setTeleopHatchPanelsSecured(scoutCard.getTeleopHatchPanelsSecured());
+                setTeleopCargoStored(scoutCard.getTeleopCargoStored());
+                setTeleopRocketsCompleted(scoutCard.getTeleopRocketsCompleted());
+                setEndGameReturnedToHabitat(scoutCard.getEndGameReturnedToHabitat());
                 setCompletedBy(scoutCard.getCompletedBy());
                 setCompletedDate(scoutCard.getCompletedDate());
                 return true;
