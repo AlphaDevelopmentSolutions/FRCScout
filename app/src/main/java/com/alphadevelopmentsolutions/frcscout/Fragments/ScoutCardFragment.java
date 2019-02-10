@@ -81,7 +81,9 @@ public class ScoutCardFragment extends Fragment
     private EditText matchNotesEditText;
     
     private Button scoutCardSaveButton;
-    
+
+    private ScoutCard scoutCard;
+
     //region Autonomous
     
     //Exit Habitat
@@ -147,6 +149,12 @@ public class ScoutCardFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_scout_card, container, false);
 
         final Database database = ((MainActivity) getActivity()).getDatabase();
+
+        if(scoutCardId > 0)
+        {
+            scoutCard = new ScoutCard(scoutCardId);
+            scoutCard.load(database);
+        }
 
         teamNumberAutoCompleteTextView = view.findViewById(R.id.TeamNumberAutoCompleteTextView);
         scouterNameAutoCompleteTextView = view.findViewById(R.id.ScouterNameAutoCompleteTextView);
@@ -402,6 +410,30 @@ public class ScoutCardFragment extends Fragment
 
         ArrayAdapter<String> scouterNameAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, scouterNames);
         scouterNameAutoCompleteTextView.setAdapter(scouterNameAdapter);
+
+        //scoutcard loaded, populate fields
+        if(scoutCard != null)
+        {
+            teamNumberAutoCompleteTextView.setText(String.valueOf(scoutCard.getTeamId()));
+            scouterNameAutoCompleteTextView.setText(scoutCard.getCompletedBy());
+
+            matchIdEditText.setText(String.valueOf(scoutCard.getMatchId()));
+
+            blueAllianceFinalScoreEditText.setText(String.valueOf(scoutCard.getBlueAllianceFinalScore()));
+            redAllianceFinalScoreEditText.setText(String.valueOf(scoutCard.getRedAllianceFinalScore()));
+
+            autonomousExitHabitatTextView.setText(scoutCard.isAutonomousExitHabitat() ? R.string.yes : R.string.no);
+            autonomousHatchPanelsSecuredTextView.setText(String.valueOf(scoutCard.getAutonomousHatchPanelsSecured()));
+            autonomousCargoStoredTextView.setText(String.valueOf(scoutCard.getAutonomousCargoStored()));
+
+            teleopHatchPanelsSecuredTextView.setText(String.valueOf(scoutCard.getTeleopHatchPanelsSecured()));
+            teleopCargoStoredTextView.setText(String.valueOf(scoutCard.getTeleopCargoStored()));
+            teleopRocketsCompletedMinusOneButton.setText(String.valueOf(scoutCard.getTeleopRocketsCompleted()));
+
+            endGameReturnedToHabitatTextView.setText(scoutCard.getEndGameReturnedToHabitat());
+
+            matchNotesEditText.setText(scoutCard.getNotes());
+        }
 
         return view;
     }

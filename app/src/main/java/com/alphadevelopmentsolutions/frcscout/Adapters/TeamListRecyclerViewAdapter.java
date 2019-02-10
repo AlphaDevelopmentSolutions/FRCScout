@@ -60,7 +60,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TeamListRecyclerViewAdapter.ViewHolder viewHolder, int position)
+    public void onBindViewHolder(@NonNull final TeamListRecyclerViewAdapter.ViewHolder viewHolder, int position)
     {
         //Set the content on the card
         viewHolder.teamNameTextView.setText(teamList.get(position).getName());
@@ -80,7 +80,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
                 //swap fragments
                 FragmentManager fragmentManager = context.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.MainFrame, new TeamFragment());
+                fragmentTransaction.replace(R.id.MainFrame, TeamFragment.newInstance(teamList.get(viewHolder.getAdapterPosition()).getId()));
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }

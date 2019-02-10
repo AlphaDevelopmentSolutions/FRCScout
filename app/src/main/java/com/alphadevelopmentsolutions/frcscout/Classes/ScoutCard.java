@@ -76,7 +76,7 @@ public class ScoutCard
      * Used for loading
      * @param id to load
      */
-    ScoutCard(int id)
+    public ScoutCard(int id)
     {
         this.id = id;
     }

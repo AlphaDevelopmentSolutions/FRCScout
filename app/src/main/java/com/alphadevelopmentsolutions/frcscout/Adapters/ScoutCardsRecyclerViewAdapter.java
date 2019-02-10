@@ -15,32 +15,31 @@ import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
 import com.alphadevelopmentsolutions.frcscout.Classes.GameScoreStatus;
 import com.alphadevelopmentsolutions.frcscout.Classes.Match;
+import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
-import com.alphadevelopmentsolutions.frcscout.Fragments.MatchFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.ArrayList;
 
-public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchListRecyclerViewAdapter.ViewHolder>
+public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCardsRecyclerViewAdapter.ViewHolder>
 {
 
     private Team team;
 
-    private ArrayList<Match> matchList;
+    private ArrayList<ScoutCard> scoutCards;
 
     private MainActivity context;
 
-    public MatchListRecyclerViewAdapter(ArrayList<Match> matchList, MainActivity context)
+    public ScoutCardsRecyclerViewAdapter(ArrayList<Match> matchList, MainActivity context)
     {
         this.context = context;
-        this.matchList = matchList;
     }
 
-    public MatchListRecyclerViewAdapter(Team team, ArrayList<Match> matchList, MainActivity context)
+    public ScoutCardsRecyclerViewAdapter(Team team, ArrayList<ScoutCard> scoutCards, MainActivity context)
     {
         this.team = team;
-        this.matchList = matchList;
+        this.scoutCards = scoutCards;
         this.context = context;
 
     }
@@ -85,19 +84,19 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
         //Inflate the event layout for the each item in the list
         View view = LayoutInflater.from(context).inflate(R.layout.layout_match_card, viewGroup, false);
 
-        return new MatchListRecyclerViewAdapter.ViewHolder(view);
+        return new ScoutCardsRecyclerViewAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MatchListRecyclerViewAdapter.ViewHolder viewHolder, int position)
+    public void onBindViewHolder(@NonNull final ScoutCardsRecyclerViewAdapter.ViewHolder viewHolder, int position)
     {
         //Set the OutcomeTextView
         if(team != null)
         {
             //gets the alliance color of the current team you are viewing
             //used for WIN / LOSE statuses
-            AllianceColor allianceColor = matchList.get(position).getTeamAllianceColor(team.getId());
-            viewHolder.matchOutcomeTextView.setText(matchList.get(position).getOutcomeStatus(allianceColor));
+//            AllianceColor allianceColor = scoutCards.get(position).getTeamAllianceColor(team.getId());
+            viewHolder.matchOutcomeTextView.setText("LOSE");
 
         }
         //hide the OutcomeTextView
@@ -107,25 +106,25 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
         }
 
         //set scores
-        viewHolder.blueAllianceScoreTextView.setText(String.valueOf(matchList.get(position).getBlueAllianceScore()));
-        viewHolder.redAllianceScoreTextView.setText(String.valueOf(matchList.get(position).getRedAllianceScore()));
+        viewHolder.blueAllianceScoreTextView.setText(String.valueOf(scoutCards.get(position).getBlueAllianceFinalScore()));
+        viewHolder.redAllianceScoreTextView.setText(String.valueOf(scoutCards.get(position).getRedAllianceFinalScore()));
 
-        //blue team won, bold the score textview
-        if(matchList.get(position).getOutcomeStatus(AllianceColor.BLUE).equals(GameScoreStatus.WIN)) viewHolder.blueAllianceScoreTextView.setTypeface(viewHolder.blueAllianceScoreTextView.getTypeface(), Typeface.BOLD);
+//        //blue team won, bold the score textview
+//        if(scoutCards.get(position).getOutcomeStatus(AllianceColor.BLUE).equals(GameScoreStatus.WIN)) viewHolder.blueAllianceScoreTextView.setTypeface(viewHolder.blueAllianceScoreTextView.getTypeface(), Typeface.BOLD);
+//
+//        //red team won, bold the score textview
+//        if(scoutCards.get(position).getOutcomeStatus(AllianceColor.RED).equals(GameScoreStatus.WIN)) viewHolder.redAllianceScoreTextView.setTypeface(viewHolder.redAllianceScoreTextView.getTypeface(), Typeface.BOLD);
 
-        //red team won, bold the score textview
-        if(matchList.get(position).getOutcomeStatus(AllianceColor.RED).equals(GameScoreStatus.WIN)) viewHolder.redAllianceScoreTextView.setTypeface(viewHolder.redAllianceScoreTextView.getTypeface(), Typeface.BOLD);
 
-
-        //set blue team numbers
-        viewHolder.blueAllianceTeamOneNumberTextView.setText(String.valueOf(matchList.get(position).getBlueAllianceTeamOneId()));
-        viewHolder.blueAllianceTeamTwoNumberTextView.setText(String.valueOf(matchList.get(position).getBlueAllianceTeamTwoId()));
-        viewHolder.blueAllianceTeamThreeNumberTextView.setText(String.valueOf(matchList.get(position).getBlueAllianceTeamThreeId()));
-
-        //set red team numbers
-        viewHolder.redAllianceTeamOneNumberTextView.setText(String.valueOf(matchList.get(position).getRedAllianceTeamOneId()));
-        viewHolder.redAllianceTeamTwoNumberTextView.setText(String.valueOf(matchList.get(position).getRedAllianceTeamTwoId()));
-        viewHolder.redAllianceTeamThreeNumberTextView.setText(String.valueOf(matchList.get(position).getRedAllianceTeamThreeId()));
+//        //set blue team numbers
+//        viewHolder.blueAllianceTeamOneNumberTextView.setText(String.valueOf(scoutCards.get(position).getBlueAllianceTeamOneId()));
+//        viewHolder.blueAllianceTeamTwoNumberTextView.setText(String.valueOf(matchList.get(position).getBlueAllianceTeamTwoId()));
+//        viewHolder.blueAllianceTeamThreeNumberTextView.setText(String.valueOf(matchList.get(position).getBlueAllianceTeamThreeId()));
+//
+//        //set red team numbers
+//        viewHolder.redAllianceTeamOneNumberTextView.setText(String.valueOf(matchList.get(position).getRedAllianceTeamOneId()));
+//        viewHolder.redAllianceTeamTwoNumberTextView.setText(String.valueOf(matchList.get(position).getRedAllianceTeamTwoId()));
+//        viewHolder.redAllianceTeamThreeNumberTextView.setText(String.valueOf(matchList.get(position).getRedAllianceTeamThreeId()));
 
 
         //Opens an option menu for various options on that score card
@@ -145,22 +144,10 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
             @Override
             public void onClick(View v)
             {
-                
-                //store the list of team ids
-                ArrayList<Integer> blueAllianceTeamIds = new ArrayList<>();
-                blueAllianceTeamIds.add(matchList.get(viewHolder.getAdapterPosition()).getBlueAllianceTeamOneId());
-                blueAllianceTeamIds.add(matchList.get(viewHolder.getAdapterPosition()).getBlueAllianceTeamTwoId());
-                blueAllianceTeamIds.add(matchList.get(viewHolder.getAdapterPosition()).getBlueAllianceTeamThreeId());
-
-                ArrayList<Integer> redAllianceTeamIds = new ArrayList<>();
-                redAllianceTeamIds.add(matchList.get(viewHolder.getAdapterPosition()).getRedAllianceTeamOneId());
-                redAllianceTeamIds.add(matchList.get(viewHolder.getAdapterPosition()).getRedAllianceTeamTwoId());
-                redAllianceTeamIds.add(matchList.get(viewHolder.getAdapterPosition()).getRedAllianceTeamThreeId());
-
                 //swap fragments
                 FragmentManager fragmentManager = context.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.MainFrame, ScoutCardFragment.newInstance(team.getId()));
+                fragmentTransaction.replace(R.id.MainFrame, ScoutCardFragment.newInstance(scoutCards.get(viewHolder.getAdapterPosition()).getId()));
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }
@@ -170,6 +157,6 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
     @Override
     public int getItemCount()
     {
-        return matchList.size();
+        return scoutCards.size();
     }
 }

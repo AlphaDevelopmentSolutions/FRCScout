@@ -660,6 +660,99 @@ public class Database
     //region Scout Card Logic
 
     /**
+     * Gets all scout cards assigned to a team
+     *
+     * @param team with specified ID
+     * @return scoutcard based off given team ID
+     */
+    public ArrayList<ScoutCard> getScoutCards(Team team)
+    {
+        ArrayList<ScoutCard> scoutCards = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns =
+                {
+                        ScoutCard.COLUMN_NAME_ID,
+                        ScoutCard.COLUMNS_NAME_MATCH_ID,
+                        ScoutCard.COLUMN_NAME_TEAM_ID,
+                        ScoutCard.COLUMN_NAME_COMPLETED_BY,
+                        ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE,
+                        ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE,
+                        ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT,
+                        ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED,
+                        ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED,
+                        ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED,
+                        ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED,
+                        ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED,
+                        ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT,
+                        ScoutCard.COLUMN_NAME_NOTES,
+                        ScoutCard.COLUMN_NAME_COMPLETED_DATE
+                };
+
+        //where statement
+        String whereStatement = ScoutCard.COLUMN_NAME_TEAM_ID + " = ?";
+        String[] whereArgs = {team.getId() + ""};
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                ScoutCard.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while(cursor.moveToNext())
+            {
+
+                int id = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ID));
+                int matchId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMNS_NAME_MATCH_ID));
+                int teamId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID));
+                String completedBy = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_BY));
+                int blueAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE));
+                int redAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT));
+                boolean autonomousExitHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT)).equals(context.getResources().getString(R.string.yes));
+                int autonomousHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED));
+                int autonomousCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED));
+                int teleopHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED));
+                int teleopCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED));
+                int teleopRocketsCompleted = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED));
+                String endGameReturnedToHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT));
+                String notes = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_NOTES));
+                Date completedDate = new Date(cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)));
+
+                scoutCards.add(new ScoutCard(
+                        id,
+                        matchId,
+                        teamId,
+                        completedBy,
+                        blueAllianceFinalScore,
+                        redAllianceFinalScore,
+                        autonomousExitHabitat,
+                        autonomousHatchPanelsSecured,
+                        autonomousCargoStored,
+                        teleopHatchPanelsSecured,
+                        teleopCargoStored,
+                        teleopRocketsCompleted,
+                        endGameReturnedToHabitat,
+                        notes,
+                        completedDate));
+            }
+
+            cursor.close();
+
+            return scoutCards;
+        }
+
+
+        return null;
+    }
+
+    /**
      * Gets a specific object from the database and returns it
      *
      * @param scoutCard with specified ID

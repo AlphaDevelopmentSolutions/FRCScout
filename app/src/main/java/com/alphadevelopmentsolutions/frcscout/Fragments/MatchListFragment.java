@@ -11,10 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Adapters.MatchListRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Adapters.TeamListRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Adapters.ScoutCardsRecyclerViewAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.Match;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.ArrayList;
@@ -88,12 +86,12 @@ public class MatchListFragment extends Fragment
         //get the parent activity
         MainActivity context = (MainActivity) getActivity();
 
-        matchesRecyclerView = view.findViewById(R.id.MatchesRecyclerView);
+        matchesRecyclerView = view.findViewById(R.id.ScoutCardsRecyclerView);
 
         ArrayList<Match> matchList = new ArrayList<>();
         Match match = new Match(1,  new Date(111111), 5885, 1234, 2345, 1, 1, 1, 200, 400, 610, 875, 123, 1, 1, 1);
         matchList.add(match);
-        MatchListRecyclerViewAdapter teamListRecyclerViewAdapter = new MatchListRecyclerViewAdapter(matchList, context);
+        ScoutCardsRecyclerViewAdapter teamListRecyclerViewAdapter = new ScoutCardsRecyclerViewAdapter(matchList, context);
 
         matchesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         matchesRecyclerView.setAdapter(teamListRecyclerViewAdapter);

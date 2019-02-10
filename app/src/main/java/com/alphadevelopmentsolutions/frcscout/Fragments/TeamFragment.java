@@ -15,8 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Adapters.MatchListRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
+import com.alphadevelopmentsolutions.frcscout.Adapters.ScoutCardsRecyclerViewAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeIcon;
 import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
@@ -75,7 +74,7 @@ public class TeamFragment extends Fragment
 
     private Team team;
 
-    private RecyclerView matchesRecyclerView;
+    private RecyclerView scoutCardsRecyclerView;
 
     private FontAwesomeIcon facebookFontAwesomeBrandIcon;
     private FontAwesomeIcon twitterFontAwesomeBrandIcon;
@@ -100,7 +99,7 @@ public class TeamFragment extends Fragment
 
         //load the current team you are viewing
         team = new Team(teamId);
-        //team.load(context.getDatabase());
+        team.load(context.getDatabase());
 
         //assign the vars to the views on the page
         facebookFontAwesomeBrandIcon = view.findViewById(R.id.FacebookFontAwesomeBrandIcon);
@@ -144,7 +143,7 @@ public class TeamFragment extends Fragment
 
 
         //SCOUT CARD GARBAGE
-        matchesRecyclerView = view.findViewById(R.id.MatchesRecyclerView);
+        scoutCardsRecyclerView = view.findViewById(R.id.ScoutCardsRecyclerView);
 
         ArrayList<Match> matchList = new ArrayList<>();
 
@@ -159,10 +158,10 @@ public class TeamFragment extends Fragment
         matchList.add(match);
         matchList.add(match);
 
-        MatchListRecyclerViewAdapter matchListRecyclerViewAdapter = new MatchListRecyclerViewAdapter(team, matchList, context);
+        ScoutCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new ScoutCardsRecyclerViewAdapter(team, context.getDatabase().getScoutCards(team), context);
 
-        matchesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        matchesRecyclerView.setAdapter(matchListRecyclerViewAdapter);
+        scoutCardsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        scoutCardsRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
 
         return view;
     }
