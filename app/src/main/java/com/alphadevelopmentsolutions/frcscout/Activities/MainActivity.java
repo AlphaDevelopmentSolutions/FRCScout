@@ -1,11 +1,18 @@
 package com.alphadevelopmentsolutions.frcscout.Activities;
 
 import android.net.Uri;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 
 import com.alphadevelopmentsolutions.frcscout.Api.TheBlueAllianceApi;
@@ -42,6 +49,12 @@ public class MainActivity extends AppCompatActivity implements
 
     private Thread updateThread;
 
+    private SearchView searchView;
+
+    private Menu menu;
+
+    private final int ACTION_BAR_ELEVATION = 11;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -70,11 +83,17 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
 
-        //Swap to the events fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.MainFrame, new TeamListFragment());
-        fragmentTransaction.commit();
+        changeFragment(new TeamListFragment(), false);
+    }
+
+    public void dropActionBar()
+    {
+        getSupportActionBar().setElevation(0);
+    }
+
+    public void elevateActionBar()
+    {
+        getSupportActionBar().setElevation(ACTION_BAR_ELEVATION);
     }
 
     private void generateFakeData()
@@ -136,5 +155,17 @@ public class MainActivity extends AppCompatActivity implements
     public void showSnackbar(String message)
     {
         (Snackbar.make(mainFrame, message, Snackbar.LENGTH_SHORT)).show();
+    }
+
+    public void changeFragment(Fragment fragment, boolean addToBackstack)
+    {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.MainFrame, fragment);
+        if(addToBackstack)
+            fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+
+        elevateActionBar();
+
     }
 }

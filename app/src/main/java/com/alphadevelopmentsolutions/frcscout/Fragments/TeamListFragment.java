@@ -6,9 +6,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Adapters.TeamListRecyclerViewAdapter;
@@ -74,6 +78,9 @@ public class TeamListFragment extends Fragment
     }
 
     private RecyclerView teamsRecyclerView;
+
+    private EditText teamSearchEditText;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -83,13 +90,77 @@ public class TeamListFragment extends Fragment
 
         //get the parent activity
         MainActivity context = (MainActivity) getActivity();
+        context.dropActionBar();
 
         teamsRecyclerView = view.findViewById(R.id.TeamsRecyclerView);
+        teamSearchEditText = view.findViewById(R.id.TeamSearchEditText);
 
-        TeamListRecyclerViewAdapter teamListRecyclerViewAdapter = new TeamListRecyclerViewAdapter(context.getDatabase().getTeams() , context);
+        final ArrayList<Team> teams = context.getDatabase().getTeams();
+        final ArrayList<Team> searchedTeams = new ArrayList<>(teams);
+
+        final TeamListRecyclerViewAdapter teamListRecyclerViewAdapter = new TeamListRecyclerViewAdapter(searchedTeams, context);
 
         teamsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         teamsRecyclerView.setAdapter(teamListRecyclerViewAdapter);
+
+        teamSearchEditText.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
+            {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence searchText, int start, int before, int count)
+            {
+                //You only need to reset the list if you are removing from your search, adding the objects back
+                if(count < before)
+                {
+                    //Reset the list
+                    for (int i = 0; i < teams.size(); i++)
+                    {
+                        Team team = teams.get(i);
+
+                        //check if the contact doesn't exist in the viewable list
+                        if (!searchedTeams.contains(team))
+                        {
+                            //add it and notify the recyclerview
+                            searchedTeams.add(i, team);
+                            teamListRecyclerViewAdapter.notifyItemInserted(i);
+                            teamListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedTeams.size());
+                        }
+
+                    }
+                }
+
+                //Delete from the list
+                for (int i = 0; i < searchedTeams.size(); i++)
+                {
+                    Team team = searchedTeams.get(i);
+                    String name = team.getId() + " - " + team.getName();
+
+                    //If the contacts name doesn't equal the searched name
+                    if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
+                    {
+                        //remove it from the list and notify the recyclerview
+                        searchedTeams.remove(i);
+                        teamListRecyclerViewAdapter.notifyItemRemoved(i);
+                        teamListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedTeams.size());
+
+                        //this prevents the index from passing the size of the list,
+                        //stays on the same index until you NEED to move to the next one
+                        i--;
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable)
+            {
+
+            }
+        });
 
         return view;
     }

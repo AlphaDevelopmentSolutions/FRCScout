@@ -81,12 +81,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
             @Override
             public void onClick(View v)
             {
-                //swap fragments
-                FragmentManager fragmentManager = context.getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.MainFrame, TeamFragment.newInstance(teamList.get(viewHolder.getAdapterPosition()).getId()));
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+               context.changeFragment(TeamFragment.newInstance(teamList.get(viewHolder.getAdapterPosition()).getId()), true);
             }
         });
     }

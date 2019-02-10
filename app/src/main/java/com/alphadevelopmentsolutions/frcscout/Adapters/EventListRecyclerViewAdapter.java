@@ -71,12 +71,7 @@ public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventList
             @Override
             public void onClick(View v)
             {
-                //swap fragments
-                FragmentManager fragmentManager = context.getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.MainFrame, new TeamListFragment());
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+                context.changeFragment(new TeamListFragment(), true);
             }
         });
     }

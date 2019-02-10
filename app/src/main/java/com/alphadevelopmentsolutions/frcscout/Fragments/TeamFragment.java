@@ -98,8 +98,7 @@ public class TeamFragment extends Fragment
         final MainActivity context = (MainActivity) getActivity();
 
         //gets rid of the shadow on the actionbar
-        ActionBar actionBar = context.getSupportActionBar();
-        actionBar.setElevation(0);
+        context.dropActionBar();
 
         //load the current team you are viewing
         team = new Team(teamId);
@@ -139,12 +138,7 @@ public class TeamFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                //swap fragments
-                FragmentManager fragmentManager = context.getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.MainFrame, ScoutCardFragment.newInstance(-1, team.getId()));
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+                context.changeFragment(ScoutCardFragment.newInstance(-1, team.getId()), true);
             }
         });
 
