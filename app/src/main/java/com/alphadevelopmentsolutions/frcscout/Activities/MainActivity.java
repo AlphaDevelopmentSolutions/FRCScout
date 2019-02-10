@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
+import com.alphadevelopmentsolutions.frcscout.Api.TheBlueAllianceApi;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
@@ -37,6 +38,10 @@ public class MainActivity extends AppCompatActivity implements
 
     private FrameLayout mainFrame;
 
+    private MainActivity context;
+
+    private Thread updateThread;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -49,7 +54,21 @@ public class MainActivity extends AppCompatActivity implements
 
         mainFrame = findViewById(R.id.MainFrame);
 
-        generateFakeData();
+        context = this;
+
+//        generateFakeData();
+//        updateApplicationData("2019onosh");
+
+        if(updateThread != null)
+        {
+            try
+            {
+                updateThread.join();
+            } catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
 
         //Swap to the events fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -67,14 +86,35 @@ public class MainActivity extends AppCompatActivity implements
         (new User(-1, "Alex", "ABRUZESZEZEZEEZEZE")).save(getDatabase());
         (new User(-1, "Stacey", "Greenwood")).save(getDatabase());
 
-        (new Team(5885, "Villanova WiredCats", "city", "statte", "country", 2013, "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "test")).save(getDatabase());
-        (new Team(610, "Villanova WiredCats", "city", "statte", "country", 2013, "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "test")).save(getDatabase());
-        (new Team(1234, "Villanova WiredCats", "city", "statte", "country", 2013, "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "test")).save(getDatabase());
-        (new Team(123, "Villanova WiredCats", "city", "statte", "country", 2013, "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "test")).save(getDatabase());
 
         (new ScoutCard(-1, 2, 5885, "Griffin Sorrentino", 1, 2, true, 4, 6, 7, 8, 9, "Level 3", "Test Notes", new Date(System.currentTimeMillis()))).save(getDatabase());
         (new ScoutCard(-1, 3, 5885, "Stacey Sorrentino", 1, 2, false, 4, 6, 7, 8, 9, "Level 3", "Test Notes", new Date(System.currentTimeMillis()))).save(getDatabase());
         (new ScoutCard(-1, 4, 5885, "Bob Sorrentino", 1, 2, true, 4, 6, 7, 8, 9, "Level 3", "Test Notes", new Date(System.currentTimeMillis()))).save(getDatabase());
+    }
+
+    private void updateApplicationData(final String event)
+    {
+        updateThread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                TheBlueAllianceApi.GetTeamsAtEvent getTeamsAtEvent = new TheBlueAllianceApi.GetTeamsAtEvent(context, event);
+
+                //get teams at current event
+                if(getTeamsAtEvent.execute())
+                {
+                    for(Team team : getTeamsAtEvent.getTeams())
+                    {
+                        team.save(getDatabase());
+                    }
+                }
+
+
+            }
+        });
+
+        updateThread.start();
     }
 
     @Override

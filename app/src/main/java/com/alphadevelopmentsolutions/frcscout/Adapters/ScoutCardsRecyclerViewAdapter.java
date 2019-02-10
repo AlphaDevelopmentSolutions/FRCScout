@@ -1,6 +1,5 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters;
 
-import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -12,8 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
-import com.alphadevelopmentsolutions.frcscout.Classes.GameScoreStatus;
 import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
@@ -47,15 +44,9 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
     static class ViewHolder extends RecyclerView.ViewHolder
     {
 
-        TextView matchOutcomeTextView;
+        TextView matchIdTextView;
         TextView blueAllianceScoreTextView;
         TextView redAllianceScoreTextView;
-        TextView blueAllianceTeamOneNumberTextView;
-        TextView blueAllianceTeamTwoNumberTextView;
-        TextView blueAllianceTeamThreeNumberTextView;
-        TextView redAllianceTeamOneNumberTextView;
-        TextView redAllianceTeamTwoNumberTextView;
-        TextView redAllianceTeamThreeNumberTextView;
         ImageView matchOptionsImageView;
         TextView viewMatchButton;
 
@@ -63,15 +54,9 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
         {
             super(view);
 
-            matchOutcomeTextView = view.findViewById(R.id.MatchOutcomeTextView);
+            matchIdTextView = view.findViewById(R.id.MatchIdTextView);
             blueAllianceScoreTextView = view.findViewById(R.id.BlueAllianceScoreTextView);
             redAllianceScoreTextView = view.findViewById(R.id.RedAllianceScoreTextView);
-            blueAllianceTeamOneNumberTextView = view.findViewById(R.id.BlueAllianceTeamOneNumberTextView);
-            blueAllianceTeamTwoNumberTextView = view.findViewById(R.id.BlueAllianceTeamTwoNumberTextView);
-            blueAllianceTeamThreeNumberTextView = view.findViewById(R.id.BlueAllianceTeamThreeNumberTextView);
-            redAllianceTeamOneNumberTextView = view.findViewById(R.id.RedAllianceTeamOneNumberTextView);
-            redAllianceTeamTwoNumberTextView = view.findViewById(R.id.RedAllianceTeamTwoNumberTextView);
-            redAllianceTeamThreeNumberTextView = view.findViewById(R.id.RedAllianceTeamThreeNumberTextView);
             matchOptionsImageView = view.findViewById(R.id.MatchOptionsImageView);
             viewMatchButton = view.findViewById(R.id.ViewMatchButton);
         }
@@ -82,7 +67,7 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType)
     {
         //Inflate the event layout for the each item in the list
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_match_card, viewGroup, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_scout_card, viewGroup, false);
 
         return new ScoutCardsRecyclerViewAdapter.ViewHolder(view);
     }
@@ -90,42 +75,14 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
     @Override
     public void onBindViewHolder(@NonNull final ScoutCardsRecyclerViewAdapter.ViewHolder viewHolder, int position)
     {
-        //Set the OutcomeTextView
-        if(team != null)
-        {
-            //gets the alliance color of the current team you are viewing
-            //used for WIN / LOSE statuses
-//            AllianceColor allianceColor = scoutCards.get(position).getTeamAllianceColor(team.getId());
-            viewHolder.matchOutcomeTextView.setText("LOSE");
 
-        }
-        //hide the OutcomeTextView
-        else
-        {
-            viewHolder.matchOutcomeTextView.setVisibility(View.GONE);
-        }
+        ScoutCard scoutCard = scoutCards.get(viewHolder.getAdapterPosition());
+
 
         //set scores
-        viewHolder.blueAllianceScoreTextView.setText(String.valueOf(scoutCards.get(position).getBlueAllianceFinalScore()));
-        viewHolder.redAllianceScoreTextView.setText(String.valueOf(scoutCards.get(position).getRedAllianceFinalScore()));
-
-//        //blue team won, bold the score textview
-//        if(scoutCards.get(position).getOutcomeStatus(AllianceColor.BLUE).equals(GameScoreStatus.WIN)) viewHolder.blueAllianceScoreTextView.setTypeface(viewHolder.blueAllianceScoreTextView.getTypeface(), Typeface.BOLD);
-//
-//        //red team won, bold the score textview
-//        if(scoutCards.get(position).getOutcomeStatus(AllianceColor.RED).equals(GameScoreStatus.WIN)) viewHolder.redAllianceScoreTextView.setTypeface(viewHolder.redAllianceScoreTextView.getTypeface(), Typeface.BOLD);
-
-
-//        //set blue team numbers
-//        viewHolder.blueAllianceTeamOneNumberTextView.setText(String.valueOf(scoutCards.get(position).getBlueAllianceTeamOneId()));
-//        viewHolder.blueAllianceTeamTwoNumberTextView.setText(String.valueOf(matchList.get(position).getBlueAllianceTeamTwoId()));
-//        viewHolder.blueAllianceTeamThreeNumberTextView.setText(String.valueOf(matchList.get(position).getBlueAllianceTeamThreeId()));
-//
-//        //set red team numbers
-//        viewHolder.redAllianceTeamOneNumberTextView.setText(String.valueOf(matchList.get(position).getRedAllianceTeamOneId()));
-//        viewHolder.redAllianceTeamTwoNumberTextView.setText(String.valueOf(matchList.get(position).getRedAllianceTeamTwoId()));
-//        viewHolder.redAllianceTeamThreeNumberTextView.setText(String.valueOf(matchList.get(position).getRedAllianceTeamThreeId()));
-
+        viewHolder.blueAllianceScoreTextView.setText(String.valueOf(scoutCard.getBlueAllianceFinalScore()));
+        viewHolder.redAllianceScoreTextView.setText(String.valueOf(scoutCard.getRedAllianceFinalScore()));
+        viewHolder.matchIdTextView.setText(String.valueOf(scoutCard.getMatchId()));
 
         //Opens an option menu for various options on that score card
         viewHolder.matchOptionsImageView.setOnClickListener(new View.OnClickListener()

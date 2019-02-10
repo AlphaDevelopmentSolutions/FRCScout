@@ -35,6 +35,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
     {
         TextView teamNameTextView;
         TextView teamNumberTextView;
+        TextView teamLocationTextView;
         ImageView teamLogoImageView;
         TextView viewTeamButton;
 
@@ -44,6 +45,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
 
             teamNameTextView = view.findViewById(R.id.TeamNameTextView);
             teamNumberTextView = view.findViewById(R.id.TeamNumberTextView);
+            teamLocationTextView = view.findViewById(R.id.TeamLocationTextView);
             teamLogoImageView = view.findViewById(R.id.TeamLogoImageView);
             viewTeamButton = view.findViewById(R.id.ViewTeamButton);
         }
@@ -62,9 +64,11 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
     @Override
     public void onBindViewHolder(@NonNull final TeamListRecyclerViewAdapter.ViewHolder viewHolder, int position)
     {
+        Team team = teamList.get(viewHolder.getAdapterPosition());
         //Set the content on the card
-        viewHolder.teamNameTextView.setText(teamList.get(position).getName());
-        viewHolder.teamNumberTextView.setText(String.valueOf(teamList.get(position).getId()));
+        viewHolder.teamNameTextView.setText(team.getName());
+        viewHolder.teamNumberTextView.setText(String.valueOf(team.getId()));
+        viewHolder.teamLocationTextView.setText(team.getCity() + ", " + team.getStateProvince() + ", " + team.getCountry());
 
         //make sure there is a bitmap found when you try and update the image view
         Bitmap teamLogo = teamList.get(position).getImageBitmap();

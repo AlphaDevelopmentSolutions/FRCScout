@@ -34,4 +34,6 @@
     <string name="save">Save</string>
     <string name="number_placeholder">0</string>
     <string name="match_number">Match Number</string>
+    <string name="blue_alliance_scout_card_label">Blue Alliance -\u0020</string>
+    <string name="red_alliance_scout_card_label">Red Alliance -\u0020</string>
 </resources>
