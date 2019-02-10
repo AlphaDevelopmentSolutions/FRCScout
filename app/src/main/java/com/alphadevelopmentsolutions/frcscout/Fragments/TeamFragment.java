@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Adapters.ScoutCardsRecyclerViewAdapter;
@@ -76,6 +77,9 @@ public class TeamFragment extends Fragment
 
     private RecyclerView scoutCardsRecyclerView;
 
+    private TextView teamNumberNameTextView;
+    private TextView teamLocationTextView;
+
     private FontAwesomeIcon facebookFontAwesomeBrandIcon;
     private FontAwesomeIcon twitterFontAwesomeBrandIcon;
     private FontAwesomeIcon instagramFontAwesomeBrandIcon;
@@ -102,6 +106,9 @@ public class TeamFragment extends Fragment
         team.load(context.getDatabase());
 
         //assign the vars to the views on the page
+        teamNumberNameTextView = view.findViewById(R.id.TeamNumberNameTextView);
+        teamLocationTextView = view.findViewById(R.id.TeamLocationTextView);
+
         facebookFontAwesomeBrandIcon = view.findViewById(R.id.FacebookFontAwesomeBrandIcon);
         twitterFontAwesomeBrandIcon = view.findViewById(R.id.TwitterFontAwesomeBrandIcon);
         instagramFontAwesomeBrandIcon = view.findViewById(R.id.InstagramFontAwesomeBrandIcon);
@@ -111,20 +118,20 @@ public class TeamFragment extends Fragment
         addMatchFloatingActionButton = view.findViewById(R.id.AddMatchFloatingActionButton);
 
         //checks to see if the team has a valid URL for each social media, if not hide the icon
-        if(team.getFacebookURL() != null && !team.getFacebookURL().equals("")) facebookFontAwesomeBrandIcon.setURL(team.getFacebookURL());
-//        else facebookFontAwesomeBrandIcon.hide();
+        if(team.getFacebookURL() != null && !team.getFacebookURL().equals("")) facebookFontAwesomeBrandIcon.setURL(team.getFacebookURL(), context);
+        else facebookFontAwesomeBrandIcon.hide();
 
-        if(team.getTwitterURL() != null && !team.getTwitterURL().equals("")) twitterFontAwesomeBrandIcon.setURL(team.getTwitterURL());
-//        else twitterFontAwesomeBrandIcon.hide();
+        if(team.getTwitterURL() != null && !team.getTwitterURL().equals("")) twitterFontAwesomeBrandIcon.setURL(team.getTwitterURL(), context);
+        else twitterFontAwesomeBrandIcon.hide();
 
-        if(team.getInstagramURL() != null && !team.getInstagramURL().equals("")) instagramFontAwesomeBrandIcon.setURL(team.getInstagramURL());
-//        else instagramFontAwesomeBrandIcon.hide();
+        if(team.getInstagramURL() != null && !team.getInstagramURL().equals("")) instagramFontAwesomeBrandIcon.setURL(team.getInstagramURL(), context);
+        else instagramFontAwesomeBrandIcon.hide();
 
-        if(team.getYoutubeURL() != null && !team.getYoutubeURL().equals("")) youtubeFontAwesomeBrandIcon.setURL(team.getYoutubeURL());
-//        else youtubeFontAwesomeBrandIcon.hide();
+        if(team.getYoutubeURL() != null && !team.getYoutubeURL().equals("")) youtubeFontAwesomeBrandIcon.setURL(team.getYoutubeURL(), context);
+        else youtubeFontAwesomeBrandIcon.hide();
 
-        if(team.getWebsiteURL() != null && !team.getWebsiteURL().equals("")) websiteFontAwesomeSolidIcon.setURL(team.getWebsiteURL());
-//        else websiteFontAwesomeSolidIcon.hide();
+        if(team.getWebsiteURL() != null && !team.getWebsiteURL().equals("")) websiteFontAwesomeSolidIcon.setURL(team.getWebsiteURL(), context);
+        else websiteFontAwesomeSolidIcon.hide();
 
         //logic for adding a new match
         addMatchFloatingActionButton.setOnClickListener(new View.OnClickListener()
@@ -135,29 +142,18 @@ public class TeamFragment extends Fragment
                 //swap fragments
                 FragmentManager fragmentManager = context.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.MainFrame, new ScoutCardFragment());
+                fragmentTransaction.replace(R.id.MainFrame, ScoutCardFragment.newInstance(-1, team.getId()));
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }
         });
 
+        teamNumberNameTextView.setText(team.getId() + " - " + team.getName());
+        teamLocationTextView.setText(team.getCity() + ", " + team.getStateProvince() + ", " + team.getCountry());
 
         //SCOUT CARD GARBAGE
         scoutCardsRecyclerView = view.findViewById(R.id.ScoutCardsRecyclerView);
-
-        ArrayList<Match> matchList = new ArrayList<>();
-
-        Match match = new Match(1,  new Date(111111), 5885, 1234, 2345, 1, 1, 1, 200, 400, 610, 875, 123, 1, 1, 1);
-        matchList.add(match);
-        matchList.add(match);
-        matchList.add(match);
-        matchList.add(match);
-        matchList.add(match);
-        matchList.add(match);
-        matchList.add(match);
-        matchList.add(match);
-        matchList.add(match);
-
+        
         ScoutCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new ScoutCardsRecyclerViewAdapter(team, context.getDatabase().getScoutCards(team), context);
 
         scoutCardsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

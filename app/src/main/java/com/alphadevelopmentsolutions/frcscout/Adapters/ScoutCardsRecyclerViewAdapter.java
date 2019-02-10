@@ -147,7 +147,7 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
                 //swap fragments
                 FragmentManager fragmentManager = context.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.MainFrame, ScoutCardFragment.newInstance(scoutCards.get(viewHolder.getAdapterPosition()).getId()));
+                fragmentTransaction.replace(R.id.MainFrame, ScoutCardFragment.newInstance(scoutCards.get(viewHolder.getAdapterPosition()).getId(), -1));
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }

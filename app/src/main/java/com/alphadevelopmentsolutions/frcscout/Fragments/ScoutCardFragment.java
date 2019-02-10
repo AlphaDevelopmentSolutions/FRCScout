@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,8 +36,10 @@ public class ScoutCardFragment extends Fragment
 {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "ScoutCardId";
+    private static final String ARG_PARAM2 = "TeamId";
 
     private int scoutCardId;
+    private int teamId;
 
     private OnFragmentInteractionListener mListener;
 
@@ -50,14 +53,16 @@ public class ScoutCardFragment extends Fragment
      * this fragment using the provided parameters.
      *
      * @param scoutCardId scout card ID
+     * @param teamId teamId
      * @return A new instance of fragment ScoutCardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ScoutCardFragment newInstance(int scoutCardId)
+    public static ScoutCardFragment newInstance(int scoutCardId, int teamId)
     {
         ScoutCardFragment fragment = new ScoutCardFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, scoutCardId);
+        args.putInt(ARG_PARAM2, teamId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -69,6 +74,7 @@ public class ScoutCardFragment extends Fragment
         if (getArguments() != null)
         {
             scoutCardId = getArguments().getInt(ARG_PARAM1);
+            teamId = getArguments().getInt(ARG_PARAM2);
         }
     }
     
@@ -83,6 +89,10 @@ public class ScoutCardFragment extends Fragment
     private Button scoutCardSaveButton;
 
     private ScoutCard scoutCard;
+
+    private Team team;
+
+    private MainActivity context;
 
     //region Autonomous
     
@@ -148,7 +158,14 @@ public class ScoutCardFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_scout_card, container, false);
 
-        final Database database = ((MainActivity) getActivity()).getDatabase();
+        context = (MainActivity) getActivity();
+        final Database database = context.getDatabase();
+
+        if(teamId > 0)
+        {
+            team = new Team(teamId);
+            team.load(database);
+        }
 
         if(scoutCardId > 0)
         {
@@ -373,40 +390,83 @@ public class ScoutCardFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                ScoutCard scoutCard = new ScoutCard(
-                        -1,
-                        Integer.parseInt(matchIdEditText.getText().toString()),
-                        Integer.parseInt(teamNumberAutoCompleteTextView.getText().toString()),
-                        scouterNameAutoCompleteTextView.getText().toString(),
-                        Integer.parseInt(blueAllianceFinalScoreEditText.getText().toString()),
-                        Integer.parseInt(redAllianceFinalScoreEditText.getText().toString()),
-                        autonomousExitHabitatTextView.getText().toString().equals(getActivity().getResources().getString(R.string.yes)),
-                        Integer.parseInt(autonomousHatchPanelsSecuredTextView.getText().toString()),
-                        Integer.parseInt(autonomousCargoStoredTextView.getText().toString()),
-                        Integer.parseInt(teleopHatchPanelsSecuredTextView.getText().toString()),
-                        Integer.parseInt(teleopCargoStoredTextView.getText().toString()),
-                        Integer.parseInt(teleopRocketsCompletedTextView.getText().toString()),
-                        endGameReturnedToHabitatTextView.getText().toString(),
-                        matchNotesEditText.getText().toString(),
-                        new Date(System.currentTimeMillis()));
-                scoutCard.save(database);
+
+                if(validateFields())
+                {
+
+                    int matchId = Integer.parseInt(matchIdEditText.getText().toString());
+                    int teamNumber = Integer.parseInt(teamNumberAutoCompleteTextView.getText().toString());
+                    String scouterName = scouterNameAutoCompleteTextView.getText().toString();
+                    int blueAllianceFinalScore = Integer.parseInt(blueAllianceFinalScoreEditText.getText().toString());
+                    int redAllianceFinalScore = Integer.parseInt(redAllianceFinalScoreEditText.getText().toString());
+                    boolean autonomousExitHabitat = autonomousExitHabitatTextView.getText().toString().equals(getActivity().getResources().getString(R.string.yes));
+                    int autonomousHatchPanelsSecured = Integer.parseInt(autonomousHatchPanelsSecuredTextView.getText().toString());
+                    int autonomousCargoStored = Integer.parseInt(autonomousCargoStoredTextView.getText().toString());
+                    int teleopHatchPanelsSecured = Integer.parseInt(teleopHatchPanelsSecuredTextView.getText().toString());
+                    int teleopCargoStored = Integer.parseInt(teleopCargoStoredTextView.getText().toString());
+                    int teleopRocketsCompleted = Integer.parseInt(teleopRocketsCompletedTextView.getText().toString());
+                    String endGameReturnedToHabitat = endGameReturnedToHabitatTextView.getText().toString();
+                    String matchNotes = matchNotesEditText.getText().toString();
+                    Date completedDate = new Date(System.currentTimeMillis());
+
+                    if (scoutCard != null)
+                    {
+                        scoutCard.setMatchId(matchId);
+                        scoutCard.setTeamId(teamNumber);
+                        scoutCard.setCompletedBy(scouterName);
+                        scoutCard.setBlueAllianceFinalScore(blueAllianceFinalScore);
+                        scoutCard.setRedAllianceFinalScore(redAllianceFinalScore);
+                        scoutCard.setAutonomousExitHabitat(autonomousExitHabitat);
+                        scoutCard.setAutonomousHatchPanelsSecured(autonomousHatchPanelsSecured);
+                        scoutCard.setAutonomousCargoStored(autonomousCargoStored);
+                        scoutCard.setTeleopHatchPanelsSecured(teleopHatchPanelsSecured);
+                        scoutCard.setTeleopCargoStored(teleopCargoStored);
+                        scoutCard.setTeleopRocketsCompleted(teleopRocketsCompleted);
+                        scoutCard.setEndGameReturnedToHabitat(endGameReturnedToHabitat);
+                        scoutCard.setNotes(matchNotes);
+                        scoutCard.setCompletedDate(completedDate);
+                        if (scoutCard.save(database) > 0)
+                        {
+                            context.showSnackbar("Saved Successfully.");
+                            context.getSupportFragmentManager().popBackStackImmediate();
+                        }
+
+
+                    } else
+                    {
+                        ScoutCard scoutCard = new ScoutCard(
+                                -1,
+                                matchId,
+                                teamNumber,
+                                scouterName,
+                                blueAllianceFinalScore,
+                                redAllianceFinalScore,
+                                autonomousExitHabitat,
+                                autonomousHatchPanelsSecured,
+                                autonomousCargoStored,
+                                teleopHatchPanelsSecured,
+                                teleopCargoStored,
+                                teleopRocketsCompleted,
+                                endGameReturnedToHabitat,
+                                matchNotes,
+                                completedDate);
+                        if (scoutCard.save(database) > 0)
+                        {
+                            context.showSnackbar("Saved Successfully.");
+                            context.getSupportFragmentManager().popBackStackImmediate();
+                        }
+                    }
+                }
             }
         });
 
+        if(team != null)
+            teamNumberAutoCompleteTextView.setText(String.valueOf(team.getId()));
 
-        ArrayList<Integer> teamNumbers = new ArrayList<>();
         ArrayList<String> scouterNames = new ArrayList<>();
-
-
-        for(Team team : database.getTeams())
-            teamNumbers.add(team.getId());
-
 
         for(User user : database.getUsers())
             scouterNames.add(user.getName());
-
-        ArrayAdapter<Integer> teamNumbersAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, teamNumbers);
-        teamNumberAutoCompleteTextView.setAdapter(teamNumbersAdapter);
 
         ArrayAdapter<String> scouterNameAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, scouterNames);
         scouterNameAutoCompleteTextView.setAdapter(scouterNameAdapter);
@@ -436,6 +496,97 @@ public class ScoutCardFragment extends Fragment
         }
 
         return view;
+    }
+
+    /**
+     * Validates all fields are either filled in or filled in with correct data
+     * @return boolean if fields valid
+     */
+    private boolean validateFields()
+    {
+
+        if(!teamNumberAutoCompleteTextView.getText().toString().matches("^[-+]?\\d*$")
+            || teamNumberAutoCompleteTextView.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid team number.");
+            return false;
+        }
+
+        if(scouterNameAutoCompleteTextView.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid scouter name.");
+            return false;
+        }
+
+        if(!matchIdEditText.getText().toString().matches("^[-+]?\\d*$")
+            || matchIdEditText.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid match number.");
+            return false;
+        }
+
+        if(!blueAllianceFinalScoreEditText.getText().toString().matches("^[-+]?\\d*$")
+            || blueAllianceFinalScoreEditText.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid blue alliance score.");
+            return false;
+        }
+
+        if(!redAllianceFinalScoreEditText.getText().toString().matches("^[-+]?\\d*$")
+            || redAllianceFinalScoreEditText.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid red alliance score.");
+            return false;
+        }
+
+        if(autonomousExitHabitatTextView.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid autonomous exit habitat score.");
+            return false;
+        }
+
+        if(!autonomousHatchPanelsSecuredTextView.getText().toString().matches("^[-+]?\\d*$")
+            || autonomousHatchPanelsSecuredTextView.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid autonomous hatch panels secured.");
+            return false;
+        }
+
+        if(!autonomousCargoStoredTextView.getText().toString().matches("^[-+]?\\d*$")
+            || autonomousCargoStoredTextView.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid autonomous cargo stored.");
+            return false;
+        }
+
+        if(!teleopHatchPanelsSecuredTextView.getText().toString().matches("^[-+]?\\d*$")
+            || teleopHatchPanelsSecuredTextView.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid teleop hatch panels secured.");
+            return false;
+        }
+
+        if(!teleopCargoStoredTextView.getText().toString().matches("^[-+]?\\d*$")
+            || teleopCargoStoredTextView.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid teleop cargo stored.");
+            return false;
+        }
+
+        if(!teleopRocketsCompletedTextView.getText().toString().matches("^[-+]?\\d*$")
+            || teleopRocketsCompletedTextView.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid teleop rockets completed.");
+            return false;
+        }
+
+        if(endGameReturnedToHabitatTextView.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid end game returned to habitat.");
+            return false;
+        }
+
+        return true;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

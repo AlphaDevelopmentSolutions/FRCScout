@@ -95,13 +95,13 @@ public class MatchFragment extends Fragment
         //populate the viewPager with all the blue alliance teams
         for(int teamId : blueAllianceTeamIds)
         {
-            matchViewPagerAdapter.addFragment(ScoutCardFragment.newInstance(teamId), String.valueOf(teamId));
+            matchViewPagerAdapter.addFragment(ScoutCardFragment.newInstance(-1, teamId), String.valueOf(teamId));
         }
 
         //populate the viewPager with all the red alliance teams
         for(int teamId : redAllianceTeamIds)
         {
-            matchViewPagerAdapter.addFragment(ScoutCardFragment.newInstance(teamId), String.valueOf(teamId));
+            matchViewPagerAdapter.addFragment(ScoutCardFragment.newInstance(-1, teamId), String.valueOf(teamId));
         }
 
         matchViewPager.setAdapter(matchViewPagerAdapter);

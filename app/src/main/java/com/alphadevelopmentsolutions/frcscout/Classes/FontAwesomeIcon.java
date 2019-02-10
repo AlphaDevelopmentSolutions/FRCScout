@@ -1,6 +1,8 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -32,16 +34,18 @@ public abstract class FontAwesomeIcon extends android.support.v7.widget.AppCompa
     /**
      * Sets the URL to go to when the icon has been clicked
      */
-    public void setURL(String URL)
+    public void setURL(final String URL, final Context context)
     {
         setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(URL));
+                context.startActivity(intent);
             }
-        }); //TODO: GOTO URL
+        });
     }
 
     abstract void init();

@@ -21,8 +21,8 @@
     <string name="scouter">Scouter Name</string>
     <string name="notes">Notes</string>
     <string name="choose_event">Choose Event</string>
-    <string name="blue_alliance_final_score">Blue Alliance Final Score</string>
-    <string name="red_alliance_final_score">Red Alliance Final Score</string>
+    <string name="blue_alliance_final_score">Blue Alliance Score</string>
+    <string name="red_alliance_final_score">Red Alliance Score</string>
     <string name="exit_habitat">Exit Habitat:\u0020</string>
     <string name="hatch_panels_secured">Hatch Panels Secured:\u0020</string>
     <string name="cargo_stored">Cargo Stored:\u0020</string>

@@ -86,9 +86,7 @@ public class TeamListFragment extends Fragment
 
         teamsRecyclerView = view.findViewById(R.id.TeamsRecyclerView);
 
-        ArrayList<Team> teamList = new ArrayList<>();
-        teamList.add(new Team(5885, "Villanova WiredCats", "city", "statte", "country", 2013, "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "test"));
-        TeamListRecyclerViewAdapter teamListRecyclerViewAdapter = new TeamListRecyclerViewAdapter(teamList, context);
+        TeamListRecyclerViewAdapter teamListRecyclerViewAdapter = new TeamListRecyclerViewAdapter(context.getDatabase().getTeams() , context);
 
         teamsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         teamsRecyclerView.setAdapter(teamListRecyclerViewAdapter);

@@ -1,10 +1,12 @@
 package com.alphadevelopmentsolutions.frcscout.Activities;
 
 import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.FrameLayout;
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
@@ -33,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private Database database;
 
+    private FrameLayout mainFrame;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -42,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements
         //open the database as soon as the app starts
         database = new Database(this);
         database.open();
+
+        mainFrame = findViewById(R.id.MainFrame);
 
         generateFakeData();
 
@@ -61,10 +67,10 @@ public class MainActivity extends AppCompatActivity implements
         (new User(-1, "Alex", "ABRUZESZEZEZEEZEZE")).save(getDatabase());
         (new User(-1, "Stacey", "Greenwood")).save(getDatabase());
 
-        (new Team(5885, "Villanova WiredCats", "city", "statte", "country", 2013, "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "test")).save(getDatabase());
-        (new Team(610, "Villanova WiredCats", "city", "statte", "country", 2013, "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "test")).save(getDatabase());
-        (new Team(1234, "Villanova WiredCats", "city", "statte", "country", 2013, "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "test")).save(getDatabase());
-        (new Team(123, "Villanova WiredCats", "city", "statte", "country", 2013, "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "wiredcats5885.ca", "test")).save(getDatabase());
+        (new Team(5885, "Villanova WiredCats", "city", "statte", "country", 2013, "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "test")).save(getDatabase());
+        (new Team(610, "Villanova WiredCats", "city", "statte", "country", 2013, "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "test")).save(getDatabase());
+        (new Team(1234, "Villanova WiredCats", "city", "statte", "country", 2013, "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "test")).save(getDatabase());
+        (new Team(123, "Villanova WiredCats", "city", "statte", "country", 2013, "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "http://wiredcats5885.ca", "test")).save(getDatabase());
 
         (new ScoutCard(-1, 2, 5885, "Griffin Sorrentino", 1, 2, true, 4, 6, 7, 8, 9, "Level 3", "Test Notes", new Date(System.currentTimeMillis()))).save(getDatabase());
         (new ScoutCard(-1, 3, 5885, "Stacey Sorrentino", 1, 2, false, 4, 6, 7, 8, 9, "Level 3", "Test Notes", new Date(System.currentTimeMillis()))).save(getDatabase());
@@ -85,5 +91,10 @@ public class MainActivity extends AppCompatActivity implements
     {
         if(!database.isOpen()) database.open();
         return database;
+    }
+
+    public void showSnackbar(String message)
+    {
+        (Snackbar.make(mainFrame, message, Snackbar.LENGTH_SHORT)).show();
     }
 }

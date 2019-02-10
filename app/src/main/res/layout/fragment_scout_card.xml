@@ -19,36 +19,55 @@
             android:layout_marginBottom="16dp"
             android:orientation="horizontal">
 
-            <AutoCompleteTextView
-                android:id="@+id/TeamNumberAutoCompleteTextView"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/team_number"
-                android:inputType="number"/>
+                android:layout_weight="1">
 
-            <AutoCompleteTextView
-                android:id="@+id/ScouterNameAutoCompleteTextView"
+                <AutoCompleteTextView
+                    android:id="@+id/TeamNumberAutoCompleteTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:editable="false"
+                    android:focusable="false"
+                    android:hint="@string/team_number"
+                    android:inputType="number"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/scouter"/>
+                android:layout_weight="1">
+
+                <AutoCompleteTextView
+                    android:id="@+id/ScouterNameAutoCompleteTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/scouter"/>
+            </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:orientation="horizontal">
 
-            <AutoCompleteTextView
-                android:id="@+id/MatchIdEditText"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/match_number"
-                android:inputType="number"/>
+                android:layout_weight="1">
+
+                <AutoCompleteTextView
+                    android:id="@+id/MatchIdEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/match_number"
+                    android:inputType="number"/>
+            </android.support.design.widget.TextInputLayout>
 
             <AutoCompleteTextView
                 android:layout_width="match_parent"
@@ -65,21 +84,33 @@
             android:layout_marginBottom="16dp"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/BlueAllianceFinalScoreEditText"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/blue_alliance_final_score"
-                android:inputType="number" />
+                android:layout_weight="1">
 
-            <EditText
-                android:id="@+id/RedAllianceFinalScoreEditText"
+                <EditText
+                    android:id="@+id/BlueAllianceFinalScoreEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/blue_alliance_final_score"
+                    android:inputType="number"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/red_alliance_final_score"
-                android:inputType="number" />
+                android:layout_weight="1">
+
+                <EditText
+                    android:id="@+id/RedAllianceFinalScoreEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/red_alliance_final_score"
+                    android:inputType="number"/>
+            </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
 
