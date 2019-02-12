@@ -675,6 +675,7 @@ public class Database
                         ScoutCard.COLUMN_NAME_ID,
                         ScoutCard.COLUMNS_NAME_MATCH_ID,
                         ScoutCard.COLUMN_NAME_TEAM_ID,
+                        ScoutCard.COLUMN_NAME_EVENT_ID,
                         ScoutCard.COLUMN_NAME_COMPLETED_BY,
                         ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE,
                         ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE,
@@ -712,6 +713,7 @@ public class Database
                 int id = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ID));
                 int matchId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMNS_NAME_MATCH_ID));
                 int teamId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID));
+                String eventId = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
                 String completedBy = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_BY));
                 int blueAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE));
                 int redAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE));
@@ -729,6 +731,7 @@ public class Database
                         id,
                         matchId,
                         teamId,
+                        eventId,
                         completedBy,
                         blueAllianceFinalScore,
                         redAllianceFinalScore,
@@ -765,6 +768,7 @@ public class Database
                 {
                         ScoutCard.COLUMNS_NAME_MATCH_ID,
                         ScoutCard.COLUMN_NAME_TEAM_ID,
+                        ScoutCard.COLUMN_NAME_EVENT_ID,
                         ScoutCard.COLUMN_NAME_COMPLETED_BY,
                         ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE,
                         ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE,
@@ -801,6 +805,7 @@ public class Database
 
             int matchId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMNS_NAME_MATCH_ID));
             int teamId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID));
+            String eventId = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
             String completedBy = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_BY));
             int blueAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE));
             int redAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE));
@@ -819,6 +824,7 @@ public class Database
                     scoutCard.getId(),
                     matchId,
                     teamId,
+                    eventId,
                     completedBy,
                     blueAllianceFinalScore,
                     redAllianceFinalScore,
@@ -849,6 +855,7 @@ public class Database
         ContentValues contentValues = new ContentValues();
         contentValues.put(ScoutCard.COLUMNS_NAME_MATCH_ID, scoutCard.getMatchId());
         contentValues.put(ScoutCard.COLUMN_NAME_TEAM_ID, scoutCard.getTeamId());
+        contentValues.put(ScoutCard.COLUMN_NAME_EVENT_ID, scoutCard.getEventId());
         contentValues.put(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE, scoutCard.getBlueAllianceFinalScore());
         contentValues.put(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE, scoutCard.getRedAllianceFinalScore());
         contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT, scoutCard.isAutonomousExitHabitat() ? "1" : "0");

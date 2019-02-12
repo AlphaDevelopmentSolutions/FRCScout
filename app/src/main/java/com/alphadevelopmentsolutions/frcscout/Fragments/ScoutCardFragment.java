@@ -1,8 +1,10 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -19,6 +21,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.ApiParams;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.ArrayList;
@@ -396,6 +399,7 @@ public class ScoutCardFragment extends Fragment
 
                     int matchId = Integer.parseInt(matchIdEditText.getText().toString());
                     int teamNumber = Integer.parseInt(teamNumberAutoCompleteTextView.getText().toString());
+                    String eventId = PreferenceManager.getDefaultSharedPreferences(context).getString(ApiParams.EVENT_ID, "");
                     String scouterName = scouterNameAutoCompleteTextView.getText().toString();
                     int blueAllianceFinalScore = Integer.parseInt(blueAllianceFinalScoreEditText.getText().toString());
                     int redAllianceFinalScore = Integer.parseInt(redAllianceFinalScoreEditText.getText().toString());
@@ -413,6 +417,7 @@ public class ScoutCardFragment extends Fragment
                     {
                         scoutCard.setMatchId(matchId);
                         scoutCard.setTeamId(teamNumber);
+                        scoutCard.setEventId(eventId);
                         scoutCard.setCompletedBy(scouterName);
                         scoutCard.setBlueAllianceFinalScore(blueAllianceFinalScore);
                         scoutCard.setRedAllianceFinalScore(redAllianceFinalScore);
@@ -438,6 +443,7 @@ public class ScoutCardFragment extends Fragment
                                 -1,
                                 matchId,
                                 teamNumber,
+                                eventId,
                                 scouterName,
                                 blueAllianceFinalScore,
                                 redAllianceFinalScore,

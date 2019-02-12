@@ -31,18 +31,12 @@ public class ApiParser
      * @return XML in string format
      * @throws IOException
      */
-    public JSONArray parse() throws IOException, JSONException
+    public JSONObject parse() throws IOException, JSONException
     {
         String response = queryAPI();
+
         //parse and return the response
-        try
-        {
-            return new JSONArray(new JSONObject(response));
-        }
-        catch(JSONException e)
-        {
-            return new JSONArray(response);
-        }
+        return new JSONObject(response);
     }
 
     private String queryAPI() throws IOException

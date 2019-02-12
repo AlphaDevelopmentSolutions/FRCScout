@@ -1,22 +1,18 @@
 package com.alphadevelopmentsolutions.frcscout.Activities;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
-import android.support.design.widget.AppBarLayout;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 
 import com.alphadevelopmentsolutions.frcscout.Api.ScoutingWiredcats;
-import com.alphadevelopmentsolutions.frcscout.Api.TheBlueAllianceApi;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
@@ -28,6 +24,7 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.MatchListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.ApiParams;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.Date;
@@ -70,7 +67,9 @@ public class MainActivity extends AppCompatActivity implements
 
         context = this;
 
-        generateFakeData();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit().putString(ApiParams.EVENT_ID, "2019onosh").apply();
+
         updateApplicationData("2019onosh");
 
         if(updateThread != null)
@@ -97,28 +96,15 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setElevation(ACTION_BAR_ELEVATION);
     }
 
-    private void generateFakeData()
-    {
-        getDatabase().clear();
-
-        (new User(-1, "Griffin", "Sorrentino")).save(getDatabase());
-        (new User(-1, "Bob", "Hedrick")).save(getDatabase());
-        (new User(-1, "Alex", "ABRUZESZEZEZEEZEZE")).save(getDatabase());
-        (new User(-1, "Stacey", "Greenwood")).save(getDatabase());
-
-
-        (new ScoutCard(-1, 2, 5885, "Griffin Sorrentino", 1, 2, true, 4, 6, 7, 8, 9, "Level 3", "Test Notes", new Date(System.currentTimeMillis()))).save(getDatabase());
-        (new ScoutCard(-1, 3, 5885, "Stacey Sorrentino", 1, 2, false, 4, 6, 7, 8, 9, "Level 3", "Test Notes", new Date(System.currentTimeMillis()))).save(getDatabase());
-        (new ScoutCard(-1, 4, 5885, "Bob Sorrentino", 1, 2, true, 4, 6, 7, 8, 9, "Level 3", "Test Notes", new Date(System.currentTimeMillis()))).save(getDatabase());
-    }
-
     private void updateApplicationData(final String event)
     {
+        getDatabase().clear();
         updateThread = new Thread(new Runnable()
         {
             @Override
             public void run()
             {
+                //update teams
                 ScoutingWiredcats.GetTeamsAtEvent getTeamsAtEvent = new ScoutingWiredcats.GetTeamsAtEvent(context, event);
 
                 //get teams at current event
@@ -127,6 +113,17 @@ public class MainActivity extends AppCompatActivity implements
                     for(Team team : getTeamsAtEvent.getTeams())
                     {
                         team.save(getDatabase());
+                    }
+                }
+
+                //update users
+                ScoutingWiredcats.GetUsers getUsers = new ScoutingWiredcats.GetUsers(context);
+
+                if(getUsers.execute())
+                {
+                    for(User user : getUsers.getUsers())
+                    {
+                        user.save(getDatabase());
                     }
                 }
 

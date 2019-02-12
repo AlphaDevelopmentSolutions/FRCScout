@@ -1,5 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Api;
 
+import com.alphadevelopmentsolutions.frcscout.Interfaces.ApiParams;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -62,7 +64,7 @@ public abstract class Api
 
         //Specify version of current API
         formattedPostData
-                .append("z=z");
+                .append("key=" + ApiParams.API_KEY);
 
         //add each post data to the string builder
         for(Map.Entry<String, String> pair : postData.entrySet())

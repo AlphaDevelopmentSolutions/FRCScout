@@ -1,5 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ScoutCard
@@ -9,6 +10,7 @@ public class ScoutCard
     public static final String COLUMN_NAME_ID = "Id";
     public static final String COLUMNS_NAME_MATCH_ID = "MatchId";
     public static final String COLUMN_NAME_TEAM_ID = "TeamId";
+    public static final String COLUMN_NAME_EVENT_ID = "EventId";
     public static final String COLUMN_NAME_COMPLETED_BY = "CompletedBy";
     public static final String COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE = "BlueAllianceFinalScore";
     public static final String COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE = "RedAllianceFinalScore";
@@ -25,6 +27,7 @@ public class ScoutCard
     private int id;
     private int matchId;
     private int teamId;
+    private String eventId;
     private String completedBy;
     private int blueAllianceFinalScore;
     private int redAllianceFinalScore;
@@ -42,6 +45,7 @@ public class ScoutCard
             int id,
             int matchId,
             int teamId,
+            String eventId,
             String completedBy,
             int blueAllianceFinalScore,
             int redAllianceFinalScore,
@@ -58,6 +62,7 @@ public class ScoutCard
         this.id = id;
         this.matchId = matchId;
         this.teamId = teamId;
+        this.eventId = eventId;
         this.blueAllianceFinalScore = blueAllianceFinalScore;
         this.redAllianceFinalScore = redAllianceFinalScore;
         this.autonomousExitHabitat = autonomousExitHabitat;
@@ -96,6 +101,11 @@ public class ScoutCard
     public int getTeamId()
     {
         return teamId;
+    }
+
+    public String getEventId()
+    {
+        return eventId;
     }
 
     public int getBlueAllianceFinalScore()
@@ -153,6 +163,13 @@ public class ScoutCard
         return completedDate;
     }
 
+    public String getCompletedDateForSQL()
+    {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd H:mm:ss");
+
+        return simpleDateFormat.format(completedDate);
+    }
+
     public String getNotes()
     {
         return notes;
@@ -175,6 +192,11 @@ public class ScoutCard
     public void setTeamId(int teamId)
     {
         this.teamId = teamId;
+    }
+
+    public void setEventId(String eventId)
+    {
+        this.eventId = eventId;
     }
 
     public void setBlueAllianceFinalScore(int blueAllianceFinalScore)
@@ -260,6 +282,7 @@ public class ScoutCard
             {
                 setMatchId(scoutCard.getMatchId());
                 setTeamId(scoutCard.getTeamId());
+                setEventId(scoutCard.getEventId());
                 setBlueAllianceFinalScore(scoutCard.getBlueAllianceFinalScore());
                 setRedAllianceFinalScore(scoutCard.getRedAllianceFinalScore());
                 setAutonomousExitHabitat(scoutCard.isAutonomousExitHabitat());

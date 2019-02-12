@@ -66,6 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     ScoutCard.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
                     ScoutCard.COLUMNS_NAME_MATCH_ID + " INTEGER," +
                     ScoutCard.COLUMN_NAME_TEAM_ID + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_EVENT_ID + " TEXT," +
                     ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE + " INTEGER," +
                     ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE + " INTEGER," +
                     ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT + " TEXT," +
