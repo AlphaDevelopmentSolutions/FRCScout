@@ -14,4 +14,9 @@
         android:title="@string/refresh_data"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/ChangeEventItem"
+        android:title="@string/change_event"
+        app:showAsAction="never" />
+
 </menu>

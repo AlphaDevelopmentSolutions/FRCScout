@@ -320,24 +320,28 @@ public class Database
         //make sure the cursor isn't null, else we die
         if (cursor != null)
         {
-            //move to the first result in the set
-            cursor.moveToFirst();
 
-            String name = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_NAME));
-            String city = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_CITY));
-            String stateProvince = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_STATEPROVINCE));
-            String country = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_COUNTRY));
-            int rookieYear = cursor.getInt(cursor.getColumnIndex(Team.COLUMN_NAME_ROOKIE_YEAR));
-            String facebookURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_FACEBOOK_URL));
-            String twitterURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_TWITTER_URL));
-            String instagramURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_INSTAGRAM_URL));
-            String youtubeURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_YOUTUBE_URL));
-            String websiteURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_WEBSITE_URL));
-            String imageFileURI = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_IMAGE_FILE_URI));
+            if(cursor.getCount() > 0)
+            {
+                //move to the first result in the set
+                cursor.moveToFirst();
 
-            cursor.close();
+                String name = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_NAME));
+                String city = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_CITY));
+                String stateProvince = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_STATEPROVINCE));
+                String country = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_COUNTRY));
+                int rookieYear = cursor.getInt(cursor.getColumnIndex(Team.COLUMN_NAME_ROOKIE_YEAR));
+                String facebookURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_FACEBOOK_URL));
+                String twitterURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_TWITTER_URL));
+                String instagramURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_INSTAGRAM_URL));
+                String youtubeURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_YOUTUBE_URL));
+                String websiteURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_WEBSITE_URL));
+                String imageFileURI = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_IMAGE_FILE_URI));
 
-            return new Team(team.getId(), name, city, stateProvince, country, rookieYear, facebookURL, twitterURL, instagramURL, youtubeURL, websiteURL, imageFileURI);
+                cursor.close();
+
+                return new Team(team.getId(), name, city, stateProvince, country, rookieYear, facebookURL, twitterURL, instagramURL, youtubeURL, websiteURL, imageFileURI);
+            }
         }
 
 

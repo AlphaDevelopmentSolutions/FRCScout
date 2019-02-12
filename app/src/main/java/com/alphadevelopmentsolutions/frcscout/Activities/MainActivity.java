@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ChangeEventFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.LoginFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchFragment;
@@ -44,7 +46,8 @@ public class MainActivity extends AppCompatActivity implements
         MatchFragment.OnFragmentInteractionListener,
         TeamFragment.OnFragmentInteractionListener,
         ScoutCardFragment.OnFragmentInteractionListener,
-        LoginFragment.OnFragmentInteractionListener
+        LoginFragment.OnFragmentInteractionListener,
+        ChangeEventFragment.OnFragmentInteractionListener
 {
 
     private Database database;
@@ -78,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.edit().putString(ApiParams.EVENT_ID, "2019onosh").apply();
 
-        if(isOnline())
+        if(getDatabase().getTeams().size() == 0 && isOnline())
             updateApplicationData(PreferenceManager.getDefaultSharedPreferences(this).getString(ApiParams.EVENT_ID, ""));
 
         if(updateThread != null)
@@ -158,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements
                                                 public void run()
                                                 {
                                                     progressDialog.hide();
+                                                    context.recreate();
                                                 }
                                             });
                                         }
@@ -184,12 +188,16 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.RefreshDataItem:
                 updateApplicationData(PreferenceManager.getDefaultSharedPreferences(this).getString(ApiParams.EVENT_ID, ""));
                 return true;
+
+            case R.id.ChangeEventItem:
+                changeFragment(new ChangeEventFragment(), false);
+                return true;
         }
 
         return false;
     }
 
-    private void updateApplicationData(final String event)
+    public void updateApplicationData(final String event)
     {
         if(isOnline())
         {
@@ -197,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements
             progressDialog.setTitle("Downloading data...");
             progressDialog.show();
 
-            getDatabase().clear();
+//            getDatabase().clear();
             updateThread = new Thread(new Runnable()
             {
                 @Override
@@ -226,17 +234,17 @@ public class MainActivity extends AppCompatActivity implements
                             teamIds.add(team.getId());
                         }
 
-                        for(int teamId : teamIds)
+                        for(int teamId : databaseTeamIds)
                         {
-                            if(!databaseTeamIds.contains(teamId))
+                            if(!teamIds.contains(teamId))
                                 removeTeamIds.add(teamId);
                         }
 
                         for(int teamId : removeTeamIds)
                         {
                             Team team = new Team(teamId);
-                            team.load(getDatabase());
-                            team.delete(getDatabase());
+                            if(team.load(getDatabase()))
+                                team.delete(getDatabase());
                         }
 
                         for (Team team : teams)
@@ -261,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements
                         public void run()
                         {
                             progressDialog.cancel();
+                            context.recreate();
                         }
                     });
 
@@ -312,8 +321,8 @@ public class MainActivity extends AppCompatActivity implements
     {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.MainFrame, fragment);
-        if(addToBackstack)
-            fragmentTransaction.addToBackStack(null);
+        if(addToBackstack) fragmentTransaction.addToBackStack(null); //add to the backstack
+        else getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE); //pop all backstacks
         fragmentTransaction.commit();
 
         elevateActionBar();
