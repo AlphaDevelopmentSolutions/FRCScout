@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 
+import com.alphadevelopmentsolutions.frcscout.Api.ScoutingWiredcats;
 import com.alphadevelopmentsolutions.frcscout.Api.TheBlueAllianceApi;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
@@ -69,8 +70,8 @@ public class MainActivity extends AppCompatActivity implements
 
         context = this;
 
-//        generateFakeData();
-//        updateApplicationData("2019onosh");
+        generateFakeData();
+        updateApplicationData("2019onosh");
 
         if(updateThread != null)
         {
@@ -118,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void run()
             {
-                TheBlueAllianceApi.GetTeamsAtEvent getTeamsAtEvent = new TheBlueAllianceApi.GetTeamsAtEvent(context, event);
+                ScoutingWiredcats.GetTeamsAtEvent getTeamsAtEvent = new ScoutingWiredcats.GetTeamsAtEvent(context, event);
 
                 //get teams at current event
                 if(getTeamsAtEvent.execute())

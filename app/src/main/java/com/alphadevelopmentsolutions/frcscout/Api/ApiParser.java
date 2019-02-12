@@ -51,11 +51,18 @@ public class ApiParser
         StringBuilder response = new StringBuilder();
 
         //create the url based on the app URL and specified file
-        URL url = new URL(api.getURL() + "?X-TBA-Auth-Key=gGDqr1h7gbcdKAumaFgnuzPJYDox7vz6gyX1a8r9nA0VPPLYBD8q1Uj8byvUR5Lp");
+        URL url = new URL(api.getURL());
 
         //create a new connection to the server
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-        httpURLConnection.setRequestMethod("GET");
+        httpURLConnection.setRequestMethod("POST");
+        httpURLConnection.setDoOutput(true);
+
+        //gather all post data to submit to the server
+        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(httpURLConnection.getOutputStream()));
+        bufferedWriter.write(api.getPostData());
+        bufferedWriter.flush();
+        bufferedWriter.close();
 
         //read response from the server
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
