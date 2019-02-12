@@ -82,8 +82,17 @@ public class Database
         tableNames.add(Team.TABLE_NAME);
         tableNames.add(Robot.TABLE_NAME);
         tableNames.add(Match.TABLE_NAME);
-        tableNames.add(ScoutCard.TABLE_NAME);
         tableNames.add(User.TABLE_NAME);
+
+        for(String tableName : tableNames)
+            db.execSQL("DELETE FROM " + tableName);
+    }
+
+    public void clearScoutCards()
+    {
+        ArrayList<String> tableNames = new ArrayList<>();
+
+        tableNames.add(ScoutCard.TABLE_NAME);
 
         for(String tableName : tableNames)
             db.execSQL("DELETE FROM " + tableName);

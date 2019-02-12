@@ -1,15 +1,22 @@
 package com.alphadevelopmentsolutions.frcscout.Activities;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.alphadevelopmentsolutions.frcscout.Api.ScoutingWiredcats;
@@ -27,6 +34,7 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.ApiParams;
 import com.alphadevelopmentsolutions.frcscout.R;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements
@@ -70,7 +78,8 @@ public class MainActivity extends AppCompatActivity implements
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.edit().putString(ApiParams.EVENT_ID, "2019onosh").apply();
 
-        updateApplicationData("2019onosh");
+        if(isOnline())
+            updateApplicationData(PreferenceManager.getDefaultSharedPreferences(this).getString(ApiParams.EVENT_ID, ""));
 
         if(updateThread != null)
         {
@@ -96,42 +105,186 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setElevation(ACTION_BAR_ELEVATION);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId()) {
+            case R.id.UploadDataItem:
+                if(isOnline())
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle(R.string.upload_scout_cards)
+                            .setMessage(R.string.upload_scout_cards_warning)
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    final ProgressDialog progressDialog = new ProgressDialog(context);
+
+                                    final ArrayList<Team> teams = getDatabase().getTeams();
+                                    final int totalTeams = teams.size();
+                                    progressDialog.setMax(totalTeams);
+                                    progressDialog.setProgress(0);
+                                    progressDialog.setTitle("Uploading data...");
+                                    progressDialog.show();
+
+                                    Thread uploadThread = new Thread(new Runnable()
+                                    {
+                                        @Override
+                                        public void run()
+                                        {
+                                            for (Team team : teams)
+                                            {
+                                                for (ScoutCard scoutCard : getDatabase().getScoutCards(team))
+                                                {
+                                                    ScoutingWiredcats.SubmitScoutCard submitScoutCard = new ScoutingWiredcats.SubmitScoutCard(context, scoutCard);
+                                                    if(submitScoutCard.execute())
+                                                    {
+                                                        scoutCard.delete(getDatabase());
+                                                    }
+                                                }
+
+                                            }
+
+                                            runOnUiThread(new Runnable()
+                                            {
+                                                @Override
+                                                public void run()
+                                                {
+                                                    progressDialog.hide();
+                                                }
+                                            });
+                                        }
+                                    });
+
+                                    uploadThread.start();
+
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+                else
+                {
+                    showSnackbar(getString(R.string.no_internet));
+                }
+
+                return true;
+
+            case R.id.RefreshDataItem:
+                updateApplicationData(PreferenceManager.getDefaultSharedPreferences(this).getString(ApiParams.EVENT_ID, ""));
+                return true;
+        }
+
+        return false;
+    }
+
     private void updateApplicationData(final String event)
     {
-        getDatabase().clear();
-        updateThread = new Thread(new Runnable()
+        if(isOnline())
         {
-            @Override
-            public void run()
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Downloading data...");
+            progressDialog.show();
+
+            getDatabase().clear();
+            updateThread = new Thread(new Runnable()
             {
-                //update teams
-                ScoutingWiredcats.GetTeamsAtEvent getTeamsAtEvent = new ScoutingWiredcats.GetTeamsAtEvent(context, event);
-
-                //get teams at current event
-                if(getTeamsAtEvent.execute())
+                @Override
+                public void run()
                 {
-                    for(Team team : getTeamsAtEvent.getTeams())
+                    //update teams
+                    ScoutingWiredcats.GetTeamsAtEvent getTeamsAtEvent = new ScoutingWiredcats.GetTeamsAtEvent(context, event);
+
+                    //get teams at current event
+                    if (getTeamsAtEvent.execute())
                     {
-                        team.save(getDatabase());
+                        ArrayList<Team> databaseTeams = getDatabase().getTeams();
+                        ArrayList<Integer> databaseTeamIds = new ArrayList<>();
+                        ArrayList<Team> teams = getTeamsAtEvent.getTeams();
+                        ArrayList<Integer> teamIds = new ArrayList<>();
+
+                        ArrayList<Integer> removeTeamIds = new ArrayList<>();
+
+                        for(Team team : databaseTeams)
+                        {
+                            databaseTeamIds.add(team.getId());
+                        }
+
+                        for(Team team : teams)
+                        {
+                            teamIds.add(team.getId());
+                        }
+
+                        for(int teamId : teamIds)
+                        {
+                            if(!databaseTeamIds.contains(teamId))
+                                removeTeamIds.add(teamId);
+                        }
+
+                        for(int teamId : removeTeamIds)
+                        {
+                            Team team = new Team(teamId);
+                            team.load(getDatabase());
+                            team.delete(getDatabase());
+                        }
+
+                        for (Team team : teams)
+                            team.save(getDatabase());
+
                     }
-                }
 
-                //update users
-                ScoutingWiredcats.GetUsers getUsers = new ScoutingWiredcats.GetUsers(context);
+                    //update users
+                    ScoutingWiredcats.GetUsers getUsers = new ScoutingWiredcats.GetUsers(context);
 
-                if(getUsers.execute())
-                {
-                    for(User user : getUsers.getUsers())
+                    if (getUsers.execute())
                     {
-                        user.save(getDatabase());
+                        for (User user : getUsers.getUsers())
+                        {
+                            user.save(getDatabase());
+                        }
                     }
+
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            progressDialog.cancel();
+                        }
+                    });
+
+
                 }
+            });
 
+            updateThread.start();
+        }
 
-            }
-        });
+        else
+        {
+            showSnackbar(getString(R.string.no_internet));
+        }
+    }
 
-        updateThread.start();
+    private boolean isOnline()
+    {
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+
     }
 
     @Override
