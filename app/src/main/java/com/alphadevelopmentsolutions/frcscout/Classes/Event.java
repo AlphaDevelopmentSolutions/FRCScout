@@ -7,6 +7,7 @@ public class Event
 
     public static final String TABLE_NAME = "events";
     public static final String COLUMN_NAME_ID = "Id";
+    public static final String COLUMN_NAME_BLUE_ALLIANCE_ID = "BlueAllianceId";
     public static final String COLUMN_NAME_NAME = "Name";
     public static final String COLUMN_NAME_CITY = "City";
     public static final String COLUMN_NAME_STATEPROVINCE = "StateProvince";
@@ -16,6 +17,7 @@ public class Event
 
     private int id;
 
+    private String blueAllianceId;
     private String name;
     private String city;
     private String stateProvince;
@@ -26,6 +28,7 @@ public class Event
 
     public Event(
             int id,
+            String blueAllianceId,
             String name,
             String city,
             String stateProvince,
@@ -34,6 +37,7 @@ public class Event
             Date endDate)
     {
         this.id = id;
+        this.blueAllianceId = blueAllianceId;
         this.name = name;
         this.city = city;
         this.stateProvince = stateProvince;
@@ -56,6 +60,11 @@ public class Event
     public int getId()
     {
         return id;
+    }
+
+    public String getBlueAllianceId()
+    {
+        return blueAllianceId;
     }
 
     public String getName()
@@ -95,6 +104,11 @@ public class Event
     public void setId(int id)
     {
         this.id = id;
+    }
+
+    public void setBlueAllianceId(String blueAllianceId)
+    {
+        this.blueAllianceId = blueAllianceId;
     }
 
     public void setName(String name)
@@ -147,6 +161,7 @@ public class Event
 
             if (event != null)
             {
+                setBlueAllianceId(event.getBlueAllianceId());
                 setName(event.getName());
                 setCity(event.getCity());
                 setStateProvince(event.getStateProvince());

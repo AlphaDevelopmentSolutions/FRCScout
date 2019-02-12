@@ -88,6 +88,26 @@ public class Database
             db.execSQL("DELETE FROM " + tableName);
     }
 
+    public void clearEvents()
+    {
+        ArrayList<String> tableNames = new ArrayList<>();
+
+        tableNames.add(Event.TABLE_NAME);
+
+        for(String tableName : tableNames)
+            db.execSQL("DELETE FROM " + tableName);
+    }
+
+    public void clearUsers()
+    {
+        ArrayList<String> tableNames = new ArrayList<>();
+
+        tableNames.add(User.TABLE_NAME);
+
+        for(String tableName : tableNames)
+            db.execSQL("DELETE FROM " + tableName);
+    }
+
     public void clearScoutCards()
     {
         ArrayList<String> tableNames = new ArrayList<>();
@@ -101,6 +121,61 @@ public class Database
     //region Event Logic
 
     /**
+     * Gets all events in the database
+     *
+     * @return all events inside database
+     */
+    public ArrayList<Event> getEvents()
+    {
+        ArrayList<Event> events = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns =
+                {
+                        Event.COLUMN_NAME_ID,
+                        Event.COLUMN_NAME_BLUE_ALLIANCE_ID,
+                        Event.COLUMN_NAME_NAME,
+                        Event.COLUMN_NAME_CITY,
+                        Event.COLUMN_NAME_STATEPROVINCE,
+                        Event.COLUMN_NAME_COUNTRY
+                };
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                Event.TABLE_NAME,
+                columns,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while (cursor.moveToNext())
+            {
+
+                int id = cursor.getInt(cursor.getColumnIndex(Event.COLUMN_NAME_ID));
+                String blueAllianceId = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_BLUE_ALLIANCE_ID));
+                String name = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_NAME));
+                String city = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_CITY));
+                String stateProvince = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_STATEPROVINCE));
+                String country = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_COUNTRY));
+
+                events.add(new Event(id, blueAllianceId, name, city, stateProvince, country, new Date(), new Date()));
+            }
+
+            cursor.close();
+
+            return events;
+        }
+
+
+        return null;
+    }
+
+    /**
      * Gets a specific event from the database and returns it
      *
      * @param event with specified ID
@@ -111,6 +186,7 @@ public class Database
         //insert columns you are going to use here
         String[] columns =
                 {
+                        Event.COLUMN_NAME_BLUE_ALLIANCE_ID,
                         Event.COLUMN_NAME_NAME,
                         Event.COLUMN_NAME_CITY,
                         Event.COLUMN_NAME_STATEPROVINCE,
@@ -139,6 +215,7 @@ public class Database
             //move to the first result in the set
             cursor.moveToFirst();
 
+            String blueAllianceId = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_BLUE_ALLIANCE_ID));
             String name = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_NAME));
             String city = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_CITY));
             String stateProvince = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_STATEPROVINCE));
@@ -148,7 +225,7 @@ public class Database
 
             cursor.close();
 
-            return new Event(event.getId(), name, city, stateProvince, country, startDate, endDate);
+            return new Event(event.getId(), blueAllianceId, name, city, stateProvince, country, startDate, endDate);
         }
 
 
@@ -165,6 +242,7 @@ public class Database
     {
         //set all the values
         ContentValues contentValues = new ContentValues();
+        contentValues.put(Event.COLUMN_NAME_BLUE_ALLIANCE_ID, event.getBlueAllianceId());
         contentValues.put(Event.COLUMN_NAME_NAME, event.getName());
         contentValues.put(Event.COLUMN_NAME_CITY, event.getCity());
         contentValues.put(Event.COLUMN_NAME_STATEPROVINCE, event.getStateProvince());

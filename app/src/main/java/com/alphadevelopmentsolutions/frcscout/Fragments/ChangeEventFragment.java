@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Api.ScoutingWiredcats;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
+import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.ApiParams;
@@ -99,15 +100,18 @@ public class ChangeEventFragment extends Fragment
         final MainActivity context = (MainActivity) getActivity();
         final Database database = context.getDatabase();
 
+        final ArrayList<Event> events = database.getEvents();
+
         selectedEvent = "";
 
         eventOptionsSpinner = view.findViewById(R.id.EventOptionsSpinner);
         setEventButton = view.findViewById(R.id.SetEventButton);
 
         ArrayList<String> eventOptions = new ArrayList<>();
-        eventOptions.add("2019onosh");
-        eventOptions.add("2019onwin");
-        eventOptions.add("2019ontor");
+        for(Event event : events)
+        {
+            eventOptions.add(event.getName());
+        }
 
 
         ArrayAdapter<String> eventAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, eventOptions);
@@ -139,13 +143,19 @@ public class ChangeEventFragment extends Fragment
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which)
                             {
+                                String eventCode = "";
+                                for(Event event : events)
+                                    if(event.getName().toLowerCase().equals(selectedEvent.toLowerCase()))
+                                        eventCode = event.getBlueAllianceId();
+
+
                                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-                                sharedPreferences.edit().putString(ApiParams.EVENT_ID, selectedEvent).apply();
+                                sharedPreferences.edit().putString(ApiParams.EVENT_ID, eventCode).apply();
 
                                 database.clearScoutCards();
                                 database.clear();
 
-                                context.updateApplicationData(selectedEvent);
+                                context.updateApplicationData(eventCode);
 
 
                             }

@@ -22,6 +22,7 @@ import android.widget.FrameLayout;
 
 import com.alphadevelopmentsolutions.frcscout.Api.ScoutingWiredcats;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
+import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
@@ -77,9 +78,6 @@ public class MainActivity extends AppCompatActivity implements
         mainFrame = findViewById(R.id.MainFrame);
 
         context = this;
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.edit().putString(ApiParams.EVENT_ID, "2019onosh").apply();
 
         if(getDatabase().getTeams().size() == 0 && isOnline())
             updateApplicationData(PreferenceManager.getDefaultSharedPreferences(this).getString(ApiParams.EVENT_ID, ""));
@@ -190,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
 
             case R.id.ChangeEventItem:
-                changeFragment(new ChangeEventFragment(), false);
+                changeFragment(new ChangeEventFragment(), true);
                 return true;
         }
 
@@ -205,7 +203,6 @@ public class MainActivity extends AppCompatActivity implements
             progressDialog.setTitle("Downloading data...");
             progressDialog.show();
 
-//            getDatabase().clear();
             updateThread = new Thread(new Runnable()
             {
                 @Override
@@ -257,10 +254,21 @@ public class MainActivity extends AppCompatActivity implements
 
                     if (getUsers.execute())
                     {
+                        database.clearUsers();
                         for (User user : getUsers.getUsers())
                         {
                             user.save(getDatabase());
                         }
+                    }
+
+                    //update events
+                    ScoutingWiredcats.GetEvents getEvents = new ScoutingWiredcats.GetEvents(context);
+
+                    if(getEvents.execute())
+                    {
+                        database.clearEvents();
+                        for(Event event : getEvents.getEvents())
+                            event.save(getDatabase());
                     }
 
                     runOnUiThread(new Runnable()

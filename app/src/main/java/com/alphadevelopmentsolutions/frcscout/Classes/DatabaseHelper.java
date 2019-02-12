@@ -14,6 +14,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private final String CREATE_EVENTS_TABLE =
             "CREATE TABLE " + Event.TABLE_NAME + " (" +
                     Event.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    Event.COLUMN_NAME_BLUE_ALLIANCE_ID + " TEXT," +
                     Event.COLUMN_NAME_NAME + " TEXT," +
                     Event.COLUMN_NAME_CITY + " TEXT," +
                     Event.COLUMN_NAME_STATEPROVINCE + " TEXT," +

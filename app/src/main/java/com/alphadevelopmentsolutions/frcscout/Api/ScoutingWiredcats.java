@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Api;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
+import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
@@ -9,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public abstract class ScoutingWiredcats extends Api
@@ -198,19 +200,6 @@ public abstract class ScoutingWiredcats extends Api
 
     public static class SubmitScoutCard extends ScoutingWiredcats
     {
-        private final String API_FIELD_NAME_TEAM_ID = "Id";
-        private final String API_FIELD_NAME_TEAM_NAME = "Name";
-        private final String API_FIELD_NAME_TEAM_CITY = "City";
-        private final String API_FIELD_NAME_TEAM_STATE_PROVINCE = "StateProvince";
-        private final String API_FIELD_NAME_TEAM_COUNTRY = "Country";
-        private final String API_FIELD_NAME_TEAM_ROOKIE_YEAR = "RookieYear";
-        private final String API_FIELD_NAME_TEAM_FACEBOOK_URL = "FacebookURL";
-        private final String API_FIELD_NAME_TEAM_TWITTER_URL = "TwitterURL";
-        private final String API_FIELD_NAME_TEAM_INSTAGRAM_URL = "InstagramURL";
-        private final String API_FIELD_NAME_TEAM_YOUTUBE_URL = "YoutubeURL";
-        private final String API_FIELD_NAME_TEAM_WEBSITE_URL = "WebsiteURL";
-        private final String API_FIELD_NAME_TEAM_IMAGE_FILE_URL = "TODO";
-
         private MainActivity context;
 
         public SubmitScoutCard(final MainActivity context, final ScoutCard scoutCard)
@@ -266,6 +255,82 @@ public abstract class ScoutingWiredcats extends Api
                 context.showSnackbar(e.getMessage());
                 return false;
             }
+        }
+    }
+
+    public static class GetEvents extends ScoutingWiredcats
+    {
+        private ArrayList<Event> events;
+
+        private final String API_FIELD_NAME_EVENT_BLUE_ALLIANCE_ID = "BlueAllianceId";
+        private final String API_FIELD_NAME_EVENT_NAME = "Name";
+        private final String API_FIELD_NAME_EVENT_CITY = "City";
+        private final String API_FIELD_NAME_EVENT_STATE_PROVINCE = "StateProvince";
+        private final String API_FIELD_NAME_EVENT_COUNTRY = "Country";
+        private final String API_FIELD_NAME_EVENT_START_DATE = "StartDate";
+        private final String API_FIELD_NAME_EVENT_END_DATE = "EndDate";
+
+        private MainActivity context;
+
+        public GetEvents(final MainActivity context)
+        {
+            super("", new HashMap<String, String>()
+            {{
+                put("action", "GetEvents");
+            }});
+
+            this.context = context;
+            events = new ArrayList<>();
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception("Could not connect to the web server.");
+
+                if(!response.getString("Status").toLowerCase().equals("success"))
+                    throw new Exception(response.getString("Response"));
+
+                //iterate through, create a new object and add it to the arraylist
+                for(int i = 0; i < response.getJSONArray("Response").length(); i++)
+                {
+                    JSONObject eventObject = response.getJSONArray("Response").getJSONObject(i);
+
+                    String blueAllianceId = eventObject.getString(API_FIELD_NAME_EVENT_BLUE_ALLIANCE_ID);
+                    String name = eventObject.getString(API_FIELD_NAME_EVENT_NAME);
+                    String city = eventObject.getString(API_FIELD_NAME_EVENT_CITY);
+                    String stateProvince = eventObject.getString(API_FIELD_NAME_EVENT_STATE_PROVINCE);
+                    String country = eventObject.getString(API_FIELD_NAME_EVENT_COUNTRY);
+//                    String startDate = eventObject.getString(API_FIELD_NAME_EVENT_START_DATE);
+//                    String endDate = eventObject.getString(API_FIELD_NAME_EVENT_END_DATE);
+
+                    events.add(new Event(-1, blueAllianceId, name, city, stateProvince, country, new Date(), new Date()));
+                }
+
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                context.showSnackbar(e.getMessage());
+                return false;
+            }
+        }
+
+        public ArrayList<Event> getEvents()
+        {
+            return events;
         }
     }
 
