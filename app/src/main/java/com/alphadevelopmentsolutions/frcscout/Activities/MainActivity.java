@@ -197,6 +197,47 @@ public class MainActivity extends AppCompatActivity implements
 
     public void updateApplicationData(final String event)
     {
+        if(event.equals("") && isOnline())
+        {
+            Thread eventThread = new Thread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    //update events
+                    ScoutingWiredcats.GetEvents getEvents = new ScoutingWiredcats.GetEvents(context);
+
+                    if(getEvents.execute())
+                    {
+                        database.clearEvents();
+                        for(Event event : getEvents.getEvents())
+                            event.save(getDatabase());
+                    }
+
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            changeFragment(new ChangeEventFragment(), false);
+                        }
+                    });
+                }
+            });
+
+            eventThread.start();
+
+            try
+            {
+                eventThread.join();
+            } catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+
+            return;
+        }
+
         if(isOnline())
         {
             final ProgressDialog progressDialog = new ProgressDialog(this);

@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/UploadDataItem"
-        android:icon="@drawable/ic_file_upload_white_24dp"
+        android:icon="@drawable/ic_cloud_upload_white_24dp"
         android:title="@string/upload_data"
         app:showAsAction="always" />
 
