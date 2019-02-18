@@ -4,9 +4,11 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Adapters.ScoutCardsRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Adapters.TeamViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeIcon;
 import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
@@ -75,7 +78,8 @@ public class TeamFragment extends Fragment
 
     private Team team;
 
-    private RecyclerView scoutCardsRecyclerView;
+    private TabLayout teamTabLayout;
+    private ViewPager teamViewPager;
 
     private TextView teamNumberNameTextView;
     private TextView teamLocationTextView;
@@ -107,6 +111,9 @@ public class TeamFragment extends Fragment
         //assign the vars to the views on the page
         teamNumberNameTextView = view.findViewById(R.id.TeamNumberNameTextView);
         teamLocationTextView = view.findViewById(R.id.TeamLocationTextView);
+
+        teamTabLayout = view.findViewById(R.id.TeamTabLayout);
+        teamViewPager = view.findViewById(R.id.TeamViewPager);
 
         facebookFontAwesomeBrandIcon = view.findViewById(R.id.FacebookFontAwesomeBrandIcon);
         twitterFontAwesomeBrandIcon = view.findViewById(R.id.TwitterFontAwesomeBrandIcon);
@@ -145,13 +152,13 @@ public class TeamFragment extends Fragment
         teamNumberNameTextView.setText(team.getId() + " - " + team.getName());
         teamLocationTextView.setText(team.getCity() + ", " + team.getStateProvince() + ", " + team.getCountry());
 
-        //SCOUT CARD GARBAGE
-        scoutCardsRecyclerView = view.findViewById(R.id.ScoutCardsRecyclerView);
-        
-        ScoutCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new ScoutCardsRecyclerViewAdapter(team, context.getDatabase().getScoutCards(team), context);
+        TeamViewPagerAdapter teamViewPagerAdapter = new TeamViewPagerAdapter(getChildFragmentManager());
 
-        scoutCardsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        scoutCardsRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
+        teamViewPagerAdapter.addFragment(ScoutCardListFragment.newInstance(teamId), "Scout Cards");
+        teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(teamId), "Pit Cards");
+
+        teamViewPager.setAdapter(teamViewPagerAdapter);
+        teamTabLayout.setupWithViewPager(teamViewPager);
 
         return view;
     }

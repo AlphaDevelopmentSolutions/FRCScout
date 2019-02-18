@@ -32,7 +32,10 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.EventFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.LoginFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchListFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.ApiParams;
@@ -49,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements
         TeamFragment.OnFragmentInteractionListener,
         ScoutCardFragment.OnFragmentInteractionListener,
         LoginFragment.OnFragmentInteractionListener,
+        PitCardFragment.OnFragmentInteractionListener,
+        ScoutCardListFragment.OnFragmentInteractionListener,
+        PitCardListFragment.OnFragmentInteractionListener,
         ChangeEventFragment.OnFragmentInteractionListener
 {
 

@@ -46,4 +46,7 @@
     <string name="select_event">Select Event</string>
     <string name="set_event">Set Event</string>
     <string name="alliance_color">AllianceColor</string>
+    <string name="pit_card">Pit Card</string>
+    <string name="completed_by">Completed By:\u0020</string>
+    <string name="colon">:</string>
 </resources>
