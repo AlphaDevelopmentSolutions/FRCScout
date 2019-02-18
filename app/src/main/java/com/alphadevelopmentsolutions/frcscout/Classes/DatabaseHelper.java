@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper
 {
 
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
     private static final String DB_NAME = "FRCScout.db";
 
 
@@ -68,6 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     ScoutCard.COLUMNS_NAME_MATCH_ID + " INTEGER," +
                     ScoutCard.COLUMN_NAME_TEAM_ID + " INTEGER," +
                     ScoutCard.COLUMN_NAME_EVENT_ID + " TEXT," +
+                    ScoutCard.COLUMN_NAME_ALLIANCE_COLOR + " TEXT," +
                     ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE + " INTEGER," +
                     ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE + " INTEGER," +
                     ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT + " TEXT," +
@@ -106,6 +107,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newvVersion)
     {
+        if(oldVersion == 1 && newvVersion == 2)
+        {
+            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ScoutCard.TABLE_NAME);
 
+            sqLiteDatabase.execSQL(CREATE_SCOUT_CARDS_TABLE);
+        }
     }
 }

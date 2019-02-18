@@ -211,6 +211,7 @@ public abstract class ScoutingWiredcats extends Api
                 put("MatchId", String.valueOf(scoutCard.getMatchId()));
                 put("TeamId", String.valueOf(scoutCard.getTeamId()));
                 put("EventId", scoutCard.getEventId());
+                put("AllianceColor", scoutCard.getAllianceColor().name());
                 put("CompletedBy", scoutCard.getCompletedBy());
                 put("BlueAllianceFinalScore", String.valueOf(scoutCard.getBlueAllianceFinalScore()));
                 put("RedAllianceFinalScore", String.valueOf(scoutCard.getRedAllianceFinalScore()));

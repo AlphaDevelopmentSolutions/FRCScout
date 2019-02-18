@@ -1,11 +1,9 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +12,11 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
+import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
@@ -88,6 +88,8 @@ public class ScoutCardFragment extends Fragment
     private EditText blueAllianceFinalScoreEditText;
     private EditText redAllianceFinalScoreEditText;
     private EditText matchNotesEditText;
+
+    private Spinner allianceColorSpinner;
     
     private Button scoutCardSaveButton;
 
@@ -183,6 +185,8 @@ public class ScoutCardFragment extends Fragment
         blueAllianceFinalScoreEditText = view.findViewById(R.id.BlueAllianceFinalScoreEditText);
         redAllianceFinalScoreEditText = view.findViewById(R.id.RedAllianceFinalScoreEditText);
         matchNotesEditText = view.findViewById(R.id.MatchNotesEditText);
+
+        allianceColorSpinner = view.findViewById(R.id.AllianceColorSpinner);
 
         scoutCardSaveButton = view.findViewById(R.id.ScoutCardSaveButton);
 
@@ -400,6 +404,7 @@ public class ScoutCardFragment extends Fragment
                     int matchId = Integer.parseInt(matchIdEditText.getText().toString());
                     int teamNumber = Integer.parseInt(teamNumberAutoCompleteTextView.getText().toString());
                     String eventId = PreferenceManager.getDefaultSharedPreferences(context).getString(ApiParams.EVENT_ID, "");
+                    AllianceColor allianceColor = allianceColorSpinner.getSelectedItem().toString().equals(AllianceColor.RED.name()) ?  AllianceColor.RED : AllianceColor.BLUE;
                     String scouterName = scouterNameAutoCompleteTextView.getText().toString();
                     int blueAllianceFinalScore = Integer.parseInt(blueAllianceFinalScoreEditText.getText().toString());
                     int redAllianceFinalScore = Integer.parseInt(redAllianceFinalScoreEditText.getText().toString());
@@ -418,6 +423,7 @@ public class ScoutCardFragment extends Fragment
                         scoutCard.setMatchId(matchId);
                         scoutCard.setTeamId(teamNumber);
                         scoutCard.setEventId(eventId);
+                        scoutCard.setAllianceColor(allianceColor);
                         scoutCard.setCompletedBy(scouterName);
                         scoutCard.setBlueAllianceFinalScore(blueAllianceFinalScore);
                         scoutCard.setRedAllianceFinalScore(redAllianceFinalScore);
@@ -444,6 +450,7 @@ public class ScoutCardFragment extends Fragment
                                 matchId,
                                 teamNumber,
                                 eventId,
+                                allianceColor,
                                 scouterName,
                                 blueAllianceFinalScore,
                                 redAllianceFinalScore,
@@ -484,6 +491,7 @@ public class ScoutCardFragment extends Fragment
             scouterNameAutoCompleteTextView.setText(scoutCard.getCompletedBy());
 
             matchIdEditText.setText(String.valueOf(scoutCard.getMatchId()));
+            allianceColorSpinner.setSelection(scoutCard.getAllianceColor() == AllianceColor.RED ? 0 : 1);
 
             blueAllianceFinalScoreEditText.setText(String.valueOf(scoutCard.getBlueAllianceFinalScore()));
             redAllianceFinalScoreEditText.setText(String.valueOf(scoutCard.getRedAllianceFinalScore()));

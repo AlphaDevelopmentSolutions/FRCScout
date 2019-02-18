@@ -11,6 +11,7 @@ public class ScoutCard
     public static final String COLUMNS_NAME_MATCH_ID = "MatchId";
     public static final String COLUMN_NAME_TEAM_ID = "TeamId";
     public static final String COLUMN_NAME_EVENT_ID = "EventId";
+    public static final String COLUMN_NAME_ALLIANCE_COLOR = "AllianceColor";
     public static final String COLUMN_NAME_COMPLETED_BY = "CompletedBy";
     public static final String COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE = "BlueAllianceFinalScore";
     public static final String COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE = "RedAllianceFinalScore";
@@ -28,6 +29,7 @@ public class ScoutCard
     private int matchId;
     private int teamId;
     private String eventId;
+    private AllianceColor allianceColor;
     private String completedBy;
     private int blueAllianceFinalScore;
     private int redAllianceFinalScore;
@@ -46,6 +48,7 @@ public class ScoutCard
             int matchId,
             int teamId,
             String eventId,
+            AllianceColor allianceColor,
             String completedBy,
             int blueAllianceFinalScore,
             int redAllianceFinalScore,
@@ -63,6 +66,7 @@ public class ScoutCard
         this.matchId = matchId;
         this.teamId = teamId;
         this.eventId = eventId;
+        this.allianceColor = allianceColor;
         this.blueAllianceFinalScore = blueAllianceFinalScore;
         this.redAllianceFinalScore = redAllianceFinalScore;
         this.autonomousExitHabitat = autonomousExitHabitat;
@@ -106,6 +110,11 @@ public class ScoutCard
     public String getEventId()
     {
         return eventId;
+    }
+
+    public AllianceColor getAllianceColor()
+    {
+        return allianceColor;
     }
 
     public int getBlueAllianceFinalScore()
@@ -199,6 +208,11 @@ public class ScoutCard
         this.eventId = eventId;
     }
 
+    public void setAllianceColor(AllianceColor allianceColor)
+    {
+        this.allianceColor = allianceColor;
+    }
+
     public void setBlueAllianceFinalScore(int blueAllianceFinalScore)
     {
         this.blueAllianceFinalScore = blueAllianceFinalScore;
@@ -283,6 +297,7 @@ public class ScoutCard
                 setMatchId(scoutCard.getMatchId());
                 setTeamId(scoutCard.getTeamId());
                 setEventId(scoutCard.getEventId());
+                setAllianceColor(scoutCard.getAllianceColor());
                 setBlueAllianceFinalScore(scoutCard.getBlueAllianceFinalScore());
                 setRedAllianceFinalScore(scoutCard.getRedAllianceFinalScore());
                 setAutonomousExitHabitat(scoutCard.isAutonomousExitHabitat());

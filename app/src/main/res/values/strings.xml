@@ -45,4 +45,5 @@
     <string name="change_event">Change Event</string>
     <string name="select_event">Select Event</string>
     <string name="set_event">Set Event</string>
+    <string name="alliance_color">AllianceColor</string>
 </resources>
