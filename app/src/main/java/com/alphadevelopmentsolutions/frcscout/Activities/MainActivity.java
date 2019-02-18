@@ -23,6 +23,7 @@ import android.widget.FrameLayout;
 import com.alphadevelopmentsolutions.frcscout.Api.ScoutingWiredcats;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
+import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
@@ -148,6 +149,15 @@ public class MainActivity extends AppCompatActivity implements
                                                     if(submitScoutCard.execute())
                                                     {
                                                         scoutCard.delete(getDatabase());
+                                                    }
+                                                }
+
+                                                for (PitCard pitCard : getDatabase().getPitCards(team))
+                                                {
+                                                    ScoutingWiredcats.SubmitPitCard submitScoutCard = new ScoutingWiredcats.SubmitPitCard(context, pitCard);
+                                                    if(submitScoutCard.execute())
+                                                    {
+                                                        pitCard.delete(getDatabase());
                                                     }
                                                 }
 

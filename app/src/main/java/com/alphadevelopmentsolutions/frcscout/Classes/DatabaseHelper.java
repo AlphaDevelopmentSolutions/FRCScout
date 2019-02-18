@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper
 {
 
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
     private static final String DB_NAME = "FRCScout.db";
 
 
@@ -82,6 +82,22 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     ScoutCard.COLUMN_NAME_COMPLETED_BY + " TEXT," +
                     ScoutCard.COLUMN_NAME_COMPLETED_DATE + " INTEGER)";
 
+    private final String CREATE_PIT_CARDS_TABLE =
+            "CREATE TABLE " + PitCard.TABLE_NAME +" (" +
+                    PitCard.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    PitCard.COLUMN_NAME_TEAM_ID + " TEXT," +
+                    PitCard.COLUMN_NAME_EVENT_ID + " TEXT," +
+                    PitCard.COLUMN_NAME_DRIVE_STYLE + " TEXT," +
+                    PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT + " TEXT," +
+                    PitCard.COLUMN_NAME_AUTO_HATCH + " TEXT," +
+                    PitCard.COLUMN_NAME_AUTO_CARGO + " TEXT," +
+                    PitCard.COLUMN_NAME_TELEOP_HATCH + " TEXT," +
+                    PitCard.COLUMN_NAME_TELEOP_CARGO + " TEXT," +
+                    PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE + " TEXT," +
+                    PitCard.COLUMN_NAME_RETURN_TO_HABITAT + " TEXT," +
+                    PitCard.COLUMN_NAME_NOTES + " TEXT," +
+                    PitCard.COLUMN_NAME_COMPLETED_BY + " TEXT)";
+
     private final String CREATE_USERS_TABLE =
             "CREATE TABLE " + User.TABLE_NAME +" (" +
                     User.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
@@ -102,6 +118,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL(CREATE_MATCHES_TABLE);
         db.execSQL(CREATE_SCOUT_CARDS_TABLE);
         db.execSQL(CREATE_USERS_TABLE);
+        db.execSQL(CREATE_PIT_CARDS_TABLE);
     }
 
     @Override
@@ -112,6 +129,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ScoutCard.TABLE_NAME);
 
             sqLiteDatabase.execSQL(CREATE_SCOUT_CARDS_TABLE);
+        }
+
+        if(oldVersion == 2 && newvVersion == 3)
+        {
+            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ScoutCard.TABLE_NAME);
+
+            sqLiteDatabase.execSQL(CREATE_SCOUT_CARDS_TABLE);
+            sqLiteDatabase.execSQL(CREATE_PIT_CARDS_TABLE);
         }
     }
 }

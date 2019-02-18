@@ -1003,6 +1003,237 @@ public class Database
     }
     //endregion
 
+    //region Pit Card Logic
+
+    /**
+     * Gets all pit cards assigned to a team
+     *
+     * @param team with specified ID
+     * @return object based off given team ID
+     */
+    public ArrayList<PitCard> getPitCards(Team team)
+    {
+        ArrayList<PitCard> pitCards = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns =
+                {
+                        PitCard.COLUMN_NAME_ID,
+                        PitCard.COLUMN_NAME_TEAM_ID,
+                        PitCard.COLUMN_NAME_EVENT_ID,
+                        PitCard.COLUMN_NAME_DRIVE_STYLE,
+                        PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT,
+                        PitCard.COLUMN_NAME_AUTO_HATCH,
+                        PitCard.COLUMN_NAME_AUTO_CARGO,
+                        PitCard.COLUMN_NAME_TELEOP_HATCH,
+                        PitCard.COLUMN_NAME_TELEOP_CARGO,
+                        PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE,
+                        PitCard.COLUMN_NAME_RETURN_TO_HABITAT,
+                        PitCard.COLUMN_NAME_NOTES,
+                        PitCard.COLUMN_NAME_COMPLETED_BY
+                };
+
+        //where statement
+        String whereStatement = PitCard.COLUMN_NAME_TEAM_ID + " = ?";
+        String[] whereArgs = {team.getId() + ""};
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                PitCard.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while(cursor.moveToNext())
+            {
+
+                int id = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ID));
+                int teamId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID));
+                String eventId = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+                String driveStyle = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+                String autoExitHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+                String autoHatch = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+                String autoCargo = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+                String teleopHatch = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+                String teleopCargo = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+                String teleopRocketsCompleted = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+                String returnToHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+                String notes = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_NOTES));
+                String completedBy = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_BY));
+
+
+                pitCards.add(new PitCard(
+                        id,
+                        teamId,
+                        eventId,
+                        driveStyle,
+                        autoExitHabitat,
+                        autoHatch,
+                        autoCargo,
+                        teleopHatch,
+                        teleopCargo,
+                        teleopRocketsCompleted,
+                        returnToHabitat,
+                        notes,
+                        completedBy));
+            }
+
+            cursor.close();
+
+            return pitCards;
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Gets a specific object from the database and returns it
+     *
+     * @param pitCard with specified ID
+     * @return pitCard based off given ID
+     */
+    public PitCard getPitCard(PitCard pitCard)
+    {
+        //insert columns you are going to use here
+        String[] columns =
+                {
+                        PitCard.COLUMN_NAME_ID,
+                        PitCard.COLUMN_NAME_TEAM_ID,
+                        PitCard.COLUMN_NAME_EVENT_ID,
+                        PitCard.COLUMN_NAME_DRIVE_STYLE,
+                        PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT,
+                        PitCard.COLUMN_NAME_AUTO_HATCH,
+                        PitCard.COLUMN_NAME_AUTO_CARGO,
+                        PitCard.COLUMN_NAME_TELEOP_HATCH,
+                        PitCard.COLUMN_NAME_TELEOP_CARGO,
+                        PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE,
+                        PitCard.COLUMN_NAME_RETURN_TO_HABITAT,
+                        PitCard.COLUMN_NAME_NOTES,
+                        PitCard.COLUMN_NAME_COMPLETED_BY
+                };
+
+        //where statement
+        String whereStatement = PitCard.COLUMN_NAME_ID + " = ?";
+        String[] whereArgs = {pitCard.getId() + ""};
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                PitCard.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            //move to the first result in the set
+            cursor.moveToFirst();
+
+            int id = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ID));
+            int teamId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID));
+            String eventId = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+            String driveStyle = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+            String autoExitHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+            String autoHatch = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+            String autoCargo = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+            String teleopHatch = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+            String teleopCargo = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+            String teleopRocketsCompleted = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+            String returnToHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+            String notes = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_NOTES));
+            String completedBy = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_BY));
+
+
+            return new PitCard(
+                    id,
+                    teamId,
+                    eventId,
+                    driveStyle,
+                    autoExitHabitat,
+                    autoHatch,
+                    autoCargo,
+                    teleopHatch,
+                    teleopCargo,
+                    teleopRocketsCompleted,
+                    returnToHabitat,
+                    notes,
+                    completedBy);
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Saves a specific object from the database and returns it
+     *
+     * @param pitCard with specified ID
+     * @return id of the saved pitCard
+     */
+    public long setPitCard(PitCard pitCard)
+    {
+        //set all the values
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(PitCard.COLUMN_NAME_TEAM_ID, pitCard.getTeamId());
+        contentValues.put(PitCard.COLUMN_NAME_EVENT_ID, pitCard.getEventId());
+        contentValues.put(PitCard.COLUMN_NAME_DRIVE_STYLE, pitCard.getDriveStyle());
+        contentValues.put(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT, pitCard.getAutoExitHabitat());
+        contentValues.put(PitCard.COLUMN_NAME_AUTO_HATCH, pitCard.getAutoHatch());
+        contentValues.put(PitCard.COLUMN_NAME_AUTO_CARGO, pitCard.getAutoCargo());
+        contentValues.put(PitCard.COLUMN_NAME_TELEOP_HATCH, pitCard.getTeleopHatch());
+        contentValues.put(PitCard.COLUMN_NAME_TELEOP_CARGO, pitCard.getTeleopCargo());
+        contentValues.put(PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE, pitCard.getTeleopRocketsComplete());
+        contentValues.put(PitCard.COLUMN_NAME_RETURN_TO_HABITAT, pitCard.getReturnToHabitat());
+        contentValues.put(PitCard.COLUMN_NAME_NOTES, pitCard.getNotes());
+        contentValues.put(PitCard.COLUMN_NAME_COMPLETED_BY, pitCard.getCompletedBy());
+
+        //pitCard already exists in DB, update
+        if (pitCard.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = ScoutCard.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {pitCard.getId() + ""};
+
+            //update
+            return db.update(PitCard.TABLE_NAME, contentValues, whereStatement, whereArgs);
+        }
+        //insert new scoutCard in db
+        else return db.insert(PitCard.TABLE_NAME, null, contentValues);
+
+    }
+
+    /**
+     * Deletes a specific scoutCard from the database
+     *
+     * @param pitCard with specified ID
+     * @return successful delete
+     */
+    public boolean deletePitCard(PitCard pitCard)
+    {
+        if (pitCard.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = PitCard.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {pitCard.getId() + ""};
+
+            //delete
+            return db.delete(PitCard.TABLE_NAME, whereStatement, whereArgs) >= 1;
+        }
+
+        return false;
+    }
+    //endregion
+    
     //region User Logic
 
     /**

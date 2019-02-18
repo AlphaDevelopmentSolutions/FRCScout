@@ -2,6 +2,7 @@ package com.alphadevelopmentsolutions.frcscout.Api;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
+import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
@@ -224,6 +225,63 @@ public abstract class ScoutingWiredcats extends Api
                 put("EndGameReturnedToHabitat", scoutCard.getEndGameReturnedToHabitat());
                 put("Notes", scoutCard.getNotes());
                 put("CompletedDate", scoutCard.getCompletedDateForSQL());
+            }});
+
+            this.context = context;
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception("Could not connect to the web server.");
+
+                if(!response.getString("Status").toLowerCase().equals("success"))
+                    throw new Exception(response.getString("Response"));
+
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                context.showSnackbar(e.getMessage());
+                return false;
+            }
+        }
+    }
+
+    public static class SubmitPitCard extends ScoutingWiredcats
+    {
+        private MainActivity context;
+
+        public SubmitPitCard(final MainActivity context, final PitCard pitCard)
+        {
+            super("", new HashMap<String, String>()
+            {{
+                put("action", "SumbitPitCard");
+
+                put("TeamId", String.valueOf(pitCard.getTeamId()));
+                put("EventId", pitCard.getEventId());
+                put("DriveStyle", pitCard.getDriveStyle());
+                put("AutoExitHabitat", pitCard.getAutoExitHabitat());
+                put("AutoHatch", pitCard.getAutoHatch());
+                put("AutoCargo", pitCard.getAutoCargo());
+                put("TeleopHatch", pitCard.getTeleopHatch());
+                put("TeleopCargo", pitCard.getTeleopCargo());
+                put("TeleopRocketsComplete", pitCard.getTeleopRocketsComplete());
+                put("ReturnToHabitat", pitCard.getReturnToHabitat());
+                put("Notes", pitCard.getNotes());
+                put("CompletedBy", pitCard.getCompletedBy());
             }});
 
             this.context = context;
