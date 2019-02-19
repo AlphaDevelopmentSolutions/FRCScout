@@ -85,7 +85,7 @@ public class PitCardListFragment extends Fragment
 
         pitCardListRecyclerView = view.findViewById(R.id.PitCardListRecyclerView);
 
-        PitCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new PitCardsRecyclerViewAdapter(team, database.getPitCards(team), context);
+        PitCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new PitCardsRecyclerViewAdapter(team, database.getPitCards(team, false), context);
         pitCardListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         pitCardListRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
 

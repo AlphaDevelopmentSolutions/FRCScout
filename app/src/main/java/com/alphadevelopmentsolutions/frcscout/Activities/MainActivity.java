@@ -152,23 +152,25 @@ public class MainActivity extends AppCompatActivity implements
 
                                             for (Team team : teams)
                                             {
-                                                for (ScoutCard scoutCard : getDatabase().getScoutCards(team))
+                                                for (ScoutCard scoutCard : getDatabase().getScoutCards(team, true))
                                                 {
                                                     ScoutingWiredcats.SubmitScoutCard submitScoutCard = new ScoutingWiredcats.SubmitScoutCard(context, scoutCard);
                                                     if(submitScoutCard.execute())
                                                     {
-                                                        scoutCard.delete(getDatabase());
+                                                        scoutCard.setDraft(false);
+                                                        scoutCard.save(getDatabase());
                                                     }
                                                     else
                                                         success = false;
                                                 }
 
-                                                for (PitCard pitCard : getDatabase().getPitCards(team))
+                                                for (PitCard pitCard : getDatabase().getPitCards(team, true))
                                                 {
                                                     ScoutingWiredcats.SubmitPitCard submitScoutCard = new ScoutingWiredcats.SubmitPitCard(context, pitCard);
                                                     if(submitScoutCard.execute())
                                                     {
-                                                        pitCard.delete(getDatabase());
+                                                        pitCard.setDraft(false);
+                                                        pitCard.save(getDatabase());
                                                     }
                                                     else
                                                         success = false;
@@ -235,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     if(getEvents.execute())
                     {
-                        database.clearEvents();
+                        getDatabase().clearEvents();
                         for(Event event : getEvents.getEvents())
                             event.save(getDatabase());
                     }
@@ -321,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     if (getUsers.execute())
                     {
-                        database.clearUsers();
+                        getDatabase().clearUsers();
                         for (User user : getUsers.getUsers())
                         {
                             user.save(getDatabase());
@@ -333,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     if(getEvents.execute())
                     {
-                        database.clearEvents();
+                        getDatabase().clearEvents();
                         for(Event event : getEvents.getEvents())
                             event.save(getDatabase());
                     }
@@ -348,6 +350,25 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
 
+                    //update scout cards
+                    ScoutingWiredcats.GetScoutCards getScoutCards = new ScoutingWiredcats.GetScoutCards(context, event);
+
+                    if(getScoutCards.execute())
+                    {
+                        getDatabase().clearScoutCards(false);
+                        for(ScoutCard scoutCard : getScoutCards.getScoutCards())
+                            scoutCard.save(getDatabase());
+                    }
+
+                    //update pit cards
+                    ScoutingWiredcats.GetPitCards getPitCards = new ScoutingWiredcats.GetPitCards(context, event);
+
+                    if(getPitCards.execute())
+                    {
+                        getDatabase().clearPitCards(false);
+                        for(PitCard pitCard : getPitCards.getPitCards())
+                            pitCard.save(getDatabase());
+                    }
 
                 }
             });

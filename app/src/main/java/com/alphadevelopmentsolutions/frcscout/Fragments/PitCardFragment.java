@@ -136,6 +136,10 @@ public class PitCardFragment extends Fragment
         notesEditText = view.findViewById(R.id.NotesEditText);
 
         saveButton = view.findViewById(R.id.SaveButton);
+
+        if(pitCard != null)
+            if(!pitCard.isDraft())
+                saveButton.setVisibility(View.GONE);
         
         saveButton.setOnClickListener(new View.OnClickListener()
         {
@@ -194,7 +198,8 @@ public class PitCardFragment extends Fragment
                                 teleopRocketsCompleted,
                                 endGameReturnedToHabitat,
                                 matchNotes,
-                                scouterName);
+                                scouterName,
+                                true);
                         if (pitCard.save(database) > 0)
                         {
                             context.showSnackbar("Saved Successfully.");

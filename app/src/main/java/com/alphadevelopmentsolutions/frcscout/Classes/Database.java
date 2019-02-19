@@ -107,14 +107,24 @@ public class Database
             db.execSQL("DELETE FROM " + tableName);
     }
 
-    public void clearScoutCards()
+    public void clearScoutCards(boolean clearDrafts)
     {
         ArrayList<String> tableNames = new ArrayList<>();
 
         tableNames.add(ScoutCard.TABLE_NAME);
 
         for(String tableName : tableNames)
-            db.execSQL("DELETE FROM " + tableName);
+            db.execSQL("DELETE FROM " + tableName + ((clearDrafts) ? "" : " WHERE IsDraft = 0"));
+    }
+
+    public void clearPitCards(boolean clearDrafts)
+    {
+        ArrayList<String> tableNames = new ArrayList<>();
+
+        tableNames.add(PitCard.TABLE_NAME);
+
+        for(String tableName : tableNames)
+            db.execSQL("DELETE FROM " + tableName + ((clearDrafts) ? "" : " WHERE IsDraft = 0"));
     }
 
     //region Event Logic
@@ -755,7 +765,7 @@ public class Database
      * @param team with specified ID
      * @return scoutcard based off given team ID
      */
-    public ArrayList<ScoutCard> getScoutCards(Team team)
+    public ArrayList<ScoutCard> getScoutCards(Team team, boolean onlyDrafts)
     {
         ArrayList<ScoutCard> scoutCards = new ArrayList<>();
 
@@ -778,11 +788,12 @@ public class Database
                         ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED,
                         ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT,
                         ScoutCard.COLUMN_NAME_NOTES,
-                        ScoutCard.COLUMN_NAME_COMPLETED_DATE
+                        ScoutCard.COLUMN_NAME_COMPLETED_DATE,
+                        ScoutCard.COLUMN_NAME_IS_DRAFT
                 };
 
         //where statement
-        String whereStatement = ScoutCard.COLUMN_NAME_TEAM_ID + " = ?";
+        String whereStatement = ScoutCard.COLUMN_NAME_TEAM_ID + " = ?" + ((onlyDrafts) ? " AND " + ScoutCard.COLUMN_NAME_IS_DRAFT + " = 1" : "");
         String[] whereArgs = {team.getId() + ""};
 
         //select the info from the db
@@ -818,6 +829,7 @@ public class Database
                 String endGameReturnedToHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT));
                 String notes = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_NOTES));
                 Date completedDate = new Date(cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)));
+                boolean isDraft = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_IS_DRAFT)) == 1;
 
                 scoutCards.add(new ScoutCard(
                         id,
@@ -836,7 +848,8 @@ public class Database
                         teleopRocketsCompleted,
                         endGameReturnedToHabitat,
                         notes,
-                        completedDate));
+                        completedDate,
+                        isDraft));
             }
 
             cursor.close();
@@ -874,7 +887,8 @@ public class Database
                         ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED,
                         ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT,
                         ScoutCard.COLUMN_NAME_NOTES,
-                        ScoutCard.COLUMN_NAME_COMPLETED_DATE
+                        ScoutCard.COLUMN_NAME_COMPLETED_DATE,
+                        ScoutCard.COLUMN_NAME_IS_DRAFT
                 };
 
         //where statement
@@ -913,6 +927,7 @@ public class Database
             String endGameReturnedToHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT));
             String notes = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_NOTES));
             Date completedDate = new Date(cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)));
+            boolean isDraft = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_IS_DRAFT)) == 1;
             cursor.close();
 
             return new ScoutCard(
@@ -932,7 +947,8 @@ public class Database
                     teleopRocketsCompleted,
                     endGameReturnedToHabitat,
                     notes,
-                    completedDate);
+                    completedDate,
+                    isDraft);
         }
 
 
@@ -965,6 +981,7 @@ public class Database
         contentValues.put(ScoutCard.COLUMN_NAME_NOTES, scoutCard.getNotes());
         contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_BY, scoutCard.getCompletedBy());
         contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_DATE, scoutCard.getCompletedDate().getTime());
+        contentValues.put(ScoutCard.COLUMN_NAME_IS_DRAFT, scoutCard.isDraft() ? "1" : "0");
 
         //scoutCard already exists in DB, update
         if (scoutCard.getId() > 0)
@@ -1011,7 +1028,7 @@ public class Database
      * @param team with specified ID
      * @return object based off given team ID
      */
-    public ArrayList<PitCard> getPitCards(Team team)
+    public ArrayList<PitCard> getPitCards(Team team, boolean onlyDrafts)
     {
         ArrayList<PitCard> pitCards = new ArrayList<>();
 
@@ -1030,11 +1047,12 @@ public class Database
                         PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE,
                         PitCard.COLUMN_NAME_RETURN_TO_HABITAT,
                         PitCard.COLUMN_NAME_NOTES,
-                        PitCard.COLUMN_NAME_COMPLETED_BY
+                        PitCard.COLUMN_NAME_COMPLETED_BY,
+                        PitCard.COLUMN_NAME_IS_DRAFT
                 };
 
         //where statement
-        String whereStatement = PitCard.COLUMN_NAME_TEAM_ID + " = ?";
+        String whereStatement = PitCard.COLUMN_NAME_TEAM_ID + " = ? " + ((onlyDrafts) ? " AND " + PitCard.COLUMN_NAME_IS_DRAFT + " = 1" : "");
         String[] whereArgs = {team.getId() + ""};
 
         //select the info from the db
@@ -1066,6 +1084,7 @@ public class Database
                 String returnToHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_RETURN_TO_HABITAT));
                 String notes = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_NOTES));
                 String completedBy = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_COMPLETED_BY));
+                boolean isDraft = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_IS_DRAFT)) == 1;
 
 
                 pitCards.add(new PitCard(
@@ -1081,7 +1100,8 @@ public class Database
                         teleopRocketsCompleted,
                         returnToHabitat,
                         notes,
-                        completedBy));
+                        completedBy,
+                        isDraft));
             }
 
             cursor.close();
@@ -1116,7 +1136,8 @@ public class Database
                         PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE,
                         PitCard.COLUMN_NAME_RETURN_TO_HABITAT,
                         PitCard.COLUMN_NAME_NOTES,
-                        PitCard.COLUMN_NAME_COMPLETED_BY
+                        PitCard.COLUMN_NAME_COMPLETED_BY,
+                        PitCard.COLUMN_NAME_IS_DRAFT
                 };
 
         //where statement
@@ -1152,6 +1173,7 @@ public class Database
             String returnToHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_RETURN_TO_HABITAT));
             String notes = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_NOTES));
             String completedBy = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_COMPLETED_BY));
+            boolean isDraft = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_IS_DRAFT)) == 1;
 
 
             return new PitCard(
@@ -1167,7 +1189,8 @@ public class Database
                     teleopRocketsCompleted,
                     returnToHabitat,
                     notes,
-                    completedBy);
+                    completedBy,
+                    isDraft);
         }
 
 
@@ -1196,6 +1219,7 @@ public class Database
         contentValues.put(PitCard.COLUMN_NAME_RETURN_TO_HABITAT, pitCard.getReturnToHabitat());
         contentValues.put(PitCard.COLUMN_NAME_NOTES, pitCard.getNotes());
         contentValues.put(PitCard.COLUMN_NAME_COMPLETED_BY, pitCard.getCompletedBy());
+        contentValues.put(PitCard.COLUMN_NAME_IS_DRAFT, pitCard.isDraft() ? "1" : "0");
 
         //pitCard already exists in DB, update
         if (pitCard.getId() > 0)

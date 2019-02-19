@@ -24,6 +24,7 @@ public class ScoutCard
     public static final String COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT = "EndGameReturnedToHabitat";
     public static final String COLUMN_NAME_NOTES = "Notes";
     public static final String COLUMN_NAME_COMPLETED_DATE = "CompletedDate";
+    public static final String COLUMN_NAME_IS_DRAFT = "IsDraft";
 
     private int id;
     private int matchId;
@@ -42,6 +43,7 @@ public class ScoutCard
     private String endGameReturnedToHabitat;
     private String notes;
     private Date completedDate;
+    private boolean isDraft;
 
     public ScoutCard(
             int id,
@@ -60,7 +62,8 @@ public class ScoutCard
             int teleopRocketsCompleted,
             String endGameReturnedToHabitat,
             String notes,
-            Date completedDate)
+            Date completedDate,
+            boolean isDraft)
     {
         this.id = id;
         this.matchId = matchId;
@@ -79,6 +82,7 @@ public class ScoutCard
         this.notes = notes;
         this.completedBy = completedBy;
         this.completedDate = completedDate;
+        this.isDraft = isDraft;
     }
 
     /**
@@ -184,6 +188,11 @@ public class ScoutCard
         return notes;
     }
 
+    public boolean isDraft()
+    {
+        return isDraft;
+    }
+
     //endregion
 
     //region Setters
@@ -273,6 +282,11 @@ public class ScoutCard
         this.notes = notes;
     }
 
+    public void setDraft(boolean draft)
+    {
+        isDraft = draft;
+    }
+
     //endregion
 
     //region Load, Save & Delete
@@ -310,6 +324,7 @@ public class ScoutCard
                 setNotes(scoutCard.getNotes());
                 setCompletedBy(scoutCard.getCompletedBy());
                 setCompletedDate(scoutCard.getCompletedDate());
+                setDraft(scoutCard.isDraft());
                 return true;
             }
         }

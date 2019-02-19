@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper
 {
 
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
     private static final String DB_NAME = "FRCScout.db";
 
 
@@ -80,7 +80,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT + " TEXT," +
                     ScoutCard.COLUMN_NAME_NOTES + " TEXT," +
                     ScoutCard.COLUMN_NAME_COMPLETED_BY + " TEXT," +
-                    ScoutCard.COLUMN_NAME_COMPLETED_DATE + " INTEGER)";
+                    ScoutCard.COLUMN_NAME_COMPLETED_DATE + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_IS_DRAFT + " INTEGER)";
 
     private final String CREATE_PIT_CARDS_TABLE =
             "CREATE TABLE " + PitCard.TABLE_NAME +" (" +
@@ -96,7 +97,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE + " TEXT," +
                     PitCard.COLUMN_NAME_RETURN_TO_HABITAT + " TEXT," +
                     PitCard.COLUMN_NAME_NOTES + " TEXT," +
-                    PitCard.COLUMN_NAME_COMPLETED_BY + " TEXT)";
+                    PitCard.COLUMN_NAME_COMPLETED_BY + " TEXT," +
+                    PitCard.COLUMN_NAME_IS_DRAFT + " INTEGER)";
 
     private final String CREATE_USERS_TABLE =
             "CREATE TABLE " + User.TABLE_NAME +" (" +
@@ -122,18 +124,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newvVersion)
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion)
     {
-        if(oldVersion == 1 && newvVersion == 2)
+        if(newVersion == 4)
         {
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ScoutCard.TABLE_NAME);
-
-            sqLiteDatabase.execSQL(CREATE_SCOUT_CARDS_TABLE);
-        }
-
-        if(oldVersion == 2 && newvVersion == 3)
-        {
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ScoutCard.TABLE_NAME);
+            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PitCard.TABLE_NAME);
 
             sqLiteDatabase.execSQL(CREATE_SCOUT_CARDS_TABLE);
             sqLiteDatabase.execSQL(CREATE_PIT_CARDS_TABLE);

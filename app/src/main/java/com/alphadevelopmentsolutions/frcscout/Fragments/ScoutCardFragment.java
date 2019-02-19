@@ -392,6 +392,10 @@ public class ScoutCardFragment extends Fragment
 
         //endregion
 
+        if(scoutCard != null)
+            if(!scoutCard.isDraft())
+                scoutCardSaveButton.setVisibility(View.GONE);
+
         scoutCardSaveButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -462,7 +466,8 @@ public class ScoutCardFragment extends Fragment
                                 teleopRocketsCompleted,
                                 endGameReturnedToHabitat,
                                 matchNotes,
-                                completedDate);
+                                completedDate,
+                                true);
                         if (scoutCard.save(database) > 0)
                         {
                             context.showSnackbar("Saved Successfully.");

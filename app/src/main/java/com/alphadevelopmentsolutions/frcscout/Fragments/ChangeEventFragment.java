@@ -152,7 +152,7 @@ public class ChangeEventFragment extends Fragment
                                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
                                 sharedPreferences.edit().putString(ApiParams.EVENT_ID, eventCode).apply();
 
-                                database.clearScoutCards();
+                                database.clearScoutCards(true);
                                 database.clear();
 
                                 context.updateApplicationData(eventCode);

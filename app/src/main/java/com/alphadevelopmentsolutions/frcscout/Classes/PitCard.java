@@ -17,6 +17,7 @@ public class PitCard
     public static final String COLUMN_NAME_RETURN_TO_HABITAT = "ReturnToHabitat";
     public static final String COLUMN_NAME_NOTES = "Notes";
     public static final String COLUMN_NAME_COMPLETED_BY = "CompletedBy";
+    public static final String COLUMN_NAME_IS_DRAFT = "IsDraft";
 
 
     private int id;
@@ -32,6 +33,8 @@ public class PitCard
     private String returnToHabitat;
     private String notes;
     private String completedBy;
+    private boolean isDraft;
+
     public PitCard(
             int id,
             int teamId,
@@ -45,7 +48,8 @@ public class PitCard
             String teleopRocketsComplete,
             String returnToHabitat,
             String notes,
-            String completedBy)
+            String completedBy,
+            boolean isDraft)
     {
         this.id = id;
         this.teamId = teamId;
@@ -60,6 +64,7 @@ public class PitCard
         this.returnToHabitat = returnToHabitat;
         this.notes = notes;
         this.completedBy = completedBy;
+        this.isDraft = isDraft;
     }
 
     /**
@@ -138,6 +143,10 @@ public class PitCard
         return completedBy;
     }
 
+    public boolean isDraft()
+    {
+        return isDraft;
+    }
 
     //endregion
 
@@ -208,6 +217,10 @@ public class PitCard
         this.completedBy = completedBy;
     }
 
+    public void setDraft(boolean draft)
+    {
+        isDraft = draft;
+    }
 
     //endregion
 
@@ -242,6 +255,7 @@ public class PitCard
                 setReturnToHabitat(pitCard.getReturnToHabitat());
                 setNotes(pitCard.getNotes());
                 setCompletedBy(pitCard.getCompletedBy());
+                setDraft(pitCard.isDraft());
                 return true;
             }
         }

@@ -85,7 +85,7 @@ public class ScoutCardListFragment extends Fragment
 
         scoutCardListRecyclerView = view.findViewById(R.id.ScoutCardListRecyclerView);
 
-        ScoutCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new ScoutCardsRecyclerViewAdapter(team, database.getScoutCards(team), context);
+        ScoutCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new ScoutCardsRecyclerViewAdapter(team, database.getScoutCards(team, false), context);
         scoutCardListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         scoutCardListRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
 
