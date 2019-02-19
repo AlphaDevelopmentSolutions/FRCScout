@@ -147,6 +147,9 @@ public class MainActivity extends AppCompatActivity implements
                                         @Override
                                         public void run()
                                         {
+
+                                            boolean success = true;
+
                                             for (Team team : teams)
                                             {
                                                 for (ScoutCard scoutCard : getDatabase().getScoutCards(team))
@@ -156,6 +159,8 @@ public class MainActivity extends AppCompatActivity implements
                                                     {
                                                         scoutCard.delete(getDatabase());
                                                     }
+                                                    else
+                                                        success = false;
                                                 }
 
                                                 for (PitCard pitCard : getDatabase().getPitCards(team))
@@ -165,17 +170,22 @@ public class MainActivity extends AppCompatActivity implements
                                                     {
                                                         pitCard.delete(getDatabase());
                                                     }
+                                                    else
+                                                        success = false;
                                                 }
 
                                             }
 
+                                            final boolean finalSuccess = success;
                                             runOnUiThread(new Runnable()
                                             {
                                                 @Override
                                                 public void run()
                                                 {
                                                     progressDialog.hide();
-                                                    context.recreate();
+
+                                                    if(finalSuccess)
+                                                        context.recreate();
                                                 }
                                             });
                                         }

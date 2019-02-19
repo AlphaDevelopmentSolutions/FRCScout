@@ -49,4 +49,5 @@
     <string name="pit_card">Pit Card</string>
     <string name="completed_by">Completed By:\u0020</string>
     <string name="colon">:</string>
+    <string name="drive_style">Drive Style</string>
 </resources>

@@ -145,7 +145,12 @@ public class TeamFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                context.changeFragment(ScoutCardFragment.newInstance(-1, team.getId()), true);
+
+                if (teamTabLayout.getSelectedTabPosition() == 0)
+                    context.changeFragment(ScoutCardFragment.newInstance(-1, team.getId()), true);
+
+                else
+                    context.changeFragment(PitCardFragment.newInstance(-1, team.getId()), true);
             }
         });
 

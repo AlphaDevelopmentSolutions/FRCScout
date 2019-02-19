@@ -268,7 +268,7 @@ public abstract class ScoutingWiredcats extends Api
         {
             super("", new HashMap<String, String>()
             {{
-                put("action", "SumbitPitCard");
+                put("action", "SubmitPitCard");
 
                 put("TeamId", String.valueOf(pitCard.getTeamId()));
                 put("EventId", pitCard.getEventId());

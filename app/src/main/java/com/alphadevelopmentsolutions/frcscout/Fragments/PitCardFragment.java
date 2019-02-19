@@ -3,13 +3,25 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
 
+import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
+import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Team;
+import com.alphadevelopmentsolutions.frcscout.Classes.User;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.ApiParams;
 import com.alphadevelopmentsolutions.frcscout.R;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,13 +76,238 @@ public class PitCardFragment extends Fragment
             teamId = getArguments().getInt(ARG_PARAM2);
         }
     }
+    
+    private AutoCompleteTextView teamNumberAutoCompleteTextView;
+    private AutoCompleteTextView scouterNameAutoCompleteTextView;
+    
+    private EditText driveStyleEditText;
+    private EditText autoExitHabitatEditText;
+    private EditText autoHatchEditText;
+    private EditText autoCargoEditText;
+    private EditText teleopHatchEditText;
+    private EditText teleopCargoEditText;
+    private EditText teleopRocketsEditText;
+    private EditText returnedToHabitatEditText;
+    private EditText notesEditText;
+    
+    private Button saveButton;
+
+    private PitCard pitCard;
+    private Team team;
+
+    private MainActivity context;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pit_card, container, false);
+        View view = inflater.inflate(R.layout.fragment_pit_card, container, false);
+
+        context = (MainActivity) getActivity();
+        final Database database = context.getDatabase();
+        
+        
+        if(pitCardId > 0)
+        {
+            pitCard = new PitCard(pitCardId);
+            pitCard.load(database);
+        }
+        
+        if(teamId > 0)
+        {
+            team = new Team(teamId);
+            team.load(database);
+        }
+
+
+        teamNumberAutoCompleteTextView = view.findViewById(R.id.TeamNumberAutoCompleteTextView);
+        scouterNameAutoCompleteTextView = view.findViewById(R.id.ScouterNameAutoCompleteTextView);
+
+        driveStyleEditText = view.findViewById(R.id.DriveStyleEditText);
+        autoExitHabitatEditText = view.findViewById(R.id.AutoExitHabitatEditText);
+        autoHatchEditText = view.findViewById(R.id.AutoHatchEditText);
+        autoCargoEditText = view.findViewById(R.id.AutoCargoEditText);
+        teleopHatchEditText = view.findViewById(R.id.TeleopHatchEditText);
+        teleopCargoEditText = view.findViewById(R.id.TeleopCargoEditText);
+        teleopRocketsEditText = view.findViewById(R.id.TeleopRocketsEditText);
+        returnedToHabitatEditText = view.findViewById(R.id.ReturnedToHabitatEditText);
+        notesEditText = view.findViewById(R.id.NotesEditText);
+
+        saveButton = view.findViewById(R.id.SaveButton);
+        
+        saveButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if(validateFields())
+                {
+
+                    int teamNumber = Integer.parseInt(teamNumberAutoCompleteTextView.getText().toString());
+                    String eventId = PreferenceManager.getDefaultSharedPreferences(context).getString(ApiParams.EVENT_ID, "");
+                    String driveStyle = driveStyleEditText.getText().toString();
+                    String scouterName = scouterNameAutoCompleteTextView.getText().toString();
+                    String autonomousExitHabitat = autoExitHabitatEditText.getText().toString();
+                    String autonomousHatchPanelsSecured = autoHatchEditText.getText().toString();
+                    String autonomousCargoStored = autoCargoEditText.getText().toString();
+                    String teleopHatchPanelsSecured = teleopHatchEditText.getText().toString();
+                    String teleopCargoStored = teleopCargoEditText.getText().toString();
+                    String teleopRocketsCompleted = teleopRocketsEditText.getText().toString();
+                    String endGameReturnedToHabitat = returnedToHabitatEditText.getText().toString();
+                    String matchNotes = notesEditText.getText().toString();
+
+                    if (pitCard != null)
+                    {
+                        pitCard.setTeamId(teamNumber);
+                        pitCard.setEventId(eventId);
+                        pitCard.setDriveStyle(driveStyle);
+                        pitCard.setCompletedBy(scouterName);
+                        pitCard.setAutoExitHabitat(autonomousExitHabitat);
+                        pitCard.setAutoHatch(autonomousHatchPanelsSecured);
+                        pitCard.setAutoCargo(autonomousCargoStored);
+                        pitCard.setTeleopHatch(teleopHatchPanelsSecured);
+                        pitCard.setTeleopCargo(teleopCargoStored);
+                        pitCard.setTeleopRocketsComplete(teleopRocketsCompleted);
+                        pitCard.setReturnToHabitat(endGameReturnedToHabitat);
+                        pitCard.setNotes(matchNotes);
+                        if (pitCard.save(database) > 0)
+                        {
+                            context.showSnackbar("Saved Successfully.");
+                            context.getSupportFragmentManager().popBackStackImmediate();
+                        }
+
+
+                    } else
+                    {
+                        PitCard pitCard = new PitCard(
+                                -1,
+                                teamNumber,
+                                eventId,
+                                driveStyle,
+                                autonomousExitHabitat,
+                                autonomousHatchPanelsSecured,
+                                autonomousCargoStored,
+                                teleopHatchPanelsSecured,
+                                teleopCargoStored,
+                                teleopRocketsCompleted,
+                                endGameReturnedToHabitat,
+                                matchNotes,
+                                scouterName);
+                        if (pitCard.save(database) > 0)
+                        {
+                            context.showSnackbar("Saved Successfully.");
+                            context.getSupportFragmentManager().popBackStackImmediate();
+                        }
+                    }
+                }
+            }
+        });
+
+        if(team != null)
+            teamNumberAutoCompleteTextView.setText(String.valueOf(team.getId()));
+
+        ArrayList<String> scouterNames = new ArrayList<>();
+
+        for(User user : database.getUsers())
+            scouterNames.add(user.getName());
+
+        ArrayAdapter<String> scouterNameAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, scouterNames);
+        scouterNameAutoCompleteTextView.setAdapter(scouterNameAdapter);
+        
+        if(pitCard != null)
+        {
+            teamNumberAutoCompleteTextView.setText(String.valueOf(pitCard.getTeamId()));
+            scouterNameAutoCompleteTextView.setText(pitCard.getCompletedBy());
+
+            driveStyleEditText.setText(String.valueOf(pitCard.getDriveStyle()));
+            
+            autoExitHabitatEditText.setText(pitCard.getAutoExitHabitat());
+            autoHatchEditText.setText(String.valueOf(pitCard.getAutoHatch()));
+            autoCargoEditText.setText(String.valueOf(pitCard.getAutoCargo()));
+
+            teleopHatchEditText.setText(String.valueOf(pitCard.getTeleopHatch()));
+            teleopCargoEditText.setText(String.valueOf(pitCard.getTeleopCargo()));
+            teleopRocketsEditText.setText(String.valueOf(pitCard.getTeleopRocketsComplete()));
+
+            returnedToHabitatEditText.setText(pitCard.getReturnToHabitat());
+
+            notesEditText.setText(pitCard.getNotes());
+        }
+
+        return view;
+    }
+
+    /**
+     * Validates all fields are either filled in or filled in with correct data
+     * @return boolean if fields valid
+     */
+    private boolean validateFields()
+    {
+
+        if(!teamNumberAutoCompleteTextView.getText().toString().matches("^[-+]?\\d*$")
+                || teamNumberAutoCompleteTextView.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid team number.");
+            return false;
+        }
+
+        if(scouterNameAutoCompleteTextView.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid scouter name.");
+            return false;
+        }
+
+        if(driveStyleEditText.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid drive style.");
+            return false;
+        }
+
+        if(autoExitHabitatEditText.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid autonomous exit habitat info.");
+            return false;
+        }
+
+        if(autoHatchEditText.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid autonomous hatch panels info.");
+            return false;
+        }
+
+        if(autoCargoEditText.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid autonomous cargo stored info.");
+            return false;
+        }
+
+        if(teleopHatchEditText.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid teleop hatch panels secured info.");
+            return false;
+        }
+
+        if(teleopCargoEditText.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid teleop cargo stored info.");
+            return false;
+        }
+
+        if(teleopRocketsEditText.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid teleop rockets completed info.");
+            return false;
+        }
+
+        if(returnedToHabitatEditText.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid end game returned to habitat info.");
+            return false;
+        }
+
+        return true;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
