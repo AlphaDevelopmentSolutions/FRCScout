@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -107,6 +108,8 @@ public class PitCardFragment extends Fragment
 
         context = (MainActivity) getActivity();
         final Database database = context.getDatabase();
+
+        context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         
         
         if(pitCardId > 0)
@@ -341,6 +344,8 @@ public class PitCardFragment extends Fragment
     @Override
     public void onDetach()
     {
+        MainActivity context = (MainActivity) getActivity();
+        context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onDetach();
         mListener = null;
     }
