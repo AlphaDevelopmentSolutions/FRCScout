@@ -17,11 +17,16 @@ public class ScoutCard
     public static final String COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE = "RedAllianceFinalScore";
     public static final String COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT = "AutonomousExitHabitat";
     public static final String COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED = "AutonomousHatchPanelsSecured";
+    public static final String COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS = "AutonomousHatchPanelsSecuredAttempts";
     public static final String COLUMN_NAME_AUTONOMOUS_CARGO_STORED = "AutonomousCargoStored";
+    public static final String COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS = "AutonomousCargoStoredAttempts";
     public static final String COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED = "TeleopHatchPanelsSecured";
+    public static final String COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS = "TeleopHatchPanelsSecuredAttempts";
     public static final String COLUMN_NAME_TELEOP_CARGO_STORED = "TeleopCargoStored";
+    public static final String COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS = "TeleopCargoStoredAttempts";
     public static final String COLUMN_NAME_TELEOP_ROCKETS_COMPLETED = "TeleopRocketsCompleted";
     public static final String COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT = "EndGameReturnedToHabitat";
+    public static final String COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS = "EndGameReturnedToHabitatAttempts";
     public static final String COLUMN_NAME_NOTES = "Notes";
     public static final String COLUMN_NAME_COMPLETED_DATE = "CompletedDate";
     public static final String COLUMN_NAME_IS_DRAFT = "IsDraft";
@@ -34,13 +39,18 @@ public class ScoutCard
     private String completedBy;
     private int blueAllianceFinalScore;
     private int redAllianceFinalScore;
-    private boolean autonomousExitHabitat;
+    private String autonomousExitHabitat;
     private int autonomousHatchPanelsSecured;
+    private int autonomousHatchPanelsSecuredAttempts;
     private int autonomousCargoStored;
+    private int autonomousCargoStoredAttempts;
     private int teleopHatchPanelsSecured;
+    private int teleopHatchPanelsSecuredAttempts;
     private int teleopCargoStored;
+    private int teleopCargoStoredAttempts;
     private int teleopRocketsCompleted;
     private String endGameReturnedToHabitat;
+    private String endGameReturnedToHabitatAttempts;
     private String notes;
     private Date completedDate;
     private boolean isDraft;
@@ -54,13 +64,18 @@ public class ScoutCard
             String completedBy,
             int blueAllianceFinalScore,
             int redAllianceFinalScore,
-            boolean autonomousExitHabitat,
+            String autonomousExitHabitat,
             int autonomousHatchPanelsSecured,
+            int autonomousHatchPanelsSecuredAttempts,
             int autonomousCargoStored,
+            int autonomousCargoStoredAttempts,
             int teleopHatchPanelsSecured,
+            int teleopHatchPanelsSecuredAttempts,
             int teleopCargoStored,
+            int teleopCargoStoredAttempts,
             int teleopRocketsCompleted,
             String endGameReturnedToHabitat,
+            String endGameReturnedToHabitatAttempts,
             String notes,
             Date completedDate,
             boolean isDraft)
@@ -74,11 +89,16 @@ public class ScoutCard
         this.redAllianceFinalScore = redAllianceFinalScore;
         this.autonomousExitHabitat = autonomousExitHabitat;
         this.autonomousHatchPanelsSecured = autonomousHatchPanelsSecured;
+        this.autonomousHatchPanelsSecuredAttempts = autonomousHatchPanelsSecuredAttempts;
         this.autonomousCargoStored = autonomousCargoStored;
+        this.autonomousCargoStoredAttempts = autonomousCargoStoredAttempts;
         this.teleopHatchPanelsSecured = teleopHatchPanelsSecured;
+        this.teleopHatchPanelsSecuredAttempts = teleopHatchPanelsSecuredAttempts;
         this.teleopCargoStored = teleopCargoStored;
+        this.teleopCargoStoredAttempts = teleopCargoStoredAttempts;
         this.teleopRocketsCompleted = teleopRocketsCompleted;
         this.endGameReturnedToHabitat = endGameReturnedToHabitat;
+        this.endGameReturnedToHabitatAttempts = endGameReturnedToHabitatAttempts;
         this.notes = notes;
         this.completedBy = completedBy;
         this.completedDate = completedDate;
@@ -131,7 +151,7 @@ public class ScoutCard
         return redAllianceFinalScore;
     }
 
-    public boolean isAutonomousExitHabitat()
+    public String isAutonomousExitHabitat()
     {
         return autonomousExitHabitat;
     }
@@ -193,6 +213,37 @@ public class ScoutCard
         return isDraft;
     }
 
+    public String getAutonomousExitHabitat()
+    {
+        return autonomousExitHabitat;
+    }
+
+    public int getAutonomousHatchPanelsSecuredAttempts()
+    {
+        return autonomousHatchPanelsSecuredAttempts;
+    }
+
+    public int getAutonomousCargoStoredAttempts()
+    {
+        return autonomousCargoStoredAttempts;
+    }
+
+    public int getTeleopHatchPanelsSecuredAttempts()
+    {
+        return teleopHatchPanelsSecuredAttempts;
+    }
+
+    public int getTeleopCargoStoredAttempts()
+    {
+        return teleopCargoStoredAttempts;
+    }
+
+    public String getEndGameReturnedToHabitatAttempts()
+    {
+        return endGameReturnedToHabitatAttempts;
+    }
+
+
     //endregion
 
     //region Setters
@@ -232,7 +283,7 @@ public class ScoutCard
         this.redAllianceFinalScore = redAllianceFinalScore;
     }
 
-    public void setAutonomousExitHabitat(boolean autonomousExitHabitat)
+    public void setAutonomousExitHabitat(String autonomousExitHabitat)
     {
         this.autonomousExitHabitat = autonomousExitHabitat;
     }
@@ -287,6 +338,31 @@ public class ScoutCard
         isDraft = draft;
     }
 
+    public void setAutonomousHatchPanelsSecuredAttempts(int autonomousHatchPanelsSecuredAttempts)
+    {
+        this.autonomousHatchPanelsSecuredAttempts = autonomousHatchPanelsSecuredAttempts;
+    }
+
+    public void setAutonomousCargoStoredAttempts(int autonomousCargoStoredAttempts)
+    {
+        this.autonomousCargoStoredAttempts = autonomousCargoStoredAttempts;
+    }
+
+    public void setTeleopHatchPanelsSecuredAttempts(int teleopHatchPanelsSecuredAttempts)
+    {
+        this.teleopHatchPanelsSecuredAttempts = teleopHatchPanelsSecuredAttempts;
+    }
+
+    public void setTeleopCargoStoredAttempts(int teleopCargoStoredAttempts)
+    {
+        this.teleopCargoStoredAttempts = teleopCargoStoredAttempts;
+    }
+
+    public void setEndGameReturnedToHabitatAttempts(String endGameReturnedToHabitatAttempts)
+    {
+        this.endGameReturnedToHabitatAttempts = endGameReturnedToHabitatAttempts;
+    }
+
     //endregion
 
     //region Load, Save & Delete
@@ -316,11 +392,16 @@ public class ScoutCard
                 setRedAllianceFinalScore(scoutCard.getRedAllianceFinalScore());
                 setAutonomousExitHabitat(scoutCard.isAutonomousExitHabitat());
                 setAutonomousHatchPanelsSecured(scoutCard.getAutonomousHatchPanelsSecured());
+                setAutonomousHatchPanelsSecuredAttempts(scoutCard.getAutonomousHatchPanelsSecuredAttempts());
                 setAutonomousCargoStored(scoutCard.getAutonomousCargoStored());
+                setAutonomousCargoStoredAttempts(scoutCard.getAutonomousCargoStoredAttempts());
                 setTeleopHatchPanelsSecured(scoutCard.getTeleopHatchPanelsSecured());
+                setTeleopHatchPanelsSecuredAttempts(scoutCard.getTeleopHatchPanelsSecuredAttempts());
                 setTeleopCargoStored(scoutCard.getTeleopCargoStored());
+                setTeleopCargoStoredAttempts(scoutCard.getTeleopCargoStoredAttempts());
                 setTeleopRocketsCompleted(scoutCard.getTeleopRocketsCompleted());
                 setEndGameReturnedToHabitat(scoutCard.getEndGameReturnedToHabitat());
+                setEndGameReturnedToHabitatAttempts(scoutCard.getEndGameReturnedToHabitatAttempts());
                 setNotes(scoutCard.getNotes());
                 setCompletedBy(scoutCard.getCompletedBy());
                 setCompletedDate(scoutCard.getCompletedDate());

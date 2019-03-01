@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper
 {
 
-    private static final int DB_VERSION = 4;
+    private static final int DB_VERSION = 5;
     private static final String DB_NAME = "FRCScout.db";
 
 
@@ -73,11 +73,16 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE + " INTEGER," +
                     ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT + " TEXT," +
                     ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS + " INTEGER," +
                     ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS + " INTEGER," +
                     ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS + " INTEGER," +
                     ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS + " INTEGER," +
                     ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED + " INTEGER," +
                     ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT + " TEXT," +
+                    ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS + " TEXT," +
                     ScoutCard.COLUMN_NAME_NOTES + " TEXT," +
                     ScoutCard.COLUMN_NAME_COMPLETED_BY + " TEXT," +
                     ScoutCard.COLUMN_NAME_COMPLETED_DATE + " INTEGER," +
@@ -126,13 +131,20 @@ public class DatabaseHelper extends SQLiteOpenHelper
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion)
     {
-        if(newVersion == 4)
-        {
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ScoutCard.TABLE_NAME);
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PitCard.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Event.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Team.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Robot.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Match.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ScoutCard.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + User.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PitCard.TABLE_NAME);
 
-            sqLiteDatabase.execSQL(CREATE_SCOUT_CARDS_TABLE);
-            sqLiteDatabase.execSQL(CREATE_PIT_CARDS_TABLE);
-        }
+        sqLiteDatabase.execSQL(CREATE_EVENTS_TABLE);
+        sqLiteDatabase.execSQL(CREATE_TEAMS_TABLE);
+        sqLiteDatabase.execSQL(CREATE_ROBOTS_TABLE);
+        sqLiteDatabase.execSQL(CREATE_MATCHES_TABLE);
+        sqLiteDatabase.execSQL(CREATE_SCOUT_CARDS_TABLE);
+        sqLiteDatabase.execSQL(CREATE_USERS_TABLE);
+        sqLiteDatabase.execSQL(CREATE_PIT_CARDS_TABLE);
     }
 }

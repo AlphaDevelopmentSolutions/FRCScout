@@ -42,7 +42,6 @@ import com.alphadevelopmentsolutions.frcscout.Interfaces.ApiParams;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements
         MatchListFragment.OnFragmentInteractionListener,
@@ -78,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         //open the database as soon as the app starts
         database = new Database(this);
         database.open();
@@ -86,21 +86,24 @@ public class MainActivity extends AppCompatActivity implements
 
         context = this;
 
-        if(getDatabase().getTeams().size() == 0 && isOnline())
-            updateApplicationData(PreferenceManager.getDefaultSharedPreferences(this).getString(ApiParams.EVENT_ID, ""));
-
-        if(updateThread != null)
+        if(savedInstanceState == null)
         {
-            try
-            {
-                updateThread.join();
-            } catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-        }
+            if (getDatabase().getTeams().size() == 0 && isOnline())
+                updateApplicationData(PreferenceManager.getDefaultSharedPreferences(this).getString(ApiParams.EVENT_ID, ""));
 
-        changeFragment(new TeamListFragment(), false);
+            if (updateThread != null)
+            {
+                try
+                {
+                    updateThread.join();
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+            changeFragment(new TeamListFragment(), false);
+        }
     }
 
     public void dropActionBar()
@@ -340,16 +343,6 @@ public class MainActivity extends AppCompatActivity implements
                             event.save(getDatabase());
                     }
 
-                    runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            progressDialog.cancel();
-                            context.recreate();
-                        }
-                    });
-
                     //update scout cards
                     ScoutingWiredcats.GetScoutCards getScoutCards = new ScoutingWiredcats.GetScoutCards(context, event);
 
@@ -369,6 +362,16 @@ public class MainActivity extends AppCompatActivity implements
                         for(PitCard pitCard : getPitCards.getPitCards())
                             pitCard.save(getDatabase());
                     }
+
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            progressDialog.cancel();
+                            changeFragment(new TeamListFragment(), false);
+                        }
+                    });
 
                 }
             });

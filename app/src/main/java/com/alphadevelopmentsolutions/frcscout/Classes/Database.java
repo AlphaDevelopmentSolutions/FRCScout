@@ -782,11 +782,16 @@ public class Database
                         ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE,
                         ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT,
                         ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED,
+                        ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS,
                         ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED,
+                        ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS,
                         ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED,
+                        ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS,
                         ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED,
+                        ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS,
                         ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED,
                         ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT,
+                        ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS,
                         ScoutCard.COLUMN_NAME_NOTES,
                         ScoutCard.COLUMN_NAME_COMPLETED_DATE,
                         ScoutCard.COLUMN_NAME_IS_DRAFT
@@ -820,13 +825,18 @@ public class Database
                 String completedBy = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_BY));
                 int blueAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE));
                 int redAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE));
-                boolean autonomousExitHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT)).equals(context.getResources().getString(R.string.yes));
+                String autonomousExitHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT));
                 int autonomousHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED));
+                int autonomousHatchPanelsSecuredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS));
                 int autonomousCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED));
+                int autonomousCargoStoredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS));
                 int teleopHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED));
+                int teleopHatchPanelsSecuredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS));
                 int teleopCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED));
+                int teleopCargoStoredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS));
                 int teleopRocketsCompleted = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED));
                 String endGameReturnedToHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT));
+                String endGameReturnedToHabitatAttempts = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS));
                 String notes = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_NOTES));
                 Date completedDate = new Date(cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)));
                 boolean isDraft = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_IS_DRAFT)) == 1;
@@ -842,11 +852,16 @@ public class Database
                         redAllianceFinalScore,
                         autonomousExitHabitat,
                         autonomousHatchPanelsSecured,
+                        autonomousHatchPanelsSecuredAttempts,
                         autonomousCargoStored,
+                        autonomousCargoStoredAttempts,
                         teleopHatchPanelsSecured,
+                        teleopHatchPanelsSecuredAttempts,
                         teleopCargoStored,
+                        teleopCargoStoredAttempts,
                         teleopRocketsCompleted,
                         endGameReturnedToHabitat,
+                        endGameReturnedToHabitatAttempts,
                         notes,
                         completedDate,
                         isDraft));
@@ -872,6 +887,7 @@ public class Database
         //insert columns you are going to use here
         String[] columns =
                 {
+                        ScoutCard.COLUMN_NAME_ID,
                         ScoutCard.COLUMNS_NAME_MATCH_ID,
                         ScoutCard.COLUMN_NAME_TEAM_ID,
                         ScoutCard.COLUMN_NAME_EVENT_ID,
@@ -881,11 +897,16 @@ public class Database
                         ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE,
                         ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT,
                         ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED,
+                        ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS,
                         ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED,
+                        ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS,
                         ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED,
+                        ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS,
                         ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED,
+                        ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS,
                         ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED,
                         ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT,
+                        ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS,
                         ScoutCard.COLUMN_NAME_NOTES,
                         ScoutCard.COLUMN_NAME_COMPLETED_DATE,
                         ScoutCard.COLUMN_NAME_IS_DRAFT
@@ -918,13 +939,18 @@ public class Database
             String completedBy = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_BY));
             int blueAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE));
             int redAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE));
-            boolean autonomousExitHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT)).equals(context.getResources().getString(R.string.yes));
+            String autonomousExitHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT));
             int autonomousHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED));
+            int autonomousHatchPanelsSecuredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS));
             int autonomousCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED));
+            int autonomousCargoStoredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS));
             int teleopHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED));
+            int teleopHatchPanelsSecuredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS));
             int teleopCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED));
+            int teleopCargoStoredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS));
             int teleopRocketsCompleted = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED));
             String endGameReturnedToHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT));
+            String endGameReturnedToHabitatAttempts = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS));
             String notes = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_NOTES));
             Date completedDate = new Date(cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)));
             boolean isDraft = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_IS_DRAFT)) == 1;
@@ -941,11 +967,16 @@ public class Database
                     redAllianceFinalScore,
                     autonomousExitHabitat,
                     autonomousHatchPanelsSecured,
+                    autonomousHatchPanelsSecuredAttempts,
                     autonomousCargoStored,
+                    autonomousCargoStoredAttempts,
                     teleopHatchPanelsSecured,
+                    teleopHatchPanelsSecuredAttempts,
                     teleopCargoStored,
+                    teleopCargoStoredAttempts,
                     teleopRocketsCompleted,
                     endGameReturnedToHabitat,
+                    endGameReturnedToHabitatAttempts,
                     notes,
                     completedDate,
                     isDraft);
@@ -971,13 +1002,18 @@ public class Database
         contentValues.put(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR, scoutCard.getAllianceColor().name());
         contentValues.put(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE, scoutCard.getBlueAllianceFinalScore());
         contentValues.put(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE, scoutCard.getRedAllianceFinalScore());
-        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT, scoutCard.isAutonomousExitHabitat() ? "1" : "0");
+        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT, scoutCard.isAutonomousExitHabitat());
         contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED, scoutCard.getAutonomousHatchPanelsSecured());
+        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS, scoutCard.getAutonomousHatchPanelsSecuredAttempts());
         contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED, scoutCard.getAutonomousCargoStored());
+        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS, scoutCard.getAutonomousCargoStoredAttempts());
         contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED, scoutCard.getTeleopHatchPanelsSecured());
+        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS, scoutCard.getTeleopHatchPanelsSecuredAttempts());
         contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED, scoutCard.getTeleopCargoStored());
+        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS, scoutCard.getTeleopCargoStoredAttempts());
         contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED, scoutCard.getTeleopRocketsCompleted());
         contentValues.put(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT, scoutCard.getEndGameReturnedToHabitat());
+        contentValues.put(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS, scoutCard.getEndGameReturnedToHabitatAttempts());
         contentValues.put(ScoutCard.COLUMN_NAME_NOTES, scoutCard.getNotes());
         contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_BY, scoutCard.getCompletedBy());
         contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_DATE, scoutCard.getCompletedDate().getTime());
