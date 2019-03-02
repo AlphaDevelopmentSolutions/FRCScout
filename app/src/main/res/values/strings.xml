@@ -51,6 +51,6 @@
     <string name="colon">:</string>
     <string name="drive_style">Drive Style</string>
     <string name="hatch_panels_attempts">Hatch Panels Failed Attempts:\u0020</string>
-    <string name="cargo_stored_attempts">Cargo Stored Failed Attempts:\u0020</string>
+    <string name="cargo_stored_attempts">Cargo Failed Attempts:\u0020</string>
     <string name="returned_to_habitat_attempts">Returned To Habitat Failed Attempt:\u0020</string>
 </resources>
