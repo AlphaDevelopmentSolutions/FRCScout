@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.TeamFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@color/primary"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/TeamLogoImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:src="@mipmap/ic_launcher"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/TeamNumberNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/placeholder"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/textPrimary"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/TeamLogoImageView" />
+
+            <TextView
+                android:id="@+id/TeamLocationTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/placeholder"
+                android:textAlignment="center"
+                android:textColor="@color/textSecondaryLight"
+                android:textSize="@dimen/textSecondary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/TeamNumberNameTextView" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/TeamLocationTextView">
+
+                <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
+                    android:id="@+id/FacebookFontAwesomeBrandIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center"
+                    android:text="@string/icon_facebook"
+                    android:textColor="@color/textSecondaryLight"
+                    android:textSize="25sp"
+                    tools:layout_editor_absoluteX="354dp"
+                    tools:layout_editor_absoluteY="338dp" />
+
+                <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
+                    android:id="@+id/TwitterFontAwesomeBrandIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center"
+                    android:text="@string/icon_twitter"
+                    android:textColor="@color/textSecondaryLight"
+                    android:textSize="25sp"
+                    tools:layout_editor_absoluteX="66dp"
+                    tools:layout_editor_absoluteY="138dp" />
+
+                <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
+                    android:id="@+id/InstagramFontAwesomeBrandIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center"
+                    android:text="@string/icon_instagram"
+                    android:textColor="@color/textSecondaryLight"
+                    android:textSize="25sp"
+                    tools:layout_editor_absoluteX="354dp"
+                    tools:layout_editor_absoluteY="238dp" />
+
+                <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
+                    android:id="@+id/YoutubeFontAwesomeBrandIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center"
+                    android:text="@string/icon_youtube"
+                    android:textColor="@color/textSecondaryLight"
+                    android:textSize="25sp"
+                    tools:layout_editor_absoluteX="354dp"
+                    tools:layout_editor_absoluteY="238dp" />
+
+                <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeSolidIcon
+                    android:id="@+id/WebsiteFontAwesomeSolidIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center"
+                    android:text="@string/icon_website"
+                    android:textColor="@color/textSecondaryLight"
+                    android:textSize="25sp"
+                    tools:layout_editor_absoluteX="354dp"
+                    tools:layout_editor_absoluteY="238dp" />
+
+            </LinearLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/TeamTabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/primary"
+                android:elevation="@dimen/toolbar_elevation"
+                app:tabTextColor="@android:color/white"
+                tools:layout_editor_absoluteY="200dp" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/TeamViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/AddMatchFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:src="@drawable/ic_add_white_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:focusable="true" />
+
+</android.support.constraint.ConstraintLayout>
