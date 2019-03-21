@@ -58,5 +58,5 @@ freeline/
 freeline_project_description.json
 
 #Keys file
-./app/src/main/java/com/alphadevelopmentsolutions/frcscout/Interafces/Keys.java
+app/src/main/java/com/alphadevelopmentsolutions/frcscout/Interfaces/Keys.java
 
