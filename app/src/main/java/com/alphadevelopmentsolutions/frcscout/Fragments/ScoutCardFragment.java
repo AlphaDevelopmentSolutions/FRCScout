@@ -22,7 +22,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
-import com.alphadevelopmentsolutions.frcscout.Interfaces.ApiParams;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.ArrayList;
@@ -577,7 +577,7 @@ public class ScoutCardFragment extends Fragment
 
                     int matchId = Integer.parseInt(matchIdEditText.getText().toString());
                     int teamNumber = Integer.parseInt(teamNumberAutoCompleteTextView.getText().toString());
-                    String eventId = PreferenceManager.getDefaultSharedPreferences(context).getString(ApiParams.EVENT_ID, "");
+                    String eventId = PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.EVENT_ID_PREF, "");
                     AllianceColor allianceColor = allianceColorSpinner.getSelectedItem().toString().equals(AllianceColor.RED.name()) ?  AllianceColor.RED : AllianceColor.BLUE;
                     String scouterName = scouterNameAutoCompleteTextView.getText().toString();
                     int blueAllianceFinalScore = Integer.parseInt(blueAllianceFinalScoreEditText.getText().toString());
