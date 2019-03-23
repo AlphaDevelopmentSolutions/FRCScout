@@ -108,15 +108,21 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     PitCard.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
                     PitCard.COLUMN_NAME_TEAM_ID + " TEXT," +
                     PitCard.COLUMN_NAME_EVENT_ID + " TEXT," +
+
                     PitCard.COLUMN_NAME_DRIVE_STYLE + " TEXT," +
+                    PitCard.COLUMN_NAME_ROBOT_WEIGHT + " TEXT," +
+
                     PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT + " TEXT," +
                     PitCard.COLUMN_NAME_AUTO_HATCH + " TEXT," +
                     PitCard.COLUMN_NAME_AUTO_CARGO + " TEXT," +
+
                     PitCard.COLUMN_NAME_TELEOP_HATCH + " TEXT," +
                     PitCard.COLUMN_NAME_TELEOP_CARGO + " TEXT," +
-                    PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE + " TEXT," +
+
                     PitCard.COLUMN_NAME_RETURN_TO_HABITAT + " TEXT," +
+
                     PitCard.COLUMN_NAME_NOTES + " TEXT," +
+
                     PitCard.COLUMN_NAME_COMPLETED_BY + " TEXT," +
                     PitCard.COLUMN_NAME_IS_DRAFT + " INTEGER)";
 

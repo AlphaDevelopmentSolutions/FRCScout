@@ -81,13 +81,18 @@ public class PitCardFragment extends MasterFragment
     private AutoCompleteTextView scouterNameAutoCompleteTextView;
     
     private EditText driveStyleEditText;
+    private EditText robotWeightEditText;
+
     private EditText autoExitHabitatEditText;
     private EditText autoHatchEditText;
     private EditText autoCargoEditText;
+
     private EditText teleopHatchEditText;
     private EditText teleopCargoEditText;
     private EditText teleopRocketsEditText;
+
     private EditText returnedToHabitatEditText;
+
     private EditText notesEditText;
     
     private Button saveButton;
@@ -125,13 +130,18 @@ public class PitCardFragment extends MasterFragment
         scouterNameAutoCompleteTextView = view.findViewById(R.id.ScouterNameAutoCompleteTextView);
 
         driveStyleEditText = view.findViewById(R.id.DriveStyleEditText);
+        robotWeightEditText = view.findViewById(R.id.RobotWeightEditText);
+
         autoExitHabitatEditText = view.findViewById(R.id.AutoExitHabitatEditText);
         autoHatchEditText = view.findViewById(R.id.AutoHatchEditText);
         autoCargoEditText = view.findViewById(R.id.AutoCargoEditText);
+
         teleopHatchEditText = view.findViewById(R.id.TeleopHatchEditText);
         teleopCargoEditText = view.findViewById(R.id.TeleopCargoEditText);
         teleopRocketsEditText = view.findViewById(R.id.TeleopRocketsEditText);
+
         returnedToHabitatEditText = view.findViewById(R.id.ReturnedToHabitatEditText);
+
         notesEditText = view.findViewById(R.id.NotesEditText);
 
         saveButton = view.findViewById(R.id.SaveButton);
@@ -150,31 +160,45 @@ public class PitCardFragment extends MasterFragment
 
                     int teamNumber = Integer.parseInt(teamNumberAutoCompleteTextView.getText().toString());
                     String eventId = PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.EVENT_ID_PREF, "");
+
                     String driveStyle = driveStyleEditText.getText().toString();
-                    String scouterName = scouterNameAutoCompleteTextView.getText().toString();
+                    String robotWeight = robotWeightEditText.getText().toString();
+
                     String autonomousExitHabitat = autoExitHabitatEditText.getText().toString();
                     String autonomousHatchPanelsSecured = autoHatchEditText.getText().toString();
                     String autonomousCargoStored = autoCargoEditText.getText().toString();
+
                     String teleopHatchPanelsSecured = teleopHatchEditText.getText().toString();
                     String teleopCargoStored = teleopCargoEditText.getText().toString();
-                    String teleopRocketsCompleted = teleopRocketsEditText.getText().toString();
-                    String endGameReturnedToHabitat = returnedToHabitatEditText.getText().toString();
-                    String matchNotes = notesEditText.getText().toString();
 
+                    String endGameReturnedToHabitat = returnedToHabitatEditText.getText().toString();
+                    String notes = notesEditText.getText().toString();
+
+                    String scouterName = scouterNameAutoCompleteTextView.getText().toString();
+
+                    //pitcard is a draft
                     if (pitCard != null)
                     {
                         pitCard.setTeamId(teamNumber);
                         pitCard.setEventId(eventId);
+
                         pitCard.setDriveStyle(driveStyle);
-                        pitCard.setCompletedBy(scouterName);
+                        pitCard.setRobotWeight(robotWeight);
+
+
                         pitCard.setAutoExitHabitat(autonomousExitHabitat);
                         pitCard.setAutoHatch(autonomousHatchPanelsSecured);
                         pitCard.setAutoCargo(autonomousCargoStored);
+
                         pitCard.setTeleopHatch(teleopHatchPanelsSecured);
                         pitCard.setTeleopCargo(teleopCargoStored);
-                        pitCard.setTeleopRocketsComplete(teleopRocketsCompleted);
+
                         pitCard.setReturnToHabitat(endGameReturnedToHabitat);
-                        pitCard.setNotes(matchNotes);
+
+                        pitCard.setNotes(notes);
+
+                        pitCard.setCompletedBy(scouterName);
+
                         if (pitCard.save(database) > 0)
                         {
                             context.showSnackbar("Saved Successfully.");
@@ -182,21 +206,29 @@ public class PitCardFragment extends MasterFragment
                         }
 
 
-                    } else
+                    }
+                    //new pitcard
+                    else
                     {
                         PitCard pitCard = new PitCard(
                                 -1,
                                 teamNumber,
                                 eventId,
+
                                 driveStyle,
+                                robotWeight,
+
                                 autonomousExitHabitat,
                                 autonomousHatchPanelsSecured,
                                 autonomousCargoStored,
+
                                 teleopHatchPanelsSecured,
                                 teleopCargoStored,
-                                teleopRocketsCompleted,
+
                                 endGameReturnedToHabitat,
-                                matchNotes,
+
+                                notes,
+
                                 scouterName,
                                 true);
                         if (pitCard.save(database) > 0)
@@ -226,14 +258,14 @@ public class PitCardFragment extends MasterFragment
             scouterNameAutoCompleteTextView.setText(pitCard.getCompletedBy());
 
             driveStyleEditText.setText(String.valueOf(pitCard.getDriveStyle()));
-            
+            robotWeightEditText.setText(String.valueOf(pitCard.getRobotWeight()));
+
             autoExitHabitatEditText.setText(pitCard.getAutoExitHabitat());
             autoHatchEditText.setText(String.valueOf(pitCard.getAutoHatch()));
             autoCargoEditText.setText(String.valueOf(pitCard.getAutoCargo()));
 
             teleopHatchEditText.setText(String.valueOf(pitCard.getTeleopHatch()));
             teleopCargoEditText.setText(String.valueOf(pitCard.getTeleopCargo()));
-            teleopRocketsEditText.setText(String.valueOf(pitCard.getTeleopRocketsComplete()));
 
             returnedToHabitatEditText.setText(pitCard.getReturnToHabitat());
 

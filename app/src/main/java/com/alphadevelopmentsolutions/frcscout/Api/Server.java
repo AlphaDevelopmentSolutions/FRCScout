@@ -382,16 +382,22 @@ public abstract class Server extends Api
 
         private final String API_FIELD_NAME_PIT_CARD_TEAM_ID = "TeamId";
         private final String API_FIELD_NAME_PIT_CARD_EVENT_ID = "EventId";
+
         private final String API_FIELD_NAME_PIT_CARD_DRIVE_STYLE = "DriveStyle";
-        private final String API_FIELD_NAME_PIT_CARD_COMPLETED_BY = "CompletedBy";
+        private final String API_FIELD_NAME_PIT_CARD_ROBOT_WEIGHT = "RobotWeight";
+
         private final String API_FIELD_NAME_PIT_CARD_AUTO_EXIT_HABITAT = "AutoExitHabitat";
         private final String API_FIELD_NAME_PIT_CARD_AUTO_HATCH = "AutoHatch";
         private final String API_FIELD_NAME_PIT_CARD_AUTO_CARGO = "AutoCargo";
+
         private final String API_FIELD_NAME_PIT_CARD_TELEOP_HATCH = "TeleopHatch";
         private final String API_FIELD_NAME_PIT_CARD_TELEOP_CARGO = "TeleopCargo";
-        private final String API_FIELD_NAME_PIT_CARD_TELEOP_ROCKETS_COMPLETE = "TeleopRocketsComplete";
+
         private final String API_FIELD_NAME_PIT_CARD_RETURN_TO_HABITAT = "ReturnToHabitat";
+
         private final String API_FIELD_NAME_PIT_CARD_NOTES = "Notes";
+        private final String API_FIELD_NAME_PIT_CARD_COMPLETED_BY = "CompletedBy";
+
 
         private MainActivity context;
 
@@ -435,29 +441,40 @@ public abstract class Server extends Api
 
                     int teamId = pitCardObject.getInt(API_FIELD_NAME_PIT_CARD_TEAM_ID);
                     String eventId = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_EVENT_ID);
+
                     String driveStyle = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_DRIVE_STYLE);
-                    String completedBy = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_COMPLETED_BY);
+                    String robotWeight = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_ROBOT_WEIGHT);
+
                     String autonomousExitHabitat = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_AUTO_EXIT_HABITAT);
                     String autonomousHatchPanelsSecured = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_AUTO_HATCH);
                     String autonomousCargoStored = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_AUTO_CARGO);
+
                     String teleopHatchPanelsSecured = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_TELEOP_HATCH);
                     String teleopCargoStored = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_TELEOP_CARGO);
-                    String teleopRocketsCompleted = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_TELEOP_ROCKETS_COMPLETE);
+
                     String endGameReturnedToHabitat = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_RETURN_TO_HABITAT);
+
                     String notes = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_NOTES);
+                    String completedBy = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_COMPLETED_BY);
+
 
                     pitCards.add(new PitCard(
                             -1,
                             teamId,
                             eventId,
+
                             driveStyle,
+                            robotWeight,
+
                             autonomousExitHabitat,
                             autonomousHatchPanelsSecured,
                             autonomousCargoStored,
+
                             teleopHatchPanelsSecured,
                             teleopCargoStored,
-                            teleopRocketsCompleted,
+
                             endGameReturnedToHabitat,
+
                             notes,
                             completedBy,
                             false
@@ -578,14 +595,19 @@ public abstract class Server extends Api
 
                 put("TeamId", String.valueOf(pitCard.getTeamId()));
                 put("EventId", pitCard.getEventId());
+
                 put("DriveStyle", pitCard.getDriveStyle());
+                put("RobotWeight", pitCard.getRobotWeight());
+
                 put("AutoExitHabitat", pitCard.getAutoExitHabitat());
                 put("AutoHatch", pitCard.getAutoHatch());
                 put("AutoCargo", pitCard.getAutoCargo());
+
                 put("TeleopHatch", pitCard.getTeleopHatch());
                 put("TeleopCargo", pitCard.getTeleopCargo());
-                put("TeleopRocketsComplete", pitCard.getTeleopRocketsComplete());
+
                 put("ReturnToHabitat", pitCard.getReturnToHabitat());
+
                 put("Notes", pitCard.getNotes());
                 put("CompletedBy", pitCard.getCompletedBy());
             }});

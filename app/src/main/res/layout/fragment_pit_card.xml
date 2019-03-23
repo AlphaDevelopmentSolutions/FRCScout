@@ -57,7 +57,7 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <AutoCompleteTextView
@@ -68,28 +68,18 @@
                     android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
 
-            <LinearLayout
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:visibility="invisible">
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
 
-                <TextView
-                    android:id="@+id/textView4"
+                <AutoCompleteTextView
+                    android:id="@+id/RobotWeightEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/alliance_color"
-                    android:textSize="@dimen/textSupport" />
-
-                <Spinner
-                    android:id="@+id/AllianceColorSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:entries="@array/alliance_colors" />
-            </LinearLayout>
+                    android:hint="@string/robot_weight"
+                    android:inputType="text" />
+            </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
 

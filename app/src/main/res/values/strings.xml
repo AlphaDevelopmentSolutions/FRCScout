@@ -66,4 +66,5 @@
     <string name="pickup">Picked Up:\u0020</string>
     <string name="dropped">Dropped:\u0020</string>
     <string name="secured">Secured:\u0020</string>
+    <string name="robot_weight">Robot Weight</string>
 </resources>

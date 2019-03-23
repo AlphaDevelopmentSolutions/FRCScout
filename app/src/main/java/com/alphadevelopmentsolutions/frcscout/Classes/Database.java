@@ -1091,6 +1091,88 @@ public class Database
     //region Pit Card Logic
 
     /**
+     * Returns all columns inside the scout card table in string array format
+     * @return string array of all columns
+     */
+    private String[] getPitCardColumns()
+    {
+        return new String[]
+                {
+                        PitCard.COLUMN_NAME_ID,
+                        PitCard.COLUMN_NAME_TEAM_ID,
+                        PitCard.COLUMN_NAME_EVENT_ID,
+
+                        PitCard.COLUMN_NAME_DRIVE_STYLE,
+                        PitCard.COLUMN_NAME_ROBOT_WEIGHT,
+
+                        PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT,
+                        PitCard.COLUMN_NAME_AUTO_HATCH,
+                        PitCard.COLUMN_NAME_AUTO_CARGO,
+
+                        PitCard.COLUMN_NAME_TELEOP_HATCH,
+                        PitCard.COLUMN_NAME_TELEOP_CARGO,
+
+                        PitCard.COLUMN_NAME_RETURN_TO_HABITAT,
+
+                        PitCard.COLUMN_NAME_NOTES,
+
+                        PitCard.COLUMN_NAME_COMPLETED_BY,
+                        PitCard.COLUMN_NAME_IS_DRAFT
+                };
+    }
+
+
+    /**
+     * Takes in a cursor with info pulled from database and converts it into a pit card
+     * @param cursor info from database
+     * @return pitcard converted data
+     */
+    private PitCard getPitCardFromCursor(Cursor cursor)
+    {
+        int id = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_ID));
+        int teamId = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_TEAM_ID));
+        String eventId = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_EVENT_ID));
+
+        String driveStyle = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_DRIVE_STYLE));
+        String robotWeight = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_ROBOT_WEIGHT));
+
+        String autoExitHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT));
+        String autoHatch = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_HATCH));
+        String autoCargo = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_CARGO));
+
+        String teleopHatch = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_HATCH));
+        String teleopCargo = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_CARGO));
+
+        String returnToHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_RETURN_TO_HABITAT));
+
+        String notes = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_NOTES));
+        String completedBy = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_COMPLETED_BY));
+        boolean isDraft = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_IS_DRAFT)) == 1;
+
+
+        return new PitCard(
+                id,
+                teamId,
+                eventId,
+
+                driveStyle,
+                robotWeight,
+
+                autoExitHabitat,
+                autoHatch,
+                autoCargo,
+
+                teleopHatch,
+                teleopCargo,
+                returnToHabitat,
+
+                notes,
+
+                completedBy,
+                isDraft);
+    }
+
+    /**
      * Gets all pit cards assigned to a team
      *
      * @param team with specified ID
@@ -1101,23 +1183,7 @@ public class Database
         ArrayList<PitCard> pitCards = new ArrayList<>();
 
         //insert columns you are going to use here
-        String[] columns =
-                {
-                        PitCard.COLUMN_NAME_ID,
-                        PitCard.COLUMN_NAME_TEAM_ID,
-                        PitCard.COLUMN_NAME_EVENT_ID,
-                        PitCard.COLUMN_NAME_DRIVE_STYLE,
-                        PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT,
-                        PitCard.COLUMN_NAME_AUTO_HATCH,
-                        PitCard.COLUMN_NAME_AUTO_CARGO,
-                        PitCard.COLUMN_NAME_TELEOP_HATCH,
-                        PitCard.COLUMN_NAME_TELEOP_CARGO,
-                        PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE,
-                        PitCard.COLUMN_NAME_RETURN_TO_HABITAT,
-                        PitCard.COLUMN_NAME_NOTES,
-                        PitCard.COLUMN_NAME_COMPLETED_BY,
-                        PitCard.COLUMN_NAME_IS_DRAFT
-                };
+        String[] columns = getPitCardColumns();
 
         //where statement
         String whereStatement = PitCard.COLUMN_NAME_TEAM_ID + " = ? " + ((onlyDrafts) ? " AND " + PitCard.COLUMN_NAME_IS_DRAFT + " = 1" : "");
@@ -1138,38 +1204,7 @@ public class Database
         {
             while(cursor.moveToNext())
             {
-
-                int id = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_ID));
-                int teamId = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_TEAM_ID));
-                String eventId = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_EVENT_ID));
-                String driveStyle = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_DRIVE_STYLE));
-                String autoExitHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT));
-                String autoHatch = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_HATCH));
-                String autoCargo = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_CARGO));
-                String teleopHatch = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_HATCH));
-                String teleopCargo = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_CARGO));
-                String teleopRocketsCompleted = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE));
-                String returnToHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_RETURN_TO_HABITAT));
-                String notes = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_NOTES));
-                String completedBy = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_COMPLETED_BY));
-                boolean isDraft = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_IS_DRAFT)) == 1;
-
-
-                pitCards.add(new PitCard(
-                        id,
-                        teamId,
-                        eventId,
-                        driveStyle,
-                        autoExitHabitat,
-                        autoHatch,
-                        autoCargo,
-                        teleopHatch,
-                        teleopCargo,
-                        teleopRocketsCompleted,
-                        returnToHabitat,
-                        notes,
-                        completedBy,
-                        isDraft));
+                pitCards.add(getPitCardFromCursor(cursor));
             }
 
             cursor.close();
@@ -1190,23 +1225,7 @@ public class Database
     public PitCard getPitCard(PitCard pitCard)
     {
         //insert columns you are going to use here
-        String[] columns =
-                {
-                        PitCard.COLUMN_NAME_ID,
-                        PitCard.COLUMN_NAME_TEAM_ID,
-                        PitCard.COLUMN_NAME_EVENT_ID,
-                        PitCard.COLUMN_NAME_DRIVE_STYLE,
-                        PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT,
-                        PitCard.COLUMN_NAME_AUTO_HATCH,
-                        PitCard.COLUMN_NAME_AUTO_CARGO,
-                        PitCard.COLUMN_NAME_TELEOP_HATCH,
-                        PitCard.COLUMN_NAME_TELEOP_CARGO,
-                        PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE,
-                        PitCard.COLUMN_NAME_RETURN_TO_HABITAT,
-                        PitCard.COLUMN_NAME_NOTES,
-                        PitCard.COLUMN_NAME_COMPLETED_BY,
-                        PitCard.COLUMN_NAME_IS_DRAFT
-                };
+        String[] columns = getPitCardColumns();
 
         //where statement
         String whereStatement = PitCard.COLUMN_NAME_ID + " = ?";
@@ -1228,37 +1247,7 @@ public class Database
             //move to the first result in the set
             cursor.moveToFirst();
 
-            int id = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_ID));
-            int teamId = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_TEAM_ID));
-            String eventId = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_EVENT_ID));
-            String driveStyle = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_DRIVE_STYLE));
-            String autoExitHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT));
-            String autoHatch = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_HATCH));
-            String autoCargo = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_CARGO));
-            String teleopHatch = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_HATCH));
-            String teleopCargo = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_CARGO));
-            String teleopRocketsCompleted = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE));
-            String returnToHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_RETURN_TO_HABITAT));
-            String notes = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_NOTES));
-            String completedBy = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_COMPLETED_BY));
-            boolean isDraft = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_IS_DRAFT)) == 1;
-
-
-            return new PitCard(
-                    id,
-                    teamId,
-                    eventId,
-                    driveStyle,
-                    autoExitHabitat,
-                    autoHatch,
-                    autoCargo,
-                    teleopHatch,
-                    teleopCargo,
-                    teleopRocketsCompleted,
-                    returnToHabitat,
-                    notes,
-                    completedBy,
-                    isDraft);
+            return getPitCardFromCursor(cursor);
         }
 
 
@@ -1277,15 +1266,21 @@ public class Database
         ContentValues contentValues = new ContentValues();
         contentValues.put(PitCard.COLUMN_NAME_TEAM_ID, pitCard.getTeamId());
         contentValues.put(PitCard.COLUMN_NAME_EVENT_ID, pitCard.getEventId());
+
         contentValues.put(PitCard.COLUMN_NAME_DRIVE_STYLE, pitCard.getDriveStyle());
+        contentValues.put(PitCard.COLUMN_NAME_ROBOT_WEIGHT, pitCard.getRobotWeight());
+
         contentValues.put(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT, pitCard.getAutoExitHabitat());
         contentValues.put(PitCard.COLUMN_NAME_AUTO_HATCH, pitCard.getAutoHatch());
         contentValues.put(PitCard.COLUMN_NAME_AUTO_CARGO, pitCard.getAutoCargo());
+
         contentValues.put(PitCard.COLUMN_NAME_TELEOP_HATCH, pitCard.getTeleopHatch());
         contentValues.put(PitCard.COLUMN_NAME_TELEOP_CARGO, pitCard.getTeleopCargo());
-        contentValues.put(PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE, pitCard.getTeleopRocketsComplete());
+
         contentValues.put(PitCard.COLUMN_NAME_RETURN_TO_HABITAT, pitCard.getReturnToHabitat());
+
         contentValues.put(PitCard.COLUMN_NAME_NOTES, pitCard.getNotes());
+
         contentValues.put(PitCard.COLUMN_NAME_COMPLETED_BY, pitCard.getCompletedBy());
         contentValues.put(PitCard.COLUMN_NAME_IS_DRAFT, pitCard.isDraft() ? "1" : "0");
 
