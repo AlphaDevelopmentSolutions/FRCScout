@@ -25,7 +25,10 @@
                 android:layout_height="match_parent"
                 android:layout_weight="100"
                 android:backgroundTint="@android:color/white"
-                android:textColor="@android:color/white"/>
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:textColor="@android:color/white"
+                tools:targetApi="o" />
 
             <ImageView
                 android:layout_width="wrap_content"
