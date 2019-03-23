@@ -312,7 +312,6 @@ public class ScoutCardFragment extends MasterFragment
 //            teleopHatchPanelsSecuredAttemptsTextView.setText(String.valueOf(scoutCard.getTeleopHatchPanelsSecured()));
 //            teleopCargoStoredTextView.setText(String.valueOf(scoutCard.getTeleopCargoStored()));
 //            teleopCargoStoredAttemptsTextView.setText(String.valueOf(scoutCard.getTeleopCargoStored()));
-//            teleopRocketsCompletedTextView.setText(String.valueOf(scoutCard.getTeleopRocketsCompleted()));
 //
 //            endGameReturnedToHabitatTextView.setText(scoutCard.getEndGameReturnedToHabitat());
 //            endGameReturnedToHabitatAttemptsTextView.setText(scoutCard.getEndGameReturnedToHabitatAttempts());
