@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle(R.string.upload_scout_cards)
                             .setMessage(R.string.upload_scout_cards_warning)
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which)
                                 {
                                     final ProgressDialog progressDialog = new ProgressDialog(context);
@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements
 
                                 }
                             })
-                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                 }
                             })
@@ -283,13 +283,13 @@ public class MainActivity extends AppCompatActivity implements
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle(R.string.download_media)
                         .setMessage(R.string.download_media_desc)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which)
                             {
                                 updateApplicationData(PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.EVENT_ID_PREF, ""), true);
                             }
                         })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which)
                             {
                                 updateApplicationData(PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.EVENT_ID_PREF, ""), false);

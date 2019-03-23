@@ -131,7 +131,7 @@ public class ChangeEventFragment extends MasterFragment
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle(R.string.change_event)
                         .setMessage(R.string.change_event_desc)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which)
                             {
                                 String eventCode = "";
@@ -150,13 +150,13 @@ public class ChangeEventFragment extends MasterFragment
                                 final String finalEventCode = eventCode;
                                 builder.setTitle(R.string.download_media)
                                         .setMessage(R.string.download_media_desc)
-                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which)
                                             {
                                                 context.updateApplicationData(finalEventCode, true);
                                             }
                                         })
-                                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which)
                                             {
                                                 context.updateApplicationData(finalEventCode, false);
@@ -167,7 +167,7 @@ public class ChangeEventFragment extends MasterFragment
                                         .show();
                             }
                         })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                             }
                         })
