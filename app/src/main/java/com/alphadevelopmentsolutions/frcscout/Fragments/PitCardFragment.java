@@ -32,7 +32,7 @@ import java.util.ArrayList;
  * Use the {@link PitCardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PitCardFragment extends Fragment
+public class PitCardFragment extends MasterFragment
 {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "PitCardId";
@@ -105,9 +105,6 @@ public class PitCardFragment extends Fragment
     {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pit_card, container, false);
-
-        context = (MainActivity) getActivity();
-        final Database database = context.getDatabase();
 
         context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         
@@ -344,7 +341,6 @@ public class PitCardFragment extends Fragment
     @Override
     public void onDetach()
     {
-        MainActivity context = (MainActivity) getActivity();
         context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onDetach();
         mListener = null;

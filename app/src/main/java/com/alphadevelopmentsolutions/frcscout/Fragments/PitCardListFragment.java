@@ -24,7 +24,7 @@ import com.alphadevelopmentsolutions.frcscout.R;
  * Use the {@link PitCardListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PitCardListFragment extends Fragment
+public class PitCardListFragment extends MasterFragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -76,9 +76,6 @@ public class PitCardListFragment extends Fragment
     {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pit_card_list, container, false);
-
-        MainActivity context = (MainActivity) getActivity();
-        Database database = context.getDatabase();
 
         Team team = new Team(teamId);
         team.load(database);

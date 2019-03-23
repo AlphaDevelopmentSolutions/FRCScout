@@ -1,16 +1,14 @@
 package com.alphadevelopmentsolutions.frcscout.Api;
 
-import android.telephony.TelephonyScanManager;
-
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.StartingPiece;
+import com.alphadevelopmentsolutions.frcscout.Classes.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -211,21 +209,36 @@ public abstract class ScoutingWiredcats extends Api
         private final String API_FIELD_NAME_SCOUT_CARD_EVENT_ID = "EventId";
         private final String API_FIELD_NAME_SCOUT_CARD_ALLIANCE_COLOR = "AllianceColor";
         private final String API_FIELD_NAME_SCOUT_CARD_COMPLETED_BY = "CompletedBy";
-        private final String API_FIELD_NAME_SCOUT_CARD_BLUE_ALLIANCE_FINAL_SCORE = "RedAllianceFinalScore";
-        private final String API_FIELD_NAME_SCOUT_CARD_RED_ALLIANCE_FINAL_SCORE = "BlueAllianceFinalScore";
+        
+        private final String API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_LEVEL = "PreGameStartingLevel";
+        private final String API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_POSITION = "PreGameStartingPosition";
+        private final String API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_PIECE = "PreGameStartingPiece";
+        
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_EXIT_HABITAT = "AutonomousExitHabitat";
-        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED = "AutonomousHatchPanelsSecured";
+        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_PICKED_UP = "AutonomousHatchPanelsPickedUp";
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS = "AutonomousHatchPanelsSecuredAttempts";
-        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED = "AutonomousCargoStored";
+        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED = "AutonomousHatchPanelsSecured";
+        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_PICKED_UP = "AutonomousHatchPanelsPickedUp";
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED_ATTEMPTS = "AutonomousCargoStoredAttempts";
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED = "TeleopHatchPanelsSecured";
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS = "TeleopHatchPanelsSecuredAttempts";
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED = "TeleopCargoStored";
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED_ATTEMPTS = "TeleopCargoStoredAttempts";
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_ROCKETS_COMPLETED = "TeleopRocketsCompleted";
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_ROCKETS_COMPLETED_ATTEMPTS = "TeleopRocketsCompletedAttempts";
+        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED = "AutonomousCargoStored";
+
+
+        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_PICKED_UP = "CargoHatchPanelsPickedUp";
+        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS = "CargoHatchPanelsSecuredAttempts";
+        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED = "CargoHatchPanelsSecured";
+        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_PICKED_UP = "CargoHatchPanelsPickedUp";
+        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED_ATTEMPTS = "CargoCargoStoredAttempts";
+        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED = "CargoCargoStored";
+        
+        
         private final String API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT = "EndGameReturnedToHabitat";
         private final String API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS = "EndGameReturnedToHabitatAttempts";
+
+        private final String API_FIELD_NAME_SCOUT_CARD_BLUE_ALLIANCE_FINAL_SCORE = "RedAllianceFinalScore";
+        private final String API_FIELD_NAME_SCOUT_CARD_RED_ALLIANCE_FINAL_SCORE = "BlueAllianceFinalScore";
+        private final String API_FIELD_NAME_SCOUT_CARD_DEFENSE_RATING = "DefenseRating";
+        private final String API_FIELD_NAME_SCOUT_CARD_OFFENSE_RATING = "OffenseRating";
+        private final String API_FIELD_NAME_SCOUT_CARD_DRIVE_RATING = "DriveRating";
         private final String API_FIELD_NAME_SCOUT_CARD_NOTES = "Notes";
 
         private MainActivity context;
@@ -271,49 +284,77 @@ public abstract class ScoutingWiredcats extends Api
                     int matchId = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_MATCH_ID);
                     int teamId = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TEAM_ID);
                     String eventId = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_EVENT_ID);
-                    AllianceColor allianceColor = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_ALLIANCE_COLOR).equals(AllianceColor.BLUE.name()) ? AllianceColor.BLUE : AllianceColor.RED;
+                    String allianceColor = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_ALLIANCE_COLOR);
                     String completedBy = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_COMPLETED_BY);
+
+                    int preGameStartingLevel = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_LEVEL);
+                    StartingPosition preGameStartingPosition = StartingPosition.getPositionFromString(scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_POSITION));
+                    StartingPiece preGameStartingPiece = StartingPiece.getPieceFromString(scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_PIECE));
+
+                    boolean autonomousExitHabitat = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_EXIT_HABITAT) == 1;
+                    int autonomousHatchPanelsPickedUp = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_PICKED_UP);
+                    int autonomousHatchPanelsSecuredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS);
+                    int autonomousHatchPanelsSecured = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED);
+                    int autonomousCargoPickedUp = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_PICKED_UP);
+                    int autonomousCargoStoredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED_ATTEMPTS);
+                    int autonomousCargoStored = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED);
+
+                    int teleopHatchPanelsPickedUp = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_PICKED_UP);
+                    int teleopHatchPanelsSecuredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS);
+                    int teleopHatchPanelsSecured = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED);
+                    int teleopCargoPickedUp = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_PICKED_UP);
+                    int teleopCargoStoredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED_ATTEMPTS);
+                    int teleopCargoStored = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED);
+
+                    int endGameReturnedToHabitat = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT);
+                    int endGameReturnedToHabitatAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS);
+
                     int blueAllianceFinalScore = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_BLUE_ALLIANCE_FINAL_SCORE);
                     int redAllianceFinalScore = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_RED_ALLIANCE_FINAL_SCORE);
-                    String autonomousExitHabitat = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_EXIT_HABITAT);
-                    int autonomousHatchPanelsSecured = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED);
-                    int autonomousHatchPanelsSecuredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS);
-                    int autonomousCargoStored = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED);
-                    int autonomousCargoStoredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED_ATTEMPTS);
-                    int teleopHatchPanelsSecured = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED);
-                    int teleopHatchPanelsSecuredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS);
-                    int teleopCargoStored = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED);
-                    int teleopCargoStoredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED_ATTEMPTS);
-                    int teleopRocketsCompleted = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_ROCKETS_COMPLETED);
-                    String endGameReturnedToHabitat = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT);
-                    String endGameReturnedToHabitatAttempts = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS);
+                    int defenseRating = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_DEFENSE_RATING);
+                    int offenseRating = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_OFFENSE_RATING);
+                    int driveRating = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_DRIVE_RATING);
                     String notes = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_NOTES);
-
-                    scoutCards.add(new ScoutCard(
+                    
+                    scoutCards.add(
+                    new ScoutCard(
                             -1,
                             matchId,
                             teamId,
                             eventId,
                             allianceColor,
                             completedBy,
-                            blueAllianceFinalScore,
-                            redAllianceFinalScore,
+
+                            preGameStartingLevel,
+                            preGameStartingPosition,
+                            preGameStartingPiece,
+
                             autonomousExitHabitat,
-                            autonomousHatchPanelsSecured,
+                            autonomousHatchPanelsPickedUp,
                             autonomousHatchPanelsSecuredAttempts,
-                            autonomousCargoStored,
+                            autonomousHatchPanelsSecured,
+                            autonomousCargoPickedUp,
                             autonomousCargoStoredAttempts,
-                            teleopHatchPanelsSecured,
+                            autonomousCargoStored,
+
+                            teleopHatchPanelsPickedUp,
                             teleopHatchPanelsSecuredAttempts,
-                            teleopCargoStored,
+                            teleopHatchPanelsSecured,
+                            teleopCargoPickedUp,
                             teleopCargoStoredAttempts,
-                            teleopRocketsCompleted,
+                            teleopCargoStored,
+
                             endGameReturnedToHabitat,
                             endGameReturnedToHabitatAttempts,
+
+                            blueAllianceFinalScore,
+                            redAllianceFinalScore,
+                            defenseRating,
+                            offenseRating,
+                            driveRating,
                             notes,
                             new Date(0),
-                            false
-                    ));
+                            false));
                 }
 
                 return true;
@@ -457,23 +498,39 @@ public abstract class ScoutingWiredcats extends Api
                 put("MatchId", String.valueOf(scoutCard.getMatchId()));
                 put("TeamId", String.valueOf(scoutCard.getTeamId()));
                 put("EventId", scoutCard.getEventId());
-                put("AllianceColor", scoutCard.getAllianceColor().name());
+                put("AllianceColor", scoutCard.getAllianceColor());
                 put("CompletedBy", scoutCard.getCompletedBy());
+
+
+                put("PreGameStartingLevel", String.valueOf(scoutCard.getPreGameStartingLevel()));
+                put("PreGameStartingPosition", scoutCard.getPreGameStartingPosition().name());
+                put("PreGameStartingPiece", scoutCard.getPreGameStartingPiece().name());
+
+                put("AutonomousExitHabitat", String.valueOf(scoutCard.getAutonomousExitHabitat() ? 1 : 0));
+                put("AutonomousHatchPanelsPickedUp", String.valueOf(scoutCard.getAutonomousHatchPanelsPickedUp()));
+                put("AutonomousHatchPanelsSecuredAttempts", String.valueOf(scoutCard.getAutonomousHatchPanelsSecuredAttempts()));
+                put("AutonomousHatchPanelsSecured", String.valueOf(scoutCard.getAutonomousHatchPanelsSecured()));
+                put("AutonomousCargoPickedUp", String.valueOf(scoutCard.getAutonomousCargoPickedUp()));
+                put("AutonomousCargoSecuredAttempts", String.valueOf(scoutCard.getAutonomousCargoStoredAttempts()));
+                put("AutonomousCargoSecured", String.valueOf(scoutCard.getAutonomousCargoStored()));
+
+                put("TeleopHatchPanelsPickedUp", String.valueOf(scoutCard.getTeleopHatchPanelsPickedUp()));
+                put("TeleopHatchPanelsSecuredAttempts", String.valueOf(scoutCard.getTeleopHatchPanelsSecuredAttempts()));
+                put("TeleopHatchPanelsSecured", String.valueOf(scoutCard.getTeleopHatchPanelsSecured()));
+                put("TeleopCargoPickedUp", String.valueOf(scoutCard.getTeleopCargoPickedUp()));
+                put("TeleopCargoSecuredAttempts", String.valueOf(scoutCard.getTeleopCargoStoredAttempts()));
+                put("TeleopCargoSecured", String.valueOf(scoutCard.getTeleopCargoStored()));
+
+                put("EndGameReturnedToHabitat", String.valueOf(scoutCard.getEndGameReturnedToHabitat()));
+                put("EndGameReturnedToHabitatAttempts", String.valueOf(scoutCard.getEndGameReturnedToHabitatAttempts()));
+
                 put("BlueAllianceFinalScore", String.valueOf(scoutCard.getBlueAllianceFinalScore()));
                 put("RedAllianceFinalScore", String.valueOf(scoutCard.getRedAllianceFinalScore()));
-                put("AutonomousExitHabitat", scoutCard.isAutonomousExitHabitat());
-                put("AutonomousHatchPanelsSecured", String.valueOf(scoutCard.getAutonomousHatchPanelsSecured()));
-                put("AutonomousHatchPanelsSecuredAttempts", String.valueOf(scoutCard.getAutonomousHatchPanelsSecuredAttempts()));
-                put("AutonomousCargoStored", String.valueOf(scoutCard.getAutonomousCargoStored()));
-                put("AutonomousCargoStoredAttempts", String.valueOf(scoutCard.getAutonomousCargoStoredAttempts()));
-                put("TeleopHatchPanelsSecured", String.valueOf(scoutCard.getTeleopHatchPanelsSecured()));
-                put("TeleopHatchPanelsSecuredAttempts", String.valueOf(scoutCard.getTeleopHatchPanelsSecuredAttempts()));
-                put("TeleopCargoStored", String.valueOf(scoutCard.getTeleopCargoStored()));
-                put("TeleopCargoStoredAttempts", String.valueOf(scoutCard.getTeleopCargoStoredAttempts()));
-                put("TeleopRocketsCompleted", String.valueOf(scoutCard.getTeleopRocketsCompleted()));
-                put("EndGameReturnedToHabitat", scoutCard.getEndGameReturnedToHabitat());
-                put("EndGameReturnedToHabitatAttempts", scoutCard.getEndGameReturnedToHabitatAttempts());
+                put("DefenseRating", String.valueOf(scoutCard.getDefenseRating()));
+                put("OffenseRating", String.valueOf(scoutCard.getOffenseRating()));
+                put("DriveRating", String.valueOf(scoutCard.getDriveRating()));
                 put("Notes", scoutCard.getNotes());
+
                 put("CompletedDate", scoutCard.getCompletedDateForSQL());
             }});
 

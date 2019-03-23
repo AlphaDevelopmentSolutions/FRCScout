@@ -36,7 +36,7 @@ import java.util.Date;
  * Use the {@link TeamFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TeamFragment extends Fragment
+public class TeamFragment extends MasterFragment
 {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "teamId";
@@ -99,14 +99,12 @@ public class TeamFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_team, container, false);
 
-        final MainActivity context = (MainActivity) getActivity();
-
         //gets rid of the shadow on the actionbar
         context.dropActionBar();
 
         //load the current team you are viewing
         team = new Team(teamId);
-        team.load(context.getDatabase());
+        team.load(database);
 
         //assign the vars to the views on the page
         teamNumberNameTextView = view.findViewById(R.id.TeamNumberNameTextView);

@@ -37,7 +37,7 @@ import java.util.ArrayList;
  * Use the {@link ChangeEventFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ChangeEventFragment extends Fragment
+public class ChangeEventFragment extends MasterFragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -96,9 +96,6 @@ public class ChangeEventFragment extends Fragment
     {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_change_event, container, false);
-
-        final MainActivity context = (MainActivity) getActivity();
-        final Database database = context.getDatabase();
 
         final ArrayList<Event> events = database.getEvents();
 

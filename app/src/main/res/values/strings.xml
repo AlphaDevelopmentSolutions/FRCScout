@@ -50,7 +50,20 @@
     <string name="completed_by">Completed By:\u0020</string>
     <string name="colon">:</string>
     <string name="drive_style">Drive Style</string>
-    <string name="hatch_panels_attempts">Hatch Panels Failed Attempts:\u0020</string>
-    <string name="cargo_stored_attempts">Cargo Failed Attempts:\u0020</string>
+    <string name="hatch_panels_attempts">Hatch Panels Dropped:\u0020</string>
+    <string name="cargo_stored_attempts">Cargo Dropped:\u0020</string>
     <string name="returned_to_habitat_attempts">Returned To Habitat Failed Attempt:\u0020</string>
+    <string name="starting_position">Starting Position</string>
+    <string name="starting_level">Starting Level</string>
+    <string name="starting_piece">Starting Piece</string>
+    <string name="pre_game">Pre Game</string>
+    <string name="post_game">Post Game</string>
+    <string name="offense_rating">Offense Rating:</string>
+    <string name="defense_rating">Defense Rating:</string>
+    <string name="drive_rating">Drive Rating:</string>
+    <string name="hatches">Hatches</string>
+    <string name="cargo">Cargo</string>
+    <string name="pickup">Picked Up:\u0020</string>
+    <string name="dropped">Dropped:\u0020</string>
+    <string name="secured">Secured:\u0020</string>
 </resources>

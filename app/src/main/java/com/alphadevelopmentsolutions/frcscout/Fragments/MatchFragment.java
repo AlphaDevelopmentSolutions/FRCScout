@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * Use the {@link MatchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MatchFragment extends Fragment
+public class MatchFragment extends MasterFragment
 {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "BlueAllianceTeamIds";
@@ -80,8 +80,6 @@ public class MatchFragment extends Fragment
     {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_match, container, false);
-
-        MainActivity context = (MainActivity) getActivity();
 
         //gets rid of the shadow on the actionbar
         ActionBar actionBar = context.getSupportActionBar();

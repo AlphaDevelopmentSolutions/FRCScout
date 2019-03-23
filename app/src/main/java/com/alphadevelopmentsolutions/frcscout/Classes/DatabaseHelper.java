@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper
 {
 
-    private static final int DB_VERSION = 5;
+    private static final int DB_VERSION = 6;
     private static final String DB_NAME = "FRCScout.db";
 
 
@@ -69,22 +69,37 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     ScoutCard.COLUMN_NAME_TEAM_ID + " INTEGER," +
                     ScoutCard.COLUMN_NAME_EVENT_ID + " TEXT," +
                     ScoutCard.COLUMN_NAME_ALLIANCE_COLOR + " TEXT," +
+                    ScoutCard.COLUMN_NAME_COMPLETED_BY + " TEXT," +
+                    
+                    ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_LEVEL + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_POSITION + " TEXT," +
+                    ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_PIECE + " TEXT," +
+
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_PICKED_UP + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_PICKED_UP + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED + " INTEGER," +
+
+                    ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_PICKED_UP + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_TELEOP_CARGO_PICKED_UP + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED + " INTEGER," +
+                    
+                    ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS + " INTEGER," +
+
                     ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE + " INTEGER," +
                     ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT + " TEXT," +
-                    ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT + " TEXT," +
-                    ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS + " TEXT," +
+                    ScoutCard.COLUMN_NAME_DEFENSE_RATING + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_OFFENSE_RATING + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_DRIVE_RATING + " INTEGER," +
                     ScoutCard.COLUMN_NAME_NOTES + " TEXT," +
-                    ScoutCard.COLUMN_NAME_COMPLETED_BY + " TEXT," +
+
                     ScoutCard.COLUMN_NAME_COMPLETED_DATE + " INTEGER," +
                     ScoutCard.COLUMN_NAME_IS_DRAFT + " INTEGER)";
 

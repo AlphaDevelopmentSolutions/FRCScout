@@ -10,4 +10,6 @@
     <dimen name="toolbar_elevation">11dp</dimen>
     <dimen name="divider_height">1dp</dimen>
     <dimen name="textSupport">10sp</dimen>
+    <dimen name="top_card_fields_padding">16dp</dimen>
+    <dimen name="support_text_padding">8dp</dimen>
 </resources>

@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * Use the {@link TeamListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TeamListFragment extends Fragment
+public class TeamListFragment extends MasterFragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -88,14 +88,10 @@ public class TeamListFragment extends Fragment
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_team_list, container, false);
 
-        //get the parent activity
-        MainActivity context = (MainActivity) getActivity();
-        context.dropActionBar();
-
         teamsRecyclerView = view.findViewById(R.id.TeamsRecyclerView);
         teamSearchEditText = view.findViewById(R.id.TeamSearchEditText);
 
-        final ArrayList<Team> teams = context.getDatabase().getTeams();
+        final ArrayList<Team> teams = database.getTeams();
         final ArrayList<Team> searchedTeams = new ArrayList<>(teams);
 
         final TeamListRecyclerViewAdapter teamListRecyclerViewAdapter = new TeamListRecyclerViewAdapter(searchedTeams, context);

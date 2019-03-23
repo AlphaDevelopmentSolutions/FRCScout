@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.alphadevelopmentsolutions.frcscout.Api.ScoutingWiredcats;
+import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
@@ -34,8 +35,13 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.MatchFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardListFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardAutoFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardEndGameFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardListFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardPostGameFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardPreGameFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardTeleopFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.ApiParams;
@@ -54,7 +60,12 @@ public class MainActivity extends AppCompatActivity implements
         PitCardFragment.OnFragmentInteractionListener,
         ScoutCardListFragment.OnFragmentInteractionListener,
         PitCardListFragment.OnFragmentInteractionListener,
-        ChangeEventFragment.OnFragmentInteractionListener
+        ChangeEventFragment.OnFragmentInteractionListener,
+        ScoutCardPreGameFragment.OnFragmentInteractionListener,
+        ScoutCardAutoFragment.OnFragmentInteractionListener,
+        ScoutCardTeleopFragment.OnFragmentInteractionListener,
+        ScoutCardEndGameFragment.OnFragmentInteractionListener,
+        ScoutCardPostGameFragment.OnFragmentInteractionListener
 {
 
     private Database database;
@@ -76,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         //open the database as soon as the app starts
         database = new Database(this);
