@@ -143,7 +143,8 @@ public class Team
         File file = new File(getImageFileURI());
 
         //check if the image exists
-        if(file.exists()) return BitmapFactory.decodeFile(file.getAbsolutePath());
+        if(file.exists())
+            return BitmapFactory.decodeFile(file.getAbsolutePath());
 
         return null;
     }

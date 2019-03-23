@@ -451,7 +451,13 @@ public class MainActivity extends AppCompatActivity implements
                                 if (getRobotMedia.execute())
                                 {
                                     for (RobotMedia robotMedia : getRobotMedia.getRobotMedia())
+                                    {
                                         robotMedia.save(getDatabase());
+
+                                        //save the image for the team
+                                        team.setImageFileURI(robotMedia.getFileUri());
+                                        team.save(getDatabase());
+                                    }
                                 }
                             }
                         }
