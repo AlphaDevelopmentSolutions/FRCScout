@@ -71,4 +71,5 @@
     <string name="download_media">Download Robot Media?</string>
     <string name="download_media_desc">Would you like to download all images of the robots?</string>
     <string name="change_event_desc">Changing an event will clear ALL current application data.</string>
+    <string name="match">Match</string>
 </resources>
