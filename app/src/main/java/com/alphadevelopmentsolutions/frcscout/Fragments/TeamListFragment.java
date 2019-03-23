@@ -73,11 +73,17 @@ public class TeamListFragment extends MasterFragment
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        teams = database.getTeams();
+        searchedTeams = new ArrayList<>(teams);
     }
 
     private RecyclerView teamsRecyclerView;
 
     private EditText teamSearchEditText;
+
+    private ArrayList<Team> teams;
+    private ArrayList<Team> searchedTeams;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,9 +94,6 @@ public class TeamListFragment extends MasterFragment
 
         teamsRecyclerView = view.findViewById(R.id.TeamsRecyclerView);
         teamSearchEditText = view.findViewById(R.id.TeamSearchEditText);
-
-        final ArrayList<Team> teams = database.getTeams();
-        final ArrayList<Team> searchedTeams = new ArrayList<>(teams);
 
         final TeamListRecyclerViewAdapter teamListRecyclerViewAdapter = new TeamListRecyclerViewAdapter(searchedTeams, context);
 

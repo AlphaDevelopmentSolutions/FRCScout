@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -73,10 +72,6 @@ public class MainActivity extends AppCompatActivity implements
     private MainActivity context;
 
     private Thread updateThread;
-
-    private SearchView searchView;
-
-    private Menu menu;
 
     private final int ACTION_BAR_ELEVATION = 11;
 
@@ -415,7 +410,12 @@ public class MainActivity extends AppCompatActivity implements
      */
     public Database getDatabase()
     {
-        if(!database.isOpen()) database.open();
+        if(database == null)
+            database = new Database(this);
+
+        if(!database.isOpen())
+            database.open();
+
         return database;
     }
 

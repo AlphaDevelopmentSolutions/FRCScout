@@ -12,9 +12,15 @@ import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simp//        //load the scoutcard if passed
+//        if(scoutCardId > 0)
+//        {
+//            scoutCard = new ScoutCard(scoutCardId);
+//            scoutCard.load(database);
+//        }le {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link ScoutCardTeleopFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
@@ -27,7 +33,7 @@ public class ScoutCardTeleopFragment extends MasterFragment {
     private static final String ARG_PARAM1 = "param1";
 
     // TODO: Rename and change types of parameters
-    private int scoutCardId;
+    private String scoutCardJson;
 
     private OnFragmentInteractionListener mListener;
 
@@ -39,14 +45,13 @@ public class ScoutCardTeleopFragment extends MasterFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param scoutCardId Scout card id
+     * @param scoutCardJson scout card json
      * @return A new instance of fragment ScoutCardTeleopFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static ScoutCardTeleopFragment newInstance(int scoutCardId) {
+    public static ScoutCardTeleopFragment newInstance(String scoutCardJson) {
         ScoutCardTeleopFragment fragment = new ScoutCardTeleopFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, scoutCardId);
+        args.putString(ARG_PARAM1, scoutCardJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,8 +60,12 @@ public class ScoutCardTeleopFragment extends MasterFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            scoutCardId = getArguments().getInt(ARG_PARAM1);
+            scoutCardJson = getArguments().getString(ARG_PARAM1);
         }
+
+        //load the passed scout card
+        if(scoutCardJson != null && !scoutCardJson.equals(""))
+            scoutCard = new Gson().fromJson(scoutCardJson, ScoutCard.class);
     }
 
     private ScoutCard scoutCard;
@@ -95,13 +104,6 @@ public class ScoutCardTeleopFragment extends MasterFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_scout_card_teleop, container, false);
-
-        //load the scoutcard if passed
-        if(scoutCardId > 0)
-        {
-            scoutCard = new ScoutCard(scoutCardId);
-            scoutCard.load(database);
-        }
 
         //Hatch Panels
         teleopHatchPanelsPickupTextView = view.findViewById(R.id.TeleopHatchPanelsPickupTextView);

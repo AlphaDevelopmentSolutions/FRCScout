@@ -1,7 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -16,10 +15,10 @@ import android.widget.EditText;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -37,7 +36,7 @@ public class PitCardFragment extends MasterFragment
     private static final String ARG_PARAM1 = "PitCardId";
     private static final String ARG_PARAM2 = "TeamId";
 
-    private int pitCardId;
+    private String pitCardJson;
     private int teamId;
 
     private OnFragmentInteractionListener mListener;
@@ -51,16 +50,16 @@ public class PitCardFragment extends MasterFragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param pitCardId Parameter 1.
+     * @param pitCardJson pit card json.
      * @param teamId Parameter 2.
      * @return A new instance of fragment PitCardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PitCardFragment newInstance(int pitCardId, int teamId)
+    public static PitCardFragment newInstance(String pitCardJson, int teamId)
     {
         PitCardFragment fragment = new PitCardFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, pitCardId);
+        args.putString(ARG_PARAM1, pitCardJson);
         args.putInt(ARG_PARAM2, teamId);
         fragment.setArguments(args);
         return fragment;
@@ -72,9 +71,12 @@ public class PitCardFragment extends MasterFragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            pitCardId = getArguments().getInt(ARG_PARAM1);
+            pitCardJson = getArguments().getString(ARG_PARAM1);
             teamId = getArguments().getInt(ARG_PARAM2);
         }
+
+        if(pitCardJson != null && !pitCard.equals(""))
+            pitCard = new Gson().fromJson(pitCardJson, PitCard.class);
     }
     
     private AutoCompleteTextView teamNumberAutoCompleteTextView;
@@ -97,7 +99,6 @@ public class PitCardFragment extends MasterFragment
     private Button saveButton;
 
     private PitCard pitCard;
-    private Team team;
 
     private MainActivity context;
 
@@ -108,21 +109,9 @@ public class PitCardFragment extends MasterFragment
     {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pit_card, container, false);
-        
-        if(pitCardId > 0)
-        {
-            pitCard = new PitCard(pitCardId);
-            pitCard.load(database);
-        }
-        
-        if(teamId > 0)
-        {
-            team = new Team(teamId);
-            team.load(database);
-        }
 
 
-        teamNumberAutoCompleteTextView = view.findViewById(R.id.TeamNumberAutoCompleteTextView);
+        teamNumberAutoCompleteTextView = view.findViewById(R.id.TeamNumberTextInputEditText);
         scouterNameAutoCompleteTextView = view.findViewById(R.id.ScouterNameAutoCompleteTextView);
 
         driveStyleEditText = view.findViewById(R.id.DriveStyleEditText);
@@ -236,8 +225,8 @@ public class PitCardFragment extends MasterFragment
             }
         });
 
-        if(team != null)
-            teamNumberAutoCompleteTextView.setText(String.valueOf(team.getId()));
+
+        teamNumberAutoCompleteTextView.setText(String.valueOf(teamId));
 
         ArrayList<String> scouterNames = new ArrayList<>();
 

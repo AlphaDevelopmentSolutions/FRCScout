@@ -1,7 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Classes.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 import java.util.Date;
 
@@ -33,10 +33,10 @@ import java.util.Date;
 public class ScoutCardFragment extends MasterFragment
 {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "ScoutCardId";
+    private static final String ARG_PARAM1 = "ScoutCardJson";
     private static final String ARG_PARAM2 = "TeamId";
 
-    private int scoutCardId;
+    private String scoutCardJson;
     private int teamId;
 
     private OnFragmentInteractionListener mListener;
@@ -50,16 +50,16 @@ public class ScoutCardFragment extends MasterFragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param scoutCardId scout card ID
+     * @param scoutCardJson scout card json
      * @param teamId teamId
      * @return A new instance of fragment ScoutCardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ScoutCardFragment newInstance(int scoutCardId, int teamId)
+    public static ScoutCardFragment newInstance(String scoutCardJson, int teamId)
     {
         ScoutCardFragment fragment = new ScoutCardFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, scoutCardId);
+        args.putString(ARG_PARAM1, scoutCardJson);
         args.putInt(ARG_PARAM2, teamId);
         fragment.setArguments(args);
         return fragment;
@@ -69,17 +69,45 @@ public class ScoutCardFragment extends MasterFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null)
         {
-            scoutCardId = getArguments().getInt(ARG_PARAM1);
+            scoutCardJson = getArguments().getString(ARG_PARAM1);
             teamId = getArguments().getInt(ARG_PARAM2);
         }
+
+        //start the creation of fragments on a new thread
+        fragCreationThread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if(scoutCardJson != null && !scoutCardJson.equals(""))
+                    scoutCard = new Gson().fromJson(scoutCardJson, ScoutCard.class);
+
+                scoutCardPreGameFragment = ScoutCardPreGameFragment.newInstance(scoutCardJson, teamId);
+                scoutCardAutoFragment = ScoutCardAutoFragment.newInstance(scoutCardJson);
+                scoutCardTeleopFragment = ScoutCardTeleopFragment.newInstance(scoutCardJson);
+                scoutCardEndGameFragment = ScoutCardEndGameFragment.newInstance(scoutCardJson);
+                scoutCardPostGameFragment = ScoutCardPostGameFragment.newInstance(scoutCardJson);
+            }
+        });
+        fragCreationThread.start();
+
     }
     
     private ScoutCard scoutCard;
 
     private TabLayout scoutCardTabLayout;
     private ViewPager scoutCardViewPager;
+
+    private ScoutCardPreGameFragment scoutCardPreGameFragment;
+    private ScoutCardAutoFragment scoutCardAutoFragment;
+    private ScoutCardTeleopFragment scoutCardTeleopFragment;
+    private ScoutCardEndGameFragment scoutCardEndGameFragment;
+    private  ScoutCardPostGameFragment scoutCardPostGameFragment;
+
+    private Thread fragCreationThread;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,35 +116,30 @@ public class ScoutCardFragment extends MasterFragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_scout_card, container, false);
 
-        if(scoutCardId > 0)
-        {
-            scoutCard = new ScoutCard(scoutCardId);
-            scoutCard.load(database);
-        }
-
-
         scoutCardTabLayout = view.findViewById(R.id.ScoutCardTabLayout);
         scoutCardViewPager = view.findViewById(R.id.ScoutCardViewPager);
 
-
-
-        final ScoutCardPreGameFragment scoutCardPreGameFragment = ScoutCardPreGameFragment.newInstance(scoutCardId, teamId);
-        final ScoutCardAutoFragment scoutCardAutoFragment = ScoutCardAutoFragment.newInstance(scoutCardId);
-        final ScoutCardTeleopFragment scoutCardTeleopFragment = ScoutCardTeleopFragment.newInstance(scoutCardId);
-        final ScoutCardEndGameFragment scoutCardEndGameFragment = ScoutCardEndGameFragment.newInstance(scoutCardId);
-        final ScoutCardPostGameFragment scoutCardPostGameFragment = ScoutCardPostGameFragment.newInstance(scoutCardId);
-
-
+        final ScoutCardViewPagerAdapter scoutCardViewPagerAdapter = new ScoutCardViewPagerAdapter(getChildFragmentManager());
         final Resources resources = context.getResources();
 
-        ScoutCardViewPagerAdapter scoutCardViewPagerAdapter = new ScoutCardViewPagerAdapter(getChildFragmentManager());
+        //join back with the frag creation thread
+        try
+        {
+            fragCreationThread.join();
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
         scoutCardViewPagerAdapter.addFragment(scoutCardPreGameFragment, resources.getString(R.string.pre_game));
         scoutCardViewPagerAdapter.addFragment(scoutCardAutoFragment, resources.getString(R.string.autonomous));
         scoutCardViewPagerAdapter.addFragment(scoutCardTeleopFragment, resources.getString(R.string.teleop));
         scoutCardViewPagerAdapter.addFragment(scoutCardEndGameFragment, resources.getString(R.string.end_game));
         scoutCardViewPagerAdapter.addFragment(scoutCardPostGameFragment, resources.getString(R.string.post_game));
 
+
         scoutCardViewPager.setAdapter(scoutCardViewPagerAdapter);
+        scoutCardViewPager.setOffscreenPageLimit(5);
         scoutCardTabLayout.setupWithViewPager(scoutCardViewPager);
 
 

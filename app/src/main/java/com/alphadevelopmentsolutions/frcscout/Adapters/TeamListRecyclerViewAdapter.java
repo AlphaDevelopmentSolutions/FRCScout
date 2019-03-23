@@ -13,6 +13,7 @@ import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -79,7 +80,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
             @Override
             public void onClick(View v)
             {
-               context.changeFragment(TeamFragment.newInstance(teamList.get(viewHolder.getAdapterPosition()).getId()), true);
+               context.changeFragment(TeamFragment.newInstance(new Gson().toJson(teamList.get(viewHolder.getAdapterPosition()))), true);
             }
         });
     }

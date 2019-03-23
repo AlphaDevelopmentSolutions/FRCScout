@@ -24,8 +24,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
 
-                <AutoCompleteTextView
-                    android:id="@+id/TeamNumberAutoCompleteTextView"
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/TeamNumberTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
 
-                <AutoCompleteTextView
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/MatchIdEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

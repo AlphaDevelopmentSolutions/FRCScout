@@ -3,13 +3,13 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
@@ -18,6 +18,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Classes.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -34,7 +35,7 @@ public class ScoutCardPreGameFragment extends MasterFragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private int scoutCardId;
+    private String scoutCardJson;
     private int teamId;
 
     private OnFragmentInteractionListener mListener;
@@ -47,14 +48,14 @@ public class ScoutCardPreGameFragment extends MasterFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param scoutCardId Scout card id
+     * @param scoutCardJson scout card json
      * @param teamId Team id
      * @return A new instance of fragment ScoutCardPreGameFragment.
      */
-    public static ScoutCardPreGameFragment newInstance(int scoutCardId, int teamId) {
+    public static ScoutCardPreGameFragment newInstance(String scoutCardJson, int teamId) {
         ScoutCardPreGameFragment fragment = new ScoutCardPreGameFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, scoutCardId);
+        args.putString(ARG_PARAM1, scoutCardJson);
         args.putInt(ARG_PARAM2, teamId);
         fragment.setArguments(args);
         return fragment;
@@ -63,24 +64,50 @@ public class ScoutCardPreGameFragment extends MasterFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //load the user auto complete data on a new thread
+        loadScouterNamesThread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                //populate the scouter name auto complete textview
+                scouterNames = new ArrayList<>();
+
+                for(User user : database.getUsers())
+                    scouterNames.add(user.getName());
+
+                scouterNameAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, scouterNames);
+            }
+        });
+        loadScouterNamesThread.start();
+
         if (getArguments() != null) {
-            scoutCardId = getArguments().getInt(ARG_PARAM1);
+            scoutCardJson = getArguments().getString(ARG_PARAM1);
             teamId = getArguments().getInt(ARG_PARAM2);
         }
+
+        //load the passed scout card
+        if(scoutCardJson != null && !scoutCardJson.equals(""))
+           scoutCard = new Gson().fromJson(scoutCardJson, ScoutCard.class);
     }
 
     private ScoutCard scoutCard;
 
-    private AutoCompleteTextView teamNumberAutoCompleteTextView;
+    private TextInputEditText teamNumberTextInputEditText;
     private AutoCompleteTextView scouterNameAutoCompleteTextView;
 
-    private EditText matchIdEditText;
+    private TextInputEditText matchIdEditText;
 
     private Spinner allianceColorSpinner;
     private Spinner startingPositionSpinner;
     private Spinner startingLevelSpinner;
     private Spinner startingPieceSpinner;
 
+    private ArrayList<String> scouterNames;
+
+    private Thread loadScouterNamesThread;
+    private ArrayAdapter<String> scouterNameAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,14 +115,7 @@ public class ScoutCardPreGameFragment extends MasterFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_scout_card_pre_game, container, false);
 
-        //load the scoutcard if passed
-        if(scoutCardId > 0)
-        {
-            scoutCard = new ScoutCard(scoutCardId);
-            scoutCard.load(database);
-        }
-
-        teamNumberAutoCompleteTextView = view.findViewById(R.id.TeamNumberAutoCompleteTextView);
+        teamNumberTextInputEditText = view.findViewById(R.id.TeamNumberTextInputEditText);
         scouterNameAutoCompleteTextView = view.findViewById(R.id.ScouterNameAutoCompleteTextView);
 
         matchIdEditText = view.findViewById(R.id.MatchIdEditText);
@@ -105,21 +125,29 @@ public class ScoutCardPreGameFragment extends MasterFragment {
         startingLevelSpinner = view.findViewById(R.id.StartingLevelSpinner);
         startingPieceSpinner = view.findViewById(R.id.StartingGamePieceSpinner);
 
-        teamNumberAutoCompleteTextView.setText(String.valueOf(teamId));
+        teamNumberTextInputEditText.setText(String.valueOf(teamId));
 
-        //populate the scouter name auto complete textview
-        ArrayList<String> scouterNames = new ArrayList<>();
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    loadScouterNamesThread.join();
+                    scouterNameAutoCompleteTextView.setAdapter(scouterNameAdapter);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
 
-        for(User user : database.getUsers())
-            scouterNames.add(user.getName());
-
-        ArrayAdapter<String> scouterNameAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, scouterNames);
-        scouterNameAutoCompleteTextView.setAdapter(scouterNameAdapter);
+            }
+        });
 
         //scoutcard loaded, populate fields
         if(scoutCard != null)
         {
-            teamNumberAutoCompleteTextView.setText(String.valueOf(scoutCard.getTeamId()));
+            teamNumberTextInputEditText.setText(String.valueOf(scoutCard.getTeamId()));
             scouterNameAutoCompleteTextView.setText(scoutCard.getCompletedBy());
 
             matchIdEditText.setText(String.valueOf(scoutCard.getMatchId()));
@@ -131,7 +159,7 @@ public class ScoutCardPreGameFragment extends MasterFragment {
         }
 
         if(teamId > 0)
-            teamNumberAutoCompleteTextView.setText(String.valueOf(teamId));
+            teamNumberTextInputEditText.setText(String.valueOf(teamId));
 
         return view;
     }
@@ -172,8 +200,8 @@ public class ScoutCardPreGameFragment extends MasterFragment {
 
     public boolean validateFields()
     {
-        if(!teamNumberAutoCompleteTextView.getText().toString().matches("^[-+]?\\d*$")
-            || teamNumberAutoCompleteTextView.getText().toString().equals(""))
+        if(!teamNumberTextInputEditText.getText().toString().matches("^[-+]?\\d*$")
+            || teamNumberTextInputEditText.getText().toString().equals(""))
         {
             context.showSnackbar("Invalid team number.");
             return false;

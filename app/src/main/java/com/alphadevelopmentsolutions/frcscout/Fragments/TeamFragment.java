@@ -16,6 +16,7 @@ import com.alphadevelopmentsolutions.frcscout.Adapters.TeamViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeIcon;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,7 +31,7 @@ public class TeamFragment extends MasterFragment
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "teamId";
 
-    private int teamId;
+    private String teamJson;
 
     private OnFragmentInteractionListener mListener;
 
@@ -43,14 +44,14 @@ public class TeamFragment extends MasterFragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param teamId id of team to show
+     * @param teamJson json of team
      * @return A new instance of fragment TeamFragment.
      */
-    public static TeamFragment newInstance(int teamId)
+    public static TeamFragment newInstance(String teamJson)
     {
         TeamFragment fragment = new TeamFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, teamId);
+        args.putString(ARG_PARAM1, teamJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,8 +62,22 @@ public class TeamFragment extends MasterFragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            teamId = getArguments().getInt(ARG_PARAM1);
+            teamJson = getArguments().getString(ARG_PARAM1);
         }
+
+        //gets rid of the shadow on the actionbar
+        context.dropActionBar();
+
+        loadTeamThread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                team = new Gson().fromJson(teamJson, Team.class);
+            }
+        });
+        loadTeamThread.start();
+
     }
 
     private Team team;
@@ -81,19 +96,14 @@ public class TeamFragment extends MasterFragment
 
     private FloatingActionButton addMatchFloatingActionButton;
 
+    private Thread loadTeamThread;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_team, container, false);
-
-        //gets rid of the shadow on the actionbar
-        context.dropActionBar();
-
-        //load the current team you are viewing
-        team = new Team(teamId);
-        team.load(database);
 
         //assign the vars to the views on the page
         teamNumberNameTextView = view.findViewById(R.id.TeamNumberNameTextView);
@@ -109,6 +119,30 @@ public class TeamFragment extends MasterFragment
         websiteFontAwesomeSolidIcon = view.findViewById(R.id.WebsiteFontAwesomeSolidIcon);
 
         addMatchFloatingActionButton = view.findViewById(R.id.AddMatchFloatingActionButton);
+
+        //logic for adding a new match
+        addMatchFloatingActionButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+                if (teamTabLayout.getSelectedTabPosition() == 0)
+                    context.changeFragment(ScoutCardFragment.newInstance(null, team.getId()), true);
+
+                else
+                    context.changeFragment(PitCardFragment.newInstance(null, team.getId()), true);
+            }
+        });
+
+        //join back up with the load team thread
+        try
+        {
+            loadTeamThread.join();
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
 
         //checks to see if the team has a valid URL for each social media, if not hide the icon
         if(team.getFacebookURL() != null && !team.getFacebookURL().equals("")) facebookFontAwesomeBrandIcon.setURL(team.getFacebookURL(), context);
@@ -126,28 +160,13 @@ public class TeamFragment extends MasterFragment
         if(team.getWebsiteURL() != null && !team.getWebsiteURL().equals("")) websiteFontAwesomeSolidIcon.setURL(team.getWebsiteURL(), context);
         else websiteFontAwesomeSolidIcon.hide();
 
-        //logic for adding a new match
-        addMatchFloatingActionButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-
-                if (teamTabLayout.getSelectedTabPosition() == 0)
-                    context.changeFragment(ScoutCardFragment.newInstance(-1, team.getId()), true);
-
-                else
-                    context.changeFragment(PitCardFragment.newInstance(-1, team.getId()), true);
-            }
-        });
-
         teamNumberNameTextView.setText(team.getId() + " - " + team.getName());
         teamLocationTextView.setText(team.getCity() + ", " + team.getStateProvince() + ", " + team.getCountry());
 
         TeamViewPagerAdapter teamViewPagerAdapter = new TeamViewPagerAdapter(getChildFragmentManager());
 
-        teamViewPagerAdapter.addFragment(ScoutCardListFragment.newInstance(teamId), "Scout Cards");
-        teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(teamId), "Pit Cards");
+        teamViewPagerAdapter.addFragment(ScoutCardListFragment.newInstance(teamJson), "Scout Cards");
+        teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(teamJson), "Pit Cards");
 
         teamViewPager.setAdapter(teamViewPagerAdapter);
         teamTabLayout.setupWithViewPager(teamViewPager);

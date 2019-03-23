@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,7 +28,7 @@ public class ScoutCardEndGameFragment extends MasterFragment {
     private static final String ARG_PARAM1 = "param1";
 
     // TODO: Rename and change types of parameters
-    private int scoutCardId;
+    private String scoutCardJson;
 
     private OnFragmentInteractionListener mListener;
 
@@ -39,14 +40,13 @@ public class ScoutCardEndGameFragment extends MasterFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param scoutCardId Scout card id
+     * @param scoutCardJson scout card json
      * @return A new instance of fragment ScoutCardEndGameFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static ScoutCardEndGameFragment newInstance(int scoutCardId) {
+    public static ScoutCardEndGameFragment newInstance(String scoutCardJson) {
         ScoutCardEndGameFragment fragment = new ScoutCardEndGameFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, scoutCardId);
+        args.putString(ARG_PARAM1, scoutCardJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,8 +55,12 @@ public class ScoutCardEndGameFragment extends MasterFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            scoutCardId = getArguments().getInt(ARG_PARAM1);
+            scoutCardJson = getArguments().getString(ARG_PARAM1);
         }
+
+        //load the passed scout card
+        if(scoutCardJson != null && !scoutCardJson.equals(""))
+            scoutCard = new Gson().fromJson(scoutCardJson, ScoutCard.class);
     }
 
     private ScoutCard scoutCard;
@@ -83,13 +87,6 @@ public class ScoutCardEndGameFragment extends MasterFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_scout_card_end_game, container, false);
-
-        //load the scoutcard if passed
-        if(scoutCardId > 0)
-        {
-            scoutCard = new ScoutCard(scoutCardId);
-            scoutCard.load(database);
-        }
 
         //Exit Habitat
         endGameReturnedToHabitatTextView = view.findViewById(R.id.EndGameReturnedToHabitatTextView);
