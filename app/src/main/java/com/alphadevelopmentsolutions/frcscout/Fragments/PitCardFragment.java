@@ -265,7 +265,7 @@ public class PitCardFragment extends MasterFragment
 
         if(driveStyleEditText.getText().toString().equals(""))
         {
-            context.showSnackbar("Invalid drive style.");
+            context.showSnackbar("Invalid drivetrain.");
             return false;
         }
 

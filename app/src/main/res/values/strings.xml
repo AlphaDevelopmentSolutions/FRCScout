@@ -49,7 +49,7 @@
     <string name="pit_card">Pit Card</string>
     <string name="completed_by">Completed By:\u0020</string>
     <string name="colon">:</string>
-    <string name="drive_style">Drive Style</string>
+    <string name="drive_style">Drivetrain</string>
     <string name="hatch_panels_attempts">Hatch Panels Dropped:\u0020</string>
     <string name="cargo_stored_attempts">Cargo Dropped:\u0020</string>
     <string name="returned_to_habitat_attempts">Returned To Habitat Failed Attempt:\u0020</string>
