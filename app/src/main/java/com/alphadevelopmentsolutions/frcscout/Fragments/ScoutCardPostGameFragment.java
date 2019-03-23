@@ -99,8 +99,20 @@ public class ScoutCardPostGameFragment extends MasterFragment {
             scoutCardSaveButton.setOnClickListener(onSaveButtonClickListener);
 
         if(scoutCard != null)
+        {
             if(!scoutCard.isDraft())
                 scoutCardSaveButton.setVisibility(View.GONE);
+
+            blueAllianceFinalScoreEditText.setText(String.valueOf(scoutCard.getBlueAllianceFinalScore()));
+            redAllianceFinalScoreEditText.setText(String.valueOf(scoutCard.getRedAllianceFinalScore()));
+
+            defenseRatingBar.setRating(scoutCard.getDefenseRating());
+            offenseRatingBar.setRating(scoutCard.getOffenseRating());
+            driveRatingBar.setRating(scoutCard.getDriveRating());
+
+            matchNotesEditText.setText(scoutCard.getNotes());
+        }
+
 
         return view;
     }

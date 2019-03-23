@@ -181,6 +181,16 @@ public class ScoutCardEndGameFragment extends MasterFragment {
             }
         });
 
+        //scoutcard loaded, populate fields
+        if(scoutCard != null)
+        {
+            returnedToHabLevel = scoutCard.getEndGameReturnedToHabitat();
+            returnedToHabAttemptLevel = scoutCard.getEndGameReturnedToHabitatAttempts();
+
+            endGameReturnedToHabitatTextView.setText((returnedToHabLevel == 0) ? "No" : "Level " + String.valueOf(returnedToHabLevel));
+            endGameReturnedToHabitatAttemptsTextView.setText((returnedToHabAttemptLevel == 0) ? "No" : "Level " + String.valueOf(returnedToHabAttemptLevel));
+        }
+
 
         return view;
     }

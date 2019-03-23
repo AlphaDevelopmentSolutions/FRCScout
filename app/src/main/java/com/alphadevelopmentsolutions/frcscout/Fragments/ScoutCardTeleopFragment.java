@@ -244,6 +244,18 @@ public class ScoutCardTeleopFragment extends MasterFragment {
             }
         });
 
+        //scoutcard loaded, populate fields
+        if(scoutCard != null)
+        {
+            teleopHatchPanelsPickupTextView.setText(String.valueOf(scoutCard.getTeleopHatchPanelsPickedUp()));
+            teleopHatchPanelsSecuredAttemptsTextView.setText(String.valueOf(scoutCard.getTeleopHatchPanelsSecuredAttempts()));
+            teleopHatchPanelsSecuredTextView.setText(String.valueOf(scoutCard.getTeleopHatchPanelsSecured()));
+
+            teleopCargoPickupTextView.setText(String.valueOf(scoutCard.getTeleopCargoPickedUp()));
+            teleopCargoStoredAttemptsTextView.setText(String.valueOf(scoutCard.getTeleopCargoStoredAttempts()));
+            teleopCargoStoredTextView.setText(String.valueOf(scoutCard.getTeleopCargoStored()));
+        }
+
         return view;
     }
 

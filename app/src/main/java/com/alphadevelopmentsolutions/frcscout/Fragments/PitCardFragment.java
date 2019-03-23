@@ -13,7 +13,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
@@ -75,7 +74,7 @@ public class PitCardFragment extends MasterFragment
             teamId = getArguments().getInt(ARG_PARAM2);
         }
 
-        if(pitCardJson != null && !pitCard.equals(""))
+        if(pitCardJson != null && !pitCardJson.equals(""))
             pitCard = new Gson().fromJson(pitCardJson, PitCard.class);
     }
     
@@ -99,9 +98,6 @@ public class PitCardFragment extends MasterFragment
     private Button saveButton;
 
     private PitCard pitCard;
-
-    private MainActivity context;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

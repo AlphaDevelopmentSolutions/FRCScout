@@ -272,6 +272,20 @@ public class ScoutCardAutoFragment extends MasterFragment {
             }
         });
 
+        //scoutcard loaded, populate fields
+        if(scoutCard != null)
+        {
+            autonomousHatchPanelsPickupTextView.setText(String.valueOf(scoutCard.getAutonomousHatchPanelsPickedUp()));
+            autonomousHatchPanelsSecuredAttemptsTextView.setText(String.valueOf(scoutCard.getAutonomousHatchPanelsSecuredAttempts()));
+            autonomousHatchPanelsSecuredTextView.setText(String.valueOf(scoutCard.getAutonomousHatchPanelsSecured()));
+
+            autonomousCargoPickupTextView.setText(String.valueOf(scoutCard.getAutonomousCargoPickedUp()));
+            autonomousCargoStoredAttemptsTextView.setText(String.valueOf(scoutCard.getAutonomousCargoStoredAttempts()));
+            autonomousCargoStoredTextView.setText(String.valueOf(scoutCard.getAutonomousCargoStored()));
+
+            autonomousExitHabitatTextView.setText((scoutCard.getAutonomousExitHabitat() ? R.string.yes : R.string.no));
+        }
+
         return view;
     }
 
