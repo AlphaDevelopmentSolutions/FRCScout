@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -39,6 +40,7 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.MatchFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardListFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.RobotMediaFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardAutoFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardEndGameFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
@@ -70,7 +72,8 @@ public class MainActivity extends AppCompatActivity implements
         ScoutCardAutoFragment.OnFragmentInteractionListener,
         ScoutCardTeleopFragment.OnFragmentInteractionListener,
         ScoutCardEndGameFragment.OnFragmentInteractionListener,
-        ScoutCardPostGameFragment.OnFragmentInteractionListener
+        ScoutCardPostGameFragment.OnFragmentInteractionListener,
+        RobotMediaFragment.OnFragmentInteractionListener
 {
 
     private Database database;
@@ -168,6 +171,12 @@ public class MainActivity extends AppCompatActivity implements
                 startActivity(intent);
             }
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public void dropActionBar()

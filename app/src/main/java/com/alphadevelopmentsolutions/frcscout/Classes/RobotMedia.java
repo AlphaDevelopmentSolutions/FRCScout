@@ -1,5 +1,10 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
+
+import java.io.File;
+import java.util.UUID;
+
 public class RobotMedia
 {
 
@@ -57,6 +62,21 @@ public class RobotMedia
         return isDraft;
     }
 
+    public static File generateFileUri()
+    {
+        File mediaFolder = new File(Constants.MEDIA_DIRECTORY);
+
+        File mediaFile;
+
+        //keep generating UUID's until we found one that does not exist
+        //should only run once
+        do
+        {
+            mediaFile = new File(mediaFolder.getAbsolutePath() + "/" + UUID.randomUUID().toString() + ".png");
+        }while (mediaFile.isFile());
+
+        return mediaFile;
+    }
 
     //endregion
 

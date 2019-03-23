@@ -74,4 +74,7 @@
     <string name="match">Match</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="add_scout_card">Add Scout Card</string>
+    <string name="add_pit_card">Add Pit Card</string>
+    <string name="add_robot_photo">Add Robot Photo</string>
 </resources>

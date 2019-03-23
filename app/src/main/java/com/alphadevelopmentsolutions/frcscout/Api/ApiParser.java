@@ -1,5 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Api;
 
+import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 
 import org.json.JSONException;
@@ -15,7 +16,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.UUID;
 
 
 public class ApiParser
@@ -100,15 +100,7 @@ public class ApiParser
 
 
         //Create the file
-        File mediaFile;
-
-        //keep generating UUID's until we found one that does not exist
-        //should only run once
-        do
-        {
-            mediaFile = new File(mediaFolder.getAbsolutePath() + "/" + UUID.randomUUID().toString() + ".png");
-        }while (mediaFile.isFile());
-
+        File mediaFile = new File(RobotMedia.generateFileUri().getAbsolutePath());
         if (!mediaFile.createNewFile())
             throw new IOException("Failed to create file");
 

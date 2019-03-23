@@ -3,7 +3,6 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -16,6 +15,7 @@ import com.alphadevelopmentsolutions.frcscout.Adapters.TeamViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeIcon;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.github.clans.fab.FloatingActionButton;
 import com.google.gson.Gson;
 
 /**
@@ -95,6 +95,8 @@ public class TeamFragment extends MasterFragment
     private FontAwesomeIcon websiteFontAwesomeSolidIcon;
 
     private FloatingActionButton addMatchFloatingActionButton;
+    private FloatingActionButton addPitCardFloatingActionButton;
+    private FloatingActionButton addRobotPhotoFloatingActionButton;
 
     private Thread loadTeamThread;
 
@@ -119,6 +121,8 @@ public class TeamFragment extends MasterFragment
         websiteFontAwesomeSolidIcon = view.findViewById(R.id.WebsiteFontAwesomeSolidIcon);
 
         addMatchFloatingActionButton = view.findViewById(R.id.AddMatchFloatingActionButton);
+        addPitCardFloatingActionButton = view.findViewById(R.id.AddPitCardFloatingActingButton);
+        addRobotPhotoFloatingActionButton = view.findViewById(R.id.AddRobotPhotoFloatingActionButton);
 
         //logic for adding a new match
         addMatchFloatingActionButton.setOnClickListener(new View.OnClickListener()
@@ -126,12 +130,25 @@ public class TeamFragment extends MasterFragment
             @Override
             public void onClick(View v)
             {
+                context.changeFragment(ScoutCardFragment.newInstance(null, team.getId()), true);
+            }
+        });
 
-                if (teamTabLayout.getSelectedTabPosition() == 0)
-                    context.changeFragment(ScoutCardFragment.newInstance(null, team.getId()), true);
+        addPitCardFloatingActionButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                context.changeFragment(PitCardFragment.newInstance(null, team.getId()), true);
+            }
+        });
 
-                else
-                    context.changeFragment(PitCardFragment.newInstance(null, team.getId()), true);
+        addRobotPhotoFloatingActionButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                context.changeFragment(RobotMediaFragment.newInstance(null, team.getId()), true);
             }
         });
 

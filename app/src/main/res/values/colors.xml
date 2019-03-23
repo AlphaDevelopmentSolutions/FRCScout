@@ -6,7 +6,9 @@
     <color name="accent">#607D8B</color>
     <color name="textPrimary">#212121</color>
     <color name="textSecondary">#757575</color>
-    <color name="textSecondaryLight">#dcdcdc</color>
+    <color name="textSecondaryLight">#ECECEC</color>
     <color name="textLink">@color/primaryDark</color>
     <color name="divider">#0C000000</color>
+    <color name="ripple">#dcdcdc</color>
+
 </resources>
