@@ -14,4 +14,6 @@
     <dimen name="support_text_padding">8dp</dimen>
     <dimen name="text_card_value">30sp</dimen>
     <dimen name="card_value_margin">8dp</dimen>
+    <dimen name="team_page_image_width">90dp</dimen>
+    <dimen name="team_page_image_height">90dp</dimen>
 </resources>

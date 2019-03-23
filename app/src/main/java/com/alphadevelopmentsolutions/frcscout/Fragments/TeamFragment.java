@@ -17,6 +17,11 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -88,6 +93,8 @@ public class TeamFragment extends MasterFragment
     private TextView teamNumberNameTextView;
     private TextView teamLocationTextView;
 
+    private CircleImageView teamLogoImageView;
+
     private FontAwesomeIcon facebookFontAwesomeBrandIcon;
     private FontAwesomeIcon twitterFontAwesomeBrandIcon;
     private FontAwesomeIcon instagramFontAwesomeBrandIcon;
@@ -113,6 +120,8 @@ public class TeamFragment extends MasterFragment
 
         teamTabLayout = view.findViewById(R.id.TeamTabLayout);
         teamViewPager = view.findViewById(R.id.TeamViewPager);
+
+        teamLogoImageView = view.findViewById(R.id.TeamLogoImageView);
 
         facebookFontAwesomeBrandIcon = view.findViewById(R.id.FacebookFontAwesomeBrandIcon);
         twitterFontAwesomeBrandIcon = view.findViewById(R.id.TwitterFontAwesomeBrandIcon);
@@ -160,6 +169,19 @@ public class TeamFragment extends MasterFragment
         {
             e.printStackTrace();
         }
+
+        //load the photo if the file exists
+        if(!team.getImageFileURI().equals(""))
+            Picasso.get()
+                    .load(Uri.fromFile(new File(team.getImageFileURI())))
+                    .fit()
+                    .centerCrop()
+                    .placeholder(R.drawable.frc_logo)
+                    .error(R.drawable.frc_logo)
+                    .into(teamLogoImageView);
+
+        else
+            teamLogoImageView.setImageDrawable(context.getDrawable(R.drawable.frc_logo));
 
         //checks to see if the team has a valid URL for each social media, if not hide the icon
         if(team.getFacebookURL() != null && !team.getFacebookURL().equals("")) facebookFontAwesomeBrandIcon.setURL(team.getFacebookURL(), context);
