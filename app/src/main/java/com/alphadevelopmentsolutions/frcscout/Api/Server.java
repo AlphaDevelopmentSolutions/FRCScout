@@ -383,6 +383,9 @@ public abstract class Server extends Api
 
         private final String API_FIELD_NAME_PIT_CARD_DRIVE_STYLE = "DriveStyle";
         private final String API_FIELD_NAME_PIT_CARD_ROBOT_WEIGHT = "RobotWeight";
+        private final String API_FIELD_NAME_PIT_CARD_ROBOT_LENGTH = "RobotLength";
+        private final String API_FIELD_NAME_PIT_CARD_ROBOT_WIDTH = "RobotWidth";
+        private final String API_FIELD_NAME_PIT_CARD_ROBOT_HEIGHT = "RobotHeight";
 
         private final String API_FIELD_NAME_PIT_CARD_AUTO_EXIT_HABITAT = "AutoExitHabitat";
         private final String API_FIELD_NAME_PIT_CARD_AUTO_HATCH = "AutoHatch";
@@ -442,6 +445,9 @@ public abstract class Server extends Api
 
                     String driveStyle = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_DRIVE_STYLE);
                     String robotWeight = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_ROBOT_WEIGHT);
+                    String robotLength = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_ROBOT_LENGTH);
+                    String robotWidth = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_ROBOT_WIDTH);
+                    String robotHeight = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_ROBOT_HEIGHT);
 
                     String autonomousExitHabitat = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_AUTO_EXIT_HABITAT);
                     String autonomousHatchPanelsSecured = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_AUTO_HATCH);
@@ -463,6 +469,9 @@ public abstract class Server extends Api
 
                             driveStyle,
                             robotWeight,
+                            robotLength,
+                            robotWidth,
+                            robotHeight,
 
                             autonomousExitHabitat,
                             autonomousHatchPanelsSecured,
@@ -756,6 +765,9 @@ public abstract class Server extends Api
 
                 put("DriveStyle", pitCard.getDriveStyle());
                 put("RobotWeight", pitCard.getRobotWeight());
+                put("RobotLength", pitCard.getRobotLength());
+                put("RobotWidth", pitCard.getRobotWidth());
+                put("RobotHeight", pitCard.getRobotHeight());
 
                 put("AutoExitHabitat", pitCard.getAutoExitHabitat());
                 put("AutoHatch", pitCard.getAutoHatch());

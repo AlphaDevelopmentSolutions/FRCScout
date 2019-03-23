@@ -1115,6 +1115,9 @@ public class Database
 
                         PitCard.COLUMN_NAME_DRIVE_STYLE,
                         PitCard.COLUMN_NAME_ROBOT_WEIGHT,
+                        PitCard.COLUMN_NAME_ROBOT_LENGTH,
+                        PitCard.COLUMN_NAME_ROBOT_WIDTH,
+                        PitCard.COLUMN_NAME_ROBOT_HEIGHT,
 
                         PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT,
                         PitCard.COLUMN_NAME_AUTO_HATCH,
@@ -1146,6 +1149,9 @@ public class Database
 
         String driveStyle = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_DRIVE_STYLE));
         String robotWeight = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_ROBOT_WEIGHT));
+        String robotLength = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_ROBOT_LENGTH));
+        String robotWidth = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_ROBOT_WIDTH));
+        String robotHeight = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_ROBOT_HEIGHT));
 
         String autoExitHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT));
         String autoHatch = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_HATCH));
@@ -1168,6 +1174,9 @@ public class Database
 
                 driveStyle,
                 robotWeight,
+                robotLength,
+                robotWidth,
+                robotHeight,
 
                 autoExitHabitat,
                 autoHatch,
@@ -1280,6 +1289,9 @@ public class Database
 
         contentValues.put(PitCard.COLUMN_NAME_DRIVE_STYLE, pitCard.getDriveStyle());
         contentValues.put(PitCard.COLUMN_NAME_ROBOT_WEIGHT, pitCard.getRobotWeight());
+        contentValues.put(PitCard.COLUMN_NAME_ROBOT_LENGTH, pitCard.getRobotLength());
+        contentValues.put(PitCard.COLUMN_NAME_ROBOT_WIDTH, pitCard.getRobotWidth());
+        contentValues.put(PitCard.COLUMN_NAME_ROBOT_HEIGHT, pitCard.getRobotHeight());
 
         contentValues.put(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT, pitCard.getAutoExitHabitat());
         contentValues.put(PitCard.COLUMN_NAME_AUTO_HATCH, pitCard.getAutoHatch());

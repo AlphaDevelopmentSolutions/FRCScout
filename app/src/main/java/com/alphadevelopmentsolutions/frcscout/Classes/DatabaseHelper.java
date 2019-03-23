@@ -118,6 +118,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
                     PitCard.COLUMN_NAME_DRIVE_STYLE + " TEXT," +
                     PitCard.COLUMN_NAME_ROBOT_WEIGHT + " TEXT," +
+                    PitCard.COLUMN_NAME_ROBOT_LENGTH + " TEXT," +
+                    PitCard.COLUMN_NAME_ROBOT_WIDTH + " TEXT," +
+                    PitCard.COLUMN_NAME_ROBOT_HEIGHT + " TEXT," +
 
                     PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT + " TEXT," +
                     PitCard.COLUMN_NAME_AUTO_HATCH + " TEXT," +

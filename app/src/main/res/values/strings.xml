@@ -77,4 +77,8 @@
     <string name="add_scout_card">Add Scout Card</string>
     <string name="add_pit_card">Add Pit Card</string>
     <string name="add_robot_photo">Add Robot Photo</string>
+    <string name="robot_length">Robot Length</string>
+    <string name="robot_width">Robot Width</string>
+    <string name="robot_height">Robot Height</string>
+    <string name="mutliply_symbol">X</string>
 </resources>

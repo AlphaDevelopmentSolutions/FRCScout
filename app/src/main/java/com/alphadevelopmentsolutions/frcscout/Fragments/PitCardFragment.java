@@ -83,6 +83,9 @@ public class PitCardFragment extends MasterFragment
     
     private EditText driveStyleEditText;
     private EditText robotWeightEditText;
+    private EditText robotLengthEditText;
+    private EditText robotWidthEditText;
+    private EditText robotHeightEditText;
 
     private EditText autoExitHabitatEditText;
     private EditText autoHatchEditText;
@@ -112,6 +115,9 @@ public class PitCardFragment extends MasterFragment
 
         driveStyleEditText = view.findViewById(R.id.DriveStyleEditText);
         robotWeightEditText = view.findViewById(R.id.RobotWeightEditText);
+        robotLengthEditText = view.findViewById(R.id.RobotLengthEditText);
+        robotWidthEditText = view.findViewById(R.id.RobotWidthEditText);
+        robotHeightEditText = view.findViewById(R.id.RobotHeightEditText);
 
         autoExitHabitatEditText = view.findViewById(R.id.AutoExitHabitatEditText);
         autoHatchEditText = view.findViewById(R.id.AutoHatchEditText);
@@ -143,6 +149,9 @@ public class PitCardFragment extends MasterFragment
 
                     String driveStyle = driveStyleEditText.getText().toString();
                     String robotWeight = robotWeightEditText.getText().toString();
+                    String robotLength = robotLengthEditText.getText().toString();
+                    String robotWidth = robotWidthEditText.getText().toString();
+                    String robotHeight = robotHeightEditText.getText().toString();
 
                     String autonomousExitHabitat = autoExitHabitatEditText.getText().toString();
                     String autonomousHatchPanelsSecured = autoHatchEditText.getText().toString();
@@ -164,7 +173,9 @@ public class PitCardFragment extends MasterFragment
 
                         pitCard.setDriveStyle(driveStyle);
                         pitCard.setRobotWeight(robotWeight);
-
+                        pitCard.setRobotLength(robotLength);
+                        pitCard.setRobotWidth(robotWidth);
+                        pitCard.setRobotHeight(robotHeight);
 
                         pitCard.setAutoExitHabitat(autonomousExitHabitat);
                         pitCard.setAutoHatch(autonomousHatchPanelsSecured);
@@ -197,6 +208,9 @@ public class PitCardFragment extends MasterFragment
 
                                 driveStyle,
                                 robotWeight,
+                                robotLength,
+                                robotWidth,
+                                robotHeight,
 
                                 autonomousExitHabitat,
                                 autonomousHatchPanelsSecured,
@@ -239,6 +253,9 @@ public class PitCardFragment extends MasterFragment
 
             driveStyleEditText.setText(String.valueOf(pitCard.getDriveStyle()));
             robotWeightEditText.setText(String.valueOf(pitCard.getRobotWeight()));
+            robotLengthEditText.setText(String.valueOf(pitCard.getRobotLength()));
+            robotWidthEditText.setText(String.valueOf(pitCard.getRobotWidth()));
+            robotHeightEditText.setText(String.valueOf(pitCard.getRobotHeight()));
 
             autoExitHabitatEditText.setText(pitCard.getAutoExitHabitat());
             autoHatchEditText.setText(String.valueOf(pitCard.getAutoHatch()));
