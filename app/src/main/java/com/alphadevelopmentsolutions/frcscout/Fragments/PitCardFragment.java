@@ -19,7 +19,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
-import com.alphadevelopmentsolutions.frcscout.Interfaces.ApiParams;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.ArrayList;
@@ -150,7 +150,7 @@ public class PitCardFragment extends MasterFragment
                 {
 
                     int teamNumber = Integer.parseInt(teamNumberAutoCompleteTextView.getText().toString());
-                    String eventId = PreferenceManager.getDefaultSharedPreferences(context).getString(ApiParams.EVENT_ID, "");
+                    String eventId = PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.EVENT_ID_PREF, "");
                     String driveStyle = driveStyleEditText.getText().toString();
                     String scouterName = scouterNameAutoCompleteTextView.getText().toString();
                     String autonomousExitHabitat = autoExitHabitatEditText.getText().toString();

@@ -8,6 +8,8 @@ import com.alphadevelopmentsolutions.frcscout.Classes.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Classes.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Keys;
 
 import org.json.JSONObject;
 
@@ -15,16 +17,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public abstract class ScoutingWiredcats extends Api
+public abstract class Server extends Api
 {
-    private static String URL = "http://scouting.wiredcats5885.ca/api/api.php";
-
-    ScoutingWiredcats(String URLExtension, HashMap<String, String> postData)
+    Server(String URLExtension, HashMap<String, String> postData)
     {
-        super(URL + URLExtension, postData);
+        super(Keys.API_URL + URLExtension, postData);
     }
 
-    public static class GetTeamsAtEvent extends ScoutingWiredcats
+    public static class GetTeamsAtEvent extends Server
     {
         private ArrayList<Team> teams;
 
@@ -128,7 +128,7 @@ public abstract class ScoutingWiredcats extends Api
         //endregion
     }
 
-    public static class GetUsers extends ScoutingWiredcats
+    public static class GetUsers extends Server
     {
         private ArrayList<User> users;
 
@@ -200,7 +200,7 @@ public abstract class ScoutingWiredcats extends Api
         //endregion
     }
 
-    public static class GetScoutCards extends ScoutingWiredcats
+    public static class GetScoutCards extends Server
     {
         private ArrayList<ScoutCard> scoutCards;
 
@@ -377,7 +377,7 @@ public abstract class ScoutingWiredcats extends Api
         //endregion
     }
 
-    public static class GetPitCards extends ScoutingWiredcats
+    public static class GetPitCards extends Server
     {
         private ArrayList<PitCard> pitCards;
 
@@ -485,7 +485,7 @@ public abstract class ScoutingWiredcats extends Api
         //endregion
     }
 
-    public static class SubmitScoutCard extends ScoutingWiredcats
+    public static class SubmitScoutCard extends Server
     {
         private MainActivity context;
 
@@ -567,7 +567,7 @@ public abstract class ScoutingWiredcats extends Api
         }
     }
 
-    public static class SubmitPitCard extends ScoutingWiredcats
+    public static class SubmitPitCard extends Server
     {
         private MainActivity context;
 
@@ -624,7 +624,7 @@ public abstract class ScoutingWiredcats extends Api
         }
     }
 
-    public static class GetEvents extends ScoutingWiredcats
+    public static class GetEvents extends Server
     {
         private ArrayList<Event> events;
 

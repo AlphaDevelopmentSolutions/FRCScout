@@ -3,7 +3,6 @@ package com.alphadevelopmentsolutions.frcscout.Activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -20,8 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
-import com.alphadevelopmentsolutions.frcscout.Api.ScoutingWiredcats;
-import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
+import com.alphadevelopmentsolutions.frcscout.Api.Server;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
@@ -44,7 +42,7 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardPreGameFragment
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardTeleopFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
-import com.alphadevelopmentsolutions.frcscout.Interfaces.ApiParams;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.ArrayList;
@@ -99,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements
         if(savedInstanceState == null)
         {
             if (getDatabase().getTeams().size() == 0 && isOnline())
-                updateApplicationData(PreferenceManager.getDefaultSharedPreferences(this).getString(ApiParams.EVENT_ID, ""));
+                updateApplicationData(PreferenceManager.getDefaultSharedPreferences(this).getString(Constants.EVENT_ID_PREF, ""));
 
             if (updateThread != null)
             {
@@ -167,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements
                                             {
                                                 for (ScoutCard scoutCard : getDatabase().getScoutCards(team, true))
                                                 {
-                                                    ScoutingWiredcats.SubmitScoutCard submitScoutCard = new ScoutingWiredcats.SubmitScoutCard(context, scoutCard);
+                                                    Server.SubmitScoutCard submitScoutCard = new Server.SubmitScoutCard(context, scoutCard);
                                                     if(submitScoutCard.execute())
                                                     {
                                                         scoutCard.setDraft(false);
@@ -179,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements
 
                                                 for (PitCard pitCard : getDatabase().getPitCards(team, true))
                                                 {
-                                                    ScoutingWiredcats.SubmitPitCard submitScoutCard = new ScoutingWiredcats.SubmitPitCard(context, pitCard);
+                                                    Server.SubmitPitCard submitScoutCard = new Server.SubmitPitCard(context, pitCard);
                                                     if(submitScoutCard.execute())
                                                     {
                                                         pitCard.setDraft(false);
@@ -225,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
 
             case R.id.RefreshDataItem:
-                updateApplicationData(PreferenceManager.getDefaultSharedPreferences(this).getString(ApiParams.EVENT_ID, ""));
+                updateApplicationData(PreferenceManager.getDefaultSharedPreferences(this).getString(Constants.EVENT_ID_PREF, ""));
                 return true;
 
             case R.id.ChangeEventItem:
@@ -246,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements
                 public void run()
                 {
                     //update events
-                    ScoutingWiredcats.GetEvents getEvents = new ScoutingWiredcats.GetEvents(context);
+                    Server.GetEvents getEvents = new Server.GetEvents(context);
 
                     if(getEvents.execute())
                     {
@@ -291,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements
                 public void run()
                 {
                     //update teams
-                    ScoutingWiredcats.GetTeamsAtEvent getTeamsAtEvent = new ScoutingWiredcats.GetTeamsAtEvent(context, event);
+                    Server.GetTeamsAtEvent getTeamsAtEvent = new Server.GetTeamsAtEvent(context, event);
 
                     //get teams at current event
                     if (getTeamsAtEvent.execute())
@@ -332,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
 
                     //update users
-                    ScoutingWiredcats.GetUsers getUsers = new ScoutingWiredcats.GetUsers(context);
+                    Server.GetUsers getUsers = new Server.GetUsers(context);
 
                     if (getUsers.execute())
                     {
@@ -344,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
 
                     //update events
-                    ScoutingWiredcats.GetEvents getEvents = new ScoutingWiredcats.GetEvents(context);
+                    Server.GetEvents getEvents = new Server.GetEvents(context);
 
                     if(getEvents.execute())
                     {
@@ -354,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
 
                     //update scout cards
-                    ScoutingWiredcats.GetScoutCards getScoutCards = new ScoutingWiredcats.GetScoutCards(context, event);
+                    Server.GetScoutCards getScoutCards = new Server.GetScoutCards(context, event);
 
                     if(getScoutCards.execute())
                     {
@@ -364,7 +362,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
 
                     //update pit cards
-                    ScoutingWiredcats.GetPitCards getPitCards = new ScoutingWiredcats.GetPitCards(context, event);
+                    Server.GetPitCards getPitCards = new Server.GetPitCards(context, event);
 
                     if(getPitCards.execute())
                     {

@@ -17,7 +17,7 @@ import com.alphadevelopmentsolutions.frcscout.Adapters.ScoutCardViewPagerAdapter
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Classes.StartingPosition;
-import com.alphadevelopmentsolutions.frcscout.Interfaces.ApiParams;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.Date;
@@ -139,7 +139,7 @@ public class ScoutCardFragment extends MasterFragment
                     //pre game info
                     int matchId = scoutCardPreGameFragment.getMatchNumber();
                     int teamNumber = teamId;
-                    String eventId = PreferenceManager.getDefaultSharedPreferences(context).getString(ApiParams.EVENT_ID, "");
+                    String eventId = PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.EVENT_ID_PREF, "");
                     String allianceColor = scoutCardPreGameFragment.getAllianceColor();
                     String completedBy = scoutCardPreGameFragment.getScouterName();
 
@@ -175,6 +175,7 @@ public class ScoutCardFragment extends MasterFragment
                     int offenseRating = scoutCardPostGameFragment.getOffenseRating();
                     int driveRating = scoutCardPostGameFragment.getDriveRating();
                     String notes = scoutCardPostGameFragment.getNotes();
+
                     Date completedDate = new Date(System.currentTimeMillis());
 
                     //saving a draft scout card

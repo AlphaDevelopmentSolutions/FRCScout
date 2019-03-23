@@ -1,6 +1,5 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -19,12 +18,9 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Api.ScoutingWiredcats;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
-import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
-import com.alphadevelopmentsolutions.frcscout.Interfaces.ApiParams;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.ArrayList;
@@ -147,7 +143,7 @@ public class ChangeEventFragment extends MasterFragment
 
 
                                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-                                sharedPreferences.edit().putString(ApiParams.EVENT_ID, eventCode).apply();
+                                sharedPreferences.edit().putString(Constants.EVENT_ID_PREF, eventCode).apply();
 
                                 database.clearScoutCards(true);
                                 database.clear();
