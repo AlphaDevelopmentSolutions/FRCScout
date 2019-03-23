@@ -8,7 +8,6 @@ import com.alphadevelopmentsolutions.frcscout.Classes.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Classes.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
-import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Keys;
 
 import org.json.JSONObject;

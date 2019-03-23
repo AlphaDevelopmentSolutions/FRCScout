@@ -1,7 +1,5 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
-import android.util.Log;
-
 /**
  * Colors for available alliances during the matches
  */

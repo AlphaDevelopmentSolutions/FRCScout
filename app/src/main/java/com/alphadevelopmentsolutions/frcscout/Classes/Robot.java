@@ -1,7 +1,5 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
-import android.content.Context;
-
 public class Robot
 {
     public static final String TABLE_NAME = "robots";

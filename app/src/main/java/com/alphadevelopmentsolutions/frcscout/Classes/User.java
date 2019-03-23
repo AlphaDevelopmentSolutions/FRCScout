@@ -1,7 +1,5 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
-import java.util.Date;
-
 public class User
 {
     public static final String TABLE_NAME = "users";

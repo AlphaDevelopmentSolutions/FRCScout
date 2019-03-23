@@ -11,8 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Adapters.EventViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.Adapters.MatchViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.R;
 
