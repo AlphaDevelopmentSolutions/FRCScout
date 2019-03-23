@@ -89,7 +89,6 @@ public class PitCardFragment extends MasterFragment
 
     private EditText teleopHatchEditText;
     private EditText teleopCargoEditText;
-    private EditText teleopRocketsEditText;
 
     private EditText returnedToHabitatEditText;
 
@@ -138,7 +137,6 @@ public class PitCardFragment extends MasterFragment
 
         teleopHatchEditText = view.findViewById(R.id.TeleopHatchEditText);
         teleopCargoEditText = view.findViewById(R.id.TeleopCargoEditText);
-        teleopRocketsEditText = view.findViewById(R.id.TeleopRocketsEditText);
 
         returnedToHabitatEditText = view.findViewById(R.id.ReturnedToHabitatEditText);
 
@@ -301,6 +299,12 @@ public class PitCardFragment extends MasterFragment
             return false;
         }
 
+        if(robotWeightEditText.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid robot weight.");
+            return false;
+        }
+
         if(autoExitHabitatEditText.getText().toString().equals(""))
         {
             context.showSnackbar("Invalid autonomous exit habitat info.");
@@ -328,12 +332,6 @@ public class PitCardFragment extends MasterFragment
         if(teleopCargoEditText.getText().toString().equals(""))
         {
             context.showSnackbar("Invalid teleop cargo stored info.");
-            return false;
-        }
-
-        if(teleopRocketsEditText.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid teleop rockets completed info.");
             return false;
         }
 
