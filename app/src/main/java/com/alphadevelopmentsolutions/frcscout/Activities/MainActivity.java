@@ -41,6 +41,7 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.MatchListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.RobotMediaFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.RobotMediaListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardAutoFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardEndGameFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
@@ -73,7 +74,8 @@ public class MainActivity extends AppCompatActivity implements
         ScoutCardTeleopFragment.OnFragmentInteractionListener,
         ScoutCardEndGameFragment.OnFragmentInteractionListener,
         ScoutCardPostGameFragment.OnFragmentInteractionListener,
-        RobotMediaFragment.OnFragmentInteractionListener
+        RobotMediaFragment.OnFragmentInteractionListener,
+        RobotMediaListFragment.OnFragmentInteractionListener
 {
 
     private Database database;
@@ -247,6 +249,18 @@ public class MainActivity extends AppCompatActivity implements
                                                     {
                                                         pitCard.setDraft(false);
                                                         pitCard.save(getDatabase());
+                                                    }
+                                                    else
+                                                        success = false;
+                                                }
+
+                                                for (RobotMedia robotMedia : getDatabase().getRobotMedia(team, true))
+                                                {
+                                                    Server.SubmitRobotMedia submitRobotMedia = new Server.SubmitRobotMedia(context, robotMedia);
+                                                    if(submitRobotMedia.execute())
+                                                    {
+                                                        robotMedia.setDraft(false);
+                                                        robotMedia.save(getDatabase());
                                                     }
                                                     else
                                                         success = false;
@@ -427,9 +441,12 @@ public class MainActivity extends AppCompatActivity implements
                         //download robot media from server
                         if(downloadMedia)
                         {
+                            getDatabase().clearRobotMedia(false);
+                            Server.GetRobotMedia getRobotMedia;
+
                             for (Team team : teams)
                             {
-                                Server.GetRobotMedia getRobotMedia = new Server.GetRobotMedia(context, team.getId());
+                                getRobotMedia = new Server.GetRobotMedia(context, team.getId());
 
                                 if (getRobotMedia.execute())
                                 {

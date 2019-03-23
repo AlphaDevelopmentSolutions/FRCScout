@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +22,6 @@ import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,8 +80,6 @@ public class RobotMediaFragment extends MasterFragment
 
         if(robotMediaJson != null && !robotMediaJson.equals(""))
             robotMedia = new Gson().fromJson(robotMediaJson, RobotMedia.class);
-
-        fragContext = this;
     }
 
     private RobotMedia robotMedia;
@@ -91,9 +88,9 @@ public class RobotMediaFragment extends MasterFragment
 
     private Button robotMediaSaveButton;
 
-    private Bitmap robotBitmap;
+//    private Bitmap robotThumbBitmap;
 
-    private RobotMediaFragment fragContext;
+    private File mediaFile;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -118,25 +115,24 @@ public class RobotMediaFragment extends MasterFragment
             }
         }
 
-
-
-
         //allow the user to save the new image
         else
         {
+            mediaFile = new File(RobotMedia.generateFileUri().getAbsolutePath()); //get file URI
+
             //save the new image
             robotMediaSaveButton.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
                 {
-                    if(robotBitmap != null)
-                    {
-                        try {
+//                    if(robotThumbBitmap != null)
+//                    {
+//                        try {
 
-                            File mediaFile = new File(RobotMedia.generateFileUri().getAbsolutePath()); //get file URI
-                            FileOutputStream fileOutputStream = new FileOutputStream(mediaFile);
-                            robotBitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream); //write data to file
+                            //code for thumbnails
+//                            FileOutputStream fileOutputStream = new FileOutputStream(mediaFile);
+//                            robotThumbBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream); //write data to file
 
                             robotMedia = new RobotMedia(
                                     -1,
@@ -147,20 +143,23 @@ public class RobotMediaFragment extends MasterFragment
                             robotMedia.save(database);
 
                             context.getSupportFragmentManager().popBackStackImmediate();
-                        }
-                        catch (FileNotFoundException e)
-                        {
-                            e.printStackTrace();
-                        }
-                    }
+//                        }
+//                        catch (FileNotFoundException e)
+//                        {
+//                            e.printStackTrace();
+//                        }
+//                    }
                 }
             });
 
             //launch intent to take picture if none supplied
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
+//            if(robotThumbBitmap == null)
+//            {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(context, context.getPackageName() + ".provider", mediaFile));
                 startActivityForResult(takePictureIntent, Constants.ROBOT_MEDIA_REQUEST_CODE);
-            }
+
+//            }
 
 
         }
@@ -179,10 +178,11 @@ public class RobotMediaFragment extends MasterFragment
             case Constants.ROBOT_MEDIA_REQUEST_CODE:
                 if(resultCode == Activity.RESULT_OK)
                 {
-                    Bundle extras = data.getExtras();
-                    robotBitmap = (Bitmap) extras.get("data");
+                    //code for thumbnails
+//                    Bundle extras = data.getExtras();
+//                    robotThumbBitmap = (Bitmap) extras.get("data");
 
-                    robotMediaImageView.setImageBitmap(robotBitmap);
+                    robotMediaImageView.setImageBitmap(BitmapFactory.decodeFile(mediaFile.getAbsolutePath()));
                 }
 
                 break;
@@ -215,6 +215,11 @@ public class RobotMediaFragment extends MasterFragment
     @Override
     public void onDetach()
     {
+        //robot media never saved, delete image
+        if(robotMedia == null)
+            if(mediaFile.exists())
+                mediaFile.delete();
+
         super.onDetach();
         mListener = null;
     }

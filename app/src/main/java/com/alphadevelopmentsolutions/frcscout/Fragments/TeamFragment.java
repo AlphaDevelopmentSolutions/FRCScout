@@ -184,8 +184,10 @@ public class TeamFragment extends MasterFragment
 
         teamViewPagerAdapter.addFragment(ScoutCardListFragment.newInstance(teamJson), "Scout Cards");
         teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(teamJson), "Pit Cards");
+        teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(teamJson), "Robot Images");
 
         teamViewPager.setAdapter(teamViewPagerAdapter);
+        teamViewPager.setOffscreenPageLimit(5);
         teamTabLayout.setupWithViewPager(teamViewPager);
 
         return view;

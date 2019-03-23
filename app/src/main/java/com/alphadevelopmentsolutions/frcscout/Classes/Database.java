@@ -80,6 +80,7 @@ public class Database
         tableNames.add(Robot.TABLE_NAME);
         tableNames.add(Match.TABLE_NAME);
         tableNames.add(User.TABLE_NAME);
+        tableNames.add(RobotMedia.TABLE_NAME);
 
         for(String tableName : tableNames)
             db.execSQL("DELETE FROM " + tableName);
@@ -120,6 +121,16 @@ public class Database
         ArrayList<String> tableNames = new ArrayList<>();
 
         tableNames.add(PitCard.TABLE_NAME);
+
+        for(String tableName : tableNames)
+            db.execSQL("DELETE FROM " + tableName + ((clearDrafts) ? "" : " WHERE IsDraft = 0"));
+    }
+
+    public void clearRobotMedia(boolean clearDrafts)
+    {
+        ArrayList<String> tableNames = new ArrayList<>();
+
+        tableNames.add(RobotMedia.TABLE_NAME);
 
         for(String tableName : tableNames)
             db.execSQL("DELETE FROM " + tableName + ((clearDrafts) ? "" : " WHERE IsDraft = 0"));

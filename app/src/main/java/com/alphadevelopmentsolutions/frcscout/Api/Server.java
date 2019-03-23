@@ -74,12 +74,12 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception("Could not connect to the web server.");
 
-                if(!response.getString("Status").toLowerCase().equals("success"))
+                if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
 
 
                 //iterate through, create a new object and add it to the arraylist
-                for(int i = 0; i < response.getJSONArray("Response").length(); i++)
+                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
                 {
                     JSONObject teamObject = response.getJSONArray("Response").getJSONObject(i);
 
@@ -111,8 +111,7 @@ public abstract class Server extends Api
                 }
 
                 return true;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 context.showSnackbar(e.getMessage());
                 return false;
@@ -167,12 +166,12 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception("Could not connect to the web server.");
 
-                if(!response.getString("Status").toLowerCase().equals("success"))
+                if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
 
 
                 //iterate through, create a new object and add it to the arraylist
-                for(int i = 0; i < response.getJSONArray("Response").length(); i++)
+                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
                 {
                     JSONObject teamObject = response.getJSONArray("Response").getJSONObject(i);
 
@@ -183,8 +182,7 @@ public abstract class Server extends Api
                 }
 
                 return true;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 context.showSnackbar(e.getMessage());
                 return false;
@@ -211,11 +209,11 @@ public abstract class Server extends Api
         private final String API_FIELD_NAME_SCOUT_CARD_EVENT_ID = "EventId";
         private final String API_FIELD_NAME_SCOUT_CARD_ALLIANCE_COLOR = "AllianceColor";
         private final String API_FIELD_NAME_SCOUT_CARD_COMPLETED_BY = "CompletedBy";
-        
+
         private final String API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_LEVEL = "PreGameStartingLevel";
         private final String API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_POSITION = "PreGameStartingPosition";
         private final String API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_PIECE = "PreGameStartingPiece";
-        
+
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_EXIT_HABITAT = "AutonomousExitHabitat";
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_PICKED_UP = "AutonomousHatchPanelsPickedUp";
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS = "AutonomousHatchPanelsSecuredAttempts";
@@ -223,14 +221,14 @@ public abstract class Server extends Api
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_PICKED_UP = "AutonomousHatchPanelsPickedUp";
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED_ATTEMPTS = "AutonomousCargoStoredAttempts";
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED = "AutonomousCargoStored";
-        
+
         private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_PICKED_UP = "TeleopHatchPanelsPickedUp";
         private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS = "TeleopHatchPanelsSecuredAttempts";
         private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED = "TeleopHatchPanelsSecured";
         private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_PICKED_UP = "TeleopHatchPanelsPickedUp";
         private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED_ATTEMPTS = "TeleopCargoStoredAttempts";
         private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED = "TeleopCargoStored";
-        
+
         private final String API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT = "EndGameReturnedToHabitat";
         private final String API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS = "EndGameReturnedToHabitatAttempts";
 
@@ -272,12 +270,12 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception("Could not connect to the web server.");
 
-                if(!response.getString("Status").toLowerCase().equals("success"))
+                if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
 
 
                 //iterate through, create a new object and add it to the arraylist
-                for(int i = 0; i < response.getJSONArray("Response").length(); i++)
+                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
                 {
                     JSONObject scoutCardObject = response.getJSONArray("Response").getJSONObject(i);
 
@@ -315,51 +313,50 @@ public abstract class Server extends Api
                     int offenseRating = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_OFFENSE_RATING);
                     int driveRating = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_DRIVE_RATING);
                     String notes = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_NOTES);
-                    
+
                     scoutCards.add(
-                    new ScoutCard(
-                            -1,
-                            matchId,
-                            teamId,
-                            eventId,
-                            allianceColor,
-                            completedBy,
+                            new ScoutCard(
+                                    -1,
+                                    matchId,
+                                    teamId,
+                                    eventId,
+                                    allianceColor,
+                                    completedBy,
 
-                            preGameStartingLevel,
-                            preGameStartingPosition,
-                            preGameStartingPiece,
+                                    preGameStartingLevel,
+                                    preGameStartingPosition,
+                                    preGameStartingPiece,
 
-                            autonomousExitHabitat,
-                            autonomousHatchPanelsPickedUp,
-                            autonomousHatchPanelsSecuredAttempts,
-                            autonomousHatchPanelsSecured,
-                            autonomousCargoPickedUp,
-                            autonomousCargoStoredAttempts,
-                            autonomousCargoStored,
+                                    autonomousExitHabitat,
+                                    autonomousHatchPanelsPickedUp,
+                                    autonomousHatchPanelsSecuredAttempts,
+                                    autonomousHatchPanelsSecured,
+                                    autonomousCargoPickedUp,
+                                    autonomousCargoStoredAttempts,
+                                    autonomousCargoStored,
 
-                            teleopHatchPanelsPickedUp,
-                            teleopHatchPanelsSecuredAttempts,
-                            teleopHatchPanelsSecured,
-                            teleopCargoPickedUp,
-                            teleopCargoStoredAttempts,
-                            teleopCargoStored,
+                                    teleopHatchPanelsPickedUp,
+                                    teleopHatchPanelsSecuredAttempts,
+                                    teleopHatchPanelsSecured,
+                                    teleopCargoPickedUp,
+                                    teleopCargoStoredAttempts,
+                                    teleopCargoStored,
 
-                            endGameReturnedToHabitat,
-                            endGameReturnedToHabitatAttempts,
+                                    endGameReturnedToHabitat,
+                                    endGameReturnedToHabitatAttempts,
 
-                            blueAllianceFinalScore,
-                            redAllianceFinalScore,
-                            defenseRating,
-                            offenseRating,
-                            driveRating,
-                            notes,
-                            new Date(0),
-                            false));
+                                    blueAllianceFinalScore,
+                                    redAllianceFinalScore,
+                                    defenseRating,
+                                    offenseRating,
+                                    driveRating,
+                                    notes,
+                                    new Date(0),
+                                    false));
                 }
 
                 return true;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 context.showSnackbar(e.getMessage());
                 return false;
@@ -431,12 +428,12 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception("Could not connect to the web server.");
 
-                if(!response.getString("Status").toLowerCase().equals("success"))
+                if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
 
 
                 //iterate through, create a new object and add it to the arraylist
-                for(int i = 0; i < response.getJSONArray("Response").length(); i++)
+                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
                 {
                     JSONObject pitCardObject = response.getJSONArray("Response").getJSONObject(i);
 
@@ -483,8 +480,7 @@ public abstract class Server extends Api
                 }
 
                 return true;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 context.showSnackbar(e.getMessage());
                 return false;
@@ -541,12 +537,12 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception("Could not connect to the web server.");
 
-                if(!response.getString("Status").toLowerCase().equals("success"))
+                if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
 
 
                 //iterate through, create a new object and add it to the arraylist
-                for(int i = 0; i < response.getJSONArray("Response").length(); i++)
+                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
                 {
                     JSONObject robotMediaJson = response.getJSONArray("Response").getJSONObject(i);
 
@@ -565,8 +561,7 @@ public abstract class Server extends Api
                 }
 
                 return true;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 context.showSnackbar(e.getMessage());
                 return false;
@@ -583,6 +578,83 @@ public abstract class Server extends Api
 
         //endregion
     }
+
+
+    public static class GetEvents extends Server
+    {
+        private ArrayList<Event> events;
+
+        private final String API_FIELD_NAME_EVENT_BLUE_ALLIANCE_ID = "BlueAllianceId";
+        private final String API_FIELD_NAME_EVENT_NAME = "Name";
+        private final String API_FIELD_NAME_EVENT_CITY = "City";
+        private final String API_FIELD_NAME_EVENT_STATE_PROVINCE = "StateProvince";
+        private final String API_FIELD_NAME_EVENT_COUNTRY = "Country";
+        private final String API_FIELD_NAME_EVENT_START_DATE = "StartDate";
+        private final String API_FIELD_NAME_EVENT_END_DATE = "EndDate";
+
+        private MainActivity context;
+
+        public GetEvents(final MainActivity context)
+        {
+            super("", new HashMap<String, String>()
+            {{
+                put("action", "GetEvents");
+            }});
+
+            this.context = context;
+            events = new ArrayList<>();
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception("Could not connect to the web server.");
+
+                if (!response.getString("Status").toLowerCase().equals("success"))
+                    throw new Exception(response.getString("Response"));
+
+                //iterate through, create a new object and add it to the arraylist
+                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
+                {
+                    JSONObject eventObject = response.getJSONArray("Response").getJSONObject(i);
+
+                    String blueAllianceId = eventObject.getString(API_FIELD_NAME_EVENT_BLUE_ALLIANCE_ID);
+                    String name = eventObject.getString(API_FIELD_NAME_EVENT_NAME);
+                    String city = eventObject.getString(API_FIELD_NAME_EVENT_CITY);
+                    String stateProvince = eventObject.getString(API_FIELD_NAME_EVENT_STATE_PROVINCE);
+                    String country = eventObject.getString(API_FIELD_NAME_EVENT_COUNTRY);
+//                    String startDate = eventObject.getString(API_FIELD_NAME_EVENT_START_DATE);
+//                    String endDate = eventObject.getString(API_FIELD_NAME_EVENT_END_DATE);
+
+                    events.add(new Event(-1, blueAllianceId, name, city, stateProvince, country, new Date(), new Date()));
+                }
+
+
+                return true;
+            } catch (Exception e)
+            {
+                context.showSnackbar(e.getMessage());
+                return false;
+            }
+        }
+
+        public ArrayList<Event> getEvents()
+        {
+            return events;
+        }
+    }
+
 
     //endregion
 
@@ -656,13 +728,12 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception("Could not connect to the web server.");
 
-                if(!response.getString("Status").toLowerCase().equals("success"))
+                if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
 
 
                 return true;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 context.showSnackbar(e.getMessage());
                 return false;
@@ -718,13 +789,12 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception("Could not connect to the web server.");
 
-                if(!response.getString("Status").toLowerCase().equals("success"))
+                if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
 
 
                 return true;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 context.showSnackbar(e.getMessage());
                 return false;
@@ -732,29 +802,21 @@ public abstract class Server extends Api
         }
     }
 
-    public static class GetEvents extends Server
+    public static class SubmitRobotMedia extends Server
     {
-        private ArrayList<Event> events;
-
-        private final String API_FIELD_NAME_EVENT_BLUE_ALLIANCE_ID = "BlueAllianceId";
-        private final String API_FIELD_NAME_EVENT_NAME = "Name";
-        private final String API_FIELD_NAME_EVENT_CITY = "City";
-        private final String API_FIELD_NAME_EVENT_STATE_PROVINCE = "StateProvince";
-        private final String API_FIELD_NAME_EVENT_COUNTRY = "Country";
-        private final String API_FIELD_NAME_EVENT_START_DATE = "StartDate";
-        private final String API_FIELD_NAME_EVENT_END_DATE = "EndDate";
-
         private MainActivity context;
 
-        public GetEvents(final MainActivity context)
+        public SubmitRobotMedia(final MainActivity context, final RobotMedia robotMedia)
         {
             super("", new HashMap<String, String>()
             {{
-                put("action", "GetEvents");
+                put("action", "SubmitRobotMedia");
+
+                put("TeamId", String.valueOf(robotMedia.getTeamId()));
+                put("Base64Image", robotMedia.getBase64Image());
             }});
 
             this.context = context;
-            events = new ArrayList<>();
 
         }
 
@@ -773,41 +835,18 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception("Could not connect to the web server.");
 
-                if(!response.getString("Status").toLowerCase().equals("success"))
+                if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
-
-                //iterate through, create a new object and add it to the arraylist
-                for(int i = 0; i < response.getJSONArray("Response").length(); i++)
-                {
-                    JSONObject eventObject = response.getJSONArray("Response").getJSONObject(i);
-
-                    String blueAllianceId = eventObject.getString(API_FIELD_NAME_EVENT_BLUE_ALLIANCE_ID);
-                    String name = eventObject.getString(API_FIELD_NAME_EVENT_NAME);
-                    String city = eventObject.getString(API_FIELD_NAME_EVENT_CITY);
-                    String stateProvince = eventObject.getString(API_FIELD_NAME_EVENT_STATE_PROVINCE);
-                    String country = eventObject.getString(API_FIELD_NAME_EVENT_COUNTRY);
-//                    String startDate = eventObject.getString(API_FIELD_NAME_EVENT_START_DATE);
-//                    String endDate = eventObject.getString(API_FIELD_NAME_EVENT_END_DATE);
-
-                    events.add(new Event(-1, blueAllianceId, name, city, stateProvince, country, new Date(), new Date()));
-                }
 
 
                 return true;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 context.showSnackbar(e.getMessage());
                 return false;
             }
         }
-
-        public ArrayList<Event> getEvents()
-        {
-            return events;
-        }
     }
-
     //endregion
 
 }

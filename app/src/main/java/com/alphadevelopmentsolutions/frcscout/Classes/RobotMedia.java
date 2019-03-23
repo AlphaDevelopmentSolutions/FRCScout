@@ -1,7 +1,12 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.UUID;
 
@@ -62,6 +67,10 @@ public class RobotMedia
         return isDraft;
     }
 
+    /**
+     * Generates a unique file path for a new file
+     * @return file with UUID
+     */
     public static File generateFileUri()
     {
         File mediaFolder = new File(Constants.MEDIA_DIRECTORY);
@@ -72,10 +81,40 @@ public class RobotMedia
         //should only run once
         do
         {
-            mediaFile = new File(mediaFolder.getAbsolutePath() + "/" + UUID.randomUUID().toString() + ".png");
+            mediaFile = new File(mediaFolder.getAbsolutePath() + "/" + UUID.randomUUID().toString() + ".jpeg");
         }while (mediaFile.isFile());
 
         return mediaFile;
+    }
+
+    /**
+     * Converts the current robot media into base64 format for server submission
+     * @return base64 bitmap image
+     */
+    public String getBase64Image()
+    {
+        File robotMedia = new File(getFileUri());
+
+        if(robotMedia.exists())
+        {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            this.getImageBitmap().compress(Bitmap.CompressFormat.JPEG, 15, byteArrayOutputStream);
+            byte[] robotMediaBytes = byteArrayOutputStream.toByteArray();
+
+            return Base64.encodeToString(robotMediaBytes, Base64.DEFAULT);
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Gets a bitmap version of the robot image
+     * @return bitmap version of robot image
+     */
+    public Bitmap getImageBitmap()
+    {
+        return BitmapFactory.decodeFile(this.getFileUri());
     }
 
     //endregion
