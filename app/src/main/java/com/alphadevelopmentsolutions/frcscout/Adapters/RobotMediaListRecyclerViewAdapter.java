@@ -10,7 +10,9 @@ import android.widget.ImageView;
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
+import com.alphadevelopmentsolutions.frcscout.Fragments.RobotMediaFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -57,7 +59,16 @@ public class RobotMediaListRecyclerViewAdapter extends RecyclerView.Adapter<Robo
     public void onBindViewHolder(@NonNull final RobotMediaListRecyclerViewAdapter.ViewHolder viewHolder, int position)
     {
         //set scores
-        viewHolder.robotImageView.setImageBitmap(((RobotMedia) robotMedia.get(viewHolder.getAdapterPosition())).getImageBitmap());
+        viewHolder.robotImageView.setImageBitmap((robotMedia.get(viewHolder.getAdapterPosition())).getImageBitmap());
+
+        viewHolder.robotImageView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                context.changeFragment(RobotMediaFragment.newInstance(new Gson().toJson(robotMedia.get(viewHolder.getAdapterPosition())), team.getId()), true);
+            }
+        });
     }
 
     @Override
