@@ -108,9 +108,6 @@ public class PitCardFragment extends MasterFragment
     {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pit_card, container, false);
-
-        context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        
         
         if(pitCardId > 0)
         {
@@ -370,7 +367,6 @@ public class PitCardFragment extends MasterFragment
     @Override
     public void onDetach()
     {
-        context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onDetach();
         mListener = null;
     }

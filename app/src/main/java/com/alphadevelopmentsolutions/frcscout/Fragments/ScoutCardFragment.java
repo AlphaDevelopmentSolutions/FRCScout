@@ -94,8 +94,6 @@ public class ScoutCardFragment extends MasterFragment
             scoutCard.load(database);
         }
 
-//        context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
 
         scoutCardTabLayout = view.findViewById(R.id.ScoutCardTabLayout);
         scoutCardViewPager = view.findViewById(R.id.ScoutCardViewPager);
@@ -350,7 +348,6 @@ public class ScoutCardFragment extends MasterFragment
     @Override
     public void onDetach()
     {
-        context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onDetach();
         mListener = null;
     }
