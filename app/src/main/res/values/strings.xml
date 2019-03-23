@@ -42,7 +42,7 @@
     <string name="no_internet">Not connected to internet.</string>
     <string name="upload_scout_cards">Upload Scout Cards?</string>
     <string name="upload_scout_cards_warning">This will delete scout cards stored on device.</string>
-    <string name="change_event">Change Event</string>
+    <string name="change_event">Change Event?</string>
     <string name="select_event">Select Event</string>
     <string name="set_event">Set Event</string>
     <string name="alliance_color">AllianceColor</string>
@@ -68,4 +68,7 @@
     <string name="secured">Secured:\u0020</string>
     <string name="robot_weight">Robot Weight</string>
     <string name="dash">-</string>
+    <string name="download_media">Download Robot Media?</string>
+    <string name="download_media_desc">Would you like to download all images of the robots?</string>
+    <string name="change_event_desc">Changing an event will clear ALL current application data.</string>
 </resources>

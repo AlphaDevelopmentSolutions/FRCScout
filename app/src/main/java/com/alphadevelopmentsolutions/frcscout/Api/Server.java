@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.Api;
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Classes.StartingPosition;
@@ -22,6 +23,8 @@ public abstract class Server extends Api
     {
         super(Keys.API_URL + URLExtension, postData);
     }
+
+    //region Getters
 
     public static class GetTeamsAtEvent extends Server
     {
@@ -501,6 +504,92 @@ public abstract class Server extends Api
         //endregion
     }
 
+    public static class GetRobotMedia extends Server
+    {
+        private ArrayList<RobotMedia> robotMedia;
+
+        private final String API_FIELD_NAME_ROBOT_MEDIA_TEAM_ID = "TeamId";
+        private final String API_FIELD_NAME_ROBOT_MEDIA_FILE_URI = "FileURI";
+
+
+        private MainActivity context;
+
+        public GetRobotMedia(final MainActivity context, final int teamId)
+        {
+            super("", new HashMap<String, String>()
+            {{
+                put("action", "GetRobotMedia");
+                put("TeamId", String.valueOf(teamId));
+            }});
+
+            robotMedia = new ArrayList<>();
+
+            this.context = context;
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception("Could not connect to the web server.");
+
+                if(!response.getString("Status").toLowerCase().equals("success"))
+                    throw new Exception(response.getString("Response"));
+
+
+                //iterate through, create a new object and add it to the arraylist
+                for(int i = 0; i < response.getJSONArray("Response").length(); i++)
+                {
+                    JSONObject robotMediaJson = response.getJSONArray("Response").getJSONObject(i);
+
+                    int teamId = robotMediaJson.getInt(API_FIELD_NAME_ROBOT_MEDIA_TEAM_ID);
+                    String fileUri = Keys.WEB_URL + "assets/robot-media/" + robotMediaJson.getString(API_FIELD_NAME_ROBOT_MEDIA_FILE_URI);
+
+                    fileUri = apiParser.downloadImage(fileUri).getAbsolutePath();
+
+                    robotMedia.add(new RobotMedia(
+                            -1,
+                            teamId,
+                            fileUri,
+                            false
+                    ));
+
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                context.showSnackbar(e.getMessage());
+                return false;
+            }
+        }
+
+        //region Getters
+
+        public ArrayList<RobotMedia> getRobotMedia()
+        {
+            return robotMedia;
+        }
+
+
+        //endregion
+    }
+
+    //endregion
+
+    //region Setters
+
     public static class SubmitScoutCard extends Server
     {
         private MainActivity context;
@@ -720,6 +809,8 @@ public abstract class Server extends Api
             return events;
         }
     }
+
+    //endregion
 
 }
 

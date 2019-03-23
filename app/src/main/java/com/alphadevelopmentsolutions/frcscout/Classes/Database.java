@@ -790,7 +790,7 @@ public class Database
         return new String[]
             {
                     ScoutCard.COLUMN_NAME_ID,
-                    ScoutCard.COLUMNS_NAME_MATCH_ID,
+                    ScoutCard.COLUMN_NAME_MATCH_ID,
                     ScoutCard.COLUMN_NAME_TEAM_ID,
                     ScoutCard.COLUMN_NAME_EVENT_ID,
                     ScoutCard.COLUMN_NAME_ALLIANCE_COLOR,
@@ -840,7 +840,7 @@ public class Database
     private ScoutCard getScoutCardFromCursor(Cursor cursor)
     {
         int id = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ID));
-        int matchId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMNS_NAME_MATCH_ID));
+        int matchId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_MATCH_ID));
         int teamId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID));
         String eventId = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
         String allianceColor = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR));
@@ -1012,7 +1012,7 @@ public class Database
     {
         //set all the values
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ScoutCard.COLUMNS_NAME_MATCH_ID, scoutCard.getMatchId());
+        contentValues.put(ScoutCard.COLUMN_NAME_MATCH_ID, scoutCard.getMatchId());
         contentValues.put(ScoutCard.COLUMN_NAME_TEAM_ID, scoutCard.getTeamId());
         contentValues.put(ScoutCard.COLUMN_NAME_EVENT_ID, scoutCard.getEventId());
         contentValues.put(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR, scoutCard.getAllianceColor());
@@ -1464,6 +1464,176 @@ public class Database
 
             //delete
             return db.delete(User.TABLE_NAME, whereStatement, whereArgs) >= 1;
+        }
+
+        return false;
+    }
+    //endregion
+
+    //region Robot Media Logic
+
+    /**
+     * Returns all columns inside the robot media table in string array format
+     * @return string array of all columns
+     */
+    private String[] getRobotMediaColumns()
+    {
+        return new String[]
+                {
+                        RobotMedia.COLUMN_NAME_ID,
+                        RobotMedia.COLUMN_NAME_TEAM_ID,
+                        RobotMedia.COLUMN_NAME_FILE_URI,
+                        RobotMedia.COLUMN_NAME_IS_DRAFT
+                };
+    }
+
+
+    /**
+     * Takes in a cursor with info pulled from database and converts it into robot media
+     * @param cursor info from database
+     * @return robotMedia converted data
+     */
+    private RobotMedia getRobotMediaFromCursor(Cursor cursor)
+    {
+        int id = cursor.getInt(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_ID));
+        int teamId = cursor.getInt(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_TEAM_ID));
+        String fileUri = cursor.getString(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_FILE_URI));
+        boolean isDraft = cursor.getInt(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_IS_DRAFT)) == 1;
+
+        return new RobotMedia(
+                id,
+                teamId,
+                fileUri,
+                isDraft);
+    }
+
+    /**
+     * Gets all robot media assigned to a team
+     * @param team with specified ID
+     * @return robotMedia based off given team ID
+     */
+    public ArrayList<RobotMedia> getRobotMedia(Team team, boolean onlyDrafts)
+    {
+        ArrayList<RobotMedia> robotMedia = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns = getRobotMediaColumns();
+
+        //where statement
+        String whereStatement = RobotMedia.COLUMN_NAME_TEAM_ID + " = ?" + ((onlyDrafts) ? " AND " + RobotMedia.COLUMN_NAME_IS_DRAFT + " = 1" : "");
+        String[] whereArgs = {team.getId() + ""};
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                RobotMedia.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while(cursor.moveToNext())
+            {
+                robotMedia.add(getRobotMediaFromCursor(cursor));
+            }
+
+            cursor.close();
+
+            return robotMedia;
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets a specific object from the database and returns it
+     *
+     * @param robotMedia with specified ID
+     * @return robotMedia based off given ID
+     */
+    public RobotMedia getRobotMedia(RobotMedia robotMedia)
+    {
+        //insert columns you are going to use here
+        String[] columns = getRobotMediaColumns();
+
+        //where statement
+        String whereStatement = RobotMedia.COLUMN_NAME_ID + " = ?";
+        String[] whereArgs = {robotMedia.getId() + ""};
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                RobotMedia.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            //move to the first result in the set
+            cursor.moveToFirst();
+
+            RobotMedia databaseRobotMedia = getRobotMediaFromCursor(cursor);
+            cursor.close();
+
+            return databaseRobotMedia;
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Saves a specific robotMedia from the database and returns it
+     *
+     * @param robotMedia with specified ID
+     * @return id of the saved robotMedia
+     */
+    public long setRobotMedia(RobotMedia robotMedia)
+    {
+        //set all the values
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(RobotMedia.COLUMN_NAME_TEAM_ID, robotMedia.getTeamId());
+        contentValues.put(RobotMedia.COLUMN_NAME_FILE_URI, robotMedia.getFileUri());
+        contentValues.put(RobotMedia.COLUMN_NAME_IS_DRAFT, robotMedia.isDraft() ? "1" : "0");
+
+        //robotMedia already exists in DB, update
+        if (robotMedia.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = RobotMedia.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {robotMedia.getId() + ""};
+
+            //update
+            return db.update(RobotMedia.TABLE_NAME, contentValues, whereStatement, whereArgs);
+        }
+        //insert new robotMedia in db
+        else return db.insert(RobotMedia.TABLE_NAME, null, contentValues);
+
+    }
+
+    /**
+     * Deletes a specific robotMedia from the database
+     * @param robotMedia with specified ID
+     * @return successful delete
+     */
+    public boolean deleteRobotMedia(RobotMedia robotMedia)
+    {
+        if (robotMedia.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = RobotMedia.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {robotMedia.getId() + ""};
+
+            //delete
+            return db.delete(RobotMedia.TABLE_NAME, whereStatement, whereArgs) >= 1;
         }
 
         return false;

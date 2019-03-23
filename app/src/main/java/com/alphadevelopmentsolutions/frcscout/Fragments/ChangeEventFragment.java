@@ -129,8 +129,8 @@ public class ChangeEventFragment extends MasterFragment
             public void onClick(View v)
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Change Event?")
-                        .setMessage("Changing an event will clear ALL current application data.")
+                builder.setTitle(R.string.change_event)
+                        .setMessage(R.string.change_event_desc)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which)
                             {
@@ -146,9 +146,25 @@ public class ChangeEventFragment extends MasterFragment
                                 database.clearScoutCards(true);
                                 database.clear();
 
-                                context.updateApplicationData(eventCode);
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                final String finalEventCode = eventCode;
+                                builder.setTitle(R.string.download_media)
+                                        .setMessage(R.string.download_media_desc)
+                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which)
+                                            {
+                                                context.updateApplicationData(finalEventCode, true);
+                                            }
+                                        })
+                                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which)
+                                            {
+                                                context.updateApplicationData(finalEventCode, false);
 
-
+                                            }
+                                        })
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .show();
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

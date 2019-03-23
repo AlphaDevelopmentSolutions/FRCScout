@@ -43,6 +43,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     Robot.COLUMN_NAME_NAME + " TEXT," +
                     Robot.COLUMN_NAME_TEAM_NUMBER + " INTEGER)";
 
+    private final String CREATE_ROBOT_MEDIA_TABLE =
+            "CREATE TABLE " + RobotMedia.TABLE_NAME +" (" +
+                    RobotMedia.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    RobotMedia.COLUMN_NAME_TEAM_ID + " INTEGER," +
+                    RobotMedia.COLUMN_NAME_FILE_URI + " TEXT," +
+                    RobotMedia.COLUMN_NAME_IS_DRAFT + " INTEGER)";
+
     private final String CREATE_MATCHES_TABLE =
             "CREATE TABLE " + Match.TABLE_NAME +" (" +
                     Match.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
@@ -65,7 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private final String CREATE_SCOUT_CARDS_TABLE =
             "CREATE TABLE " + ScoutCard.TABLE_NAME +" (" +
                     ScoutCard.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                    ScoutCard.COLUMNS_NAME_MATCH_ID + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_MATCH_ID + " INTEGER," +
                     ScoutCard.COLUMN_NAME_TEAM_ID + " INTEGER," +
                     ScoutCard.COLUMN_NAME_EVENT_ID + " TEXT," +
                     ScoutCard.COLUMN_NAME_ALLIANCE_COLOR + " TEXT," +
@@ -147,6 +154,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL(CREATE_SCOUT_CARDS_TABLE);
         db.execSQL(CREATE_USERS_TABLE);
         db.execSQL(CREATE_PIT_CARDS_TABLE);
+        db.execSQL(CREATE_ROBOT_MEDIA_TABLE);
     }
 
     @Override
@@ -159,6 +167,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ScoutCard.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + User.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PitCard.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RobotMedia.TABLE_NAME);
 
         sqLiteDatabase.execSQL(CREATE_EVENTS_TABLE);
         sqLiteDatabase.execSQL(CREATE_TEAMS_TABLE);
@@ -167,5 +176,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
         sqLiteDatabase.execSQL(CREATE_SCOUT_CARDS_TABLE);
         sqLiteDatabase.execSQL(CREATE_USERS_TABLE);
         sqLiteDatabase.execSQL(CREATE_PIT_CARDS_TABLE);
+        sqLiteDatabase.execSQL(CREATE_ROBOT_MEDIA_TABLE);
     }
 }

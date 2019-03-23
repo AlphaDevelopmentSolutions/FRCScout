@@ -8,7 +8,7 @@ public class ScoutCard
 
     public static final String TABLE_NAME = "scout_cards";
     public static final String COLUMN_NAME_ID = "Id";
-    public static final String COLUMNS_NAME_MATCH_ID = "MatchId";
+    public static final String COLUMN_NAME_MATCH_ID = "MatchId";
     public static final String COLUMN_NAME_TEAM_ID = "TeamId";
     public static final String COLUMN_NAME_EVENT_ID = "EventId";
     public static final String COLUMN_NAME_ALLIANCE_COLOR = "AllianceColor";
