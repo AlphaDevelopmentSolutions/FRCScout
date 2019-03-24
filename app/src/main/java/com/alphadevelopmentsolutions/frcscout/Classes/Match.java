@@ -175,7 +175,7 @@ public class Match
      */
     public boolean teamWon(String allianceColor)
     {
-        if(allianceColor.equals(AllianceColor.RED))
+        if(allianceColor.equals(AllianceColor.RED.name()))
             return getRedAllianceScore() > getBlueAllianceScore();
         else
             return getBlueAllianceScore() > getRedAllianceScore();
@@ -188,7 +188,7 @@ public class Match
      */
     public boolean teamLost(String allianceColor)
     {
-        if(allianceColor.equals(AllianceColor.RED))
+        if(allianceColor.equals(AllianceColor.RED.name()))
             return getRedAllianceScore() < getBlueAllianceScore();
         else
             return getBlueAllianceScore() < getRedAllianceScore();

@@ -131,17 +131,17 @@ public class ScoutCardPostGameFragment extends MasterFragment {
 
     public int getDefenseRating()
     {
-        return defenseRatingBar.getNumStars();
+        return (int) defenseRatingBar.getRating();
     }
 
     public int getOffenseRating()
     {
-        return offenseRatingBar.getNumStars();
+        return (int) offenseRatingBar.getRating();
     }
 
     public int getDriveRating()
     {
-        return driveRatingBar.getNumStars();
+        return (int) driveRatingBar.getRating();
     }
 
     public String getNotes()

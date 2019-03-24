@@ -685,7 +685,6 @@ public abstract class Server extends Api
                 put("AllianceColor", scoutCard.getAllianceColor());
                 put("CompletedBy", scoutCard.getCompletedBy());
 
-
                 put("PreGameStartingLevel", String.valueOf(scoutCard.getPreGameStartingLevel()));
                 put("PreGameStartingPosition", scoutCard.getPreGameStartingPosition().name());
                 put("PreGameStartingPiece", scoutCard.getPreGameStartingPiece().name());
@@ -695,15 +694,15 @@ public abstract class Server extends Api
                 put("AutonomousHatchPanelsSecuredAttempts", String.valueOf(scoutCard.getAutonomousHatchPanelsSecuredAttempts()));
                 put("AutonomousHatchPanelsSecured", String.valueOf(scoutCard.getAutonomousHatchPanelsSecured()));
                 put("AutonomousCargoPickedUp", String.valueOf(scoutCard.getAutonomousCargoPickedUp()));
-                put("AutonomousCargoSecuredAttempts", String.valueOf(scoutCard.getAutonomousCargoStoredAttempts()));
-                put("AutonomousCargoSecured", String.valueOf(scoutCard.getAutonomousCargoStored()));
+                put("AutonomousCargoStoredAttempts", String.valueOf(scoutCard.getAutonomousCargoStoredAttempts()));
+                put("AutonomousCargoStored", String.valueOf(scoutCard.getAutonomousCargoStored()));
 
                 put("TeleopHatchPanelsPickedUp", String.valueOf(scoutCard.getTeleopHatchPanelsPickedUp()));
                 put("TeleopHatchPanelsSecuredAttempts", String.valueOf(scoutCard.getTeleopHatchPanelsSecuredAttempts()));
                 put("TeleopHatchPanelsSecured", String.valueOf(scoutCard.getTeleopHatchPanelsSecured()));
                 put("TeleopCargoPickedUp", String.valueOf(scoutCard.getTeleopCargoPickedUp()));
-                put("TeleopCargoSecuredAttempts", String.valueOf(scoutCard.getTeleopCargoStoredAttempts()));
-                put("TeleopCargoSecured", String.valueOf(scoutCard.getTeleopCargoStored()));
+                put("TeleopCargoStoredAttempts", String.valueOf(scoutCard.getTeleopCargoStoredAttempts()));
+                put("TeleopCargoStored", String.valueOf(scoutCard.getTeleopCargoStored()));
 
                 put("EndGameReturnedToHabitat", String.valueOf(scoutCard.getEndGameReturnedToHabitat()));
                 put("EndGameReturnedToHabitatAttempts", String.valueOf(scoutCard.getEndGameReturnedToHabitatAttempts()));

@@ -135,14 +135,22 @@ public class ScoutCardPreGameFragment extends MasterFragment {
                 try
                 {
                     loadScouterNamesThread.join();
-                    scouterNameAutoCompleteTextView.setAdapter(scouterNameAdapter);
+
+                    context.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            scouterNameAutoCompleteTextView.setAdapter(scouterNameAdapter);
+                        }
+                    });
                 } catch (InterruptedException e)
                 {
                     e.printStackTrace();
                 }
 
             }
-        });
+        }).start();
 
         //scoutcard loaded, populate fields
         if(scoutCard != null)
@@ -152,8 +160,8 @@ public class ScoutCardPreGameFragment extends MasterFragment {
 
             matchIdEditText.setText(String.valueOf(scoutCard.getMatchId()));
 
-            allianceColorSpinner.setSelection(scoutCard.getAllianceColor().equals(AllianceColor.RED) ? 0 : 1);
-            startingLevelSpinner.setSelection(scoutCard.getPreGameStartingLevel());
+            allianceColorSpinner.setSelection(scoutCard.getAllianceColor().equals(AllianceColor.RED.name()) ? 0 : 1);
+            startingLevelSpinner.setSelection(scoutCard.getPreGameStartingLevel() - 1);
             startingPositionSpinner.setSelection(scoutCard.getPreGameStartingPosition().equals(StartingPosition.LEFT) ? 0 : (scoutCard.getPreGameStartingPosition().equals(StartingPosition.CENTER)) ? 1 : 2);
             startingPieceSpinner.setSelection(scoutCard.getPreGameStartingPiece().equals(StartingPiece.HATCH) ? 0 : 1);
         }
@@ -188,7 +196,7 @@ public class ScoutCardPreGameFragment extends MasterFragment {
 
     public int getStartingLevel()
     {
-        return Integer.parseInt(startingLevelSpinner.getSelectedItem().toString().substring(0, startingLevelSpinner.getSelectedItem().toString().indexOf(" ")));
+        return Integer.parseInt(startingLevelSpinner.getSelectedItem().toString().substring(startingLevelSpinner.getSelectedItem().toString().indexOf(" ") + 1));
     }
 
     public StartingPiece getStartingPiece()
