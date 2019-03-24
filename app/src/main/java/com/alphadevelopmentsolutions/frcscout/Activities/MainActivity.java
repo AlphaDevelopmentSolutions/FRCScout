@@ -40,6 +40,7 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.MatchFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardListFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.QuickStatsFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.RobotMediaFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.RobotMediaListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardAutoFragment;
@@ -75,7 +76,8 @@ public class MainActivity extends AppCompatActivity implements
         ScoutCardEndGameFragment.OnFragmentInteractionListener,
         ScoutCardPostGameFragment.OnFragmentInteractionListener,
         RobotMediaFragment.OnFragmentInteractionListener,
-        RobotMediaListFragment.OnFragmentInteractionListener
+        RobotMediaListFragment.OnFragmentInteractionListener,
+        QuickStatsFragment.OnFragmentInteractionListener
 {
 
     private Database database;

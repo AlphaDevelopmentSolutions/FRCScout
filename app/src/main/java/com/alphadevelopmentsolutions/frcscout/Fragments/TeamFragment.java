@@ -16,6 +16,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeIcon;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
@@ -101,6 +102,7 @@ public class TeamFragment extends MasterFragment
     private FontAwesomeIcon youtubeFontAwesomeBrandIcon;
     private FontAwesomeIcon websiteFontAwesomeSolidIcon;
 
+    private FloatingActionMenu teamFloatingActionMenu;
     private FloatingActionButton addMatchFloatingActionButton;
     private FloatingActionButton addPitCardFloatingActionButton;
     private FloatingActionButton addRobotPhotoFloatingActionButton;
@@ -129,6 +131,7 @@ public class TeamFragment extends MasterFragment
         youtubeFontAwesomeBrandIcon = view.findViewById(R.id.YoutubeFontAwesomeBrandIcon);
         websiteFontAwesomeSolidIcon = view.findViewById(R.id.WebsiteFontAwesomeSolidIcon);
 
+        teamFloatingActionMenu = view.findViewById(R.id.TeamFloatingActionMenu);
         addMatchFloatingActionButton = view.findViewById(R.id.AddMatchFloatingActionButton);
         addPitCardFloatingActionButton = view.findViewById(R.id.AddPitCardFloatingActingButton);
         addRobotPhotoFloatingActionButton = view.findViewById(R.id.AddRobotPhotoFloatingActionButton);
@@ -207,10 +210,37 @@ public class TeamFragment extends MasterFragment
         teamViewPagerAdapter.addFragment(ScoutCardListFragment.newInstance(teamJson), "Scout Cards");
         teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(teamJson), "Pit Cards");
         teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(teamJson), "Robot Images");
+        teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(team.getId()), "Quick Stats");
 
         teamViewPager.setAdapter(teamViewPagerAdapter);
         teamViewPager.setOffscreenPageLimit(5);
         teamTabLayout.setupWithViewPager(teamViewPager);
+
+        teamViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        {
+            @Override
+            public void onPageScrolled(int i, float v, int i1)
+            {
+
+            }
+
+            @Override
+            public void onPageSelected(int i)
+            {
+                if(i == 3)
+                    teamFloatingActionMenu.hideMenu(true);
+                else if (teamFloatingActionMenu.isMenuHidden())
+                    teamFloatingActionMenu.showMenu(true);
+
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i)
+            {
+
+            }
+        });
 
         return view;
     }

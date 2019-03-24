@@ -51,16 +51,16 @@
     <string name="colon">:</string>
     <string name="drive_style">Drivetrain</string>
     <string name="hatch_panels_attempts">Hatch Panels Dropped:\u0020</string>
-    <string name="cargo_stored_attempts">Cargo Dropped:\u0020</string>
+    <string name="cargo_stored_attempts">Cargo Dropped</string>
     <string name="returned_to_habitat_attempts">Returned To Habitat Failed Attempt:\u0020</string>
     <string name="starting_position">Starting Position</string>
     <string name="starting_level">Starting Level</string>
     <string name="starting_piece">Starting Piece</string>
     <string name="pre_game">Pre Game</string>
     <string name="post_game">Post Game</string>
-    <string name="offense_rating">Offense Rating:</string>
-    <string name="defense_rating">Defense Rating:</string>
-    <string name="drive_rating">Drive Rating:</string>
+    <string name="offense_rating">Offense Rating</string>
+    <string name="defense_rating">Defense Rating</string>
+    <string name="drive_rating">Drive Rating</string>
     <string name="hatches">Hatches</string>
     <string name="cargo">Cargo</string>
     <string name="pickup">Picked Up:\u0020</string>
@@ -81,4 +81,11 @@
     <string name="robot_width">Robot Width</string>
     <string name="robot_height">Robot Height</string>
     <string name="mutliply_symbol">X</string>
+    <string name="exit_hab">Exit Hab</string>
+    <string name="return_hab">Return Hab</string>
+    <string name="return_hab_fail">Return Hab Fail</string>
+    <string name="min">MIN</string>
+    <string name="avg">AVG</string>
+    <string name="max">MAX</string>
+    <string name="hatches_dropped">Hatch Dropped</string>
 </resources>

@@ -11,4 +11,16 @@
     <color name="divider">#0C000000</color>
     <color name="ripple">#dcdcdc</color>
 
+    <!--Stats colors-->
+    <color name="autonomous">#FFD966</color>
+    <color name="teleop">#00FFFF</color>
+    <color name="end_game">#9400FF</color>
+    <color name="post_game">#E900FF</color>
+    <color name="min">#FFA74F</color>
+    <color name="max">#64FF62</color>
+    <color name="avg">#9FC5E8</color>
+    <color name="good">#64FF62</color>
+    <color name="warning">#FFA74F</color>
+    <color name="bad">#E67C73</color>
+
 </resources>
