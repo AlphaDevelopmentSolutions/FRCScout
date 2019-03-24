@@ -218,14 +218,14 @@ public abstract class Server extends Api
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_PICKED_UP = "AutonomousHatchPanelsPickedUp";
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS = "AutonomousHatchPanelsSecuredAttempts";
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED = "AutonomousHatchPanelsSecured";
-        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_PICKED_UP = "AutonomousHatchPanelsPickedUp";
+        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_PICKED_UP = "AutonomousCargoPickedUp";
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED_ATTEMPTS = "AutonomousCargoStoredAttempts";
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED = "AutonomousCargoStored";
 
         private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_PICKED_UP = "TeleopHatchPanelsPickedUp";
         private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS = "TeleopHatchPanelsSecuredAttempts";
         private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED = "TeleopHatchPanelsSecured";
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_PICKED_UP = "TeleopHatchPanelsPickedUp";
+        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_PICKED_UP = "TeleopCargoPickedUp";
         private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED_ATTEMPTS = "TeleopCargoStoredAttempts";
         private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED = "TeleopCargoStored";
 
