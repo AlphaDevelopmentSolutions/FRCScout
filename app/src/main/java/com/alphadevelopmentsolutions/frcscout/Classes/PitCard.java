@@ -7,15 +7,24 @@ public class PitCard
     public static final String COLUMN_NAME_ID = "Id";
     public static final String COLUMN_NAME_TEAM_ID = "TeamId";
     public static final String COLUMN_NAME_EVENT_ID = "EventId";
+
     public static final String COLUMN_NAME_DRIVE_STYLE = "DriveStyle";
+    public static final String COLUMN_NAME_ROBOT_WEIGHT = "RobotWeight";
+    public static final String COLUMN_NAME_ROBOT_LENGTH = "RobotLength";
+    public static final String COLUMN_NAME_ROBOT_WIDTH = "RobotWidth";
+    public static final String COLUMN_NAME_ROBOT_HEIGHT = "RobotHeight";
+
     public static final String COLUMN_NAME_AUTO_EXIT_HABITAT = "AutoExitHabitat";
     public static final String COLUMN_NAME_AUTO_HATCH = "AutoHatch";
     public static final String COLUMN_NAME_AUTO_CARGO = "AutoCargo";
+
     public static final String COLUMN_NAME_TELEOP_HATCH = "TeleopHatch";
     public static final String COLUMN_NAME_TELEOP_CARGO = "TeleopCargo";
-    public static final String COLUMN_NAME_TELEOP_ROCKETS_COMPLETE = "TeleopRocketsComplete";
+
     public static final String COLUMN_NAME_RETURN_TO_HABITAT = "ReturnToHabitat";
+
     public static final String COLUMN_NAME_NOTES = "Notes";
+
     public static final String COLUMN_NAME_COMPLETED_BY = "CompletedBy";
     public static final String COLUMN_NAME_IS_DRAFT = "IsDraft";
 
@@ -23,15 +32,24 @@ public class PitCard
     private int id;
     private int teamId;
     private String eventId;
+
     private String driveStyle;
+    private String robotWeight;
+    private String robotLength;
+    private String robotWidth;
+    private String robotHeight;
+
     private String autoExitHabitat;
     private String autoHatch;
     private String autoCargo;
+
     private String teleopHatch;
     private String teleopCargo;
-    private String teleopRocketsComplete;
+
     private String returnToHabitat;
+
     private String notes;
+
     private String completedBy;
     private boolean isDraft;
 
@@ -39,30 +57,48 @@ public class PitCard
             int id,
             int teamId,
             String eventId,
+
             String driveStyle,
+            String robotWeight,
+            String robotLength,
+            String robotWidth,
+            String robotHeight,
+
             String autoExitHabitat,
             String autoHatch,
             String autoCargo,
+
             String teleopHatch,
             String teleopCargo,
-            String teleopRocketsComplete,
+
             String returnToHabitat,
+
             String notes,
+
             String completedBy,
             boolean isDraft)
     {
         this.id = id;
         this.teamId = teamId;
         this.eventId = eventId;
+
         this.driveStyle = driveStyle;
+        this.robotWeight = robotWeight;
+        this.robotLength = robotLength;
+        this.robotWidth = robotWidth;
+        this.robotHeight = robotHeight;
+
         this.autoExitHabitat = autoExitHabitat;
         this.autoHatch = autoHatch;
         this.autoCargo = autoCargo;
+
         this.teleopHatch = teleopHatch;
         this.teleopCargo = teleopCargo;
-        this.teleopRocketsComplete = teleopRocketsComplete;
+
         this.returnToHabitat = returnToHabitat;
+
         this.notes = notes;
+
         this.completedBy = completedBy;
         this.isDraft = isDraft;
     }
@@ -98,6 +134,26 @@ public class PitCard
         return driveStyle;
     }
 
+    public String getRobotWeight()
+    {
+        return robotWeight;
+    }
+
+    public String getRobotLength()
+    {
+        return robotLength;
+    }
+
+    public String getRobotWidth()
+    {
+        return robotWidth;
+    }
+
+    public String getRobotHeight()
+    {
+        return robotHeight;
+    }
+
     public String getAutoExitHabitat()
     {
         return autoExitHabitat;
@@ -121,11 +177,6 @@ public class PitCard
     public String getTeleopCargo()
     {
         return teleopCargo;
-    }
-
-    public String getTeleopRocketsComplete()
-    {
-        return teleopRocketsComplete;
     }
 
     public String getReturnToHabitat()
@@ -172,6 +223,26 @@ public class PitCard
         this.driveStyle = driveStyle;
     }
 
+    public void setRobotWeight(String robotWeight)
+    {
+        this.robotWeight = robotWeight;
+    }
+
+    public void setRobotLength(String robotLength)
+    {
+        this.robotLength = robotLength;
+    }
+
+    public void setRobotWidth(String robotWidth)
+    {
+        this.robotWidth = robotWidth;
+    }
+
+    public void setRobotHeight(String robotHeight)
+    {
+        this.robotHeight = robotHeight;
+    }
+
     public void setAutoExitHabitat(String autoExitHabitat)
     {
         this.autoExitHabitat = autoExitHabitat;
@@ -195,11 +266,6 @@ public class PitCard
     public void setTeleopCargo(String teleopCargo)
     {
         this.teleopCargo = teleopCargo;
-    }
-
-    public void setTeleopRocketsComplete(String teleopRocketsComplete)
-    {
-        this.teleopRocketsComplete = teleopRocketsComplete;
     }
 
     public void setReturnToHabitat(String returnToHabitat)
@@ -245,15 +311,24 @@ public class PitCard
             {
                 setTeamId(pitCard.getTeamId());
                 setEventId(pitCard.getEventId());
+
                 setDriveStyle(pitCard.getDriveStyle());
+                setRobotWeight(pitCard.getRobotWeight());
+                setRobotLength(pitCard.getRobotLength());
+                setRobotWidth(pitCard.getRobotWidth());
+                setRobotHeight(pitCard.getRobotHeight());
+
                 setAutoExitHabitat(pitCard.getAutoExitHabitat());
                 setAutoHatch(pitCard.getAutoHatch());
                 setAutoCargo(pitCard.getAutoCargo());
+
                 setTeleopHatch(pitCard.getTeleopHatch());
                 setTeleopCargo(pitCard.getTeleopCargo());
-                setTeleopRocketsComplete(pitCard.getTeleopRocketsComplete());
+
                 setReturnToHabitat(pitCard.getReturnToHabitat());
+
                 setNotes(pitCard.getNotes());
+
                 setCompletedBy(pitCard.getCompletedBy());
                 setDraft(pitCard.isDraft());
                 return true;

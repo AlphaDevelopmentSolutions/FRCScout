@@ -32,14 +32,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/material_padding"
-                    android:text="@string/match_number"
+                    android:text="@string/match"
                     android:textColor="@color/textPrimary"
                     android:textSize="@dimen/textPrimary"
                     android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/MatchIdTextView"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/placeholder"
@@ -72,7 +72,7 @@
 
                     <TextView
                         android:id="@+id/BlueAllianceScoreTextView"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/number_placeholder"
@@ -96,7 +96,7 @@
 
                     <TextView
                         android:id="@+id/RedAllianceScoreTextView"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/number_placeholder"

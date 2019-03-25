@@ -1,8 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters;
 
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +14,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -78,7 +77,6 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
 
         ScoutCard scoutCard = scoutCards.get(viewHolder.getAdapterPosition());
 
-
         //set scores
         viewHolder.blueAllianceScoreTextView.setText(String.valueOf(scoutCard.getBlueAllianceFinalScore()));
         viewHolder.redAllianceScoreTextView.setText(String.valueOf(scoutCard.getRedAllianceFinalScore()));
@@ -102,7 +100,7 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
             public void onClick(View v)
             {
                 //swap fragments
-               context.changeFragment(ScoutCardFragment.newInstance(scoutCards.get(viewHolder.getAdapterPosition()).getId(), -1), true);
+               context.changeFragment(ScoutCardFragment.newInstance(new Gson().toJson(scoutCards.get(viewHolder.getAdapterPosition())), -1), true);
             }
         });
     }

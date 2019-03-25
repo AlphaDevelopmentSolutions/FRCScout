@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Adapters.TeamListRecyclerViewAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
@@ -29,7 +27,7 @@ import java.util.ArrayList;
  * Use the {@link TeamListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TeamListFragment extends Fragment
+public class TeamListFragment extends MasterFragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -75,11 +73,17 @@ public class TeamListFragment extends Fragment
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        teams = database.getTeams();
+        searchedTeams = new ArrayList<>(teams);
     }
 
     private RecyclerView teamsRecyclerView;
 
     private EditText teamSearchEditText;
+
+    private ArrayList<Team> teams;
+    private ArrayList<Team> searchedTeams;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,15 +92,8 @@ public class TeamListFragment extends Fragment
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_team_list, container, false);
 
-        //get the parent activity
-        MainActivity context = (MainActivity) getActivity();
-        context.dropActionBar();
-
         teamsRecyclerView = view.findViewById(R.id.TeamsRecyclerView);
         teamSearchEditText = view.findViewById(R.id.TeamSearchEditText);
-
-        final ArrayList<Team> teams = context.getDatabase().getTeams();
-        final ArrayList<Team> searchedTeams = new ArrayList<>(teams);
 
         final TeamListRecyclerViewAdapter teamListRecyclerViewAdapter = new TeamListRecyclerViewAdapter(searchedTeams, context);
 

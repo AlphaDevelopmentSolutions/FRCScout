@@ -11,8 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Adapters.EventViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.Adapters.MatchViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.R;
 
@@ -26,7 +24,7 @@ import java.util.ArrayList;
  * Use the {@link MatchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MatchFragment extends Fragment
+public class MatchFragment extends MasterFragment
 {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "BlueAllianceTeamIds";
@@ -81,8 +79,6 @@ public class MatchFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_match, container, false);
 
-        MainActivity context = (MainActivity) getActivity();
-
         //gets rid of the shadow on the actionbar
         ActionBar actionBar = context.getSupportActionBar();
         actionBar.setElevation(0);
@@ -95,13 +91,13 @@ public class MatchFragment extends Fragment
         //populate the viewPager with all the blue alliance teams
         for(int teamId : blueAllianceTeamIds)
         {
-            matchViewPagerAdapter.addFragment(ScoutCardFragment.newInstance(-1, teamId), String.valueOf(teamId));
+            matchViewPagerAdapter.addFragment(ScoutCardFragment.newInstance(null, teamId), String.valueOf(teamId));
         }
 
         //populate the viewPager with all the red alliance teams
         for(int teamId : redAllianceTeamIds)
         {
-            matchViewPagerAdapter.addFragment(ScoutCardFragment.newInstance(-1, teamId), String.valueOf(teamId));
+            matchViewPagerAdapter.addFragment(ScoutCardFragment.newInstance(null, teamId), String.valueOf(teamId));
         }
 
         matchViewPager.setAdapter(matchViewPagerAdapter);

@@ -17,8 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
@@ -33,7 +31,7 @@ import java.util.ArrayList;
  * Use the {@link ChangeEventFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ChangeEventFragment extends Fragment
+public class ChangeEventFragment extends MasterFragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -93,9 +91,6 @@ public class ChangeEventFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_change_event, container, false);
 
-        final MainActivity context = (MainActivity) getActivity();
-        final Database database = context.getDatabase();
-
         final ArrayList<Event> events = database.getEvents();
 
         selectedEvent = "";
@@ -134,9 +129,9 @@ public class ChangeEventFragment extends Fragment
             public void onClick(View v)
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Change Event?")
-                        .setMessage("Changing an event will clear ALL current application data.")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                builder.setTitle(R.string.change_event)
+                        .setMessage(R.string.change_event_desc)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which)
                             {
                                 String eventCode = "";
@@ -151,12 +146,28 @@ public class ChangeEventFragment extends Fragment
                                 database.clearScoutCards(true);
                                 database.clear();
 
-                                context.updateApplicationData(eventCode);
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                final String finalEventCode = eventCode;
+                                builder.setTitle(R.string.download_media)
+                                        .setMessage(R.string.download_media_desc)
+                                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which)
+                                            {
+                                                context.updateApplicationData(finalEventCode, true);
+                                            }
+                                        })
+                                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which)
+                                            {
+                                                context.updateApplicationData(finalEventCode, false);
 
-
+                                            }
+                                        })
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .show();
                             }
                         })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                             }
                         })

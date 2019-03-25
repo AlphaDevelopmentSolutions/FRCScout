@@ -1,7 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -14,13 +13,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -32,13 +29,13 @@ import java.util.ArrayList;
  * Use the {@link PitCardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PitCardFragment extends Fragment
+public class PitCardFragment extends MasterFragment
 {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "PitCardId";
     private static final String ARG_PARAM2 = "TeamId";
 
-    private int pitCardId;
+    private String pitCardJson;
     private int teamId;
 
     private OnFragmentInteractionListener mListener;
@@ -52,16 +49,16 @@ public class PitCardFragment extends Fragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param pitCardId Parameter 1.
+     * @param pitCardJson pit card json.
      * @param teamId Parameter 2.
      * @return A new instance of fragment PitCardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PitCardFragment newInstance(int pitCardId, int teamId)
+    public static PitCardFragment newInstance(String pitCardJson, int teamId)
     {
         PitCardFragment fragment = new PitCardFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, pitCardId);
+        args.putString(ARG_PARAM1, pitCardJson);
         args.putInt(ARG_PARAM2, teamId);
         fragment.setArguments(args);
         return fragment;
@@ -73,31 +70,37 @@ public class PitCardFragment extends Fragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            pitCardId = getArguments().getInt(ARG_PARAM1);
+            pitCardJson = getArguments().getString(ARG_PARAM1);
             teamId = getArguments().getInt(ARG_PARAM2);
         }
+
+        if(pitCardJson != null && !pitCardJson.equals(""))
+            pitCard = new Gson().fromJson(pitCardJson, PitCard.class);
     }
     
     private AutoCompleteTextView teamNumberAutoCompleteTextView;
     private AutoCompleteTextView scouterNameAutoCompleteTextView;
     
     private EditText driveStyleEditText;
+    private EditText robotWeightEditText;
+    private EditText robotLengthEditText;
+    private EditText robotWidthEditText;
+    private EditText robotHeightEditText;
+
     private EditText autoExitHabitatEditText;
     private EditText autoHatchEditText;
     private EditText autoCargoEditText;
+
     private EditText teleopHatchEditText;
     private EditText teleopCargoEditText;
-    private EditText teleopRocketsEditText;
+
     private EditText returnedToHabitatEditText;
+
     private EditText notesEditText;
     
     private Button saveButton;
 
     private PitCard pitCard;
-    private Team team;
-
-    private MainActivity context;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -106,36 +109,25 @@ public class PitCardFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pit_card, container, false);
 
-        context = (MainActivity) getActivity();
-        final Database database = context.getDatabase();
 
-        context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        
-        
-        if(pitCardId > 0)
-        {
-            pitCard = new PitCard(pitCardId);
-            pitCard.load(database);
-        }
-        
-        if(teamId > 0)
-        {
-            team = new Team(teamId);
-            team.load(database);
-        }
-
-
-        teamNumberAutoCompleteTextView = view.findViewById(R.id.TeamNumberAutoCompleteTextView);
+        teamNumberAutoCompleteTextView = view.findViewById(R.id.TeamNumberTextInputEditText);
         scouterNameAutoCompleteTextView = view.findViewById(R.id.ScouterNameAutoCompleteTextView);
 
         driveStyleEditText = view.findViewById(R.id.DriveStyleEditText);
+        robotWeightEditText = view.findViewById(R.id.RobotWeightEditText);
+        robotLengthEditText = view.findViewById(R.id.RobotLengthEditText);
+        robotWidthEditText = view.findViewById(R.id.RobotWidthEditText);
+        robotHeightEditText = view.findViewById(R.id.RobotHeightEditText);
+
         autoExitHabitatEditText = view.findViewById(R.id.AutoExitHabitatEditText);
         autoHatchEditText = view.findViewById(R.id.AutoHatchEditText);
         autoCargoEditText = view.findViewById(R.id.AutoCargoEditText);
+
         teleopHatchEditText = view.findViewById(R.id.TeleopHatchEditText);
         teleopCargoEditText = view.findViewById(R.id.TeleopCargoEditText);
-        teleopRocketsEditText = view.findViewById(R.id.TeleopRocketsEditText);
+
         returnedToHabitatEditText = view.findViewById(R.id.ReturnedToHabitatEditText);
+
         notesEditText = view.findViewById(R.id.NotesEditText);
 
         saveButton = view.findViewById(R.id.SaveButton);
@@ -154,31 +146,50 @@ public class PitCardFragment extends Fragment
 
                     int teamNumber = Integer.parseInt(teamNumberAutoCompleteTextView.getText().toString());
                     String eventId = PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.EVENT_ID_PREF, "");
+
                     String driveStyle = driveStyleEditText.getText().toString();
-                    String scouterName = scouterNameAutoCompleteTextView.getText().toString();
+                    String robotWeight = robotWeightEditText.getText().toString();
+                    String robotLength = robotLengthEditText.getText().toString();
+                    String robotWidth = robotWidthEditText.getText().toString();
+                    String robotHeight = robotHeightEditText.getText().toString();
+
                     String autonomousExitHabitat = autoExitHabitatEditText.getText().toString();
                     String autonomousHatchPanelsSecured = autoHatchEditText.getText().toString();
                     String autonomousCargoStored = autoCargoEditText.getText().toString();
+
                     String teleopHatchPanelsSecured = teleopHatchEditText.getText().toString();
                     String teleopCargoStored = teleopCargoEditText.getText().toString();
-                    String teleopRocketsCompleted = teleopRocketsEditText.getText().toString();
-                    String endGameReturnedToHabitat = returnedToHabitatEditText.getText().toString();
-                    String matchNotes = notesEditText.getText().toString();
 
+                    String endGameReturnedToHabitat = returnedToHabitatEditText.getText().toString();
+                    String notes = notesEditText.getText().toString();
+
+                    String scouterName = scouterNameAutoCompleteTextView.getText().toString();
+
+                    //pitcard is a draft
                     if (pitCard != null)
                     {
                         pitCard.setTeamId(teamNumber);
                         pitCard.setEventId(eventId);
+
                         pitCard.setDriveStyle(driveStyle);
-                        pitCard.setCompletedBy(scouterName);
+                        pitCard.setRobotWeight(robotWeight);
+                        pitCard.setRobotLength(robotLength);
+                        pitCard.setRobotWidth(robotWidth);
+                        pitCard.setRobotHeight(robotHeight);
+
                         pitCard.setAutoExitHabitat(autonomousExitHabitat);
                         pitCard.setAutoHatch(autonomousHatchPanelsSecured);
                         pitCard.setAutoCargo(autonomousCargoStored);
+
                         pitCard.setTeleopHatch(teleopHatchPanelsSecured);
                         pitCard.setTeleopCargo(teleopCargoStored);
-                        pitCard.setTeleopRocketsComplete(teleopRocketsCompleted);
+
                         pitCard.setReturnToHabitat(endGameReturnedToHabitat);
-                        pitCard.setNotes(matchNotes);
+
+                        pitCard.setNotes(notes);
+
+                        pitCard.setCompletedBy(scouterName);
+
                         if (pitCard.save(database) > 0)
                         {
                             context.showSnackbar("Saved Successfully.");
@@ -186,21 +197,32 @@ public class PitCardFragment extends Fragment
                         }
 
 
-                    } else
+                    }
+                    //new pitcard
+                    else
                     {
                         PitCard pitCard = new PitCard(
                                 -1,
                                 teamNumber,
                                 eventId,
+
                                 driveStyle,
+                                robotWeight,
+                                robotLength,
+                                robotWidth,
+                                robotHeight,
+
                                 autonomousExitHabitat,
                                 autonomousHatchPanelsSecured,
                                 autonomousCargoStored,
+
                                 teleopHatchPanelsSecured,
                                 teleopCargoStored,
-                                teleopRocketsCompleted,
+
                                 endGameReturnedToHabitat,
-                                matchNotes,
+
+                                notes,
+
                                 scouterName,
                                 true);
                         if (pitCard.save(database) > 0)
@@ -213,8 +235,8 @@ public class PitCardFragment extends Fragment
             }
         });
 
-        if(team != null)
-            teamNumberAutoCompleteTextView.setText(String.valueOf(team.getId()));
+
+        teamNumberAutoCompleteTextView.setText(String.valueOf(teamId));
 
         ArrayList<String> scouterNames = new ArrayList<>();
 
@@ -230,14 +252,17 @@ public class PitCardFragment extends Fragment
             scouterNameAutoCompleteTextView.setText(pitCard.getCompletedBy());
 
             driveStyleEditText.setText(String.valueOf(pitCard.getDriveStyle()));
-            
+            robotWeightEditText.setText(String.valueOf(pitCard.getRobotWeight()));
+            robotLengthEditText.setText(String.valueOf(pitCard.getRobotLength()));
+            robotWidthEditText.setText(String.valueOf(pitCard.getRobotWidth()));
+            robotHeightEditText.setText(String.valueOf(pitCard.getRobotHeight()));
+
             autoExitHabitatEditText.setText(pitCard.getAutoExitHabitat());
             autoHatchEditText.setText(String.valueOf(pitCard.getAutoHatch()));
             autoCargoEditText.setText(String.valueOf(pitCard.getAutoCargo()));
 
             teleopHatchEditText.setText(String.valueOf(pitCard.getTeleopHatch()));
             teleopCargoEditText.setText(String.valueOf(pitCard.getTeleopCargo()));
-            teleopRocketsEditText.setText(String.valueOf(pitCard.getTeleopRocketsComplete()));
 
             returnedToHabitatEditText.setText(pitCard.getReturnToHabitat());
 
@@ -269,7 +294,13 @@ public class PitCardFragment extends Fragment
 
         if(driveStyleEditText.getText().toString().equals(""))
         {
-            context.showSnackbar("Invalid drive style.");
+            context.showSnackbar("Invalid drivetrain.");
+            return false;
+        }
+
+        if(robotWeightEditText.getText().toString().equals(""))
+        {
+            context.showSnackbar("Invalid robot weight.");
             return false;
         }
 
@@ -300,12 +331,6 @@ public class PitCardFragment extends Fragment
         if(teleopCargoEditText.getText().toString().equals(""))
         {
             context.showSnackbar("Invalid teleop cargo stored info.");
-            return false;
-        }
-
-        if(teleopRocketsEditText.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid teleop rockets completed info.");
             return false;
         }
 
@@ -344,8 +369,6 @@ public class PitCardFragment extends Fragment
     @Override
     public void onDetach()
     {
-        MainActivity context = (MainActivity) getActivity();
-        context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onDetach();
         mListener = null;
     }

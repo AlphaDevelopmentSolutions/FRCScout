@@ -9,13 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
-import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardFragment;
-import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -41,7 +39,6 @@ public class PitCardsRecyclerViewAdapter extends RecyclerView.Adapter<PitCardsRe
 
         TextView pitCardIdTextView;
         TextView completedByTextView;
-        TextView redAllianceScoreTextView;
         ImageView pitCardOptionsImageView;
         TextView viewPitCardButton;
 
@@ -72,7 +69,6 @@ public class PitCardsRecyclerViewAdapter extends RecyclerView.Adapter<PitCardsRe
 
         PitCard pitCard = pitCards.get(viewHolder.getAdapterPosition());
 
-
         //set scores
         viewHolder.completedByTextView.setText(pitCard.getCompletedBy());
         viewHolder.pitCardIdTextView.setText(String.valueOf(pitCard.getId()));
@@ -95,7 +91,7 @@ public class PitCardsRecyclerViewAdapter extends RecyclerView.Adapter<PitCardsRe
             public void onClick(View v)
             {
                 //swap fragments
-               context.changeFragment(PitCardFragment.newInstance(pitCards.get(viewHolder.getAdapterPosition()).getId(), -1), true);
+               context.changeFragment(PitCardFragment.newInstance(new Gson().toJson(pitCards.get(viewHolder.getAdapterPosition())), -1), true);
             }
         });
     }

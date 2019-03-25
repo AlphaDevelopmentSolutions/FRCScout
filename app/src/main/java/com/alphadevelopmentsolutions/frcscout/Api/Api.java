@@ -1,6 +1,5 @@
 package com.alphadevelopmentsolutions.frcscout.Api;
 
-import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Keys;
 
 import java.io.UnsupportedEncodingException;

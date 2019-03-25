@@ -24,5 +24,6 @@ and fill it with the following information from the FRCScout Web Server:
     public interface Keys
     {
         String API_KEY = "YOUR_API_KEY";
-        String API_URL = "http(s)://subdomain.domain.com/api/api.php";
+        String WEB_URL = "http(s)://subdomain.domain.com/api/api.php";
+        String API_URL = WEB_URL + "api/api.php";
     }

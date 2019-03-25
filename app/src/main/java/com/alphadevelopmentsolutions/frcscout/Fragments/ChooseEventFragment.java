@@ -18,7 +18,7 @@ import com.alphadevelopmentsolutions.frcscout.R;
  * Use the {@link ChooseEventFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ChooseEventFragment extends Fragment
+public class ChooseEventFragment extends MasterFragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
