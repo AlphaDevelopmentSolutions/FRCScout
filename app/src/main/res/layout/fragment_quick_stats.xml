@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:baselineAligned="false">
 
         <TableLayout
@@ -48,12 +48,11 @@
                 android:gravity="center">
 
                 <TextView
-                    android:id="@+id/textView14"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/autonomous"
                     android:padding="@dimen/material_padding"
-                    android:text="@string/hatches" />
+                    android:text="@string/hatches"/>
             </TableRow>
 
             <TableRow
@@ -62,12 +61,11 @@
                 android:gravity="center">
 
                 <TextView
-                    android:id="@+id/textView14"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/autonomous"
                     android:padding="@dimen/material_padding"
-                    android:text="@string/hatches_dropped" />
+                    android:text="@string/hatches_dropped"/>
             </TableRow>
 
             <TableRow
