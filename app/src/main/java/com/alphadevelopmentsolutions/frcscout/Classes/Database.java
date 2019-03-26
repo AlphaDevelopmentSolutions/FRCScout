@@ -945,6 +945,7 @@ public class Database
         //where statement
         String whereStatement = ScoutCard.COLUMN_NAME_TEAM_ID + " = ?" + ((onlyDrafts) ? " AND " + ScoutCard.COLUMN_NAME_IS_DRAFT + " = 1" : "");
         String[] whereArgs = {team.getId() + ""};
+        String orderBy = ScoutCard.COLUMN_NAME_MATCH_ID + " DESC";
 
         //select the info from the db
         Cursor cursor = db.query(
@@ -954,7 +955,7 @@ public class Database
                 whereArgs,
                 null,
                 null,
-                null);
+                orderBy);
 
         //make sure the cursor isn't null, else we die
         if (cursor != null)
