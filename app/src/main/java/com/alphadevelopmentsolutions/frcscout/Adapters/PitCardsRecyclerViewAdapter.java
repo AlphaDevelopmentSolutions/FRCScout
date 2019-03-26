@@ -70,9 +70,9 @@ public class PitCardsRecyclerViewAdapter extends RecyclerView.Adapter<PitCardsRe
 
         PitCard pitCard = pitCards.get(viewHolder.getAdapterPosition());
 
-        //set scores
+        //set pit card info
         viewHolder.completedByTextView.setText(pitCard.getCompletedBy());
-        viewHolder.pitCardIdTextView.setText(String.valueOf(pitCard.getId()));
+        viewHolder.pitCardIdTextView.setText(String.valueOf(pitCards.size() - viewHolder.getAdapterPosition()));
 
         //Opens an option menu for various options on that score card
         viewHolder.pitCardOptionsImageView.setOnClickListener(new View.OnClickListener()

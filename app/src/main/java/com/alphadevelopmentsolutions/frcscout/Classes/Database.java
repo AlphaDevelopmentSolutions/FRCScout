@@ -1208,6 +1208,7 @@ public class Database
         //where statement
         String whereStatement = PitCard.COLUMN_NAME_TEAM_ID + " = ? " + ((onlyDrafts) ? " AND " + PitCard.COLUMN_NAME_IS_DRAFT + " = 1" : "");
         String[] whereArgs = {team.getId() + ""};
+        String orderBy = PitCard.COLUMN_NAME_ID + " DESC";
 
         //select the info from the db
         Cursor cursor = db.query(
@@ -1217,7 +1218,7 @@ public class Database
                 whereArgs,
                 null,
                 null,
-                null);
+                orderBy);
 
         //make sure the cursor isn't null, else we die
         if (cursor != null)
