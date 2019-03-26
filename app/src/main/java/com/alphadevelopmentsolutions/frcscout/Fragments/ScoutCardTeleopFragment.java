@@ -125,7 +125,8 @@ public class ScoutCardTeleopFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                teleopHatchPanelsPickupTextView.setText((Integer.parseInt(teleopHatchPanelsPickupTextView.getText().toString()) - 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    teleopHatchPanelsPickupTextView.setText((Integer.parseInt(teleopHatchPanelsPickupTextView.getText().toString()) - 1) + "");
             }
         });
 
@@ -134,7 +135,8 @@ public class ScoutCardTeleopFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                teleopHatchPanelsPickupTextView.setText((Integer.parseInt(teleopHatchPanelsPickupTextView.getText().toString()) + 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    teleopHatchPanelsPickupTextView.setText((Integer.parseInt(teleopHatchPanelsPickupTextView.getText().toString()) + 1) + "");
             }
         });
 
@@ -143,7 +145,8 @@ public class ScoutCardTeleopFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                teleopHatchPanelsSecuredAttemptsTextView.setText((Integer.parseInt(teleopHatchPanelsSecuredAttemptsTextView.getText().toString()) - 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    teleopHatchPanelsSecuredAttemptsTextView.setText((Integer.parseInt(teleopHatchPanelsSecuredAttemptsTextView.getText().toString()) - 1) + "");
             }
         });
 
@@ -152,7 +155,8 @@ public class ScoutCardTeleopFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                teleopHatchPanelsSecuredAttemptsTextView.setText((Integer.parseInt(teleopHatchPanelsSecuredAttemptsTextView.getText().toString()) + 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    teleopHatchPanelsSecuredAttemptsTextView.setText((Integer.parseInt(teleopHatchPanelsSecuredAttemptsTextView.getText().toString()) + 1) + "");
             }
         });
 
@@ -161,7 +165,8 @@ public class ScoutCardTeleopFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                teleopHatchPanelsSecuredTextView.setText((Integer.parseInt(teleopHatchPanelsSecuredTextView.getText().toString()) - 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    teleopHatchPanelsSecuredTextView.setText((Integer.parseInt(teleopHatchPanelsSecuredTextView.getText().toString()) - 1) + "");
             }
         });
 
@@ -170,7 +175,8 @@ public class ScoutCardTeleopFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                teleopHatchPanelsSecuredTextView.setText((Integer.parseInt(teleopHatchPanelsSecuredTextView.getText().toString()) + 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    teleopHatchPanelsSecuredTextView.setText((Integer.parseInt(teleopHatchPanelsSecuredTextView.getText().toString()) + 1) + "");
             }
         });
 
@@ -195,7 +201,8 @@ public class ScoutCardTeleopFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                teleopCargoPickupTextView.setText((Integer.parseInt(teleopCargoPickupTextView.getText().toString()) - 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    teleopCargoPickupTextView.setText((Integer.parseInt(teleopCargoPickupTextView.getText().toString()) - 1) + "");
             }
         });
 
@@ -204,7 +211,8 @@ public class ScoutCardTeleopFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                teleopCargoPickupTextView.setText((Integer.parseInt(teleopCargoPickupTextView.getText().toString()) + 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    teleopCargoPickupTextView.setText((Integer.parseInt(teleopCargoPickupTextView.getText().toString()) + 1) + "");
             }
         });
 
@@ -213,7 +221,8 @@ public class ScoutCardTeleopFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                teleopCargoStoredAttemptsTextView.setText((Integer.parseInt(teleopCargoStoredAttemptsTextView.getText().toString()) - 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    teleopCargoStoredAttemptsTextView.setText((Integer.parseInt(teleopCargoStoredAttemptsTextView.getText().toString()) - 1) + "");
             }
         });
 
@@ -222,7 +231,8 @@ public class ScoutCardTeleopFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                teleopCargoStoredAttemptsTextView.setText((Integer.parseInt(teleopCargoStoredAttemptsTextView.getText().toString()) + 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    teleopCargoStoredAttemptsTextView.setText((Integer.parseInt(teleopCargoStoredAttemptsTextView.getText().toString()) + 1) + "");
             }
         });
 
@@ -231,7 +241,8 @@ public class ScoutCardTeleopFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                teleopCargoStoredTextView.setText((Integer.parseInt(teleopCargoStoredTextView.getText().toString()) - 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    teleopCargoStoredTextView.setText((Integer.parseInt(teleopCargoStoredTextView.getText().toString()) - 1) + "");
             }
         });
 
@@ -240,7 +251,8 @@ public class ScoutCardTeleopFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                teleopCargoStoredTextView.setText((Integer.parseInt(teleopCargoStoredTextView.getText().toString()) + 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    teleopCargoStoredTextView.setText((Integer.parseInt(teleopCargoStoredTextView.getText().toString()) + 1) + "");
             }
         });
 

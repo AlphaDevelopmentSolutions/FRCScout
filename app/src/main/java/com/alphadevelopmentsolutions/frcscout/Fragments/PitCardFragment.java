@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -141,10 +142,6 @@ public class PitCardFragment extends MasterFragment
         notesEditText = view.findViewById(R.id.NotesEditText);
 
         saveButton = view.findViewById(R.id.SaveButton);
-
-        if(pitCard != null)
-            if(!pitCard.isDraft())
-                saveButton.setVisibility(View.GONE);
         
         saveButton.setOnClickListener(new View.OnClickListener()
         {
@@ -247,6 +244,9 @@ public class PitCardFragment extends MasterFragment
 
 
         teamNumberAutoCompleteTextView.setText(String.valueOf(teamId));
+        teamNumberAutoCompleteTextView.setFocusable(false);
+        teamNumberAutoCompleteTextView.setInputType(InputType.TYPE_NULL);
+
 
         ArrayList<String> scouterNames = new ArrayList<>();
 
@@ -255,13 +255,15 @@ public class PitCardFragment extends MasterFragment
 
         ArrayAdapter<String> scouterNameAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, scouterNames);
         scouterNameAutoCompleteTextView.setAdapter(scouterNameAdapter);
-        
+
+        //pit card sent over, disable all fields and populate data
         if(pitCard != null)
         {
             teamNumberAutoCompleteTextView.setText(String.valueOf(pitCard.getTeamId()));
             scouterNameAutoCompleteTextView.setText(pitCard.getCompletedBy());
 
             driveStyleEditText.setText(String.valueOf(pitCard.getDriveStyle()));
+
             robotWeightEditText.setText(String.valueOf(pitCard.getRobotWeight()));
             robotLengthEditText.setText(String.valueOf(pitCard.getRobotLength()));
             robotWidthEditText.setText(String.valueOf(pitCard.getRobotWidth()));
@@ -277,6 +279,52 @@ public class PitCardFragment extends MasterFragment
             returnedToHabitatEditText.setText(pitCard.getReturnToHabitat());
 
             notesEditText.setText(pitCard.getNotes());
+
+
+            //only disable fields if card is not draft
+            if(!pitCard.isDraft())
+            {
+                saveButton.setVisibility(View.GONE);
+
+                scouterNameAutoCompleteTextView.setFocusable(false);
+                scouterNameAutoCompleteTextView.setInputType(InputType.TYPE_NULL);
+
+                driveStyleEditText.setFocusable(false);
+                driveStyleEditText.setInputType(InputType.TYPE_NULL);
+
+                robotWeightEditText.setFocusable(false);
+                robotWeightEditText.setInputType(InputType.TYPE_NULL);
+
+                robotLengthEditText.setFocusable(false);
+                robotLengthEditText.setInputType(InputType.TYPE_NULL);
+
+                robotWidthEditText.setFocusable(false);
+                robotWidthEditText.setInputType(InputType.TYPE_NULL);
+
+                robotHeightEditText.setFocusable(false);
+                robotHeightEditText.setInputType(InputType.TYPE_NULL);
+
+                autoExitHabitatEditText.setFocusable(false);
+                autoExitHabitatEditText.setInputType(InputType.TYPE_NULL);
+
+                autoHatchEditText.setFocusable(false);
+                autoHatchEditText.setInputType(InputType.TYPE_NULL);
+
+                autoCargoEditText.setFocusable(false);
+                autoCargoEditText.setInputType(InputType.TYPE_NULL);
+
+                teleopHatchEditText.setFocusable(false);
+                teleopHatchEditText.setInputType(InputType.TYPE_NULL);
+
+                teleopCargoEditText.setFocusable(false);
+                teleopCargoEditText.setInputType(InputType.TYPE_NULL);
+
+                returnedToHabitatEditText.setFocusable(false);
+                returnedToHabitatEditText.setInputType(InputType.TYPE_NULL);
+
+                notesEditText.setFocusable(false);
+                notesEditText.setInputType(InputType.TYPE_NULL);
+            }
         }
 
         return view;

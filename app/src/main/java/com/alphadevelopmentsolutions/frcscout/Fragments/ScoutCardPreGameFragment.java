@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -126,6 +127,8 @@ public class ScoutCardPreGameFragment extends MasterFragment {
         startingPieceSpinner = view.findViewById(R.id.StartingGamePieceSpinner);
 
         teamNumberTextInputEditText.setText(String.valueOf(teamId));
+        teamNumberTextInputEditText.setFocusable(false);
+        teamNumberTextInputEditText.setInputType(InputType.TYPE_NULL);
 
         new Thread(new Runnable()
         {
@@ -157,13 +160,28 @@ public class ScoutCardPreGameFragment extends MasterFragment {
         {
             teamNumberTextInputEditText.setText(String.valueOf(scoutCard.getTeamId()));
             scouterNameAutoCompleteTextView.setText(scoutCard.getCompletedBy());
-
             matchIdEditText.setText(String.valueOf(scoutCard.getMatchId()));
 
             allianceColorSpinner.setSelection(scoutCard.getAllianceColor().equals(AllianceColor.RED.name()) ? 0 : 1);
             startingLevelSpinner.setSelection(scoutCard.getPreGameStartingLevel() - 1);
             startingPositionSpinner.setSelection(scoutCard.getPreGameStartingPosition().equals(StartingPosition.LEFT) ? 0 : (scoutCard.getPreGameStartingPosition().equals(StartingPosition.CENTER)) ? 1 : 2);
             startingPieceSpinner.setSelection(scoutCard.getPreGameStartingPiece().equals(StartingPiece.HATCH) ? 0 : 1);
+
+            //only disable fields if card is not draft
+            if(!scoutCard.isDraft())
+            {
+                scouterNameAutoCompleteTextView.setFocusable(false);
+                scouterNameAutoCompleteTextView.setInputType(InputType.TYPE_NULL);
+
+                matchIdEditText.setFocusable(false);
+                matchIdEditText.setInputType(InputType.TYPE_NULL);
+
+                allianceColorSpinner.setEnabled(false);
+                startingLevelSpinner.setEnabled(false);
+                startingPositionSpinner.setEnabled(false);
+                startingPieceSpinner.setEnabled(false);
+
+            }
         }
 
         if(teamId > 0)

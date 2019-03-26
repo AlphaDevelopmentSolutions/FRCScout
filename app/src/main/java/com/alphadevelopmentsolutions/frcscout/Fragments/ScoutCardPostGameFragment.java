@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,18 +92,16 @@ public class ScoutCardPostGameFragment extends MasterFragment {
         redAllianceFinalScoreEditText = view.findViewById(R.id.RedAllianceFinalScoreEditText);
         matchNotesEditText = view.findViewById(R.id.MatchNotesEditText);
 
-        offenseRatingBar = view.findViewById(R.id.OffenseRatingBar);
         defenseRatingBar = view.findViewById(R.id.DefenseRatingBar);
+        offenseRatingBar = view.findViewById(R.id.OffenseRatingBar);
         driveRatingBar = view.findViewById(R.id.DriveRatingBar);
 
         if(onSaveButtonClickListener != null)
             scoutCardSaveButton.setOnClickListener(onSaveButtonClickListener);
 
+
         if(scoutCard != null)
         {
-            if(!scoutCard.isDraft())
-                scoutCardSaveButton.setVisibility(View.GONE);
-
             blueAllianceFinalScoreEditText.setText(String.valueOf(scoutCard.getBlueAllianceFinalScore()));
             redAllianceFinalScoreEditText.setText(String.valueOf(scoutCard.getRedAllianceFinalScore()));
 
@@ -111,8 +110,27 @@ public class ScoutCardPostGameFragment extends MasterFragment {
             driveRatingBar.setRating(scoutCard.getDriveRating());
 
             matchNotesEditText.setText(scoutCard.getNotes());
-        }
 
+            //only disable if card is not draft
+            if(!scoutCard.isDraft())
+            {
+                scoutCardSaveButton.setVisibility(View.GONE);
+
+                blueAllianceFinalScoreEditText.setFocusable(false);
+                blueAllianceFinalScoreEditText.setInputType(InputType.TYPE_NULL);
+
+                redAllianceFinalScoreEditText.setFocusable(false);
+                redAllianceFinalScoreEditText.setInputType(InputType.TYPE_NULL);
+
+                defenseRatingBar.setEnabled(false);
+                offenseRatingBar.setEnabled(false);
+                driveRatingBar.setEnabled(false);
+
+                matchNotesEditText.setFocusable(false);
+                matchNotesEditText.setInputType(InputType.TYPE_NULL);
+
+            }
+        }
 
         return view;
     }
