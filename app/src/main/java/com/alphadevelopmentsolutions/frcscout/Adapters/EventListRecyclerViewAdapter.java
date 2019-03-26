@@ -11,7 +11,9 @@ import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventListRecyclerViewAdapter.ViewHolder>
@@ -21,10 +23,14 @@ public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventList
 
     private ArrayList<Event> eventList;
 
+    private SimpleDateFormat simpleDateFormat;
+
     public EventListRecyclerViewAdapter(ArrayList<Event> eventList, MainActivity context)
     {
         this.context = context;
         this.eventList = eventList;
+
+        simpleDateFormat = new SimpleDateFormat("MMM d, yyyy");
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder
@@ -56,12 +62,14 @@ public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventList
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EventListRecyclerViewAdapter.ViewHolder viewHolder, int position)
+    public void onBindViewHolder(@NonNull final EventListRecyclerViewAdapter.ViewHolder viewHolder, int position)
     {
+        Event event = eventList.get(viewHolder.getAdapterPosition());
+        
         //Set the content on the card
-        viewHolder.eventTitleTextView.setText(eventList.get(position).getName());
-        viewHolder.eventLocationTextView.setText(eventList.get(position).getCity() + ", " + eventList.get(position).getStateProvince() + ", " + eventList.get(position).getCountry());
-        viewHolder.eventDateTextView.setText(eventList.get(position).getStartDate().getTime() + " - " + eventList.get(position).getEndDate().getTime()); //TODO: Format date
+        viewHolder.eventTitleTextView.setText(event.getName());
+        viewHolder.eventLocationTextView.setText(event.getCity() + ", " + event.getStateProvince() + ", " + event.getCountry());
+        viewHolder.eventDateTextView.setText(simpleDateFormat.format(event.getStartDate().getTime()) + " - " + simpleDateFormat.format(event.getEndDate().getTime())); //TODO: Format date
 
         //Sends you to the teamlist fragment
         viewHolder.viewEventButton.setOnClickListener(new View.OnClickListener()
@@ -69,7 +77,7 @@ public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventList
             @Override
             public void onClick(View v)
             {
-                context.changeFragment(new TeamListFragment(), true);
+                context.changeFragment(TeamListFragment.newInstance(new Gson().toJson(eventList.get(viewHolder.getAdapterPosition()))), true);
             }
         });
     }

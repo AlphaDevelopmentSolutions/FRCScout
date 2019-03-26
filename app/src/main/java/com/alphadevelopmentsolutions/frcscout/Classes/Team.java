@@ -160,7 +160,7 @@ public class Team
      * @param database used to pull data
      * @return hashmap of stats
      */
-    public HashMap<String, HashMap<String, Double>> getStats(Database database)
+    public HashMap<String, HashMap<String, Double>> getStats(Database database, Event event)
     {
         HashMap<String, HashMap<String, Double>> stats = new HashMap<>();
         HashMap<String, Double> minStats = new HashMap<>();
@@ -217,7 +217,7 @@ public class Team
 
 
         //get all scout cards from the database
-        ArrayList<ScoutCard> scoutCards = database.getScoutCards(this, false);
+        ArrayList<ScoutCard> scoutCards = database.getScoutCards(this, event,false);
 
         //store iterations for avg
         int i = 0;

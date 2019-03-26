@@ -11,7 +11,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -28,13 +27,14 @@ import android.widget.FrameLayout;
 import com.alphadevelopmentsolutions.frcscout.Api.Server;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
+import com.alphadevelopmentsolutions.frcscout.Classes.EventTeamList;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
-import com.alphadevelopmentsolutions.frcscout.Fragments.ChangeEventFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.LoginFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchListFragment;
@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements
         PitCardFragment.OnFragmentInteractionListener,
         ScoutCardListFragment.OnFragmentInteractionListener,
         PitCardListFragment.OnFragmentInteractionListener,
-        ChangeEventFragment.OnFragmentInteractionListener,
         ScoutCardPreGameFragment.OnFragmentInteractionListener,
         ScoutCardAutoFragment.OnFragmentInteractionListener,
         ScoutCardTeleopFragment.OnFragmentInteractionListener,
@@ -77,7 +76,8 @@ public class MainActivity extends AppCompatActivity implements
         ScoutCardPostGameFragment.OnFragmentInteractionListener,
         RobotMediaFragment.OnFragmentInteractionListener,
         RobotMediaListFragment.OnFragmentInteractionListener,
-        QuickStatsFragment.OnFragmentInteractionListener
+        QuickStatsFragment.OnFragmentInteractionListener,
+        EventListFragment.OnFragmentInteractionListener
 {
 
     private Database database;
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (savedInstanceState == null)
                 {
                     if (getDatabase().getTeams().size() == 0 && isOnline())
-                        updateApplicationData(PreferenceManager.getDefaultSharedPreferences(this).getString(Constants.EVENT_ID_PREF, ""), false);
+                        updateApplicationData(false);
 
                     if (updateThread != null)
                     {
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     }
 
-                    changeFragment(new TeamListFragment(), false);
+                    changeFragment(new EventListFragment(), false);
                 }
             }
         }
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements
             if (savedInstanceState == null)
             {
                 if (getDatabase().getTeams().size() == 0 && isOnline())
-                    updateApplicationData(PreferenceManager.getDefaultSharedPreferences(this).getString(Constants.EVENT_ID_PREF, ""), false);
+                    updateApplicationData(false);
 
                 if (updateThread != null)
                 {
@@ -230,42 +230,43 @@ public class MainActivity extends AppCompatActivity implements
 
                                             boolean success = true;
 
-                                            for (Team team : teams)
+                                            for(Event event : getDatabase().getEvents())
                                             {
-                                                for (ScoutCard scoutCard : getDatabase().getScoutCards(team, true))
-                                                {
-                                                    Server.SubmitScoutCard submitScoutCard = new Server.SubmitScoutCard(context, scoutCard);
-                                                    if(submitScoutCard.execute())
-                                                    {
-                                                        scoutCard.setDraft(false);
-                                                        scoutCard.save(getDatabase());
-                                                    }
-                                                    else
-                                                        success = false;
-                                                }
 
-                                                for (PitCard pitCard : getDatabase().getPitCards(team, true))
+                                                for (Team team : teams)
                                                 {
-                                                    Server.SubmitPitCard submitScoutCard = new Server.SubmitPitCard(context, pitCard);
-                                                    if(submitScoutCard.execute())
+                                                    for (ScoutCard scoutCard : getDatabase().getScoutCards(team, event,true))
                                                     {
-                                                        pitCard.setDraft(false);
-                                                        pitCard.save(getDatabase());
+                                                        Server.SubmitScoutCard submitScoutCard = new Server.SubmitScoutCard(context, scoutCard);
+                                                        if (submitScoutCard.execute())
+                                                        {
+                                                            scoutCard.setDraft(false);
+                                                            scoutCard.save(getDatabase());
+                                                        } else
+                                                            success = false;
                                                     }
-                                                    else
-                                                        success = false;
-                                                }
 
-                                                for (RobotMedia robotMedia : getDatabase().getRobotMedia(team, true))
-                                                {
-                                                    Server.SubmitRobotMedia submitRobotMedia = new Server.SubmitRobotMedia(context, robotMedia);
-                                                    if(submitRobotMedia.execute())
+                                                    for (PitCard pitCard : getDatabase().getPitCards(team, event, true))
                                                     {
-                                                        robotMedia.setDraft(false);
-                                                        robotMedia.save(getDatabase());
+                                                        Server.SubmitPitCard submitScoutCard = new Server.SubmitPitCard(context, pitCard);
+                                                        if (submitScoutCard.execute())
+                                                        {
+                                                            pitCard.setDraft(false);
+                                                            pitCard.save(getDatabase());
+                                                        } else
+                                                            success = false;
                                                     }
-                                                    else
-                                                        success = false;
+
+                                                    for (RobotMedia robotMedia : getDatabase().getRobotMedia(team, true))
+                                                    {
+                                                        Server.SubmitRobotMedia submitRobotMedia = new Server.SubmitRobotMedia(context, robotMedia);
+                                                        if (submitRobotMedia.execute())
+                                                        {
+                                                            robotMedia.setDraft(false);
+                                                            robotMedia.save(getDatabase());
+                                                        } else
+                                                            success = false;
+                                                    }
                                                 }
 
                                             }
@@ -311,13 +312,13 @@ public class MainActivity extends AppCompatActivity implements
                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which)
                             {
-                                updateApplicationData(PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.EVENT_ID_PREF, ""), true);
+                                updateApplicationData(true);
                             }
                         })
                         .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which)
                             {
-                                updateApplicationData(PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.EVENT_ID_PREF, ""), false);
+                                updateApplicationData(false);
 
                             }
                         })
@@ -325,59 +326,13 @@ public class MainActivity extends AppCompatActivity implements
                         .show();
 
                 return true;
-
-            case R.id.ChangeEventItem:
-                changeFragment(new ChangeEventFragment(), true);
-                return true;
         }
 
         return false;
     }
 
-    public void updateApplicationData(final String event, final boolean downloadMedia)
+    public void updateApplicationData(final boolean downloadMedia)
     {
-        //check if the even is null, only update event data
-        if(event.equals("") && isOnline())
-        {
-            Thread eventThread = new Thread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    //update events
-                    Server.GetEvents getEvents = new Server.GetEvents(context);
-
-                    if(getEvents.execute())
-                    {
-                        getDatabase().clearEvents();
-                        for(Event event : getEvents.getEvents())
-                            event.save(getDatabase());
-                    }
-
-                    runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            changeFragment(new ChangeEventFragment(), false);
-                        }
-                    });
-                }
-            });
-
-            eventThread.start();
-
-            try
-            {
-                eventThread.join();
-            } catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-
-            return;
-        }
-
         //update all app data
         if(isOnline())
         {
@@ -390,81 +345,6 @@ public class MainActivity extends AppCompatActivity implements
                 @Override
                 public void run()
                 {
-                    //if downloading new images, purge old images
-                    if(downloadMedia)
-                    {
-                        //Create the folder
-                        File mediaFolder = new File(Constants.MEDIA_DIRECTORY);
-                        if (mediaFolder.isDirectory())
-                            for(File child : mediaFolder.listFiles())
-                                child.delete();
-                    }
-
-                    //update teams
-                    Server.GetTeamsAtEvent getTeamsAtEvent = new Server.GetTeamsAtEvent(context, event);
-
-                    //get teams at current event
-                    if (getTeamsAtEvent.execute())
-                    {
-                        //compare differences between teams to prevent draft scout cards from being deleted
-                        ArrayList<Team> databaseTeams = getDatabase().getTeams();
-                        ArrayList<Integer> databaseTeamIds = new ArrayList<>();
-                        ArrayList<Team> teams = getTeamsAtEvent.getTeams();
-                        ArrayList<Integer> teamIds = new ArrayList<>();
-
-                        ArrayList<Integer> removeTeamIds = new ArrayList<>();
-
-                        for(Team team : databaseTeams)
-                        {
-                            databaseTeamIds.add(team.getId());
-                        }
-
-                        for(Team team : teams)
-                        {
-                            teamIds.add(team.getId());
-                        }
-
-                        for(int teamId : databaseTeamIds)
-                        {
-                            if(!teamIds.contains(teamId))
-                                removeTeamIds.add(teamId);
-                        }
-
-                        for(int teamId : removeTeamIds)
-                        {
-                            Team team = new Team(teamId);
-                            if(team.load(getDatabase()))
-                                team.delete(getDatabase());
-                        }
-
-                        for (Team team : teams)
-                            team.save(getDatabase());
-
-                        //download robot media from server
-                        if(downloadMedia)
-                        {
-                            getDatabase().clearRobotMedia(false);
-                            Server.GetRobotMedia getRobotMedia;
-
-                            for (Team team : teams)
-                            {
-                                getRobotMedia = new Server.GetRobotMedia(context, team.getId());
-
-                                if (getRobotMedia.execute())
-                                {
-                                    for (RobotMedia robotMedia : getRobotMedia.getRobotMedia())
-                                    {
-                                        robotMedia.save(getDatabase());
-
-                                        //save the image for the team
-                                        team.setImageFileURI(robotMedia.getFileUri());
-                                        team.save(getDatabase());
-                                    }
-                                }
-                            }
-                        }
-
-                    }
 
                     //update users
                     Server.GetUsers getUsers = new Server.GetUsers(context);
@@ -481,31 +361,92 @@ public class MainActivity extends AppCompatActivity implements
                     //update events
                     Server.GetEvents getEvents = new Server.GetEvents(context);
 
-                    if(getEvents.execute())
+                    if (getEvents.execute())
                     {
                         getDatabase().clearEvents();
-                        for(Event event : getEvents.getEvents())
+                        for (Event event : getEvents.getEvents())
                             event.save(getDatabase());
                     }
 
-                    //update scout cards
-                    Server.GetScoutCards getScoutCards = new Server.GetScoutCards(context, event);
+                    //clear the saved data
+                    getDatabase().clearTeams();
+                    getDatabase().clearScoutCards(false);
+                    getDatabase().clearPitCards(false);
 
-                    if(getScoutCards.execute())
+
+
+                    for (Event event : getDatabase().getEvents())
                     {
-                        getDatabase().clearScoutCards(false);
-                        for(ScoutCard scoutCard : getScoutCards.getScoutCards())
-                            scoutCard.save(getDatabase());
+
+                        //update teams
+                        Server.GetTeamsAtEvent getTeamsAtEvent = new Server.GetTeamsAtEvent(context, event);
+
+                        //get teams at current event
+                        if (getTeamsAtEvent.execute())
+                        {
+                            //get the teams from API
+                            ArrayList<Team> teams = getTeamsAtEvent.getTeams();
+
+                            for (Team team : teams)
+                            {
+                                //check if the team exists in the database
+                                //if not, save it
+                                if (!team.load(getDatabase()))
+                                    team.save(getDatabase());
+
+                                //save a new eventteamlist to the database
+                                (new EventTeamList(-1, team.getId(), event.getBlueAllianceId())).save(getDatabase());
+                            }
+                        }
+
+                        //update scout cards
+                        Server.GetScoutCards getScoutCards = new Server.GetScoutCards(context, event);
+
+                        if (getScoutCards.execute())
+                        {
+                            for (ScoutCard scoutCard : getScoutCards.getScoutCards())
+                                scoutCard.save(getDatabase());
+                        }
+
+                        //update pit cards
+                        Server.GetPitCards getPitCards = new Server.GetPitCards(context, event);
+
+                        if (getPitCards.execute())
+                        {
+                            for (PitCard pitCard : getPitCards.getPitCards())
+                                pitCard.save(getDatabase());
+                        }
                     }
 
-                    //update pit cards
-                    Server.GetPitCards getPitCards = new Server.GetPitCards(context, event);
-
-                    if(getPitCards.execute())
+                    //download robot media from server
+                    if (downloadMedia)
                     {
-                        getDatabase().clearPitCards(false);
-                        for(PitCard pitCard : getPitCards.getPitCards())
-                            pitCard.save(getDatabase());
+
+                        //Get the folder and purge all files
+                        File mediaFolder = new File(Constants.MEDIA_DIRECTORY);
+                        if (mediaFolder.isDirectory())
+                            for (File child : mediaFolder.listFiles())
+                                child.delete();
+
+                        getDatabase().clearRobotMedia(false);
+                        Server.GetRobotMedia getRobotMedia;
+
+                        for (Team team : getDatabase().getTeams())
+                        {
+                            getRobotMedia = new Server.GetRobotMedia(context, team.getId());
+
+                            if (getRobotMedia.execute())
+                            {
+                                for (RobotMedia robotMedia : getRobotMedia.getRobotMedia())
+                                {
+                                    robotMedia.save(getDatabase());
+
+                                    //save the image for the team
+                                    team.setImageFileURI(robotMedia.getFileUri());
+                                    team.save(getDatabase());
+                                }
+                            }
+                        }
                     }
 
                     runOnUiThread(new Runnable()
@@ -514,10 +455,9 @@ public class MainActivity extends AppCompatActivity implements
                         public void run()
                         {
                             progressDialog.cancel();
-                            changeFragment(new TeamListFragment(), false);
+                            changeFragment(new EventListFragment(), false);
                         }
                     });
-
                 }
             });
 

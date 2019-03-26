@@ -12,9 +12,11 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.StatsKeys;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,9 +35,11 @@ public class QuickStatsFragment extends MasterFragment
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
     private int teamId;
+    private String eventJson;
 
     private OnFragmentInteractionListener mListener;
 
@@ -52,11 +56,12 @@ public class QuickStatsFragment extends MasterFragment
      * @return A new instance of fragment QuickStatsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static QuickStatsFragment newInstance(int teamId)
+    public static QuickStatsFragment newInstance(int teamId, String eventJson)
     {
         QuickStatsFragment fragment = new QuickStatsFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, teamId);
+        args.putString(ARG_PARAM2, eventJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,6 +73,7 @@ public class QuickStatsFragment extends MasterFragment
         if (getArguments() != null)
         {
             teamId = getArguments().getInt(ARG_PARAM1);
+            eventJson = getArguments().getString(ARG_PARAM2);
         }
 
         loadStatsThread = new Thread(new Runnable()
@@ -80,8 +86,10 @@ public class QuickStatsFragment extends MasterFragment
                     Team team = new Team(teamId);
                     team.load(database);
 
+                    Event event = new Gson().fromJson(eventJson, Event.class);
+
                     //get the stats from the team object
-                    HashMap<String, HashMap<String, Double>> allStats = team.getStats(database);
+                    HashMap<String, HashMap<String, Double>> allStats = team.getStats(database, event);
                     minTableRows = new ArrayList<>();
                     avgTableRows = new ArrayList<>();
                     maxTableRows = new ArrayList<>();

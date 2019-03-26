@@ -27,11 +27,14 @@ public class PitCardsRecyclerViewAdapter extends RecyclerView.Adapter<PitCardsRe
 
     private MainActivity context;
 
-    public PitCardsRecyclerViewAdapter(Team team, ArrayList<PitCard> pitCards, MainActivity context)
+    private String eventJson;
+
+    public PitCardsRecyclerViewAdapter(Team team, String eventJson, ArrayList<PitCard> pitCards, MainActivity context)
     {
         this.team = team;
         this.pitCards = pitCards;
         this.context = context;
+        this.eventJson = eventJson;
 
     }
 
@@ -92,7 +95,7 @@ public class PitCardsRecyclerViewAdapter extends RecyclerView.Adapter<PitCardsRe
             public void onClick(View v)
             {
                 //swap fragments
-               context.changeFragment(PitCardFragment.newInstance(new Gson().toJson(pitCards.get(viewHolder.getAdapterPosition())), -1), true);
+               context.changeFragment(PitCardFragment.newInstance(new Gson().toJson(pitCards.get(viewHolder.getAdapterPosition())), eventJson,-1), true);
             }
         });
     }

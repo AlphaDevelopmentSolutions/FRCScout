@@ -3,7 +3,6 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +12,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
-import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
 
@@ -33,9 +32,11 @@ public class PitCardFragment extends MasterFragment
 {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "PitCardId";
-    private static final String ARG_PARAM2 = "TeamId";
+    private static final String ARG_PARAM2 = "EventJson";
+    private static final String ARG_PARAM3 = "TeamId";
 
     private String pitCardJson;
+    private String eventJson;
     private int teamId;
 
     private OnFragmentInteractionListener mListener;
@@ -50,16 +51,18 @@ public class PitCardFragment extends MasterFragment
      * this fragment using the provided parameters.
      *
      * @param pitCardJson pit card json.
+     * @param eventJson event json.
      * @param teamId Parameter 2.
      * @return A new instance of fragment PitCardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PitCardFragment newInstance(String pitCardJson, int teamId)
+    public static PitCardFragment newInstance(String pitCardJson, String eventJson, int teamId)
     {
         PitCardFragment fragment = new PitCardFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, pitCardJson);
-        args.putInt(ARG_PARAM2, teamId);
+        args.putString(ARG_PARAM2, eventJson);
+        args.putInt(ARG_PARAM3, teamId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,11 +74,15 @@ public class PitCardFragment extends MasterFragment
         if (getArguments() != null)
         {
             pitCardJson = getArguments().getString(ARG_PARAM1);
-            teamId = getArguments().getInt(ARG_PARAM2);
+            eventJson = getArguments().getString(ARG_PARAM2);
+            teamId = getArguments().getInt(ARG_PARAM3);
         }
 
         if(pitCardJson != null && !pitCardJson.equals(""))
             pitCard = new Gson().fromJson(pitCardJson, PitCard.class);
+
+        if(eventJson != null && !eventJson.equals(""))
+            event = new Gson().fromJson(eventJson, Event.class);
     }
     
     private AutoCompleteTextView teamNumberAutoCompleteTextView;
@@ -101,6 +108,7 @@ public class PitCardFragment extends MasterFragment
     private Button saveButton;
 
     private PitCard pitCard;
+    private Event event;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -147,7 +155,7 @@ public class PitCardFragment extends MasterFragment
                 {
 
                     int teamNumber = Integer.parseInt(teamNumberAutoCompleteTextView.getText().toString());
-                    String eventId = PreferenceManager.getDefaultSharedPreferences(context).getString(Constants.EVENT_ID_PREF, "");
+                    String eventId = (pitCard == null) ? event.getBlueAllianceId() : pitCard.getEventId();
 
                     String driveStyle = driveStyleEditText.getText().toString();
                     String robotWeight = robotWeightEditText.getText().toString();

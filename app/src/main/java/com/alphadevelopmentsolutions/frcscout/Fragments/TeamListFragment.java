@@ -14,8 +14,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.TeamListRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Classes.Event;
+import com.alphadevelopmentsolutions.frcscout.Classes.EventTeamList;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -32,11 +35,9 @@ public class TeamListFragment extends MasterFragment
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String eventJson;
 
     private OnFragmentInteractionListener mListener;
 
@@ -49,17 +50,15 @@ public class TeamListFragment extends MasterFragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param eventJson JSON for event object
      * @return A new instance of fragment TeamListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TeamListFragment newInstance(String param1, String param2)
+    public static TeamListFragment newInstance(String eventJson)
     {
         TeamListFragment fragment = new TeamListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM1, eventJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,12 +69,29 @@ public class TeamListFragment extends MasterFragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            eventJson = getArguments().getString(ARG_PARAM1);
         }
 
-        teams = database.getTeams();
-        searchedTeams = new ArrayList<>(teams);
+        loadingThread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                //parse the event object
+                if(eventJson != null && !eventJson.equals(""))
+                    event = new Gson().fromJson(eventJson, Event.class);
+
+                //load all the event team lists from the database
+                ArrayList<EventTeamList> eventTeamList = database.getEventTeamLists(event);
+
+
+                //load all the teams at this specific event
+                teams = database.getTeamsAtEvent(eventTeamList);
+                searchedTeams = new ArrayList<>(teams);
+            }
+        });
+
+        loadingThread.start();
     }
 
     private RecyclerView teamsRecyclerView;
@@ -84,6 +100,10 @@ public class TeamListFragment extends MasterFragment
 
     private ArrayList<Team> teams;
     private ArrayList<Team> searchedTeams;
+
+    private Thread loadingThread;
+
+    private Event event;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -98,9 +118,17 @@ public class TeamListFragment extends MasterFragment
         teamsRecyclerView = view.findViewById(R.id.TeamsRecyclerView);
         teamSearchEditText = view.findViewById(R.id.TeamSearchEditText);
 
-        final TeamListRecyclerViewAdapter teamListRecyclerViewAdapter = new TeamListRecyclerViewAdapter(searchedTeams, context);
+        try
+        {
+            loadingThread.join();
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
 
-        teamsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        final TeamListRecyclerViewAdapter teamListRecyclerViewAdapter = new TeamListRecyclerViewAdapter(searchedTeams, eventJson, context);
+
+        teamsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         teamsRecyclerView.setAdapter(teamListRecyclerViewAdapter);
 
         teamSearchEditText.addTextChangedListener(new TextWatcher()

@@ -16,29 +16,34 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/basic_card_margin">
+            android:layout_marginStart="@dimen/material_padding"
+            android:layout_marginTop="@dimen/basic_card_margin"
+            android:layout_marginEnd="@dimen/basic_card_margin"
+            android:layout_marginBottom="@dimen/material_padding">
 
             <TextView
                 android:id="@+id/EventTitleTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:text="@string/placeholder"
                 android:textColor="@color/textPrimary"
                 android:textSize="@dimen/textPrimary"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 android:id="@+id/EventLocationTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/placeholder"
                 android:textColor="@color/textSecondary"
                 android:textSize="@dimen/textSecondary"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/EventTitleTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/EventTitleTextView"/>
 
             <TextView
                 android:id="@+id/EventDateTextView"
@@ -51,18 +56,19 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/EventTitleTextView" />
 
-            <TextView
+            <Button
                 android:id="@+id/ViewEventButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginStart="1dp"
                 android:text="@string/view_event"
                 android:textAllCaps="true"
                 android:textColor="@color/textLink"
                 android:textSize="@dimen/textSecondary"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"/>
 
         </android.support.constraint.ConstraintLayout>
 

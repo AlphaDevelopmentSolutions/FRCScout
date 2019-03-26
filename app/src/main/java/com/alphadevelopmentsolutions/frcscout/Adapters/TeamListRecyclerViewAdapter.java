@@ -20,8 +20,6 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRecyclerViewAdapter.ViewHolder>
 {
 
@@ -29,10 +27,13 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
 
     private ArrayList<Team> teamList;
 
-    public TeamListRecyclerViewAdapter(ArrayList<Team> teamList, MainActivity context)
+    private String eventJson;
+
+    public TeamListRecyclerViewAdapter(ArrayList<Team> teamList, String eventJson, MainActivity context)
     {
         this.context = context;
         this.teamList = teamList;
+        this.eventJson = eventJson;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder
@@ -93,7 +94,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
             @Override
             public void onClick(View v)
             {
-               context.changeFragment(TeamFragment.newInstance(new Gson().toJson(teamList.get(viewHolder.getAdapterPosition()))), true);
+               context.changeFragment(TeamFragment.newInstance(new Gson().toJson(teamList.get(viewHolder.getAdapterPosition())), eventJson), true);
             }
         });
     }
