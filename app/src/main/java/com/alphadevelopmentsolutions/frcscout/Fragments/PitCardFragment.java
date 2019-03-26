@@ -109,6 +109,8 @@ public class PitCardFragment extends MasterFragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pit_card, container, false);
 
+        //gets rid of the shadow on the actionbar
+        context.dropActionBar();
 
         teamNumberAutoCompleteTextView = view.findViewById(R.id.TeamNumberTextInputEditText);
         scouterNameAutoCompleteTextView = view.findViewById(R.id.ScouterNameAutoCompleteTextView);

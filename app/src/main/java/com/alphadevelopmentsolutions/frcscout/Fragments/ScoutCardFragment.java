@@ -116,6 +116,9 @@ public class ScoutCardFragment extends MasterFragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_scout_card, container, false);
 
+        //gets rid of the shadow on the actionbar
+        context.dropActionBar();
+
         scoutCardTabLayout = view.findViewById(R.id.ScoutCardTabLayout);
         scoutCardViewPager = view.findViewById(R.id.ScoutCardViewPager);
 
@@ -309,36 +312,6 @@ public class ScoutCardFragment extends MasterFragment
                 }
             }
         });
-
-
-//        //scoutcard loaded, populate fields
-//        if(scoutCard != null)
-//        {
-//            teamNumberAutoCompleteTextView.setText(String.valueOf(scoutCard.getTeamId()));
-//            scouterNameAutoCompleteTextView.setText(scoutCard.getCompletedBy());
-//
-//            matchIdEditText.setText(String.valueOf(scoutCard.getMatchId()));
-//            allianceColorSpinner.setSelection(scoutCard.getAllianceColor() == AllianceColor.RED ? 0 : 1);
-//
-//            blueAllianceFinalScoreEditText.setText(String.valueOf(scoutCard.getBlueAllianceFinalScore()));
-//            redAllianceFinalScoreEditText.setText(String.valueOf(scoutCard.getRedAllianceFinalScore()));
-//
-//            autonomousExitHabitatTextView.setText(scoutCard.isAutonomousExitHabitat());
-//            autonomousHatchPanelsSecuredTextView.setText(String.valueOf(scoutCard.getAutonomousHatchPanelsSecured()));
-//            autonomousHatchPanelsSecuredAttemptsTextView.setText(String.valueOf(scoutCard.getAutonomousHatchPanelsSecured()));
-//            autonomousCargoStoredTextView.setText(String.valueOf(scoutCard.getAutonomousCargoStored()));
-//            autonomousCargoStoredAttemptsTextView.setText(String.valueOf(scoutCard.getAutonomousCargoStored()));
-//
-//            teleopHatchPanelsSecuredTextView.setText(String.valueOf(scoutCard.getTeleopHatchPanelsSecured()));
-//            teleopHatchPanelsSecuredAttemptsTextView.setText(String.valueOf(scoutCard.getTeleopHatchPanelsSecured()));
-//            teleopCargoStoredTextView.setText(String.valueOf(scoutCard.getTeleopCargoStored()));
-//            teleopCargoStoredAttemptsTextView.setText(String.valueOf(scoutCard.getTeleopCargoStored()));
-//
-//            endGameReturnedToHabitatTextView.setText(scoutCard.getEndGameReturnedToHabitat());
-//            endGameReturnedToHabitatAttemptsTextView.setText(scoutCard.getEndGameReturnedToHabitatAttempts());
-//
-//            matchNotesEditText.setText(scoutCard.getNotes());
-//        }
 
         return view;
     }

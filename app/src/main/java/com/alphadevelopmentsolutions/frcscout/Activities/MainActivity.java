@@ -574,7 +574,7 @@ public class MainActivity extends AppCompatActivity implements
         else getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE); //pop all backstacks
         fragmentTransaction.commit();
 
-        elevateActionBar();
+//        elevateActionBar();
 
     }
 }

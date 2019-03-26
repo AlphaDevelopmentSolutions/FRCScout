@@ -24,7 +24,7 @@
                 android:layout_width="@dimen/team_page_image_width"
                 android:layout_height="@dimen/team_page_image_height"
                 android:layout_marginTop="16dp"
-                android:src="@mipmap/ic_launcher"
+                android:src="@drawable/frc_logo"
                 app:civ_border_width="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

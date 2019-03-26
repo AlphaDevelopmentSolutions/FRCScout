@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
@@ -38,8 +40,8 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
         TextView teamNameTextView;
         TextView teamNumberTextView;
         TextView teamLocationTextView;
-        CircleImageView teamLogoImageView;
-        TextView viewTeamButton;
+        ImageView teamLogoImageView;
+        Button viewTeamButton;
 
         ViewHolder(@NonNull View view)
         {
@@ -78,8 +80,6 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
                     .load(Uri.fromFile(new File(team.getImageFileURI())))
                     .fit()
                     .centerCrop()
-                    .placeholder(R.drawable.frc_logo)
-                    .error(R.drawable.frc_logo)
                     .into(viewHolder.teamLogoImageView);
 
         else

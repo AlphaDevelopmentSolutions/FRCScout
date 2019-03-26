@@ -92,6 +92,9 @@ public class TeamListFragment extends MasterFragment
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_team_list, container, false);
 
+        //gets rid of the shadow on the actionbar
+        context.dropActionBar();
+
         teamsRecyclerView = view.findViewById(R.id.TeamsRecyclerView);
         teamSearchEditText = view.findViewById(R.id.TeamSearchEditText);
 

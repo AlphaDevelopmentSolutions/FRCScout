@@ -71,9 +71,6 @@ public class TeamFragment extends MasterFragment
             teamJson = getArguments().getString(ARG_PARAM1);
         }
 
-        //gets rid of the shadow on the actionbar
-        context.dropActionBar();
-
         loadTeamThread = new Thread(new Runnable()
         {
             @Override
@@ -115,6 +112,9 @@ public class TeamFragment extends MasterFragment
     {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_team, container, false);
+
+        //gets rid of the shadow on the actionbar
+        context.dropActionBar();
 
         //assign the vars to the views on the page
         teamNumberNameTextView = view.findViewById(R.id.TeamNumberNameTextView);

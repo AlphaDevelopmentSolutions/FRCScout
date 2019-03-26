@@ -56,7 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="@string/view"
+                android:text="@string/view_event"
                 android:textAllCaps="true"
                 android:textColor="@color/textLink"
                 android:textSize="@dimen/textSecondary"

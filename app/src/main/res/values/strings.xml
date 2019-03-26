@@ -4,7 +4,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="placeholder">\???</string>
-    <string name="view">view</string>
+    <string name="view_card">view card</string>
     <string name="team_logo">Team Logo</string>
     <string name="versus">VS</string>
     <string name="more_button">More Button</string>
@@ -47,7 +47,7 @@
     <string name="set_event">Set Event</string>
     <string name="alliance_color">AllianceColor</string>
     <string name="pit_card">Pit Card</string>
-    <string name="completed_by">Completed By</string>
+    <string name="completed_by">Completed By:\u0020</string>
     <string name="colon">:</string>
     <string name="drive_style">Drivetrain</string>
     <string name="hatch_panels_attempts">Hatch Panels Dropped</string>
@@ -88,4 +88,6 @@
     <string name="avg">AVG</string>
     <string name="max">MAX</string>
     <string name="hatches_dropped">Hatch Dropped</string>
+    <string name="view_event">view event</string>
+    <string name="view_team">view team</string>
 </resources>
