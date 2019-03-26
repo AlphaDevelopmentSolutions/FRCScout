@@ -30,6 +30,7 @@
     <string name="level_1">Level 1</string>
     <string name="level_2">Level 2</string>
     <string name="level_3">Level 3</string>
+    <string name="returned_to_habitat_colon">Returned To Habitat:\u0020</string>
     <string name="returned_to_habitat">Returned To Habitat</string>
     <string name="save">Save</string>
     <string name="number_placeholder">0</string>
@@ -52,7 +53,7 @@
     <string name="drive_style">Drivetrain</string>
     <string name="hatch_panels_attempts">Hatch Panels Dropped</string>
     <string name="cargo_stored_attempts">Cargo Dropped</string>
-    <string name="returned_to_habitat_attempts">Returned To Habitat Failed Attempt</string>
+    <string name="returned_to_habitat_attempts">Returned To Habitat Failed Attempt:\u0020</string>
     <string name="starting_position">Starting Position</string>
     <string name="starting_level">Starting Level</string>
     <string name="starting_piece">Starting Piece</string>
