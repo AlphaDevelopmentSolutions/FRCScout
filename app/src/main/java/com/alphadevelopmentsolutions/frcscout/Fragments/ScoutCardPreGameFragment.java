@@ -192,6 +192,11 @@ public class ScoutCardPreGameFragment extends MasterFragment {
 
     //region Getters
 
+    public int getTeamId()
+    {
+        return Integer.parseInt(teamNumberTextInputEditText.getText().toString());
+    }
+
     public String getScouterName()
     {
         return scouterNameAutoCompleteTextView.getText().toString();

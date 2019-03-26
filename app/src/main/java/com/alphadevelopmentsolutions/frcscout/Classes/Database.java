@@ -827,7 +827,10 @@ public class Database
             String whereArgs[] = {match.getId() + ""};
 
             //update
-            return db.update(Match.TABLE_NAME, contentValues, whereStatement, whereArgs);
+            if(db.update(Match.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return match.getId();
+            else
+                return -1;
         }
         //insert new Match in db
         else return db.insert(Match.TABLE_NAME, null, contentValues);
@@ -1137,7 +1140,10 @@ public class Database
             String whereArgs[] = {scoutCard.getId() + ""};
 
             //update
-            return db.update(ScoutCard.TABLE_NAME, contentValues, whereStatement, whereArgs);
+            if(db.update(ScoutCard.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return scoutCard.getId();
+            else
+                return -1;
         }
         //insert new scoutCard in db
         else return db.insert(ScoutCard.TABLE_NAME, null, contentValues);
@@ -1383,7 +1389,10 @@ public class Database
             String whereArgs[] = {pitCard.getId() + ""};
 
             //update
-            return db.update(PitCard.TABLE_NAME, contentValues, whereStatement, whereArgs);
+            if(db.update(PitCard.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return pitCard.getId();
+            else
+                return -1;
         }
         //insert new scoutCard in db
         else return db.insert(PitCard.TABLE_NAME, null, contentValues);
@@ -1533,7 +1542,10 @@ public class Database
             String whereArgs[] = {user.getId() + ""};
 
             //update
-            return db.update(User.TABLE_NAME, contentValues, whereStatement, whereArgs);
+            if(db.update(User.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return user.getId();
+            else
+                return -1;
         }
         //insert new object in db
         else return db.insert(User.TABLE_NAME, null, contentValues);
@@ -1703,7 +1715,10 @@ public class Database
             String whereArgs[] = {robotMedia.getId() + ""};
 
             //update
-            return db.update(RobotMedia.TABLE_NAME, contentValues, whereStatement, whereArgs);
+            if(db.update(RobotMedia.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return robotMedia.getId();
+            else
+                return -1;
         }
         //insert new robotMedia in db
         else return db.insert(RobotMedia.TABLE_NAME, null, contentValues);
@@ -1868,7 +1883,10 @@ public class Database
             String whereArgs[] = {eventTeamList.getId() + ""};
 
             //update
-            return db.update(EventTeamList.TABLE_NAME, contentValues, whereStatement, whereArgs);
+            if(db.update(EventTeamList.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return eventTeamList.getId();
+            else
+                return -1;
         }
         //insert new robotMedia in db
         else return db.insert(EventTeamList.TABLE_NAME, null, contentValues);
