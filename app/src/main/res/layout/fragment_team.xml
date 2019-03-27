@@ -15,15 +15,15 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:background="@color/primary"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/material_padding">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/TeamLogoImageView"
                 android:layout_width="@dimen/team_page_image_width"
                 android:layout_height="@dimen/team_page_image_height"
-                android:layout_marginTop="16dp"
                 android:src="@drawable/frc_logo"
                 app:civ_border_width="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
