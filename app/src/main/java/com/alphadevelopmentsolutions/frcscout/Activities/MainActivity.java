@@ -369,6 +369,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
 
                     //clear the saved data
+                    getDatabase().clearEventTeamList();
                     getDatabase().clearTeams();
                     getDatabase().clearScoutCards(false);
                     getDatabase().clearPitCards(false);

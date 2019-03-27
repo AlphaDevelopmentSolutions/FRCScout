@@ -136,6 +136,16 @@ public class Database
             db.execSQL("DELETE FROM " + tableName + ((clearDrafts) ? "" : " WHERE IsDraft = 0"));
     }
 
+    public void clearEventTeamList()
+    {
+        ArrayList<String> tableNames = new ArrayList<>();
+
+        tableNames.add(EventTeamList.TABLE_NAME);
+
+        for(String tableName : tableNames)
+            db.execSQL("DELETE FROM " + tableName);
+    }
+
     public void clearRobotMedia(boolean clearDrafts)
     {
         ArrayList<String> tableNames = new ArrayList<>();
