@@ -27,3 +27,8 @@ and fill it with the following information from the FRCScout Web Server:
         String WEB_URL = "http(s)://subdomain.domain.com/";
         String API_URL = WEB_URL + "api/api.php";
     }
+    
+## Contributing
+Contributions are welcomed and encouraged! 
+
+To contribute, fork this repo and create a pull request to merge into the release branch your issue is tagged under.
