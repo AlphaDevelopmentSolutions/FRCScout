@@ -215,10 +215,10 @@ public class TeamFragment extends MasterFragment
 
         TeamViewPagerAdapter teamViewPagerAdapter = new TeamViewPagerAdapter(getChildFragmentManager());
 
-        teamViewPagerAdapter.addFragment(ScoutCardListFragment.newInstance(teamJson, eventJson), "Scout Cards");
-        teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(teamJson, eventJson), "Pit Cards");
-        teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(teamJson), "Robot Images");
-        teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(team.getId(), eventJson), "Quick Stats");
+        teamViewPagerAdapter.addFragment(ScoutCardListFragment.newInstance(teamJson, eventJson), getString(R.string.scout_cards));
+        teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(teamJson, eventJson), getString(R.string.pit_cards));
+        teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(teamJson), getString(R.string.robot_images));
+        teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(team.getId(), eventJson), getString(R.string.quick_stats));
 
         teamViewPager.setAdapter(teamViewPagerAdapter);
         teamViewPager.setOffscreenPageLimit(5);

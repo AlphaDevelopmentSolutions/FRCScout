@@ -131,7 +131,6 @@ public class ScoutCardFragment extends MasterFragment
         scoutCardViewPager = view.findViewById(R.id.ScoutCardViewPager);
 
         final ScoutCardViewPagerAdapter scoutCardViewPagerAdapter = new ScoutCardViewPagerAdapter(getChildFragmentManager());
-        final Resources resources = context.getResources();
 
         //join back with the frag creation thread
         try
@@ -142,11 +141,11 @@ public class ScoutCardFragment extends MasterFragment
             e.printStackTrace();
         }
 
-        scoutCardViewPagerAdapter.addFragment(scoutCardPreGameFragment, resources.getString(R.string.pre_game));
-        scoutCardViewPagerAdapter.addFragment(scoutCardAutoFragment, resources.getString(R.string.autonomous));
-        scoutCardViewPagerAdapter.addFragment(scoutCardTeleopFragment, resources.getString(R.string.teleop));
-        scoutCardViewPagerAdapter.addFragment(scoutCardEndGameFragment, resources.getString(R.string.end_game));
-        scoutCardViewPagerAdapter.addFragment(scoutCardPostGameFragment, resources.getString(R.string.post_game));
+        scoutCardViewPagerAdapter.addFragment(scoutCardPreGameFragment, getString(R.string.pre_game));
+        scoutCardViewPagerAdapter.addFragment(scoutCardAutoFragment, getString(R.string.auto));
+        scoutCardViewPagerAdapter.addFragment(scoutCardTeleopFragment, getString(R.string.teleop));
+        scoutCardViewPagerAdapter.addFragment(scoutCardEndGameFragment, getString(R.string.end_game));
+        scoutCardViewPagerAdapter.addFragment(scoutCardPostGameFragment, getString(R.string.post_game));
 
 
         scoutCardViewPager.setAdapter(scoutCardViewPagerAdapter);
