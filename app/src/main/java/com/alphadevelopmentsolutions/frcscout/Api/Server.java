@@ -13,7 +13,6 @@ import com.alphadevelopmentsolutions.frcscout.Interfaces.Keys;
 
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -107,7 +106,7 @@ public abstract class Server extends Api
                             (twitterURL.equals("null") ? "" : "https://www.twitter.com/" + twitterURL),
                             (instagramURL.equals("null") ? "" : "https://www.instagram.com/" + instagramURL),
                             (youtubeURL.equals("null") ? "" : "https://www.youtube.com/" + youtubeURL),
-                            websiteUrl,
+                             websiteUrl,
                             ""));
                 }
 
@@ -240,6 +239,8 @@ public abstract class Server extends Api
         private final String API_FIELD_NAME_SCOUT_CARD_DRIVE_RATING = "DriveRating";
         private final String API_FIELD_NAME_SCOUT_CARD_NOTES = "Notes";
 
+        private final String API_FIELD_NAME_SCOUT_CARD_COMPLETED_DATE = "CompletedDate";
+
         private MainActivity context;
 
         public GetScoutCards(final MainActivity context, final Event event)
@@ -315,6 +316,8 @@ public abstract class Server extends Api
                     int driveRating = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_DRIVE_RATING);
                     String notes = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_NOTES);
 
+                    Date completedDate = simpleDateFormat.parse(scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_COMPLETED_DATE));
+
                     scoutCards.add(
                             new ScoutCard(
                                     -1,
@@ -352,7 +355,7 @@ public abstract class Server extends Api
                                     offenseRating,
                                     driveRating,
                                     notes,
-                                    new Date(0),
+                                    completedDate,
                                     false));
                 }
 
@@ -604,8 +607,6 @@ public abstract class Server extends Api
 
         private MainActivity context;
 
-        private SimpleDateFormat simpleDateFormat;
-
         public GetEvents(final MainActivity context)
         {
             super("", new HashMap<String, String>()
@@ -615,8 +616,6 @@ public abstract class Server extends Api
 
             this.context = context;
             events = new ArrayList<>();
-
-            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         }
 

@@ -965,7 +965,7 @@ public class Database
         int driveRating = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_DRIVE_RATING));
         String notes = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_NOTES));
         
-        Date completedDate = new Date(cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)));
+        Date completedDate = new Date(cursor.getLong(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)));
         boolean isDraft = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_IS_DRAFT)) == 1;
 
         return new ScoutCard(
