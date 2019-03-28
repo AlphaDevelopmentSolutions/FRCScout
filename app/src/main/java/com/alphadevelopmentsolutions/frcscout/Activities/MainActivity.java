@@ -89,6 +89,8 @@ public class MainActivity extends AppCompatActivity implements
     private Thread updateThread;
 
     private final int ACTION_BAR_ELEVATION = 11;
+    
+    private int progressDialogProgess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -331,13 +333,19 @@ public class MainActivity extends AppCompatActivity implements
         return false;
     }
 
+    /**
+     * Updates all app data from the server
+     * @param downloadMedia whether or not the app should download robot media from server
+     */
     public void updateApplicationData(final boolean downloadMedia)
     {
         //update all app data
         if(isOnline())
         {
-            final ProgressDialog progressDialog = new ProgressDialog(this);
+            final ProgressDialog progressDialog = new ProgressDialog(this, R.style.CustomProgressDialog);
             progressDialog.setTitle("Downloading data...");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setMax(100);
             progressDialog.show();
 
             updateThread = new Thread(new Runnable()
@@ -345,6 +353,19 @@ public class MainActivity extends AppCompatActivity implements
                 @Override
                 public void run()
                 {
+
+                    progressDialogProgess = 10;
+                    
+                    context.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            progressDialog.setTitle("Downloading users...");
+                            progressDialog.setProgress(progressDialogProgess);
+                        }
+                    });
+                    
 
                     //update users
                     Server.GetUsers getUsers = new Server.GetUsers(context);
@@ -357,6 +378,19 @@ public class MainActivity extends AppCompatActivity implements
                             user.save(getDatabase());
                         }
                     }
+
+                    progressDialogProgess = 20;
+
+                    context.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            progressDialog.setTitle("Downloading events...");
+                            progressDialog.setProgress(progressDialogProgess);
+                        }
+                    });
+
 
                     //update events
                     Server.GetEvents getEvents = new Server.GetEvents(context);
@@ -374,10 +408,23 @@ public class MainActivity extends AppCompatActivity implements
                     getDatabase().clearScoutCards(false);
                     getDatabase().clearPitCards(false);
 
+                    final int remainingPercent = (downloadMedia) ? 90 : 100 - progressDialogProgess; //max amount of percentage we have before we can't add anymore to the progress dialog
 
+                    final ArrayList<Event> events = getDatabase().getEvents();
 
-                    for (Event event : getDatabase().getEvents())
+                    //iterate through each event and get its data
+                    for (int i = 0; i < events.size(); i++)
                     {
+                        final Event event = events.get(i);
+
+                        context.runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                progressDialog.setTitle("Downloading teams at " + event.getBlueAllianceId());
+                            }
+                        });
 
                         //update teams
                         Server.GetTeamsAtEvent getTeamsAtEvent = new Server.GetTeamsAtEvent(context, event);
@@ -400,6 +447,15 @@ public class MainActivity extends AppCompatActivity implements
                             }
                         }
 
+                        context.runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                progressDialog.setTitle("Downloading scout card data");
+                            }
+                        });
+
                         //update scout cards
                         Server.GetScoutCards getScoutCards = new Server.GetScoutCards(context, event);
 
@@ -409,6 +465,16 @@ public class MainActivity extends AppCompatActivity implements
                                 scoutCard.save(getDatabase());
                         }
 
+                        context.runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                progressDialog.setTitle("Downloading teams at pit card data");
+
+                            }
+                        });
+
                         //update pit cards
                         Server.GetPitCards getPitCards = new Server.GetPitCards(context, event);
 
@@ -417,11 +483,33 @@ public class MainActivity extends AppCompatActivity implements
                             for (PitCard pitCard : getPitCards.getPitCards())
                                 pitCard.save(getDatabase());
                         }
+
+                        final int finalI = i;
+                        context.runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                progressDialog.setProgress((remainingPercent / (events.size() - finalI))  + progressDialogProgess);
+                            }
+                        });
                     }
+
 
                     //download robot media from server
                     if (downloadMedia)
                     {
+                        progressDialogProgess = 90;
+
+                        context.runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                progressDialog.setTitle("Download robot media...");
+                                progressDialog.setProgress(progressDialogProgess);
+                            }
+                        });
 
                         //Get the folder and purge all files
                         File mediaFolder = new File(Constants.MEDIA_DIRECTORY);
@@ -432,8 +520,17 @@ public class MainActivity extends AppCompatActivity implements
                         getDatabase().clearRobotMedia(false);
                         Server.GetRobotMedia getRobotMedia;
 
-                        for (Team team : getDatabase().getTeams())
+                        for (final Team team : getDatabase().getTeams())
                         {
+                            context.runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    progressDialog.setTitle("Downloading teams " + team.getId() + " robot media");
+                                }
+                            });
+
                             getRobotMedia = new Server.GetRobotMedia(context, team.getId());
 
                             if (getRobotMedia.execute())
@@ -448,6 +545,7 @@ public class MainActivity extends AppCompatActivity implements
                                 }
                             }
                         }
+
                     }
 
                     runOnUiThread(new Runnable()
@@ -455,7 +553,7 @@ public class MainActivity extends AppCompatActivity implements
                         @Override
                         public void run()
                         {
-                            progressDialog.cancel();
+                            progressDialog.dismiss();
                             changeFragment(new EventListFragment(), false);
                         }
                     });
