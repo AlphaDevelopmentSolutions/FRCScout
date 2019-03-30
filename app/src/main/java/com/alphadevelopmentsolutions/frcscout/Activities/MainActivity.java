@@ -429,6 +429,8 @@ public class MainActivity extends AppCompatActivity implements
                         if (mediaFolder.isDirectory())
                             for (File child : mediaFolder.listFiles())
                                 child.delete();
+                        else
+                            mediaFolder.mkdir();
 
                         getDatabase().clearRobotMedia(false);
                         Server.GetRobotMedia getRobotMedia;

@@ -88,8 +88,6 @@ public class RobotMediaFragment extends MasterFragment
 
     private Button robotMediaSaveButton;
 
-//    private Bitmap robotThumbBitmap;
-
     private File mediaFile;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -126,41 +124,23 @@ public class RobotMediaFragment extends MasterFragment
                 @Override
                 public void onClick(View v)
                 {
-//                    if(robotThumbBitmap != null)
-//                    {
-//                        try {
 
-                            //code for thumbnails
-//                            FileOutputStream fileOutputStream = new FileOutputStream(mediaFile);
-//                            robotThumbBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream); //write data to file
+                    robotMedia = new RobotMedia(
+                            -1,
+                            teamId,
+                            mediaFile.getAbsolutePath(),
+                            true);
 
-                            robotMedia = new RobotMedia(
-                                    -1,
-                                    teamId,
-                                    mediaFile.getAbsolutePath(),
-                                    true);
+                    robotMedia.save(database);
 
-                            robotMedia.save(database);
-
-                            context.getSupportFragmentManager().popBackStackImmediate();
-//                        }
-//                        catch (FileNotFoundException e)
-//                        {
-//                            e.printStackTrace();
-//                        }
-//                    }
+                    context.getSupportFragmentManager().popBackStackImmediate();
                 }
             });
 
             //launch intent to take picture if none supplied
-//            if(robotThumbBitmap == null)
-//            {
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(context, context.getPackageName() + ".provider", mediaFile));
-                startActivityForResult(takePictureIntent, Constants.ROBOT_MEDIA_REQUEST_CODE);
-
-//            }
-
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(context, context.getPackageName() + ".provider", mediaFile));
+            startActivityForResult(takePictureIntent, Constants.ROBOT_MEDIA_REQUEST_CODE);
 
         }
 
@@ -177,13 +157,8 @@ public class RobotMediaFragment extends MasterFragment
         {
             case Constants.ROBOT_MEDIA_REQUEST_CODE:
                 if(resultCode == Activity.RESULT_OK)
-                {
-                    //code for thumbnails
-//                    Bundle extras = data.getExtras();
-//                    robotThumbBitmap = (Bitmap) extras.get("data");
-
                     robotMediaImageView.setImageBitmap(BitmapFactory.decodeFile(mediaFile.getAbsolutePath()));
-                }
+
 
                 break;
         }

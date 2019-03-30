@@ -15,6 +15,7 @@ import com.alphadevelopmentsolutions.frcscout.Adapters.TeamViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeIcon;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -168,7 +169,19 @@ public class TeamFragment extends MasterFragment
             @Override
             public void onClick(View v)
             {
-                context.changeFragment(RobotMediaFragment.newInstance(null, team.getId()), true);
+
+                //Ensure the robot media folder exists
+                File mediaFolder = new File(Constants.MEDIA_DIRECTORY);
+                if(!mediaFolder.isDirectory())
+                {
+                    if (!mediaFolder.mkdir())
+                        context.showSnackbar(getString(R.string.mkdir_fail));
+                    else
+                        context.changeFragment(RobotMediaFragment.newInstance(null, team.getId()), true);
+
+                }
+                else
+                    context.changeFragment(RobotMediaFragment.newInstance(null, team.getId()), true);
             }
         });
 
