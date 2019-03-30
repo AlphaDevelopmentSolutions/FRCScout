@@ -214,7 +214,7 @@
             app:fab_colorPressed="@color/accent"
             app:fab_colorRipple="@color/ripple"
             app:fab_label="@string/add_robot_photo"
-            app:fab_size="mini" />
+            app:fab_size="mini"/>
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/AddPitCardFloatingActingButton"
@@ -227,7 +227,7 @@
             app:fab_colorPressed="@color/accent"
             app:fab_colorRipple="@color/ripple"
             app:fab_label="@string/add_pit_card"
-            app:fab_size="mini" />
+            app:fab_size="mini"/>
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/AddMatchFloatingActionButton"
@@ -240,7 +240,7 @@
             app:fab_colorPressed="@color/accent"
             app:fab_colorRipple="@color/ripple"
             app:fab_label="@string/add_scout_card"
-            app:fab_size="mini" />
+            app:fab_size="mini"/>
     </com.github.clans.fab.FloatingActionMenu>
 
 </android.support.constraint.ConstraintLayout>
