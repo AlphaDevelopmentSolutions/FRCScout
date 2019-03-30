@@ -9,7 +9,6 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 
@@ -68,8 +67,6 @@ public class ScoutCardPostGameFragment extends MasterFragment {
 
     private ScoutCard scoutCard;
 
-    private Button scoutCardSaveButton;
-
     private View.OnClickListener onSaveButtonClickListener;
 
     private TextInputEditText blueAllianceFinalScoreEditText;
@@ -86,8 +83,6 @@ public class ScoutCardPostGameFragment extends MasterFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_scout_card_post_game, container, false);
 
-        scoutCardSaveButton = view.findViewById(R.id.ScoutCardSaveButton);
-
         blueAllianceFinalScoreEditText = view.findViewById(R.id.BlueAllianceFinalScoreEditText);
         redAllianceFinalScoreEditText = view.findViewById(R.id.RedAllianceFinalScoreEditText);
         matchNotesEditText = view.findViewById(R.id.MatchNotesEditText);
@@ -95,10 +90,6 @@ public class ScoutCardPostGameFragment extends MasterFragment {
         defenseRatingBar = view.findViewById(R.id.DefenseRatingBar);
         offenseRatingBar = view.findViewById(R.id.OffenseRatingBar);
         driveRatingBar = view.findViewById(R.id.DriveRatingBar);
-
-        if(onSaveButtonClickListener != null)
-            scoutCardSaveButton.setOnClickListener(onSaveButtonClickListener);
-
 
         if(scoutCard != null)
         {
@@ -114,8 +105,6 @@ public class ScoutCardPostGameFragment extends MasterFragment {
             //only disable if card is not draft
             if(!scoutCard.isDraft())
             {
-                scoutCardSaveButton.setVisibility(View.GONE);
-
                 blueAllianceFinalScoreEditText.setFocusable(false);
                 blueAllianceFinalScoreEditText.setInputType(InputType.TYPE_NULL);
 
@@ -170,8 +159,6 @@ public class ScoutCardPostGameFragment extends MasterFragment {
     //endregion
 
 
-
-
     /**
      * Validates all fields on the form for saving
      * @return boolean if fields valid
@@ -193,15 +180,6 @@ public class ScoutCardPostGameFragment extends MasterFragment {
         }
 
         return true;
-    }
-
-    /**
-     * Stores the save button click listener used for calling upwards to the scoutcard frag
-     * @param onSaveButtonClickListener used to set scout card save button
-     */
-    public void setOnSaveButtonClickListener(View.OnClickListener onSaveButtonClickListener)
-    {
-        this.onSaveButtonClickListener = onSaveButtonClickListener;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

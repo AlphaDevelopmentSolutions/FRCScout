@@ -1,9 +1,9 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -69,7 +69,7 @@ public class ScoutCardFragment extends MasterFragment
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
+    public void onCreate(final Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
@@ -97,6 +97,7 @@ public class ScoutCardFragment extends MasterFragment
                 scoutCardTeleopFragment = ScoutCardTeleopFragment.newInstance(scoutCardJson);
                 scoutCardEndGameFragment = ScoutCardEndGameFragment.newInstance(scoutCardJson);
                 scoutCardPostGameFragment = ScoutCardPostGameFragment.newInstance(scoutCardJson);
+
             }
         });
         fragCreationThread.start();
@@ -113,9 +114,11 @@ public class ScoutCardFragment extends MasterFragment
     private ScoutCardAutoFragment scoutCardAutoFragment;
     private ScoutCardTeleopFragment scoutCardTeleopFragment;
     private ScoutCardEndGameFragment scoutCardEndGameFragment;
-    private  ScoutCardPostGameFragment scoutCardPostGameFragment;
+    private ScoutCardPostGameFragment scoutCardPostGameFragment;
 
     private Thread fragCreationThread;
+
+    private FloatingActionButton scoutCardSaveFloatingActionButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -130,8 +133,7 @@ public class ScoutCardFragment extends MasterFragment
         scoutCardTabLayout = view.findViewById(R.id.ScoutCardTabLayout);
         scoutCardViewPager = view.findViewById(R.id.ScoutCardViewPager);
 
-        final ScoutCardViewPagerAdapter scoutCardViewPagerAdapter = new ScoutCardViewPagerAdapter(getChildFragmentManager());
-        final Resources resources = context.getResources();
+        scoutCardSaveFloatingActionButton = view.findViewById(R.id.ScouCardSaveFloatingActionButton);
 
         //join back with the frag creation thread
         try
@@ -142,19 +144,19 @@ public class ScoutCardFragment extends MasterFragment
             e.printStackTrace();
         }
 
-        scoutCardViewPagerAdapter.addFragment(scoutCardPreGameFragment, resources.getString(R.string.pre_game));
-        scoutCardViewPagerAdapter.addFragment(scoutCardAutoFragment, resources.getString(R.string.autonomous));
-        scoutCardViewPagerAdapter.addFragment(scoutCardTeleopFragment, resources.getString(R.string.teleop));
-        scoutCardViewPagerAdapter.addFragment(scoutCardEndGameFragment, resources.getString(R.string.end_game));
-        scoutCardViewPagerAdapter.addFragment(scoutCardPostGameFragment, resources.getString(R.string.post_game));
+        ScoutCardViewPagerAdapter scoutCardViewPagerAdapter = new ScoutCardViewPagerAdapter(getChildFragmentManager());
 
+        scoutCardViewPagerAdapter.addFragment(scoutCardPreGameFragment, getString(R.string.pre_game));
+        scoutCardViewPagerAdapter.addFragment(scoutCardAutoFragment, getString(R.string.autonomous));
+        scoutCardViewPagerAdapter.addFragment(scoutCardTeleopFragment, getString(R.string.teleop));
+        scoutCardViewPagerAdapter.addFragment(scoutCardEndGameFragment, getString(R.string.end_game));
+        scoutCardViewPagerAdapter.addFragment(scoutCardPostGameFragment, getString(R.string.post_game));
 
         scoutCardViewPager.setAdapter(scoutCardViewPagerAdapter);
         scoutCardViewPager.setOffscreenPageLimit(5);
         scoutCardTabLayout.setupWithViewPager(scoutCardViewPager);
 
-
-        scoutCardPostGameFragment.setOnSaveButtonClickListener(new View.OnClickListener()
+        scoutCardSaveFloatingActionButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -162,10 +164,10 @@ public class ScoutCardFragment extends MasterFragment
 
                 //validates all fields are valid on the forms
                 if(scoutCardPreGameFragment.validateFields() &&
-                    scoutCardAutoFragment.validateFields() &&
-                    scoutCardTeleopFragment.validateFields() &&
-                    scoutCardEndGameFragment.validateFields() &&
-                    scoutCardPostGameFragment.validateFields())
+                        scoutCardAutoFragment.validateFields() &&
+                        scoutCardTeleopFragment.validateFields() &&
+                        scoutCardEndGameFragment.validateFields() &&
+                        scoutCardPostGameFragment.validateFields())
                 {
 
                     //pre game info
@@ -249,7 +251,7 @@ public class ScoutCardFragment extends MasterFragment
                         scoutCard.setNotes(notes);
                         scoutCard.setCompletedDate(completedDate);
                         scoutCard.setDraft(true);
-                        
+
                         //save the scout card
                         if (scoutCard.save(database) > 0)
                         {
@@ -262,8 +264,8 @@ public class ScoutCardFragment extends MasterFragment
                         }
 
 
-                    } 
-                    
+                    }
+
                     //saving a new scoutcard
                     else
                     {
@@ -274,11 +276,11 @@ public class ScoutCardFragment extends MasterFragment
                                 eventId,
                                 allianceColor,
                                 completedBy,
-        
+
                                 preGameStartingLevel,
                                 preGameStartingPosition,
                                 preGameStartingPiece,
-        
+
                                 autonomousExitHabitat,
                                 autonomousHatchPanelsPickedUp,
                                 autonomousHatchPanelsSecuredAttempts,
@@ -286,17 +288,17 @@ public class ScoutCardFragment extends MasterFragment
                                 autonomousCargoPickedUp,
                                 autonomousCargoStoredAttempts,
                                 autonomousCargoStored,
-        
+
                                 teleopHatchPanelsPickedUp,
                                 teleopHatchPanelsSecuredAttempts,
                                 teleopHatchPanelsSecured,
                                 teleopCargoPickedUp,
                                 teleopCargoStoredAttempts,
                                 teleopCargoStored,
-        
+
                                 endGameReturnedToHabitat,
                                 endGameReturnedToHabitatAttempts,
-        
+
                                 blueAllianceFinalScore,
                                 redAllianceFinalScore,
                                 defenseRating,
@@ -320,6 +322,10 @@ public class ScoutCardFragment extends MasterFragment
                 }
             }
         });
+
+        if(scoutCard != null)
+            if(!scoutCard.isDraft())
+                scoutCardSaveFloatingActionButton.hide();
 
         return view;
     }

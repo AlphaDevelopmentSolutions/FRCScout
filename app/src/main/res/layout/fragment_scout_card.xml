@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
@@ -13,15 +13,28 @@
         android:layout_height="wrap_content"
         android:background="@color/primary"
         android:elevation="@dimen/toolbar_elevation"
-        app:tabTextColor="@android:color/white"
-        tools:layout_editor_absoluteY="200dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tabTextColor="@android:color/white"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/ScoutCardViewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ScoutCardTabLayout"
+        tools:layout_editor_absoluteX="0dp">
 
     </android.support.v4.view.ViewPager>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/ScouCardSaveFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_save_white_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-</LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

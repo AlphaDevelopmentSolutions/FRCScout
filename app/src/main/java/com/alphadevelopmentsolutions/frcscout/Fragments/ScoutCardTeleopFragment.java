@@ -15,12 +15,7 @@ import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
 
 /**
- * A simp//        //load the scoutcard if passed
-//        if(scoutCardId > 0)
-//        {
-//            scoutCard = new ScoutCard(scoutCardId);
-//            scoutCard.load(database);
-//        }le {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link ScoutCardTeleopFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
@@ -36,7 +31,7 @@ public class ScoutCardTeleopFragment extends MasterFragment {
     private String scoutCardJson;
 
     private OnFragmentInteractionListener mListener;
-
+    
     public ScoutCardTeleopFragment() {
         // Required empty public constructor
     }
