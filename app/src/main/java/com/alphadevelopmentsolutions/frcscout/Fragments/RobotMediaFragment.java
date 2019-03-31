@@ -23,6 +23,7 @@ import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -144,13 +145,25 @@ public class RobotMediaFragment extends MasterFragment
 
                     robotMedia.save(database);
 
-                    try (FileOutputStream out = new FileOutputStream(mediaFile.getAbsolutePath()))
+                    //save update the file on the phone with a compressed jpeg image
+                    FileOutputStream out = null;
+                    try
                     {
-                        imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-                    }
-                    catch (IOException e) {
+                        out = new FileOutputStream(mediaFile);
+
+
+                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 15, out);
+                    out.flush();
+                    out.close();
+
+                    } catch (FileNotFoundException e)
+                    {
+                        e.printStackTrace();
+                    } catch (IOException e)
+                    {
                         e.printStackTrace();
                     }
+
 
                     context.getSupportFragmentManager().popBackStackImmediate();
                 }
