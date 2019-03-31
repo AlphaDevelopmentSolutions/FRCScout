@@ -10,11 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Adapters.PitCardsRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Classes.Database;
+import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,7 +24,7 @@ import com.alphadevelopmentsolutions.frcscout.R;
  * Use the {@link PitCardListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PitCardListFragment extends Fragment
+public class PitCardListFragment extends MasterFragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,7 +32,8 @@ public class PitCardListFragment extends Fragment
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private int teamId;
+    private String teamJson;
+    private String eventJson;
 
     private OnFragmentInteractionListener mListener;
 
@@ -45,15 +46,17 @@ public class PitCardListFragment extends Fragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param teamId Parameter 1.
+     * @param teamJson team json.
+     * @param eventJson event json.
      * @return A new instance of fragment PitCardListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PitCardListFragment newInstance(int teamId)
+    public static PitCardListFragment newInstance(String teamJson, String eventJson)
     {
         PitCardListFragment fragment = new PitCardListFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, teamId);
+        args.putString(ARG_PARAM1, teamJson);
+        args.putString(ARG_PARAM2, eventJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,11 +67,18 @@ public class PitCardListFragment extends Fragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            teamId = getArguments().getInt(ARG_PARAM1);
+            teamJson = getArguments().getString(ARG_PARAM1);
+            eventJson = getArguments().getString(ARG_PARAM2);
         }
+
+        team = new Gson().fromJson(teamJson, Team.class);
+        event = new Gson().fromJson(eventJson, Event.class);
     }
 
     private RecyclerView pitCardListRecyclerView;
+
+    private Team team;
+    private Event event;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,15 +87,9 @@ public class PitCardListFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pit_card_list, container, false);
 
-        MainActivity context = (MainActivity) getActivity();
-        Database database = context.getDatabase();
-
-        Team team = new Team(teamId);
-        team.load(database);
-
         pitCardListRecyclerView = view.findViewById(R.id.PitCardListRecyclerView);
 
-        PitCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new PitCardsRecyclerViewAdapter(team, database.getPitCards(team, false), context);
+        PitCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new PitCardsRecyclerViewAdapter(team, eventJson, database.getPitCards(team, event,false), context);
         pitCardListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         pitCardListRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
 

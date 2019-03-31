@@ -173,10 +173,12 @@ public class Match
      * @param allianceColor color of the alliance to check win status
      * @return boolean if team won
      */
-    public boolean teamWon(AllianceColor allianceColor)
+    public boolean teamWon(String allianceColor)
     {
-        if(allianceColor == AllianceColor.RED) return getRedAllianceScore() > getBlueAllianceScore();
-        else return getBlueAllianceScore() > getRedAllianceScore();
+        if(allianceColor.equals(AllianceColor.RED.name()))
+            return getRedAllianceScore() > getBlueAllianceScore();
+        else
+            return getBlueAllianceScore() > getRedAllianceScore();
     }
 
     /**
@@ -184,10 +186,12 @@ public class Match
      * @param allianceColor color of the alliance to check lose status
      * @return boolean if team lost
      */
-    public boolean teamLost(AllianceColor allianceColor)
+    public boolean teamLost(String allianceColor)
     {
-        if(allianceColor == AllianceColor.RED) return getRedAllianceScore() < getBlueAllianceScore();
-        else return getBlueAllianceScore() < getRedAllianceScore();
+        if(allianceColor.equals(AllianceColor.RED.name()))
+            return getRedAllianceScore() < getBlueAllianceScore();
+        else
+            return getBlueAllianceScore() < getRedAllianceScore();
     }
 
     /**
@@ -204,11 +208,14 @@ public class Match
      * @param allianceColor to check
      * @return outcome of the game for a allianceColor
      */
-    public String getOutcomeStatus(AllianceColor allianceColor)
+    public String getOutcomeStatus(String allianceColor)
     {
-        if(teamWon(allianceColor)) return GameScoreStatus.WIN;
-        else if(teamLost(allianceColor)) return GameScoreStatus.LOSE;
-        else return GameScoreStatus.TIE;
+        if(teamWon(allianceColor))
+            return GameScoreStatus.WIN.name();
+        else if(teamLost(allianceColor))
+            return GameScoreStatus.LOSE.name();
+        else
+            return GameScoreStatus.TIE.name();
     }
 
     /**

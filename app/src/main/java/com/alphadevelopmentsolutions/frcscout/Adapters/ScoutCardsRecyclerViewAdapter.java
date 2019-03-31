@@ -1,12 +1,11 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters;
 
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +15,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -28,16 +28,19 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
 
     private MainActivity context;
 
+    private String eventJson;
+
     public ScoutCardsRecyclerViewAdapter(ArrayList<Match> matchList, MainActivity context)
     {
         this.context = context;
     }
 
-    public ScoutCardsRecyclerViewAdapter(Team team, ArrayList<ScoutCard> scoutCards, MainActivity context)
+    public ScoutCardsRecyclerViewAdapter(Team team, String eventJson, ArrayList<ScoutCard> scoutCards, MainActivity context)
     {
         this.team = team;
         this.scoutCards = scoutCards;
         this.context = context;
+        this.eventJson = eventJson;
 
     }
 
@@ -48,7 +51,7 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
         TextView blueAllianceScoreTextView;
         TextView redAllianceScoreTextView;
         ImageView matchOptionsImageView;
-        TextView viewMatchButton;
+        Button viewMatchButton;
 
         ViewHolder(@NonNull View view)
         {
@@ -78,7 +81,6 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
 
         ScoutCard scoutCard = scoutCards.get(viewHolder.getAdapterPosition());
 
-
         //set scores
         viewHolder.blueAllianceScoreTextView.setText(String.valueOf(scoutCard.getBlueAllianceFinalScore()));
         viewHolder.redAllianceScoreTextView.setText(String.valueOf(scoutCard.getRedAllianceFinalScore()));
@@ -95,14 +97,14 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
         }); //TODO: options menu
 
 
-        //Sends you to the match fragment
+        //Sends you to the scout card fragment
         viewHolder.viewMatchButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 //swap fragments
-               context.changeFragment(ScoutCardFragment.newInstance(scoutCards.get(viewHolder.getAdapterPosition()).getId(), -1), true);
+               context.changeFragment(ScoutCardFragment.newInstance(new Gson().toJson(scoutCards.get(viewHolder.getAdapterPosition())), eventJson, -1), true);
             }
         });
     }

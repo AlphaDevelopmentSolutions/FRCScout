@@ -10,11 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Adapters.ScoutCardsRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Classes.Database;
+import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,7 +24,7 @@ import com.alphadevelopmentsolutions.frcscout.R;
  * Use the {@link ScoutCardListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ScoutCardListFragment extends Fragment
+public class ScoutCardListFragment extends MasterFragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,7 +32,8 @@ public class ScoutCardListFragment extends Fragment
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private int teamId;
+    private String teamJson;
+    private String eventJson;
 
     private OnFragmentInteractionListener mListener;
 
@@ -45,15 +46,16 @@ public class ScoutCardListFragment extends Fragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param teamId Parameter 1.
+     * @param teamJson json of the team.
      * @return A new instance of fragment ScoutCardListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ScoutCardListFragment newInstance(int teamId)
+    public static ScoutCardListFragment newInstance(String teamJson, String eventJson)
     {
         ScoutCardListFragment fragment = new ScoutCardListFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, teamId);
+        args.putString(ARG_PARAM1, teamJson);
+        args.putString(ARG_PARAM2, eventJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,11 +66,18 @@ public class ScoutCardListFragment extends Fragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            teamId = getArguments().getInt(ARG_PARAM1);
+            teamJson = getArguments().getString(ARG_PARAM1);
+            eventJson = getArguments().getString(ARG_PARAM2);
         }
+
+        team = new Gson().fromJson(teamJson, Team.class);
+        event = new Gson().fromJson(eventJson, Event.class);
     }
 
     private RecyclerView scoutCardListRecyclerView;
+
+    private Team team;
+    private Event event;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,15 +86,9 @@ public class ScoutCardListFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_scout_card_list, container, false);
 
-        MainActivity context = (MainActivity) getActivity();
-        Database database = context.getDatabase();
-
-        Team team = new Team(teamId);
-        team.load(database);
-
         scoutCardListRecyclerView = view.findViewById(R.id.ScoutCardListRecyclerView);
 
-        ScoutCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new ScoutCardsRecyclerViewAdapter(team, database.getScoutCards(team, false), context);
+        ScoutCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new ScoutCardsRecyclerViewAdapter(team, eventJson, database.getScoutCards(team, event, false), context);
         scoutCardListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         scoutCardListRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
 

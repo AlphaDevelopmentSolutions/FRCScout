@@ -1,46 +1,62 @@
 package com.alphadevelopmentsolutions.frcscout.Activities;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.preference.PreferenceManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
-import com.alphadevelopmentsolutions.frcscout.Api.ScoutingWiredcats;
+import com.alphadevelopmentsolutions.frcscout.Api.Server;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
+import com.alphadevelopmentsolutions.frcscout.Classes.EventTeamList;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
-import com.alphadevelopmentsolutions.frcscout.Fragments.ChangeEventFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.LoginFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardListFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.QuickStatsFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.RobotMediaFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.RobotMediaListFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardAutoFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardEndGameFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardListFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardPostGameFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardPreGameFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardTeleopFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
-import com.alphadevelopmentsolutions.frcscout.Interfaces.ApiParams;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements
@@ -54,7 +70,15 @@ public class MainActivity extends AppCompatActivity implements
         PitCardFragment.OnFragmentInteractionListener,
         ScoutCardListFragment.OnFragmentInteractionListener,
         PitCardListFragment.OnFragmentInteractionListener,
-        ChangeEventFragment.OnFragmentInteractionListener
+        ScoutCardPreGameFragment.OnFragmentInteractionListener,
+        ScoutCardAutoFragment.OnFragmentInteractionListener,
+        ScoutCardTeleopFragment.OnFragmentInteractionListener,
+        ScoutCardEndGameFragment.OnFragmentInteractionListener,
+        ScoutCardPostGameFragment.OnFragmentInteractionListener,
+        RobotMediaFragment.OnFragmentInteractionListener,
+        RobotMediaListFragment.OnFragmentInteractionListener,
+        QuickStatsFragment.OnFragmentInteractionListener,
+        EventListFragment.OnFragmentInteractionListener
 {
 
     private Database database;
@@ -65,10 +89,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private Thread updateThread;
 
-    private SearchView searchView;
-
-    private Menu menu;
-
     private final int ACTION_BAR_ELEVATION = 11;
 
     @Override
@@ -76,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         //open the database as soon as the app starts
         database = new Database(this);
@@ -86,24 +105,83 @@ public class MainActivity extends AppCompatActivity implements
 
         context = this;
 
-        if(savedInstanceState == null)
+        //we need write permission before anything
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
-            if (getDatabase().getTeams().size() == 0 && isOnline())
-                updateApplicationData(PreferenceManager.getDefaultSharedPreferences(this).getString(ApiParams.EVENT_ID, ""));
-
-            if (updateThread != null)
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 5885);
+            }
+            else
             {
-                try
+
+                if (savedInstanceState == null)
                 {
-                    updateThread.join();
-                } catch (InterruptedException e)
-                {
-                    e.printStackTrace();
+                    if (getDatabase().getTeams().size() == 0 && isOnline())
+                        updateApplicationData(false);
+
+                    if (updateThread != null)
+                    {
+                        try
+                        {
+                            updateThread.join();
+                        } catch (InterruptedException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    changeFragment(new EventListFragment(), false);
                 }
             }
-
-            changeFragment(new TeamListFragment(), false);
         }
+        else
+        {
+
+            if (savedInstanceState == null)
+            {
+                if (getDatabase().getTeams().size() == 0 && isOnline())
+                    updateApplicationData(false);
+
+                if (updateThread != null)
+                {
+                    try
+                    {
+                        updateThread.join();
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+
+                changeFragment(new TeamListFragment(), false);
+            }
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 5885);
+            }
+            else
+            {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public void dropActionBar()
@@ -133,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle(R.string.upload_scout_cards)
                             .setMessage(R.string.upload_scout_cards_warning)
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which)
                                 {
                                     final ProgressDialog progressDialog = new ProgressDialog(context);
@@ -153,30 +231,43 @@ public class MainActivity extends AppCompatActivity implements
 
                                             boolean success = true;
 
-                                            for (Team team : teams)
+                                            for(Event event : getDatabase().getEvents())
                                             {
-                                                for (ScoutCard scoutCard : getDatabase().getScoutCards(team, true))
-                                                {
-                                                    ScoutingWiredcats.SubmitScoutCard submitScoutCard = new ScoutingWiredcats.SubmitScoutCard(context, scoutCard);
-                                                    if(submitScoutCard.execute())
-                                                    {
-                                                        scoutCard.setDraft(false);
-                                                        scoutCard.save(getDatabase());
-                                                    }
-                                                    else
-                                                        success = false;
-                                                }
 
-                                                for (PitCard pitCard : getDatabase().getPitCards(team, true))
+                                                for (Team team : teams)
                                                 {
-                                                    ScoutingWiredcats.SubmitPitCard submitScoutCard = new ScoutingWiredcats.SubmitPitCard(context, pitCard);
-                                                    if(submitScoutCard.execute())
+                                                    for (ScoutCard scoutCard : getDatabase().getScoutCards(team, event,true))
                                                     {
-                                                        pitCard.setDraft(false);
-                                                        pitCard.save(getDatabase());
+                                                        Server.SubmitScoutCard submitScoutCard = new Server.SubmitScoutCard(context, scoutCard);
+                                                        if (submitScoutCard.execute())
+                                                        {
+                                                            scoutCard.setDraft(false);
+                                                            scoutCard.save(getDatabase());
+                                                        } else
+                                                            success = false;
                                                     }
-                                                    else
-                                                        success = false;
+
+                                                    for (PitCard pitCard : getDatabase().getPitCards(team, event, true))
+                                                    {
+                                                        Server.SubmitPitCard submitScoutCard = new Server.SubmitPitCard(context, pitCard);
+                                                        if (submitScoutCard.execute())
+                                                        {
+                                                            pitCard.setDraft(false);
+                                                            pitCard.save(getDatabase());
+                                                        } else
+                                                            success = false;
+                                                    }
+
+                                                    for (RobotMedia robotMedia : getDatabase().getRobotMedia(team, true))
+                                                    {
+                                                        Server.SubmitRobotMedia submitRobotMedia = new Server.SubmitRobotMedia(context, robotMedia);
+                                                        if (submitRobotMedia.execute())
+                                                        {
+                                                            robotMedia.setDraft(false);
+                                                            robotMedia.save(getDatabase());
+                                                        } else
+                                                            success = false;
+                                                    }
                                                 }
 
                                             }
@@ -200,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements
 
                                 }
                             })
-                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                 }
                             })
@@ -215,60 +306,35 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
 
             case R.id.RefreshDataItem:
-                updateApplicationData(PreferenceManager.getDefaultSharedPreferences(this).getString(ApiParams.EVENT_ID, ""));
-                return true;
 
-            case R.id.ChangeEventItem:
-                changeFragment(new ChangeEventFragment(), true);
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(R.string.download_media)
+                        .setMessage(R.string.download_media_desc)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                updateApplicationData(true);
+                            }
+                        })
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                updateApplicationData(false);
+
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
                 return true;
         }
 
         return false;
     }
 
-    public void updateApplicationData(final String event)
+    public void updateApplicationData(final boolean downloadMedia)
     {
-        if(event.equals("") && isOnline())
-        {
-            Thread eventThread = new Thread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    //update events
-                    ScoutingWiredcats.GetEvents getEvents = new ScoutingWiredcats.GetEvents(context);
-
-                    if(getEvents.execute())
-                    {
-                        getDatabase().clearEvents();
-                        for(Event event : getEvents.getEvents())
-                            event.save(getDatabase());
-                    }
-
-                    runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            changeFragment(new ChangeEventFragment(), false);
-                        }
-                    });
-                }
-            });
-
-            eventThread.start();
-
-            try
-            {
-                eventThread.join();
-            } catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-
-            return;
-        }
-
+        //update all app data
         if(isOnline())
         {
             final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -280,49 +346,9 @@ public class MainActivity extends AppCompatActivity implements
                 @Override
                 public void run()
                 {
-                    //update teams
-                    ScoutingWiredcats.GetTeamsAtEvent getTeamsAtEvent = new ScoutingWiredcats.GetTeamsAtEvent(context, event);
-
-                    //get teams at current event
-                    if (getTeamsAtEvent.execute())
-                    {
-                        ArrayList<Team> databaseTeams = getDatabase().getTeams();
-                        ArrayList<Integer> databaseTeamIds = new ArrayList<>();
-                        ArrayList<Team> teams = getTeamsAtEvent.getTeams();
-                        ArrayList<Integer> teamIds = new ArrayList<>();
-
-                        ArrayList<Integer> removeTeamIds = new ArrayList<>();
-
-                        for(Team team : databaseTeams)
-                        {
-                            databaseTeamIds.add(team.getId());
-                        }
-
-                        for(Team team : teams)
-                        {
-                            teamIds.add(team.getId());
-                        }
-
-                        for(int teamId : databaseTeamIds)
-                        {
-                            if(!teamIds.contains(teamId))
-                                removeTeamIds.add(teamId);
-                        }
-
-                        for(int teamId : removeTeamIds)
-                        {
-                            Team team = new Team(teamId);
-                            if(team.load(getDatabase()))
-                                team.delete(getDatabase());
-                        }
-
-                        for (Team team : teams)
-                            team.save(getDatabase());
-
-                    }
 
                     //update users
-                    ScoutingWiredcats.GetUsers getUsers = new ScoutingWiredcats.GetUsers(context);
+                    Server.GetUsers getUsers = new Server.GetUsers(context);
 
                     if (getUsers.execute())
                     {
@@ -334,33 +360,97 @@ public class MainActivity extends AppCompatActivity implements
                     }
 
                     //update events
-                    ScoutingWiredcats.GetEvents getEvents = new ScoutingWiredcats.GetEvents(context);
+                    Server.GetEvents getEvents = new Server.GetEvents(context);
 
-                    if(getEvents.execute())
+                    if (getEvents.execute())
                     {
                         getDatabase().clearEvents();
-                        for(Event event : getEvents.getEvents())
+                        for (Event event : getEvents.getEvents())
                             event.save(getDatabase());
                     }
 
-                    //update scout cards
-                    ScoutingWiredcats.GetScoutCards getScoutCards = new ScoutingWiredcats.GetScoutCards(context, event);
+                    //clear the saved data
+                    getDatabase().clearEventTeamList();
+                    getDatabase().clearTeams();
+                    getDatabase().clearScoutCards(false);
+                    getDatabase().clearPitCards(false);
 
-                    if(getScoutCards.execute())
+
+
+                    for (Event event : getDatabase().getEvents())
                     {
-                        getDatabase().clearScoutCards(false);
-                        for(ScoutCard scoutCard : getScoutCards.getScoutCards())
-                            scoutCard.save(getDatabase());
+
+                        //update teams
+                        Server.GetTeamsAtEvent getTeamsAtEvent = new Server.GetTeamsAtEvent(context, event);
+
+                        //get teams at current event
+                        if (getTeamsAtEvent.execute())
+                        {
+                            //get the teams from API
+                            ArrayList<Team> teams = getTeamsAtEvent.getTeams();
+
+                            for (Team team : teams)
+                            {
+                                //check if the team exists in the database
+                                //if not, save it
+                                if (!team.load(getDatabase()))
+                                    team.save(getDatabase());
+
+                                //save a new eventteamlist to the database
+                                (new EventTeamList(-1, team.getId(), event.getBlueAllianceId())).save(getDatabase());
+                            }
+                        }
+
+                        //update scout cards
+                        Server.GetScoutCards getScoutCards = new Server.GetScoutCards(context, event);
+
+                        if (getScoutCards.execute())
+                        {
+                            for (ScoutCard scoutCard : getScoutCards.getScoutCards())
+                                scoutCard.save(getDatabase());
+                        }
+
+                        //update pit cards
+                        Server.GetPitCards getPitCards = new Server.GetPitCards(context, event);
+
+                        if (getPitCards.execute())
+                        {
+                            for (PitCard pitCard : getPitCards.getPitCards())
+                                pitCard.save(getDatabase());
+                        }
                     }
 
-                    //update pit cards
-                    ScoutingWiredcats.GetPitCards getPitCards = new ScoutingWiredcats.GetPitCards(context, event);
-
-                    if(getPitCards.execute())
+                    //download robot media from server
+                    if (downloadMedia)
                     {
-                        getDatabase().clearPitCards(false);
-                        for(PitCard pitCard : getPitCards.getPitCards())
-                            pitCard.save(getDatabase());
+
+                        //Get the folder and purge all files
+                        File mediaFolder = new File(Constants.MEDIA_DIRECTORY);
+                        if (mediaFolder.isDirectory())
+                            for (File child : mediaFolder.listFiles())
+                                child.delete();
+                        else
+                            mediaFolder.mkdir();
+
+                        getDatabase().clearRobotMedia(false);
+                        Server.GetRobotMedia getRobotMedia;
+
+                        for (Team team : getDatabase().getTeams())
+                        {
+                            getRobotMedia = new Server.GetRobotMedia(context, team.getId());
+
+                            if (getRobotMedia.execute())
+                            {
+                                for (RobotMedia robotMedia : getRobotMedia.getRobotMedia())
+                                {
+                                    robotMedia.save(getDatabase());
+
+                                    //save the image for the team
+                                    team.setImageFileURI(robotMedia.getFileUri());
+                                    team.save(getDatabase());
+                                }
+                            }
+                        }
                     }
 
                     runOnUiThread(new Runnable()
@@ -369,10 +459,9 @@ public class MainActivity extends AppCompatActivity implements
                         public void run()
                         {
                             progressDialog.cancel();
-                            changeFragment(new TeamListFragment(), false);
+                            changeFragment(new EventListFragment(), false);
                         }
                     });
-
                 }
             });
 
@@ -407,7 +496,12 @@ public class MainActivity extends AppCompatActivity implements
      */
     public Database getDatabase()
     {
-        if(!database.isOpen()) database.open();
+        if(database == null)
+            database = new Database(this);
+
+        if(!database.isOpen())
+            database.open();
+
         return database;
     }
 
@@ -424,7 +518,13 @@ public class MainActivity extends AppCompatActivity implements
         else getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE); //pop all backstacks
         fragmentTransaction.commit();
 
-        elevateActionBar();
+//        elevateActionBar();
 
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
     }
 }

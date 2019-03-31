@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper
 {
 
-    private static final int DB_VERSION = 5;
+    private static final int DB_VERSION = 7;
     private static final String DB_NAME = "FRCScout.db";
 
 
@@ -21,6 +21,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     Event.COLUMN_NAME_COUNTRY + " TEXT," +
                     Event.COLUMN_NAME_START_DATE + " INTEGER," +
                     Event.COLUMN_NAME_END_DATE + " INTEGER)";
+
+    private final String CREATE_EVENT_TEAM_LIST_TABLE =
+            "CREATE TABLE " + EventTeamList.TABLE_NAME + " (" +
+                    EventTeamList.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    EventTeamList.COLUMN_NAME_TEAM_ID + " INTEGER," +
+                    EventTeamList.COLUMN_NAME_EVENT_ID + " TEXT)";
 
     private final String CREATE_TEAMS_TABLE =
             "CREATE TABLE " + Team.TABLE_NAME + " (" +
@@ -42,6 +48,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     Robot.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
                     Robot.COLUMN_NAME_NAME + " TEXT," +
                     Robot.COLUMN_NAME_TEAM_NUMBER + " INTEGER)";
+
+    private final String CREATE_ROBOT_MEDIA_TABLE =
+            "CREATE TABLE " + RobotMedia.TABLE_NAME +" (" +
+                    RobotMedia.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    RobotMedia.COLUMN_NAME_TEAM_ID + " INTEGER," +
+                    RobotMedia.COLUMN_NAME_FILE_URI + " TEXT," +
+                    RobotMedia.COLUMN_NAME_IS_DRAFT + " INTEGER)";
 
     private final String CREATE_MATCHES_TABLE =
             "CREATE TABLE " + Match.TABLE_NAME +" (" +
@@ -65,26 +78,41 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private final String CREATE_SCOUT_CARDS_TABLE =
             "CREATE TABLE " + ScoutCard.TABLE_NAME +" (" +
                     ScoutCard.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                    ScoutCard.COLUMNS_NAME_MATCH_ID + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_MATCH_ID + " INTEGER," +
                     ScoutCard.COLUMN_NAME_TEAM_ID + " INTEGER," +
                     ScoutCard.COLUMN_NAME_EVENT_ID + " TEXT," +
                     ScoutCard.COLUMN_NAME_ALLIANCE_COLOR + " TEXT," +
+                    ScoutCard.COLUMN_NAME_COMPLETED_BY + " TEXT," +
+                    
+                    ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_LEVEL + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_POSITION + " TEXT," +
+                    ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_PIECE + " TEXT," +
+
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_PICKED_UP + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_PICKED_UP + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED + " INTEGER," +
+
+                    ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_PICKED_UP + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_TELEOP_CARGO_PICKED_UP + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED + " INTEGER," +
+                    
+                    ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS + " INTEGER," +
+
                     ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE + " INTEGER," +
                     ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT + " TEXT," +
-                    ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT + " TEXT," +
-                    ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS + " TEXT," +
+                    ScoutCard.COLUMN_NAME_DEFENSE_RATING + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_OFFENSE_RATING + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_DRIVE_RATING + " INTEGER," +
                     ScoutCard.COLUMN_NAME_NOTES + " TEXT," +
-                    ScoutCard.COLUMN_NAME_COMPLETED_BY + " TEXT," +
+
                     ScoutCard.COLUMN_NAME_COMPLETED_DATE + " INTEGER," +
                     ScoutCard.COLUMN_NAME_IS_DRAFT + " INTEGER)";
 
@@ -93,15 +121,24 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     PitCard.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
                     PitCard.COLUMN_NAME_TEAM_ID + " TEXT," +
                     PitCard.COLUMN_NAME_EVENT_ID + " TEXT," +
+
                     PitCard.COLUMN_NAME_DRIVE_STYLE + " TEXT," +
+                    PitCard.COLUMN_NAME_ROBOT_WEIGHT + " TEXT," +
+                    PitCard.COLUMN_NAME_ROBOT_LENGTH + " TEXT," +
+                    PitCard.COLUMN_NAME_ROBOT_WIDTH + " TEXT," +
+                    PitCard.COLUMN_NAME_ROBOT_HEIGHT + " TEXT," +
+
                     PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT + " TEXT," +
                     PitCard.COLUMN_NAME_AUTO_HATCH + " TEXT," +
                     PitCard.COLUMN_NAME_AUTO_CARGO + " TEXT," +
+
                     PitCard.COLUMN_NAME_TELEOP_HATCH + " TEXT," +
                     PitCard.COLUMN_NAME_TELEOP_CARGO + " TEXT," +
-                    PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE + " TEXT," +
+
                     PitCard.COLUMN_NAME_RETURN_TO_HABITAT + " TEXT," +
+
                     PitCard.COLUMN_NAME_NOTES + " TEXT," +
+
                     PitCard.COLUMN_NAME_COMPLETED_BY + " TEXT," +
                     PitCard.COLUMN_NAME_IS_DRAFT + " INTEGER)";
 
@@ -126,6 +163,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL(CREATE_SCOUT_CARDS_TABLE);
         db.execSQL(CREATE_USERS_TABLE);
         db.execSQL(CREATE_PIT_CARDS_TABLE);
+        db.execSQL(CREATE_ROBOT_MEDIA_TABLE);
+        db.execSQL(CREATE_EVENT_TEAM_LIST_TABLE);
     }
 
     @Override
@@ -138,6 +177,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ScoutCard.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + User.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PitCard.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RobotMedia.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + EventTeamList.TABLE_NAME);
 
         sqLiteDatabase.execSQL(CREATE_EVENTS_TABLE);
         sqLiteDatabase.execSQL(CREATE_TEAMS_TABLE);
@@ -146,5 +187,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         sqLiteDatabase.execSQL(CREATE_SCOUT_CARDS_TABLE);
         sqLiteDatabase.execSQL(CREATE_USERS_TABLE);
         sqLiteDatabase.execSQL(CREATE_PIT_CARDS_TABLE);
+        sqLiteDatabase.execSQL(CREATE_ROBOT_MEDIA_TABLE);
+        sqLiteDatabase.execSQL(CREATE_EVENT_TEAM_LIST_TABLE);
     }
 }

@@ -1,32 +1,33 @@
 package com.alphadevelopmentsolutions.frcscout.Api;
 
-import android.telephony.TelephonyScanManager;
-
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.StartingPiece;
+import com.alphadevelopmentsolutions.frcscout.Classes.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Keys;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public abstract class ScoutingWiredcats extends Api
+public abstract class Server extends Api
 {
-    private static String URL = "http://scouting.wiredcats5885.ca/api/api.php";
-
-    ScoutingWiredcats(String URLExtension, HashMap<String, String> postData)
+    Server(String URLExtension, HashMap<String, String> postData)
     {
-        super(URL + URLExtension, postData);
+        super(Keys.API_URL + URLExtension, postData);
     }
 
-    public static class GetTeamsAtEvent extends ScoutingWiredcats
+    //region Getters
+
+    public static class GetTeamsAtEvent extends Server
     {
         private ArrayList<Team> teams;
 
@@ -45,12 +46,12 @@ public abstract class ScoutingWiredcats extends Api
 
         private MainActivity context;
 
-        public GetTeamsAtEvent(final MainActivity context, final String event)
+        public GetTeamsAtEvent(final MainActivity context, final Event event)
         {
             super("", new HashMap<String, String>()
             {{
                 put("action", "GetTeamsAtEvent");
-                put("EventId", event);
+                put("EventId", event.getBlueAllianceId());
             }});
 
             teams = new ArrayList<>();
@@ -74,12 +75,12 @@ public abstract class ScoutingWiredcats extends Api
                 if (response == null)
                     throw new Exception("Could not connect to the web server.");
 
-                if(!response.getString("Status").toLowerCase().equals("success"))
+                if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
 
 
                 //iterate through, create a new object and add it to the arraylist
-                for(int i = 0; i < response.getJSONArray("Response").length(); i++)
+                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
                 {
                     JSONObject teamObject = response.getJSONArray("Response").getJSONObject(i);
 
@@ -111,8 +112,7 @@ public abstract class ScoutingWiredcats extends Api
                 }
 
                 return true;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 context.showSnackbar(e.getMessage());
                 return false;
@@ -130,7 +130,7 @@ public abstract class ScoutingWiredcats extends Api
         //endregion
     }
 
-    public static class GetUsers extends ScoutingWiredcats
+    public static class GetUsers extends Server
     {
         private ArrayList<User> users;
 
@@ -167,12 +167,12 @@ public abstract class ScoutingWiredcats extends Api
                 if (response == null)
                     throw new Exception("Could not connect to the web server.");
 
-                if(!response.getString("Status").toLowerCase().equals("success"))
+                if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
 
 
                 //iterate through, create a new object and add it to the arraylist
-                for(int i = 0; i < response.getJSONArray("Response").length(); i++)
+                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
                 {
                     JSONObject teamObject = response.getJSONArray("Response").getJSONObject(i);
 
@@ -183,8 +183,7 @@ public abstract class ScoutingWiredcats extends Api
                 }
 
                 return true;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 context.showSnackbar(e.getMessage());
                 return false;
@@ -202,7 +201,7 @@ public abstract class ScoutingWiredcats extends Api
         //endregion
     }
 
-    public static class GetScoutCards extends ScoutingWiredcats
+    public static class GetScoutCards extends Server
     {
         private ArrayList<ScoutCard> scoutCards;
 
@@ -211,31 +210,44 @@ public abstract class ScoutingWiredcats extends Api
         private final String API_FIELD_NAME_SCOUT_CARD_EVENT_ID = "EventId";
         private final String API_FIELD_NAME_SCOUT_CARD_ALLIANCE_COLOR = "AllianceColor";
         private final String API_FIELD_NAME_SCOUT_CARD_COMPLETED_BY = "CompletedBy";
-        private final String API_FIELD_NAME_SCOUT_CARD_BLUE_ALLIANCE_FINAL_SCORE = "RedAllianceFinalScore";
-        private final String API_FIELD_NAME_SCOUT_CARD_RED_ALLIANCE_FINAL_SCORE = "BlueAllianceFinalScore";
+
+        private final String API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_LEVEL = "PreGameStartingLevel";
+        private final String API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_POSITION = "PreGameStartingPosition";
+        private final String API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_PIECE = "PreGameStartingPiece";
+
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_EXIT_HABITAT = "AutonomousExitHabitat";
-        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED = "AutonomousHatchPanelsSecured";
+        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_PICKED_UP = "AutonomousHatchPanelsPickedUp";
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS = "AutonomousHatchPanelsSecuredAttempts";
-        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED = "AutonomousCargoStored";
+        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED = "AutonomousHatchPanelsSecured";
+        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_PICKED_UP = "AutonomousCargoPickedUp";
         private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED_ATTEMPTS = "AutonomousCargoStoredAttempts";
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED = "TeleopHatchPanelsSecured";
+        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED = "AutonomousCargoStored";
+
+        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_PICKED_UP = "TeleopHatchPanelsPickedUp";
         private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS = "TeleopHatchPanelsSecuredAttempts";
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED = "TeleopCargoStored";
+        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED = "TeleopHatchPanelsSecured";
+        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_PICKED_UP = "TeleopCargoPickedUp";
         private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED_ATTEMPTS = "TeleopCargoStoredAttempts";
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_ROCKETS_COMPLETED = "TeleopRocketsCompleted";
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_ROCKETS_COMPLETED_ATTEMPTS = "TeleopRocketsCompletedAttempts";
+        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED = "TeleopCargoStored";
+
         private final String API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT = "EndGameReturnedToHabitat";
         private final String API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS = "EndGameReturnedToHabitatAttempts";
+
+        private final String API_FIELD_NAME_SCOUT_CARD_BLUE_ALLIANCE_FINAL_SCORE = "RedAllianceFinalScore";
+        private final String API_FIELD_NAME_SCOUT_CARD_RED_ALLIANCE_FINAL_SCORE = "BlueAllianceFinalScore";
+        private final String API_FIELD_NAME_SCOUT_CARD_DEFENSE_RATING = "DefenseRating";
+        private final String API_FIELD_NAME_SCOUT_CARD_OFFENSE_RATING = "OffenseRating";
+        private final String API_FIELD_NAME_SCOUT_CARD_DRIVE_RATING = "DriveRating";
         private final String API_FIELD_NAME_SCOUT_CARD_NOTES = "Notes";
 
         private MainActivity context;
 
-        public GetScoutCards(final MainActivity context, final String event)
+        public GetScoutCards(final MainActivity context, final Event event)
         {
             super("", new HashMap<String, String>()
             {{
                 put("action", "GetScoutCards");
-                put("EventId", event);
+                put("EventId", event.getBlueAllianceId());
             }});
 
             scoutCards = new ArrayList<>();
@@ -259,66 +271,93 @@ public abstract class ScoutingWiredcats extends Api
                 if (response == null)
                     throw new Exception("Could not connect to the web server.");
 
-                if(!response.getString("Status").toLowerCase().equals("success"))
+                if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
 
 
                 //iterate through, create a new object and add it to the arraylist
-                for(int i = 0; i < response.getJSONArray("Response").length(); i++)
+                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
                 {
                     JSONObject scoutCardObject = response.getJSONArray("Response").getJSONObject(i);
 
                     int matchId = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_MATCH_ID);
                     int teamId = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TEAM_ID);
                     String eventId = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_EVENT_ID);
-                    AllianceColor allianceColor = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_ALLIANCE_COLOR).equals(AllianceColor.BLUE.name()) ? AllianceColor.BLUE : AllianceColor.RED;
+                    String allianceColor = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_ALLIANCE_COLOR);
                     String completedBy = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_COMPLETED_BY);
+
+                    int preGameStartingLevel = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_LEVEL);
+                    StartingPosition preGameStartingPosition = StartingPosition.getPositionFromString(scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_POSITION));
+                    StartingPiece preGameStartingPiece = StartingPiece.getPieceFromString(scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_PIECE));
+
+                    boolean autonomousExitHabitat = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_EXIT_HABITAT) == 1;
+                    int autonomousHatchPanelsPickedUp = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_PICKED_UP);
+                    int autonomousHatchPanelsSecuredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS);
+                    int autonomousHatchPanelsSecured = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED);
+                    int autonomousCargoPickedUp = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_PICKED_UP);
+                    int autonomousCargoStoredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED_ATTEMPTS);
+                    int autonomousCargoStored = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED);
+
+                    int teleopHatchPanelsPickedUp = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_PICKED_UP);
+                    int teleopHatchPanelsSecuredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS);
+                    int teleopHatchPanelsSecured = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED);
+                    int teleopCargoPickedUp = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_PICKED_UP);
+                    int teleopCargoStoredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED_ATTEMPTS);
+                    int teleopCargoStored = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED);
+
+                    int endGameReturnedToHabitat = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT);
+                    int endGameReturnedToHabitatAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS);
+
                     int blueAllianceFinalScore = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_BLUE_ALLIANCE_FINAL_SCORE);
                     int redAllianceFinalScore = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_RED_ALLIANCE_FINAL_SCORE);
-                    String autonomousExitHabitat = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_EXIT_HABITAT);
-                    int autonomousHatchPanelsSecured = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED);
-                    int autonomousHatchPanelsSecuredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS);
-                    int autonomousCargoStored = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED);
-                    int autonomousCargoStoredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED_ATTEMPTS);
-                    int teleopHatchPanelsSecured = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED);
-                    int teleopHatchPanelsSecuredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS);
-                    int teleopCargoStored = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED);
-                    int teleopCargoStoredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED_ATTEMPTS);
-                    int teleopRocketsCompleted = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_ROCKETS_COMPLETED);
-                    String endGameReturnedToHabitat = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT);
-                    String endGameReturnedToHabitatAttempts = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS);
+                    int defenseRating = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_DEFENSE_RATING);
+                    int offenseRating = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_OFFENSE_RATING);
+                    int driveRating = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_DRIVE_RATING);
                     String notes = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_NOTES);
 
-                    scoutCards.add(new ScoutCard(
-                            -1,
-                            matchId,
-                            teamId,
-                            eventId,
-                            allianceColor,
-                            completedBy,
-                            blueAllianceFinalScore,
-                            redAllianceFinalScore,
-                            autonomousExitHabitat,
-                            autonomousHatchPanelsSecured,
-                            autonomousHatchPanelsSecuredAttempts,
-                            autonomousCargoStored,
-                            autonomousCargoStoredAttempts,
-                            teleopHatchPanelsSecured,
-                            teleopHatchPanelsSecuredAttempts,
-                            teleopCargoStored,
-                            teleopCargoStoredAttempts,
-                            teleopRocketsCompleted,
-                            endGameReturnedToHabitat,
-                            endGameReturnedToHabitatAttempts,
-                            notes,
-                            new Date(0),
-                            false
-                    ));
+                    scoutCards.add(
+                            new ScoutCard(
+                                    -1,
+                                    matchId,
+                                    teamId,
+                                    eventId,
+                                    allianceColor,
+                                    completedBy,
+
+                                    preGameStartingLevel,
+                                    preGameStartingPosition,
+                                    preGameStartingPiece,
+
+                                    autonomousExitHabitat,
+                                    autonomousHatchPanelsPickedUp,
+                                    autonomousHatchPanelsSecuredAttempts,
+                                    autonomousHatchPanelsSecured,
+                                    autonomousCargoPickedUp,
+                                    autonomousCargoStoredAttempts,
+                                    autonomousCargoStored,
+
+                                    teleopHatchPanelsPickedUp,
+                                    teleopHatchPanelsSecuredAttempts,
+                                    teleopHatchPanelsSecured,
+                                    teleopCargoPickedUp,
+                                    teleopCargoStoredAttempts,
+                                    teleopCargoStored,
+
+                                    endGameReturnedToHabitat,
+                                    endGameReturnedToHabitatAttempts,
+
+                                    blueAllianceFinalScore,
+                                    redAllianceFinalScore,
+                                    defenseRating,
+                                    offenseRating,
+                                    driveRating,
+                                    notes,
+                                    new Date(0),
+                                    false));
                 }
 
                 return true;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 context.showSnackbar(e.getMessage());
                 return false;
@@ -336,31 +375,40 @@ public abstract class ScoutingWiredcats extends Api
         //endregion
     }
 
-    public static class GetPitCards extends ScoutingWiredcats
+    public static class GetPitCards extends Server
     {
         private ArrayList<PitCard> pitCards;
 
         private final String API_FIELD_NAME_PIT_CARD_TEAM_ID = "TeamId";
         private final String API_FIELD_NAME_PIT_CARD_EVENT_ID = "EventId";
+
         private final String API_FIELD_NAME_PIT_CARD_DRIVE_STYLE = "DriveStyle";
-        private final String API_FIELD_NAME_PIT_CARD_COMPLETED_BY = "CompletedBy";
+        private final String API_FIELD_NAME_PIT_CARD_ROBOT_WEIGHT = "RobotWeight";
+        private final String API_FIELD_NAME_PIT_CARD_ROBOT_LENGTH = "RobotLength";
+        private final String API_FIELD_NAME_PIT_CARD_ROBOT_WIDTH = "RobotWidth";
+        private final String API_FIELD_NAME_PIT_CARD_ROBOT_HEIGHT = "RobotHeight";
+
         private final String API_FIELD_NAME_PIT_CARD_AUTO_EXIT_HABITAT = "AutoExitHabitat";
         private final String API_FIELD_NAME_PIT_CARD_AUTO_HATCH = "AutoHatch";
         private final String API_FIELD_NAME_PIT_CARD_AUTO_CARGO = "AutoCargo";
+
         private final String API_FIELD_NAME_PIT_CARD_TELEOP_HATCH = "TeleopHatch";
         private final String API_FIELD_NAME_PIT_CARD_TELEOP_CARGO = "TeleopCargo";
-        private final String API_FIELD_NAME_PIT_CARD_TELEOP_ROCKETS_COMPLETE = "TeleopRocketsComplete";
+
         private final String API_FIELD_NAME_PIT_CARD_RETURN_TO_HABITAT = "ReturnToHabitat";
+
         private final String API_FIELD_NAME_PIT_CARD_NOTES = "Notes";
+        private final String API_FIELD_NAME_PIT_CARD_COMPLETED_BY = "CompletedBy";
+
 
         private MainActivity context;
 
-        public GetPitCards(final MainActivity context, final String event)
+        public GetPitCards(final MainActivity context, final Event event)
         {
             super("", new HashMap<String, String>()
             {{
                 put("action", "GetPitCards");
-                put("EventId", event);
+                put("EventId", event.getBlueAllianceId());
             }});
 
             pitCards = new ArrayList<>();
@@ -384,40 +432,57 @@ public abstract class ScoutingWiredcats extends Api
                 if (response == null)
                     throw new Exception("Could not connect to the web server.");
 
-                if(!response.getString("Status").toLowerCase().equals("success"))
+                if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
 
 
                 //iterate through, create a new object and add it to the arraylist
-                for(int i = 0; i < response.getJSONArray("Response").length(); i++)
+                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
                 {
                     JSONObject pitCardObject = response.getJSONArray("Response").getJSONObject(i);
 
                     int teamId = pitCardObject.getInt(API_FIELD_NAME_PIT_CARD_TEAM_ID);
                     String eventId = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_EVENT_ID);
+
                     String driveStyle = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_DRIVE_STYLE);
-                    String completedBy = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_COMPLETED_BY);
+                    String robotWeight = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_ROBOT_WEIGHT);
+                    String robotLength = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_ROBOT_LENGTH);
+                    String robotWidth = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_ROBOT_WIDTH);
+                    String robotHeight = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_ROBOT_HEIGHT);
+
                     String autonomousExitHabitat = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_AUTO_EXIT_HABITAT);
                     String autonomousHatchPanelsSecured = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_AUTO_HATCH);
                     String autonomousCargoStored = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_AUTO_CARGO);
+
                     String teleopHatchPanelsSecured = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_TELEOP_HATCH);
                     String teleopCargoStored = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_TELEOP_CARGO);
-                    String teleopRocketsCompleted = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_TELEOP_ROCKETS_COMPLETE);
+
                     String endGameReturnedToHabitat = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_RETURN_TO_HABITAT);
+
                     String notes = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_NOTES);
+                    String completedBy = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_COMPLETED_BY);
+
 
                     pitCards.add(new PitCard(
                             -1,
                             teamId,
                             eventId,
+
                             driveStyle,
+                            robotWeight,
+                            robotLength,
+                            robotWidth,
+                            robotHeight,
+
                             autonomousExitHabitat,
                             autonomousHatchPanelsSecured,
                             autonomousCargoStored,
+
                             teleopHatchPanelsSecured,
                             teleopCargoStored,
-                            teleopRocketsCompleted,
+
                             endGameReturnedToHabitat,
+
                             notes,
                             completedBy,
                             false
@@ -425,8 +490,7 @@ public abstract class ScoutingWiredcats extends Api
                 }
 
                 return true;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 context.showSnackbar(e.getMessage());
                 return false;
@@ -444,7 +508,173 @@ public abstract class ScoutingWiredcats extends Api
         //endregion
     }
 
-    public static class SubmitScoutCard extends ScoutingWiredcats
+    public static class GetRobotMedia extends Server
+    {
+        private ArrayList<RobotMedia> robotMedia;
+
+        private final String API_FIELD_NAME_ROBOT_MEDIA_TEAM_ID = "TeamId";
+        private final String API_FIELD_NAME_ROBOT_MEDIA_FILE_URI = "FileURI";
+
+
+        private MainActivity context;
+
+        public GetRobotMedia(final MainActivity context, final int teamId)
+        {
+            super("", new HashMap<String, String>()
+            {{
+                put("action", "GetRobotMedia");
+                put("TeamId", String.valueOf(teamId));
+            }});
+
+            robotMedia = new ArrayList<>();
+
+            this.context = context;
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception("Could not connect to the web server.");
+
+                if (!response.getString("Status").toLowerCase().equals("success"))
+                    throw new Exception(response.getString("Response"));
+
+
+                //iterate through, create a new object and add it to the arraylist
+                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
+                {
+                    JSONObject robotMediaJson = response.getJSONArray("Response").getJSONObject(i);
+
+                    int teamId = robotMediaJson.getInt(API_FIELD_NAME_ROBOT_MEDIA_TEAM_ID);
+                    String fileUri = Keys.WEB_URL + "assets/robot-media/" + robotMediaJson.getString(API_FIELD_NAME_ROBOT_MEDIA_FILE_URI);
+
+                    fileUri = apiParser.downloadImage(fileUri).getAbsolutePath();
+
+                    robotMedia.add(new RobotMedia(
+                            -1,
+                            teamId,
+                            fileUri,
+                            false
+                    ));
+
+                }
+
+                return true;
+            } catch (Exception e)
+            {
+                context.showSnackbar(e.getMessage());
+                return false;
+            }
+        }
+
+        //region Getters
+
+        public ArrayList<RobotMedia> getRobotMedia()
+        {
+            return robotMedia;
+        }
+
+
+        //endregion
+    }
+
+
+    public static class GetEvents extends Server
+    {
+        private ArrayList<Event> events;
+
+        private final String API_FIELD_NAME_EVENT_BLUE_ALLIANCE_ID = "BlueAllianceId";
+        private final String API_FIELD_NAME_EVENT_NAME = "Name";
+        private final String API_FIELD_NAME_EVENT_CITY = "City";
+        private final String API_FIELD_NAME_EVENT_STATE_PROVINCE = "StateProvince";
+        private final String API_FIELD_NAME_EVENT_COUNTRY = "Country";
+        private final String API_FIELD_NAME_EVENT_START_DATE = "StartDate";
+        private final String API_FIELD_NAME_EVENT_END_DATE = "EndDate";
+
+        private MainActivity context;
+
+        private SimpleDateFormat simpleDateFormat;
+
+        public GetEvents(final MainActivity context)
+        {
+            super("", new HashMap<String, String>()
+            {{
+                put("action", "GetEvents");
+            }});
+
+            this.context = context;
+            events = new ArrayList<>();
+
+            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception("Could not connect to the web server.");
+
+                if (!response.getString("Status").toLowerCase().equals("success"))
+                    throw new Exception(response.getString("Response"));
+
+                //iterate through, create a new object and add it to the arraylist
+                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
+                {
+                    JSONObject eventObject = response.getJSONArray("Response").getJSONObject(i);
+
+                    String blueAllianceId = eventObject.getString(API_FIELD_NAME_EVENT_BLUE_ALLIANCE_ID);
+                    String name = eventObject.getString(API_FIELD_NAME_EVENT_NAME);
+                    String city = eventObject.getString(API_FIELD_NAME_EVENT_CITY);
+                    String stateProvince = eventObject.getString(API_FIELD_NAME_EVENT_STATE_PROVINCE);
+                    String country = eventObject.getString(API_FIELD_NAME_EVENT_COUNTRY);
+                    String startDate = eventObject.getString(API_FIELD_NAME_EVENT_START_DATE);
+                    String endDate = eventObject.getString(API_FIELD_NAME_EVENT_END_DATE);
+
+                    events.add(new Event(-1, blueAllianceId, name, city, stateProvince, country, simpleDateFormat.parse(startDate), simpleDateFormat.parse(endDate)));
+                }
+
+
+                return true;
+            } catch (Exception e)
+            {
+                context.showSnackbar(e.getMessage());
+                return false;
+            }
+        }
+
+        public ArrayList<Event> getEvents()
+        {
+            return events;
+        }
+    }
+
+
+    //endregion
+
+    //region Setters
+
+    public static class SubmitScoutCard extends Server
     {
         private MainActivity context;
 
@@ -457,23 +687,38 @@ public abstract class ScoutingWiredcats extends Api
                 put("MatchId", String.valueOf(scoutCard.getMatchId()));
                 put("TeamId", String.valueOf(scoutCard.getTeamId()));
                 put("EventId", scoutCard.getEventId());
-                put("AllianceColor", scoutCard.getAllianceColor().name());
+                put("AllianceColor", scoutCard.getAllianceColor());
                 put("CompletedBy", scoutCard.getCompletedBy());
+
+                put("PreGameStartingLevel", String.valueOf(scoutCard.getPreGameStartingLevel()));
+                put("PreGameStartingPosition", scoutCard.getPreGameStartingPosition().name());
+                put("PreGameStartingPiece", scoutCard.getPreGameStartingPiece().name());
+
+                put("AutonomousExitHabitat", String.valueOf(scoutCard.getAutonomousExitHabitat() ? 1 : 0));
+                put("AutonomousHatchPanelsPickedUp", String.valueOf(scoutCard.getAutonomousHatchPanelsPickedUp()));
+                put("AutonomousHatchPanelsSecuredAttempts", String.valueOf(scoutCard.getAutonomousHatchPanelsSecuredAttempts()));
+                put("AutonomousHatchPanelsSecured", String.valueOf(scoutCard.getAutonomousHatchPanelsSecured()));
+                put("AutonomousCargoPickedUp", String.valueOf(scoutCard.getAutonomousCargoPickedUp()));
+                put("AutonomousCargoStoredAttempts", String.valueOf(scoutCard.getAutonomousCargoStoredAttempts()));
+                put("AutonomousCargoStored", String.valueOf(scoutCard.getAutonomousCargoStored()));
+
+                put("TeleopHatchPanelsPickedUp", String.valueOf(scoutCard.getTeleopHatchPanelsPickedUp()));
+                put("TeleopHatchPanelsSecuredAttempts", String.valueOf(scoutCard.getTeleopHatchPanelsSecuredAttempts()));
+                put("TeleopHatchPanelsSecured", String.valueOf(scoutCard.getTeleopHatchPanelsSecured()));
+                put("TeleopCargoPickedUp", String.valueOf(scoutCard.getTeleopCargoPickedUp()));
+                put("TeleopCargoStoredAttempts", String.valueOf(scoutCard.getTeleopCargoStoredAttempts()));
+                put("TeleopCargoStored", String.valueOf(scoutCard.getTeleopCargoStored()));
+
+                put("EndGameReturnedToHabitat", String.valueOf(scoutCard.getEndGameReturnedToHabitat()));
+                put("EndGameReturnedToHabitatAttempts", String.valueOf(scoutCard.getEndGameReturnedToHabitatAttempts()));
+
                 put("BlueAllianceFinalScore", String.valueOf(scoutCard.getBlueAllianceFinalScore()));
                 put("RedAllianceFinalScore", String.valueOf(scoutCard.getRedAllianceFinalScore()));
-                put("AutonomousExitHabitat", scoutCard.isAutonomousExitHabitat());
-                put("AutonomousHatchPanelsSecured", String.valueOf(scoutCard.getAutonomousHatchPanelsSecured()));
-                put("AutonomousHatchPanelsSecuredAttempts", String.valueOf(scoutCard.getAutonomousHatchPanelsSecuredAttempts()));
-                put("AutonomousCargoStored", String.valueOf(scoutCard.getAutonomousCargoStored()));
-                put("AutonomousCargoStoredAttempts", String.valueOf(scoutCard.getAutonomousCargoStoredAttempts()));
-                put("TeleopHatchPanelsSecured", String.valueOf(scoutCard.getTeleopHatchPanelsSecured()));
-                put("TeleopHatchPanelsSecuredAttempts", String.valueOf(scoutCard.getTeleopHatchPanelsSecuredAttempts()));
-                put("TeleopCargoStored", String.valueOf(scoutCard.getTeleopCargoStored()));
-                put("TeleopCargoStoredAttempts", String.valueOf(scoutCard.getTeleopCargoStoredAttempts()));
-                put("TeleopRocketsCompleted", String.valueOf(scoutCard.getTeleopRocketsCompleted()));
-                put("EndGameReturnedToHabitat", scoutCard.getEndGameReturnedToHabitat());
-                put("EndGameReturnedToHabitatAttempts", scoutCard.getEndGameReturnedToHabitatAttempts());
+                put("DefenseRating", String.valueOf(scoutCard.getDefenseRating()));
+                put("OffenseRating", String.valueOf(scoutCard.getOffenseRating()));
+                put("DriveRating", String.valueOf(scoutCard.getDriveRating()));
                 put("Notes", scoutCard.getNotes());
+
                 put("CompletedDate", scoutCard.getCompletedDateForSQL());
             }});
 
@@ -496,13 +741,12 @@ public abstract class ScoutingWiredcats extends Api
                 if (response == null)
                     throw new Exception("Could not connect to the web server.");
 
-                if(!response.getString("Status").toLowerCase().equals("success"))
+                if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
 
 
                 return true;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 context.showSnackbar(e.getMessage());
                 return false;
@@ -510,7 +754,7 @@ public abstract class ScoutingWiredcats extends Api
         }
     }
 
-    public static class SubmitPitCard extends ScoutingWiredcats
+    public static class SubmitPitCard extends Server
     {
         private MainActivity context;
 
@@ -522,14 +766,22 @@ public abstract class ScoutingWiredcats extends Api
 
                 put("TeamId", String.valueOf(pitCard.getTeamId()));
                 put("EventId", pitCard.getEventId());
+
                 put("DriveStyle", pitCard.getDriveStyle());
+                put("RobotWeight", pitCard.getRobotWeight());
+                put("RobotLength", pitCard.getRobotLength());
+                put("RobotWidth", pitCard.getRobotWidth());
+                put("RobotHeight", pitCard.getRobotHeight());
+
                 put("AutoExitHabitat", pitCard.getAutoExitHabitat());
                 put("AutoHatch", pitCard.getAutoHatch());
                 put("AutoCargo", pitCard.getAutoCargo());
+
                 put("TeleopHatch", pitCard.getTeleopHatch());
                 put("TeleopCargo", pitCard.getTeleopCargo());
-                put("TeleopRocketsComplete", pitCard.getTeleopRocketsComplete());
+
                 put("ReturnToHabitat", pitCard.getReturnToHabitat());
+
                 put("Notes", pitCard.getNotes());
                 put("CompletedBy", pitCard.getCompletedBy());
             }});
@@ -553,13 +805,12 @@ public abstract class ScoutingWiredcats extends Api
                 if (response == null)
                     throw new Exception("Could not connect to the web server.");
 
-                if(!response.getString("Status").toLowerCase().equals("success"))
+                if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
 
 
                 return true;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 context.showSnackbar(e.getMessage());
                 return false;
@@ -567,29 +818,21 @@ public abstract class ScoutingWiredcats extends Api
         }
     }
 
-    public static class GetEvents extends ScoutingWiredcats
+    public static class SubmitRobotMedia extends Server
     {
-        private ArrayList<Event> events;
-
-        private final String API_FIELD_NAME_EVENT_BLUE_ALLIANCE_ID = "BlueAllianceId";
-        private final String API_FIELD_NAME_EVENT_NAME = "Name";
-        private final String API_FIELD_NAME_EVENT_CITY = "City";
-        private final String API_FIELD_NAME_EVENT_STATE_PROVINCE = "StateProvince";
-        private final String API_FIELD_NAME_EVENT_COUNTRY = "Country";
-        private final String API_FIELD_NAME_EVENT_START_DATE = "StartDate";
-        private final String API_FIELD_NAME_EVENT_END_DATE = "EndDate";
-
         private MainActivity context;
 
-        public GetEvents(final MainActivity context)
+        public SubmitRobotMedia(final MainActivity context, final RobotMedia robotMedia)
         {
             super("", new HashMap<String, String>()
             {{
-                put("action", "GetEvents");
+                put("action", "SubmitRobotMedia");
+
+                put("TeamId", String.valueOf(robotMedia.getTeamId()));
+                put("Base64Image", robotMedia.getBase64Image());
             }});
 
             this.context = context;
-            events = new ArrayList<>();
 
         }
 
@@ -608,40 +851,19 @@ public abstract class ScoutingWiredcats extends Api
                 if (response == null)
                     throw new Exception("Could not connect to the web server.");
 
-                if(!response.getString("Status").toLowerCase().equals("success"))
+                if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
-
-                //iterate through, create a new object and add it to the arraylist
-                for(int i = 0; i < response.getJSONArray("Response").length(); i++)
-                {
-                    JSONObject eventObject = response.getJSONArray("Response").getJSONObject(i);
-
-                    String blueAllianceId = eventObject.getString(API_FIELD_NAME_EVENT_BLUE_ALLIANCE_ID);
-                    String name = eventObject.getString(API_FIELD_NAME_EVENT_NAME);
-                    String city = eventObject.getString(API_FIELD_NAME_EVENT_CITY);
-                    String stateProvince = eventObject.getString(API_FIELD_NAME_EVENT_STATE_PROVINCE);
-                    String country = eventObject.getString(API_FIELD_NAME_EVENT_COUNTRY);
-//                    String startDate = eventObject.getString(API_FIELD_NAME_EVENT_START_DATE);
-//                    String endDate = eventObject.getString(API_FIELD_NAME_EVENT_END_DATE);
-
-                    events.add(new Event(-1, blueAllianceId, name, city, stateProvince, country, new Date(), new Date()));
-                }
 
 
                 return true;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 context.showSnackbar(e.getMessage());
                 return false;
             }
         }
-
-        public ArrayList<Event> getEvents()
-        {
-            return events;
-        }
     }
+    //endregion
 
 }
 

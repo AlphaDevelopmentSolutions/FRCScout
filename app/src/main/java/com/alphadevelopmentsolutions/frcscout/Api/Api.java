@@ -1,6 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Api;
 
-import com.alphadevelopmentsolutions.frcscout.Interfaces.ApiParams;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Keys;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -64,7 +64,7 @@ public abstract class Api
 
         //Specify version of current API
         formattedPostData
-                .append("key=" + ApiParams.API_KEY);
+                .append("key=" + Keys.API_KEY);
 
         //add each post data to the string builder
         for(Map.Entry<String, String> pair : postData.entrySet())

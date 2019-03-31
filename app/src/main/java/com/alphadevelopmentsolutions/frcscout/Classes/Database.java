@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.alphadevelopmentsolutions.frcscout.R;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -82,6 +80,7 @@ public class Database
         tableNames.add(Robot.TABLE_NAME);
         tableNames.add(Match.TABLE_NAME);
         tableNames.add(User.TABLE_NAME);
+        tableNames.add(RobotMedia.TABLE_NAME);
 
         for(String tableName : tableNames)
             db.execSQL("DELETE FROM " + tableName);
@@ -117,6 +116,16 @@ public class Database
             db.execSQL("DELETE FROM " + tableName + ((clearDrafts) ? "" : " WHERE IsDraft = 0"));
     }
 
+    public void clearTeams()
+    {
+        ArrayList<String> tableNames = new ArrayList<>();
+
+        tableNames.add(Team.TABLE_NAME);
+
+        for(String tableName : tableNames)
+            db.execSQL("DELETE FROM " + tableName);
+    }
+
     public void clearPitCards(boolean clearDrafts)
     {
         ArrayList<String> tableNames = new ArrayList<>();
@@ -127,7 +136,73 @@ public class Database
             db.execSQL("DELETE FROM " + tableName + ((clearDrafts) ? "" : " WHERE IsDraft = 0"));
     }
 
+    public void clearEventTeamList()
+    {
+        ArrayList<String> tableNames = new ArrayList<>();
+
+        tableNames.add(EventTeamList.TABLE_NAME);
+
+        for(String tableName : tableNames)
+            db.execSQL("DELETE FROM " + tableName);
+    }
+
+    public void clearRobotMedia(boolean clearDrafts)
+    {
+        ArrayList<String> tableNames = new ArrayList<>();
+
+        tableNames.add(RobotMedia.TABLE_NAME);
+
+        for(String tableName : tableNames)
+            db.execSQL("DELETE FROM " + tableName + ((clearDrafts) ? "" : " WHERE IsDraft = 0"));
+    }
+
     //region Event Logic
+
+    /**
+     * Returns all columns inside the events table in string array format
+     * @return string array of all columns
+     */
+    private String[] getEventsColumns()
+    {
+        return new String[]
+                {
+                        Event.COLUMN_NAME_ID,
+                        Event.COLUMN_NAME_BLUE_ALLIANCE_ID,
+                        Event.COLUMN_NAME_NAME,
+                        Event.COLUMN_NAME_CITY,
+                        Event.COLUMN_NAME_STATEPROVINCE,
+                        Event.COLUMN_NAME_COUNTRY,
+                        Event.COLUMN_NAME_START_DATE,
+                        Event.COLUMN_NAME_END_DATE
+                };
+    }
+
+    /**
+     * Takes in a cursor with info pulled from database and converts it into an object
+     * @param cursor info from database
+     * @return Event object converted data
+     */
+    private Event getEventFromCursor(Cursor cursor)
+    {
+        int id = cursor.getInt(cursor.getColumnIndex(Event.COLUMN_NAME_ID));
+        String blueAllianceId = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_BLUE_ALLIANCE_ID));
+        String name = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_NAME));
+        String city = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_CITY));
+        String stateProvince = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_STATEPROVINCE));
+        String country = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_COUNTRY));
+        Date startDate = new Date(cursor.getLong(cursor.getColumnIndex(Event.COLUMN_NAME_START_DATE)));
+        Date endDate = new Date(cursor.getLong(cursor.getColumnIndex(Event.COLUMN_NAME_END_DATE)));
+
+        return new Event(
+                id,
+                blueAllianceId,
+                name,
+                city,
+                stateProvince,
+                country,
+                startDate,
+                endDate);
+    }
 
     /**
      * Gets all events in the database
@@ -139,15 +214,7 @@ public class Database
         ArrayList<Event> events = new ArrayList<>();
 
         //insert columns you are going to use here
-        String[] columns =
-                {
-                        Event.COLUMN_NAME_ID,
-                        Event.COLUMN_NAME_BLUE_ALLIANCE_ID,
-                        Event.COLUMN_NAME_NAME,
-                        Event.COLUMN_NAME_CITY,
-                        Event.COLUMN_NAME_STATEPROVINCE,
-                        Event.COLUMN_NAME_COUNTRY
-                };
+        String[] columns = getEventsColumns();
 
         //select the info from the db
         Cursor cursor = db.query(
@@ -165,14 +232,7 @@ public class Database
             while (cursor.moveToNext())
             {
 
-                int id = cursor.getInt(cursor.getColumnIndex(Event.COLUMN_NAME_ID));
-                String blueAllianceId = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_BLUE_ALLIANCE_ID));
-                String name = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_NAME));
-                String city = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_CITY));
-                String stateProvince = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_STATEPROVINCE));
-                String country = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_COUNTRY));
-
-                events.add(new Event(id, blueAllianceId, name, city, stateProvince, country, new Date(), new Date()));
+                events.add(getEventFromCursor(cursor));
             }
 
             cursor.close();
@@ -193,16 +253,7 @@ public class Database
     public Event getEvent(Event event)
     {
         //insert columns you are going to use here
-        String[] columns =
-                {
-                        Event.COLUMN_NAME_BLUE_ALLIANCE_ID,
-                        Event.COLUMN_NAME_NAME,
-                        Event.COLUMN_NAME_CITY,
-                        Event.COLUMN_NAME_STATEPROVINCE,
-                        Event.COLUMN_NAME_COUNTRY,
-                        Event.COLUMN_NAME_START_DATE,
-                        Event.COLUMN_NAME_END_DATE
-                };
+        String[] columns = getEventsColumns();
 
         //where statement
         String whereStatement = Event.COLUMN_NAME_ID + " = ?";
@@ -224,17 +275,11 @@ public class Database
             //move to the first result in the set
             cursor.moveToFirst();
 
-            String blueAllianceId = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_BLUE_ALLIANCE_ID));
-            String name = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_NAME));
-            String city = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_CITY));
-            String stateProvince = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_STATEPROVINCE));
-            String country = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_COUNTRY));
-            Date startDate = new Date(cursor.getInt(cursor.getColumnIndex(Event.COLUMN_NAME_START_DATE)));
-            Date endDate = new Date(cursor.getInt(cursor.getColumnIndex(Event.COLUMN_NAME_END_DATE)));
+            Event databaseEvent = getEventFromCursor(cursor);
 
             cursor.close();
 
-            return new Event(event.getId(), blueAllianceId, name, city, stateProvince, country, startDate, endDate);
+            return databaseEvent;
         }
 
 
@@ -298,18 +343,13 @@ public class Database
 
     //region Team Logic
 
-
     /**
-     * Gets all teams in the database
-     *
-     * @return all teams inside database
+     * Returns all columns inside the Teams table in string array format
+     * @return string array of all columns
      */
-    public ArrayList<Team> getTeams()
+    private String[] getTeamColumns()
     {
-        ArrayList<Team> teams = new ArrayList<>();
-
-        //insert columns you are going to use here
-        String[] columns =
+        return new String[]
                 {
                         Team.COLUMN_NAME_ID,
                         Team.COLUMN_NAME_NAME,
@@ -324,6 +364,53 @@ public class Database
                         Team.COLUMN_NAME_WEBSITE_URL,
                         Team.COLUMN_NAME_IMAGE_FILE_URI
                 };
+    }
+
+    /**
+     * Takes in a cursor with info pulled from database and converts it into an object
+     * @param cursor info from database
+     * @return Team object converted data
+     */
+    private Team getTeamFromCursor(Cursor cursor)
+    {
+        int id = cursor.getInt(cursor.getColumnIndex(Team.COLUMN_NAME_ID));
+        String name = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_NAME));
+        String city = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_CITY));
+        String stateProvince = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_STATEPROVINCE));
+        String country = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_COUNTRY));
+        int rookieYear = cursor.getInt(cursor.getColumnIndex(Team.COLUMN_NAME_ROOKIE_YEAR));
+        String facebookURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_FACEBOOK_URL));
+        String twitterURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_TWITTER_URL));
+        String instagramURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_INSTAGRAM_URL));
+        String youtubeURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_YOUTUBE_URL));
+        String websiteURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_WEBSITE_URL));
+        String imageFileURI = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_IMAGE_FILE_URI));
+
+        return new Team(
+                id,
+                name,
+                city,
+                stateProvince,
+                country,
+                rookieYear,
+                facebookURL,
+                twitterURL,
+                instagramURL,
+                youtubeURL,
+                websiteURL,
+                imageFileURI);
+    }
+
+    /**
+     * Gets all teams in the database
+     * @return all teams inside database
+     */
+    public ArrayList<Team> getTeams()
+    {
+        ArrayList<Team> teams = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns = getTeamColumns();
 
         //select the info from the db
         Cursor cursor = db.query(
@@ -341,20 +428,64 @@ public class Database
             while (cursor.moveToNext())
             {
 
-                int id = cursor.getInt(cursor.getColumnIndex(Team.COLUMN_NAME_ID));
-                String name = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_NAME));
-                String city = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_CITY));
-                String stateProvince = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_STATEPROVINCE));
-                String country = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_COUNTRY));
-                int rookieYear = cursor.getInt(cursor.getColumnIndex(Team.COLUMN_NAME_ROOKIE_YEAR));
-                String facebookURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_FACEBOOK_URL));
-                String twitterURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_TWITTER_URL));
-                String instagramURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_INSTAGRAM_URL));
-                String youtubeURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_YOUTUBE_URL));
-                String websiteURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_WEBSITE_URL));
-                String imageFileURI = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_IMAGE_FILE_URI));
+                teams.add(getTeamFromCursor(cursor));
+            }
 
-                teams.add(new Team(id, name, city, stateProvince, country, rookieYear, facebookURL, twitterURL, instagramURL, youtubeURL, websiteURL, imageFileURI));
+            cursor.close();
+
+            return teams;
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Gets all teams in the database at a specific event
+     * @return all teams inside database
+     */
+    public ArrayList<Team> getTeamsAtEvent(ArrayList<EventTeamList> eventTeamLists)
+    {
+        ArrayList<Team> teams = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns = getTeamColumns();
+
+        //where statement
+        StringBuilder whereStatement = new StringBuilder();
+        String[] whereArgs = new String[eventTeamLists.size()];
+
+        for(int i = 0; i < eventTeamLists.size(); i++)
+        {
+            whereStatement.append(Team.COLUMN_NAME_ID + " = ?");
+
+            if(i + 1 < eventTeamLists.size())
+                whereStatement.append(" OR ");
+            else
+                whereStatement.append(" ");
+
+
+
+            whereArgs[i]  = String.valueOf(eventTeamLists.get(i).getTeamId());
+        }
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                Team.TABLE_NAME,
+                columns,
+                whereStatement.toString(),
+                whereArgs,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while (cursor.moveToNext())
+            {
+
+                teams.add(getTeamFromCursor(cursor));
             }
 
             cursor.close();
@@ -375,20 +506,7 @@ public class Database
     public Team getTeam(Team team)
     {
         //insert columns you are going to use here
-        String[] columns =
-                {
-                        Team.COLUMN_NAME_NAME,
-                        Team.COLUMN_NAME_CITY,
-                        Team.COLUMN_NAME_STATEPROVINCE,
-                        Team.COLUMN_NAME_COUNTRY,
-                        Team.COLUMN_NAME_ROOKIE_YEAR,
-                        Team.COLUMN_NAME_FACEBOOK_URL,
-                        Team.COLUMN_NAME_TWITTER_URL,
-                        Team.COLUMN_NAME_INSTAGRAM_URL,
-                        Team.COLUMN_NAME_YOUTUBE_URL,
-                        Team.COLUMN_NAME_WEBSITE_URL,
-                        Team.COLUMN_NAME_IMAGE_FILE_URI
-                };
+        String[] columns = getTeamColumns();
 
         //where statement
         String whereStatement = Team.COLUMN_NAME_ID + " = ?";
@@ -413,21 +531,12 @@ public class Database
                 //move to the first result in the set
                 cursor.moveToFirst();
 
-                String name = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_NAME));
-                String city = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_CITY));
-                String stateProvince = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_STATEPROVINCE));
-                String country = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_COUNTRY));
-                int rookieYear = cursor.getInt(cursor.getColumnIndex(Team.COLUMN_NAME_ROOKIE_YEAR));
-                String facebookURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_FACEBOOK_URL));
-                String twitterURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_TWITTER_URL));
-                String instagramURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_INSTAGRAM_URL));
-                String youtubeURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_YOUTUBE_URL));
-                String websiteURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_WEBSITE_URL));
-                String imageFileURI = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_IMAGE_FILE_URI));
+                Team databaseTeam = getTeamFromCursor(cursor);
 
                 cursor.close();
 
-                return new Team(team.getId(), name, city, stateProvince, country, rookieYear, facebookURL, twitterURL, instagramURL, youtubeURL, websiteURL, imageFileURI);
+                return databaseTeam;
+
             }
         }
 
@@ -728,7 +837,10 @@ public class Database
             String whereArgs[] = {match.getId() + ""};
 
             //update
-            return db.update(Match.TABLE_NAME, contentValues, whereStatement, whereArgs);
+            if(db.update(Match.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return match.getId();
+            else
+                return -1;
         }
         //insert new Match in db
         else return db.insert(Match.TABLE_NAME, null, contentValues);
@@ -760,46 +872,159 @@ public class Database
     //region Scout Card Logic
 
     /**
-     * Gets all scout cards assigned to a team
-     *
+     * Returns all columns inside the scout card table in string array format
+     * @return string array of all columns
+     */
+    private String[] getScoutCardColumns()
+    {
+        return new String[]
+            {
+                    ScoutCard.COLUMN_NAME_ID,
+                    ScoutCard.COLUMN_NAME_MATCH_ID,
+                    ScoutCard.COLUMN_NAME_TEAM_ID,
+                    ScoutCard.COLUMN_NAME_EVENT_ID,
+                    ScoutCard.COLUMN_NAME_ALLIANCE_COLOR,
+                    ScoutCard.COLUMN_NAME_COMPLETED_BY,
+
+                    ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_LEVEL,
+                    ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_POSITION,
+                    ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_PIECE,
+
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT,
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_PICKED_UP,
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS,
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED,
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_PICKED_UP,
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS,
+                    ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED,
+
+                    ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_PICKED_UP,
+                    ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS,
+                    ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED,
+                    ScoutCard.COLUMN_NAME_TELEOP_CARGO_PICKED_UP,
+                    ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS,
+                    ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED,
+
+                    ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT,
+                    ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS,
+
+                    ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE,
+                    ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE,
+                    ScoutCard.COLUMN_NAME_DEFENSE_RATING,
+                    ScoutCard.COLUMN_NAME_OFFENSE_RATING,
+                    ScoutCard.COLUMN_NAME_DRIVE_RATING,
+                    ScoutCard.COLUMN_NAME_NOTES,
+                    ScoutCard.COLUMN_NAME_COMPLETED_BY,
+
+                    ScoutCard.COLUMN_NAME_COMPLETED_DATE,
+                    ScoutCard.COLUMN_NAME_IS_DRAFT
+            };    
+    }
+    
+    
+    /**
+     * Takes in a cursor with info pulled from database and converts it into a scout card
+     * @param cursor info from database
+     * @return scoutcard converted data
+     */
+    private ScoutCard getScoutCardFromCursor(Cursor cursor)
+    {
+        int id = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ID));
+        int matchId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_MATCH_ID));
+        int teamId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID));
+        String eventId = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
+        String allianceColor = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR));
+        String completedBy = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_BY));
+
+        int preGameStartingLevel = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_LEVEL));
+        StartingPosition preGameStartingPosition = StartingPosition.getPositionFromString(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_POSITION)));
+        StartingPiece preGameStartingPiece = StartingPiece.getPieceFromString(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_PIECE)));
+
+        boolean autonomousExitHabitat = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT)) == 1;
+        int autonomousHatchPanelsPickedUp = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_PICKED_UP));
+        int autonomousHatchPanelsSecuredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS));
+        int autonomousHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED));
+        int autonomousCargoPickedUp = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_PICKED_UP));
+        int autonomousCargoStoredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS));
+        int autonomousCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED));
+
+        int teleopHatchPanelsPickedUp = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_PICKED_UP));
+        int teleopHatchPanelsSecuredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS));
+        int teleopHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED));
+        int teleopCargoPickedUp = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_PICKED_UP));
+        int teleopCargoStoredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS));
+        int teleopCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED));
+
+        int endGameReturnedToHabitat = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT));
+        int endGameReturnedToHabitatAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS));
+
+        int blueAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE));
+        int redAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE));
+        int defenseRating = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_DEFENSE_RATING));
+        int offenseRating = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OFFENSE_RATING));
+        int driveRating = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_DRIVE_RATING));
+        String notes = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_NOTES));
+        
+        Date completedDate = new Date(cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)));
+        boolean isDraft = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_IS_DRAFT)) == 1;
+
+        return new ScoutCard(
+                id,
+                matchId,
+                teamId,
+                eventId,
+                allianceColor,
+                completedBy,
+
+                preGameStartingLevel,
+                preGameStartingPosition,
+                preGameStartingPiece,
+
+                autonomousExitHabitat,
+                autonomousHatchPanelsPickedUp,
+                autonomousHatchPanelsSecuredAttempts,
+                autonomousHatchPanelsSecured,
+                autonomousCargoPickedUp,
+                autonomousCargoStoredAttempts,
+                autonomousCargoStored,
+
+                teleopHatchPanelsPickedUp,
+                teleopHatchPanelsSecuredAttempts,
+                teleopHatchPanelsSecured,
+                teleopCargoPickedUp,
+                teleopCargoStoredAttempts,
+                teleopCargoStored,
+
+                endGameReturnedToHabitat,
+                endGameReturnedToHabitatAttempts,
+
+                blueAllianceFinalScore,
+                redAllianceFinalScore,
+                defenseRating,
+                offenseRating,
+                driveRating,
+                notes,
+                completedDate,
+                isDraft);
+    }
+
+    /**
+     * Gets all scout cards assigned to a team at an event
      * @param team with specified ID
+     * @param event with specified ID
      * @return scoutcard based off given team ID
      */
-    public ArrayList<ScoutCard> getScoutCards(Team team, boolean onlyDrafts)
+    public ArrayList<ScoutCard> getScoutCards(Team team, Event event, boolean onlyDrafts)
     {
         ArrayList<ScoutCard> scoutCards = new ArrayList<>();
 
         //insert columns you are going to use here
-        String[] columns =
-                {
-                        ScoutCard.COLUMN_NAME_ID,
-                        ScoutCard.COLUMNS_NAME_MATCH_ID,
-                        ScoutCard.COLUMN_NAME_TEAM_ID,
-                        ScoutCard.COLUMN_NAME_EVENT_ID,
-                        ScoutCard.COLUMN_NAME_ALLIANCE_COLOR,
-                        ScoutCard.COLUMN_NAME_COMPLETED_BY,
-                        ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE,
-                        ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE,
-                        ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT,
-                        ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED,
-                        ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS,
-                        ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED,
-                        ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS,
-                        ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED,
-                        ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS,
-                        ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED,
-                        ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS,
-                        ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED,
-                        ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT,
-                        ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS,
-                        ScoutCard.COLUMN_NAME_NOTES,
-                        ScoutCard.COLUMN_NAME_COMPLETED_DATE,
-                        ScoutCard.COLUMN_NAME_IS_DRAFT
-                };
+        String[] columns = getScoutCardColumns();
 
         //where statement
-        String whereStatement = ScoutCard.COLUMN_NAME_TEAM_ID + " = ?" + ((onlyDrafts) ? " AND " + ScoutCard.COLUMN_NAME_IS_DRAFT + " = 1" : "");
-        String[] whereArgs = {team.getId() + ""};
+        String whereStatement = ScoutCard.COLUMN_NAME_TEAM_ID + " = ? AND " + ScoutCard.COLUMN_NAME_EVENT_ID + " = ? " + ((onlyDrafts) ? " AND " + ScoutCard.COLUMN_NAME_IS_DRAFT + " = 1" : "");
+        String[] whereArgs = {team.getId() + "", event.getBlueAllianceId()};
+        String orderBy = ScoutCard.COLUMN_NAME_MATCH_ID + " DESC";
 
         //select the info from the db
         Cursor cursor = db.query(
@@ -809,70 +1034,21 @@ public class Database
                 whereArgs,
                 null,
                 null,
-                null);
+                orderBy);
 
         //make sure the cursor isn't null, else we die
         if (cursor != null)
         {
             while(cursor.moveToNext())
             {
-
-                int id = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ID));
-                int matchId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMNS_NAME_MATCH_ID));
-                int teamId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID));
-                String eventId = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
-                AllianceColor teamColor = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR)).equals(AllianceColor.RED.name()) ?  AllianceColor.RED : AllianceColor.BLUE;
-                String completedBy = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_BY));
-                int blueAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE));
-                int redAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE));
-                String autonomousExitHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT));
-                int autonomousHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED));
-                int autonomousHatchPanelsSecuredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS));
-                int autonomousCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED));
-                int autonomousCargoStoredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS));
-                int teleopHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED));
-                int teleopHatchPanelsSecuredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS));
-                int teleopCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED));
-                int teleopCargoStoredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS));
-                int teleopRocketsCompleted = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED));
-                String endGameReturnedToHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT));
-                String endGameReturnedToHabitatAttempts = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS));
-                String notes = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_NOTES));
-                Date completedDate = new Date(cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)));
-                boolean isDraft = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_IS_DRAFT)) == 1;
-
-                scoutCards.add(new ScoutCard(
-                        id,
-                        matchId,
-                        teamId,
-                        eventId,
-                        teamColor,
-                        completedBy,
-                        blueAllianceFinalScore,
-                        redAllianceFinalScore,
-                        autonomousExitHabitat,
-                        autonomousHatchPanelsSecured,
-                        autonomousHatchPanelsSecuredAttempts,
-                        autonomousCargoStored,
-                        autonomousCargoStoredAttempts,
-                        teleopHatchPanelsSecured,
-                        teleopHatchPanelsSecuredAttempts,
-                        teleopCargoStored,
-                        teleopCargoStoredAttempts,
-                        teleopRocketsCompleted,
-                        endGameReturnedToHabitat,
-                        endGameReturnedToHabitatAttempts,
-                        notes,
-                        completedDate,
-                        isDraft));
+                scoutCards.add(getScoutCardFromCursor(cursor));
             }
 
             cursor.close();
 
             return scoutCards;
         }
-
-
+        
         return null;
     }
 
@@ -885,32 +1061,7 @@ public class Database
     public ScoutCard getScoutCard(ScoutCard scoutCard)
     {
         //insert columns you are going to use here
-        String[] columns =
-                {
-                        ScoutCard.COLUMN_NAME_ID,
-                        ScoutCard.COLUMNS_NAME_MATCH_ID,
-                        ScoutCard.COLUMN_NAME_TEAM_ID,
-                        ScoutCard.COLUMN_NAME_EVENT_ID,
-                        ScoutCard.COLUMN_NAME_ALLIANCE_COLOR,
-                        ScoutCard.COLUMN_NAME_COMPLETED_BY,
-                        ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE,
-                        ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE,
-                        ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT,
-                        ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED,
-                        ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS,
-                        ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED,
-                        ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS,
-                        ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED,
-                        ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS,
-                        ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED,
-                        ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS,
-                        ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED,
-                        ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT,
-                        ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS,
-                        ScoutCard.COLUMN_NAME_NOTES,
-                        ScoutCard.COLUMN_NAME_COMPLETED_DATE,
-                        ScoutCard.COLUMN_NAME_IS_DRAFT
-                };
+        String[] columns = getScoutCardColumns();
 
         //where statement
         String whereStatement = ScoutCard.COLUMN_NAME_ID + " = ?";
@@ -932,54 +1083,10 @@ public class Database
             //move to the first result in the set
             cursor.moveToFirst();
 
-            int matchId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMNS_NAME_MATCH_ID));
-            int teamId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID));
-            String eventId = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
-            AllianceColor teamColor = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR)).equals(AllianceColor.RED.name()) ?  AllianceColor.RED : AllianceColor.BLUE;
-            String completedBy = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_BY));
-            int blueAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE));
-            int redAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE));
-            String autonomousExitHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT));
-            int autonomousHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED));
-            int autonomousHatchPanelsSecuredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS));
-            int autonomousCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED));
-            int autonomousCargoStoredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS));
-            int teleopHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED));
-            int teleopHatchPanelsSecuredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS));
-            int teleopCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED));
-            int teleopCargoStoredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS));
-            int teleopRocketsCompleted = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED));
-            String endGameReturnedToHabitat = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT));
-            String endGameReturnedToHabitatAttempts = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS));
-            String notes = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_NOTES));
-            Date completedDate = new Date(cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)));
-            boolean isDraft = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_IS_DRAFT)) == 1;
+            ScoutCard databaseScoutCard = getScoutCardFromCursor(cursor);
             cursor.close();
 
-            return new ScoutCard(
-                    scoutCard.getId(),
-                    matchId,
-                    teamId,
-                    eventId,
-                    teamColor,
-                    completedBy,
-                    blueAllianceFinalScore,
-                    redAllianceFinalScore,
-                    autonomousExitHabitat,
-                    autonomousHatchPanelsSecured,
-                    autonomousHatchPanelsSecuredAttempts,
-                    autonomousCargoStored,
-                    autonomousCargoStoredAttempts,
-                    teleopHatchPanelsSecured,
-                    teleopHatchPanelsSecuredAttempts,
-                    teleopCargoStored,
-                    teleopCargoStoredAttempts,
-                    teleopRocketsCompleted,
-                    endGameReturnedToHabitat,
-                    endGameReturnedToHabitatAttempts,
-                    notes,
-                    completedDate,
-                    isDraft);
+            return databaseScoutCard;
         }
 
 
@@ -996,26 +1103,42 @@ public class Database
     {
         //set all the values
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ScoutCard.COLUMNS_NAME_MATCH_ID, scoutCard.getMatchId());
+        contentValues.put(ScoutCard.COLUMN_NAME_MATCH_ID, scoutCard.getMatchId());
         contentValues.put(ScoutCard.COLUMN_NAME_TEAM_ID, scoutCard.getTeamId());
         contentValues.put(ScoutCard.COLUMN_NAME_EVENT_ID, scoutCard.getEventId());
-        contentValues.put(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR, scoutCard.getAllianceColor().name());
-        contentValues.put(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE, scoutCard.getBlueAllianceFinalScore());
-        contentValues.put(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE, scoutCard.getRedAllianceFinalScore());
-        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT, scoutCard.isAutonomousExitHabitat());
-        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED, scoutCard.getAutonomousHatchPanelsSecured());
+        contentValues.put(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR, scoutCard.getAllianceColor());
+        contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_BY, scoutCard.getCompletedBy());
+
+        
+        contentValues.put(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_LEVEL, scoutCard.getPreGameStartingLevel());
+        contentValues.put(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_POSITION, scoutCard.getPreGameStartingPosition().name());
+        contentValues.put(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_PIECE, scoutCard.getPreGameStartingPiece().name());
+        
+        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT, scoutCard.getAutonomousExitHabitat() ? 1 : 0);
+        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_PICKED_UP, scoutCard.getAutonomousHatchPanelsPickedUp());
         contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS, scoutCard.getAutonomousHatchPanelsSecuredAttempts());
-        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED, scoutCard.getAutonomousCargoStored());
+        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED, scoutCard.getAutonomousHatchPanelsSecured());
+        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_PICKED_UP, scoutCard.getAutonomousCargoPickedUp());
         contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS, scoutCard.getAutonomousCargoStoredAttempts());
-        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED, scoutCard.getTeleopHatchPanelsSecured());
+        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED, scoutCard.getAutonomousCargoStored());
+
+        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_PICKED_UP, scoutCard.getTeleopHatchPanelsPickedUp());
         contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS, scoutCard.getTeleopHatchPanelsSecuredAttempts());
-        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED, scoutCard.getTeleopCargoStored());
+        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED, scoutCard.getTeleopHatchPanelsSecured());
+        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_CARGO_PICKED_UP, scoutCard.getTeleopCargoPickedUp());
         contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS, scoutCard.getTeleopCargoStoredAttempts());
-        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETED, scoutCard.getTeleopRocketsCompleted());
+        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED, scoutCard.getTeleopCargoStored());
+        
         contentValues.put(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT, scoutCard.getEndGameReturnedToHabitat());
         contentValues.put(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS, scoutCard.getEndGameReturnedToHabitatAttempts());
+
+        contentValues.put(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE, scoutCard.getBlueAllianceFinalScore());
+        contentValues.put(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE, scoutCard.getRedAllianceFinalScore());
+        contentValues.put(ScoutCard.COLUMN_NAME_DEFENSE_RATING, scoutCard.getDefenseRating());
+        contentValues.put(ScoutCard.COLUMN_NAME_OFFENSE_RATING, scoutCard.getOffenseRating());
+        contentValues.put(ScoutCard.COLUMN_NAME_DRIVE_RATING, scoutCard.getDriveRating());
         contentValues.put(ScoutCard.COLUMN_NAME_NOTES, scoutCard.getNotes());
-        contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_BY, scoutCard.getCompletedBy());
+        
         contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_DATE, scoutCard.getCompletedDate().getTime());
         contentValues.put(ScoutCard.COLUMN_NAME_IS_DRAFT, scoutCard.isDraft() ? "1" : "0");
 
@@ -1027,7 +1150,10 @@ public class Database
             String whereArgs[] = {scoutCard.getId() + ""};
 
             //update
-            return db.update(ScoutCard.TABLE_NAME, contentValues, whereStatement, whereArgs);
+            if(db.update(ScoutCard.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return scoutCard.getId();
+            else
+                return -1;
         }
         //insert new scoutCard in db
         else return db.insert(ScoutCard.TABLE_NAME, null, contentValues);
@@ -1059,37 +1185,113 @@ public class Database
     //region Pit Card Logic
 
     /**
+     * Returns all columns inside the scout card table in string array format
+     * @return string array of all columns
+     */
+    private String[] getPitCardColumns()
+    {
+        return new String[]
+                {
+                        PitCard.COLUMN_NAME_ID,
+                        PitCard.COLUMN_NAME_TEAM_ID,
+                        PitCard.COLUMN_NAME_EVENT_ID,
+
+                        PitCard.COLUMN_NAME_DRIVE_STYLE,
+                        PitCard.COLUMN_NAME_ROBOT_WEIGHT,
+                        PitCard.COLUMN_NAME_ROBOT_LENGTH,
+                        PitCard.COLUMN_NAME_ROBOT_WIDTH,
+                        PitCard.COLUMN_NAME_ROBOT_HEIGHT,
+
+                        PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT,
+                        PitCard.COLUMN_NAME_AUTO_HATCH,
+                        PitCard.COLUMN_NAME_AUTO_CARGO,
+
+                        PitCard.COLUMN_NAME_TELEOP_HATCH,
+                        PitCard.COLUMN_NAME_TELEOP_CARGO,
+
+                        PitCard.COLUMN_NAME_RETURN_TO_HABITAT,
+
+                        PitCard.COLUMN_NAME_NOTES,
+
+                        PitCard.COLUMN_NAME_COMPLETED_BY,
+                        PitCard.COLUMN_NAME_IS_DRAFT
+                };
+    }
+
+
+    /**
+     * Takes in a cursor with info pulled from database and converts it into a pit card
+     * @param cursor info from database
+     * @return pitcard converted data
+     */
+    private PitCard getPitCardFromCursor(Cursor cursor)
+    {
+        int id = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_ID));
+        int teamId = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_TEAM_ID));
+        String eventId = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_EVENT_ID));
+
+        String driveStyle = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_DRIVE_STYLE));
+        String robotWeight = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_ROBOT_WEIGHT));
+        String robotLength = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_ROBOT_LENGTH));
+        String robotWidth = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_ROBOT_WIDTH));
+        String robotHeight = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_ROBOT_HEIGHT));
+
+        String autoExitHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT));
+        String autoHatch = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_HATCH));
+        String autoCargo = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_CARGO));
+
+        String teleopHatch = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_HATCH));
+        String teleopCargo = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_CARGO));
+
+        String returnToHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_RETURN_TO_HABITAT));
+
+        String notes = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_NOTES));
+        String completedBy = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_COMPLETED_BY));
+        boolean isDraft = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_IS_DRAFT)) == 1;
+
+
+        return new PitCard(
+                id,
+                teamId,
+                eventId,
+
+                driveStyle,
+                robotWeight,
+                robotLength,
+                robotWidth,
+                robotHeight,
+
+                autoExitHabitat,
+                autoHatch,
+                autoCargo,
+
+                teleopHatch,
+                teleopCargo,
+                returnToHabitat,
+
+                notes,
+
+                completedBy,
+                isDraft);
+    }
+
+    /**
      * Gets all pit cards assigned to a team
      *
      * @param team with specified ID
      * @return object based off given team ID
      */
-    public ArrayList<PitCard> getPitCards(Team team, boolean onlyDrafts)
+    public ArrayList<PitCard> getPitCards(Team team, Event event, boolean onlyDrafts)
     {
         ArrayList<PitCard> pitCards = new ArrayList<>();
 
         //insert columns you are going to use here
-        String[] columns =
-                {
-                        PitCard.COLUMN_NAME_ID,
-                        PitCard.COLUMN_NAME_TEAM_ID,
-                        PitCard.COLUMN_NAME_EVENT_ID,
-                        PitCard.COLUMN_NAME_DRIVE_STYLE,
-                        PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT,
-                        PitCard.COLUMN_NAME_AUTO_HATCH,
-                        PitCard.COLUMN_NAME_AUTO_CARGO,
-                        PitCard.COLUMN_NAME_TELEOP_HATCH,
-                        PitCard.COLUMN_NAME_TELEOP_CARGO,
-                        PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE,
-                        PitCard.COLUMN_NAME_RETURN_TO_HABITAT,
-                        PitCard.COLUMN_NAME_NOTES,
-                        PitCard.COLUMN_NAME_COMPLETED_BY,
-                        PitCard.COLUMN_NAME_IS_DRAFT
-                };
+        String[] columns = getPitCardColumns();
 
         //where statement
-        String whereStatement = PitCard.COLUMN_NAME_TEAM_ID + " = ? " + ((onlyDrafts) ? " AND " + PitCard.COLUMN_NAME_IS_DRAFT + " = 1" : "");
-        String[] whereArgs = {team.getId() + ""};
+        String whereStatement = PitCard.COLUMN_NAME_TEAM_ID + " = ? AND " + ScoutCard.COLUMN_NAME_EVENT_ID + " = ? " + ((onlyDrafts) ? " AND " + PitCard.COLUMN_NAME_IS_DRAFT + " = 1" : "");
+        String[] whereArgs = {team.getId() + "", event.getBlueAllianceId()};
+        String orderBy = PitCard.COLUMN_NAME_ID + " DESC";
 
         //select the info from the db
         Cursor cursor = db.query(
@@ -1099,45 +1301,14 @@ public class Database
                 whereArgs,
                 null,
                 null,
-                null);
+                orderBy);
 
         //make sure the cursor isn't null, else we die
         if (cursor != null)
         {
             while(cursor.moveToNext())
             {
-
-                int id = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_ID));
-                int teamId = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_TEAM_ID));
-                String eventId = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_EVENT_ID));
-                String driveStyle = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_DRIVE_STYLE));
-                String autoExitHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT));
-                String autoHatch = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_HATCH));
-                String autoCargo = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_CARGO));
-                String teleopHatch = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_HATCH));
-                String teleopCargo = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_CARGO));
-                String teleopRocketsCompleted = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE));
-                String returnToHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_RETURN_TO_HABITAT));
-                String notes = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_NOTES));
-                String completedBy = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_COMPLETED_BY));
-                boolean isDraft = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_IS_DRAFT)) == 1;
-
-
-                pitCards.add(new PitCard(
-                        id,
-                        teamId,
-                        eventId,
-                        driveStyle,
-                        autoExitHabitat,
-                        autoHatch,
-                        autoCargo,
-                        teleopHatch,
-                        teleopCargo,
-                        teleopRocketsCompleted,
-                        returnToHabitat,
-                        notes,
-                        completedBy,
-                        isDraft));
+                pitCards.add(getPitCardFromCursor(cursor));
             }
 
             cursor.close();
@@ -1158,23 +1329,7 @@ public class Database
     public PitCard getPitCard(PitCard pitCard)
     {
         //insert columns you are going to use here
-        String[] columns =
-                {
-                        PitCard.COLUMN_NAME_ID,
-                        PitCard.COLUMN_NAME_TEAM_ID,
-                        PitCard.COLUMN_NAME_EVENT_ID,
-                        PitCard.COLUMN_NAME_DRIVE_STYLE,
-                        PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT,
-                        PitCard.COLUMN_NAME_AUTO_HATCH,
-                        PitCard.COLUMN_NAME_AUTO_CARGO,
-                        PitCard.COLUMN_NAME_TELEOP_HATCH,
-                        PitCard.COLUMN_NAME_TELEOP_CARGO,
-                        PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE,
-                        PitCard.COLUMN_NAME_RETURN_TO_HABITAT,
-                        PitCard.COLUMN_NAME_NOTES,
-                        PitCard.COLUMN_NAME_COMPLETED_BY,
-                        PitCard.COLUMN_NAME_IS_DRAFT
-                };
+        String[] columns = getPitCardColumns();
 
         //where statement
         String whereStatement = PitCard.COLUMN_NAME_ID + " = ?";
@@ -1196,37 +1351,7 @@ public class Database
             //move to the first result in the set
             cursor.moveToFirst();
 
-            int id = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_ID));
-            int teamId = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_TEAM_ID));
-            String eventId = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_EVENT_ID));
-            String driveStyle = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_DRIVE_STYLE));
-            String autoExitHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT));
-            String autoHatch = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_HATCH));
-            String autoCargo = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_CARGO));
-            String teleopHatch = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_HATCH));
-            String teleopCargo = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_CARGO));
-            String teleopRocketsCompleted = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE));
-            String returnToHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_RETURN_TO_HABITAT));
-            String notes = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_NOTES));
-            String completedBy = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_COMPLETED_BY));
-            boolean isDraft = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_IS_DRAFT)) == 1;
-
-
-            return new PitCard(
-                    id,
-                    teamId,
-                    eventId,
-                    driveStyle,
-                    autoExitHabitat,
-                    autoHatch,
-                    autoCargo,
-                    teleopHatch,
-                    teleopCargo,
-                    teleopRocketsCompleted,
-                    returnToHabitat,
-                    notes,
-                    completedBy,
-                    isDraft);
+            return getPitCardFromCursor(cursor);
         }
 
 
@@ -1245,15 +1370,24 @@ public class Database
         ContentValues contentValues = new ContentValues();
         contentValues.put(PitCard.COLUMN_NAME_TEAM_ID, pitCard.getTeamId());
         contentValues.put(PitCard.COLUMN_NAME_EVENT_ID, pitCard.getEventId());
+
         contentValues.put(PitCard.COLUMN_NAME_DRIVE_STYLE, pitCard.getDriveStyle());
+        contentValues.put(PitCard.COLUMN_NAME_ROBOT_WEIGHT, pitCard.getRobotWeight());
+        contentValues.put(PitCard.COLUMN_NAME_ROBOT_LENGTH, pitCard.getRobotLength());
+        contentValues.put(PitCard.COLUMN_NAME_ROBOT_WIDTH, pitCard.getRobotWidth());
+        contentValues.put(PitCard.COLUMN_NAME_ROBOT_HEIGHT, pitCard.getRobotHeight());
+
         contentValues.put(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT, pitCard.getAutoExitHabitat());
         contentValues.put(PitCard.COLUMN_NAME_AUTO_HATCH, pitCard.getAutoHatch());
         contentValues.put(PitCard.COLUMN_NAME_AUTO_CARGO, pitCard.getAutoCargo());
+
         contentValues.put(PitCard.COLUMN_NAME_TELEOP_HATCH, pitCard.getTeleopHatch());
         contentValues.put(PitCard.COLUMN_NAME_TELEOP_CARGO, pitCard.getTeleopCargo());
-        contentValues.put(PitCard.COLUMN_NAME_TELEOP_ROCKETS_COMPLETE, pitCard.getTeleopRocketsComplete());
+
         contentValues.put(PitCard.COLUMN_NAME_RETURN_TO_HABITAT, pitCard.getReturnToHabitat());
+
         contentValues.put(PitCard.COLUMN_NAME_NOTES, pitCard.getNotes());
+
         contentValues.put(PitCard.COLUMN_NAME_COMPLETED_BY, pitCard.getCompletedBy());
         contentValues.put(PitCard.COLUMN_NAME_IS_DRAFT, pitCard.isDraft() ? "1" : "0");
 
@@ -1265,7 +1399,10 @@ public class Database
             String whereArgs[] = {pitCard.getId() + ""};
 
             //update
-            return db.update(PitCard.TABLE_NAME, contentValues, whereStatement, whereArgs);
+            if(db.update(PitCard.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return pitCard.getId();
+            else
+                return -1;
         }
         //insert new scoutCard in db
         else return db.insert(PitCard.TABLE_NAME, null, contentValues);
@@ -1415,7 +1552,10 @@ public class Database
             String whereArgs[] = {user.getId() + ""};
 
             //update
-            return db.update(User.TABLE_NAME, contentValues, whereStatement, whereArgs);
+            if(db.update(User.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return user.getId();
+            else
+                return -1;
         }
         //insert new object in db
         else return db.insert(User.TABLE_NAME, null, contentValues);
@@ -1437,6 +1577,347 @@ public class Database
 
             //delete
             return db.delete(User.TABLE_NAME, whereStatement, whereArgs) >= 1;
+        }
+
+        return false;
+    }
+    //endregion
+
+    //region Robot Media Logic
+
+    /**
+     * Returns all columns inside the robot media table in string array format
+     * @return string array of all columns
+     */
+    private String[] getRobotMediaColumns()
+    {
+        return new String[]
+                {
+                        RobotMedia.COLUMN_NAME_ID,
+                        RobotMedia.COLUMN_NAME_TEAM_ID,
+                        RobotMedia.COLUMN_NAME_FILE_URI,
+                        RobotMedia.COLUMN_NAME_IS_DRAFT
+                };
+    }
+
+
+    /**
+     * Takes in a cursor with info pulled from database and converts it into robot media
+     * @param cursor info from database
+     * @return robotMedia converted data
+     */
+    private RobotMedia getRobotMediaFromCursor(Cursor cursor)
+    {
+        int id = cursor.getInt(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_ID));
+        int teamId = cursor.getInt(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_TEAM_ID));
+        String fileUri = cursor.getString(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_FILE_URI));
+        boolean isDraft = cursor.getInt(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_IS_DRAFT)) == 1;
+
+        return new RobotMedia(
+                id,
+                teamId,
+                fileUri,
+                isDraft);
+    }
+
+    /**
+     * Gets all robot media assigned to a team
+     * @param team with specified ID
+     * @return robotMedia based off given team ID
+     */
+    public ArrayList<RobotMedia> getRobotMedia(Team team, boolean onlyDrafts)
+    {
+        ArrayList<RobotMedia> robotMedia = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns = getRobotMediaColumns();
+
+        //where statement
+        String whereStatement = RobotMedia.COLUMN_NAME_TEAM_ID + " = ?" + ((onlyDrafts) ? " AND " + RobotMedia.COLUMN_NAME_IS_DRAFT + " = 1" : "");
+        String[] whereArgs = {team.getId() + ""};
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                RobotMedia.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while(cursor.moveToNext())
+            {
+                robotMedia.add(getRobotMediaFromCursor(cursor));
+            }
+
+            cursor.close();
+
+            return robotMedia;
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets a specific object from the database and returns it
+     *
+     * @param robotMedia with specified ID
+     * @return robotMedia based off given ID
+     */
+    public RobotMedia getRobotMedia(RobotMedia robotMedia)
+    {
+        //insert columns you are going to use here
+        String[] columns = getRobotMediaColumns();
+
+        //where statement
+        String whereStatement = RobotMedia.COLUMN_NAME_ID + " = ?";
+        String[] whereArgs = {robotMedia.getId() + ""};
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                RobotMedia.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            //move to the first result in the set
+            cursor.moveToFirst();
+
+            RobotMedia databaseRobotMedia = getRobotMediaFromCursor(cursor);
+            cursor.close();
+
+            return databaseRobotMedia;
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Saves a specific robotMedia from the database and returns it
+     *
+     * @param robotMedia with specified ID
+     * @return id of the saved robotMedia
+     */
+    public long setRobotMedia(RobotMedia robotMedia)
+    {
+        //set all the values
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(RobotMedia.COLUMN_NAME_TEAM_ID, robotMedia.getTeamId());
+        contentValues.put(RobotMedia.COLUMN_NAME_FILE_URI, robotMedia.getFileUri());
+        contentValues.put(RobotMedia.COLUMN_NAME_IS_DRAFT, robotMedia.isDraft() ? "1" : "0");
+
+        //robotMedia already exists in DB, update
+        if (robotMedia.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = RobotMedia.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {robotMedia.getId() + ""};
+
+            //update
+            if(db.update(RobotMedia.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return robotMedia.getId();
+            else
+                return -1;
+        }
+        //insert new robotMedia in db
+        else return db.insert(RobotMedia.TABLE_NAME, null, contentValues);
+
+    }
+
+    /**
+     * Deletes a specific robotMedia from the database
+     * @param robotMedia with specified ID
+     * @return successful delete
+     */
+    public boolean deleteRobotMedia(RobotMedia robotMedia)
+    {
+        if (robotMedia.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = RobotMedia.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {robotMedia.getId() + ""};
+
+            //delete
+            return db.delete(RobotMedia.TABLE_NAME, whereStatement, whereArgs) >= 1;
+        }
+
+        return false;
+    }
+    //endregion
+
+    //region Event Team List Logic
+
+    /**
+     * Returns all columns inside the event team list table in string array format
+     * @return string array of all columns
+     */
+    private String[] getEventTeamListColumns()
+    {
+        return new String[]
+                {
+                        EventTeamList.COLUMN_NAME_ID,
+                        EventTeamList.COLUMN_NAME_TEAM_ID,
+                        EventTeamList.COLUMN_NAME_EVENT_ID
+                };
+    }
+
+
+    /**
+     * Takes in a cursor with info pulled from database and converts it into an object
+     * @param cursor info from database
+     * @return eventeamlist converted data
+     */
+    private EventTeamList getEventTeamListFromCursor(Cursor cursor)
+    {
+        int id = cursor.getInt(cursor.getColumnIndex(EventTeamList.COLUMN_NAME_ID));
+        int teamId = cursor.getInt(cursor.getColumnIndex(EventTeamList.COLUMN_NAME_TEAM_ID));
+        String eventId = cursor.getString(cursor.getColumnIndex(EventTeamList.COLUMN_NAME_EVENT_ID));
+
+        return new EventTeamList(
+                id,
+                teamId,
+                eventId);
+    }
+
+    /**
+     * Gets the event team list data based off an event
+     * @param event with specified ID
+     * @return object based off given team ID
+     */
+    public ArrayList<EventTeamList> getEventTeamLists(Event event)
+    {
+        ArrayList<EventTeamList> eventTeamLists = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns = getEventTeamListColumns();
+
+        //where statement
+        String whereStatement = EventTeamList.COLUMN_NAME_EVENT_ID + " = ?";
+        String[] whereArgs = {event.getBlueAllianceId() + ""};
+        String orderBy = EventTeamList.COLUMN_NAME_TEAM_ID + " DESC";
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                EventTeamList.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                orderBy);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while(cursor.moveToNext())
+            {
+                eventTeamLists.add(getEventTeamListFromCursor(cursor));
+            }
+
+            cursor.close();
+
+            return eventTeamLists;
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets a specific object from the database and returns it
+     * @param eventTeamList with specified ID
+     * @return eventTeamList based off given ID
+     */
+    public EventTeamList getEventTeamList(EventTeamList eventTeamList)
+    {
+        //insert columns you are going to use here
+        String[] columns = getEventTeamListColumns();
+
+        //where statement
+        String whereStatement = EventTeamList.COLUMN_NAME_ID + " = ?";
+        String[] whereArgs = {eventTeamList.getId() + ""};
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                EventTeamList.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            //move to the first result in the set
+            cursor.moveToFirst();
+
+            EventTeamList databaseEventTeamList = getEventTeamListFromCursor(cursor);
+            cursor.close();
+
+            return databaseEventTeamList;
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Saves a specific object from the database and returns it
+     * @param eventTeamList with specified ID
+     * @return id of the saved eventlist
+     */
+    public long setEventTeamList(EventTeamList eventTeamList)
+    {
+        //set all the values
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(EventTeamList.COLUMN_NAME_TEAM_ID, eventTeamList.getTeamId());
+        contentValues.put(EventTeamList.COLUMN_NAME_EVENT_ID, eventTeamList.getEventId());
+
+        //robotMedia already exists in DB, update
+        if (eventTeamList.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = EventTeamList.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {eventTeamList.getId() + ""};
+
+            //update
+            if(db.update(EventTeamList.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return eventTeamList.getId();
+            else
+                return -1;
+        }
+        //insert new robotMedia in db
+        else return db.insert(EventTeamList.TABLE_NAME, null, contentValues);
+
+    }
+
+    /**
+     * Deletes a specific object from the database
+     * @param eventTeamList with specified ID
+     * @return successful delete
+     */
+    public boolean deleteEventTeamList(EventTeamList eventTeamList)
+    {
+        if (eventTeamList.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = EventTeamList.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {eventTeamList.getId() + ""};
+
+            //delete
+            return db.delete(EventTeamList.TABLE_NAME, whereStatement, whereArgs) >= 1;
         }
 
         return false;

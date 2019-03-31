@@ -3,30 +3,28 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Adapters.ScoutCardsRecyclerViewAdapter;
 import com.alphadevelopmentsolutions.frcscout.Adapters.TeamViewPagerAdapter;
+import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeIcon;
-import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.io.File;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,12 +34,14 @@ import java.util.Date;
  * Use the {@link TeamFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TeamFragment extends Fragment
+public class TeamFragment extends MasterFragment
 {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "teamId";
+    private static final String ARG_PARAM2 = "eventJson";
 
-    private int teamId;
+    private String teamJson;
+    private String eventJson;
 
     private OnFragmentInteractionListener mListener;
 
@@ -54,14 +54,16 @@ public class TeamFragment extends Fragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param teamId id of team to show
+     * @param teamJson json of team
+     * @param eventJson json of event
      * @return A new instance of fragment TeamFragment.
      */
-    public static TeamFragment newInstance(int teamId)
+    public static TeamFragment newInstance(String teamJson, String eventJson)
     {
         TeamFragment fragment = new TeamFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, teamId);
+        args.putString(ARG_PARAM1, teamJson);
+        args.putString(ARG_PARAM2, eventJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,11 +74,25 @@ public class TeamFragment extends Fragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            teamId = getArguments().getInt(ARG_PARAM1);
+            teamJson = getArguments().getString(ARG_PARAM1);
+            eventJson = getArguments().getString(ARG_PARAM2);
         }
+
+        loadThread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                team = new Gson().fromJson(teamJson, Team.class);
+                event = new Gson().fromJson(eventJson, Event.class);
+            }
+        });
+        loadThread.start();
+
     }
 
     private Team team;
+    private Event event;
 
     private TabLayout teamTabLayout;
     private ViewPager teamViewPager;
@@ -84,13 +100,20 @@ public class TeamFragment extends Fragment
     private TextView teamNumberNameTextView;
     private TextView teamLocationTextView;
 
+    private CircleImageView teamLogoImageView;
+
     private FontAwesomeIcon facebookFontAwesomeBrandIcon;
     private FontAwesomeIcon twitterFontAwesomeBrandIcon;
     private FontAwesomeIcon instagramFontAwesomeBrandIcon;
     private FontAwesomeIcon youtubeFontAwesomeBrandIcon;
     private FontAwesomeIcon websiteFontAwesomeSolidIcon;
 
+    private FloatingActionMenu teamFloatingActionMenu;
     private FloatingActionButton addMatchFloatingActionButton;
+    private FloatingActionButton addPitCardFloatingActionButton;
+    private FloatingActionButton addRobotPhotoFloatingActionButton;
+
+    private Thread loadThread;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,14 +122,8 @@ public class TeamFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_team, container, false);
 
-        final MainActivity context = (MainActivity) getActivity();
-
         //gets rid of the shadow on the actionbar
         context.dropActionBar();
-
-        //load the current team you are viewing
-        team = new Team(teamId);
-        team.load(context.getDatabase());
 
         //assign the vars to the views on the page
         teamNumberNameTextView = view.findViewById(R.id.TeamNumberNameTextView);
@@ -115,13 +132,80 @@ public class TeamFragment extends Fragment
         teamTabLayout = view.findViewById(R.id.TeamTabLayout);
         teamViewPager = view.findViewById(R.id.TeamViewPager);
 
+        teamLogoImageView = view.findViewById(R.id.TeamLogoImageView);
+
         facebookFontAwesomeBrandIcon = view.findViewById(R.id.FacebookFontAwesomeBrandIcon);
         twitterFontAwesomeBrandIcon = view.findViewById(R.id.TwitterFontAwesomeBrandIcon);
         instagramFontAwesomeBrandIcon = view.findViewById(R.id.InstagramFontAwesomeBrandIcon);
         youtubeFontAwesomeBrandIcon = view.findViewById(R.id.YoutubeFontAwesomeBrandIcon);
         websiteFontAwesomeSolidIcon = view.findViewById(R.id.WebsiteFontAwesomeSolidIcon);
 
+        teamFloatingActionMenu = view.findViewById(R.id.TeamFloatingActionMenu);
         addMatchFloatingActionButton = view.findViewById(R.id.AddMatchFloatingActionButton);
+        addPitCardFloatingActionButton = view.findViewById(R.id.AddPitCardFloatingActingButton);
+        addRobotPhotoFloatingActionButton = view.findViewById(R.id.AddRobotPhotoFloatingActionButton);
+
+        //logic for adding a new match
+        addMatchFloatingActionButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                context.changeFragment(ScoutCardFragment.newInstance(null, eventJson, team.getId()), true);
+            }
+        });
+
+        addPitCardFloatingActionButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                context.changeFragment(PitCardFragment.newInstance(null, eventJson, team.getId()), true);
+            }
+        });
+
+        addRobotPhotoFloatingActionButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+                //Ensure the robot media folder exists
+                File mediaFolder = new File(Constants.MEDIA_DIRECTORY);
+                if(!mediaFolder.isDirectory())
+                {
+                    if (!mediaFolder.mkdir())
+                        context.showSnackbar(getString(R.string.mkdir_fail));
+                    else
+                        context.changeFragment(RobotMediaFragment.newInstance(null, team.getId()), true);
+
+                }
+                else
+                    context.changeFragment(RobotMediaFragment.newInstance(null, team.getId()), true);
+            }
+        });
+
+        //join back up with the load team thread
+        try
+        {
+            loadThread.join();
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
+        //load the photo if the file exists
+        if(!team.getImageFileURI().equals(""))
+            Picasso.get()
+                    .load(Uri.fromFile(new File(team.getImageFileURI())))
+                    .fit()
+                    .centerCrop()
+                    .placeholder(R.drawable.frc_logo)
+                    .error(R.drawable.frc_logo)
+                    .into(teamLogoImageView);
+
+        else
+            teamLogoImageView.setImageDrawable(context.getDrawable(R.drawable.frc_logo));
 
         //checks to see if the team has a valid URL for each social media, if not hide the icon
         if(team.getFacebookURL() != null && !team.getFacebookURL().equals("")) facebookFontAwesomeBrandIcon.setURL(team.getFacebookURL(), context);
@@ -139,31 +223,45 @@ public class TeamFragment extends Fragment
         if(team.getWebsiteURL() != null && !team.getWebsiteURL().equals("")) websiteFontAwesomeSolidIcon.setURL(team.getWebsiteURL(), context);
         else websiteFontAwesomeSolidIcon.hide();
 
-        //logic for adding a new match
-        addMatchFloatingActionButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-
-                if (teamTabLayout.getSelectedTabPosition() == 0)
-                    context.changeFragment(ScoutCardFragment.newInstance(-1, team.getId()), true);
-
-                else
-                    context.changeFragment(PitCardFragment.newInstance(-1, team.getId()), true);
-            }
-        });
-
         teamNumberNameTextView.setText(team.getId() + " - " + team.getName());
         teamLocationTextView.setText(team.getCity() + ", " + team.getStateProvince() + ", " + team.getCountry());
 
         TeamViewPagerAdapter teamViewPagerAdapter = new TeamViewPagerAdapter(getChildFragmentManager());
 
-        teamViewPagerAdapter.addFragment(ScoutCardListFragment.newInstance(teamId), "Scout Cards");
-        teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(teamId), "Pit Cards");
+        teamViewPagerAdapter.addFragment(ScoutCardListFragment.newInstance(teamJson, eventJson), "Scout Cards");
+        teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(teamJson, eventJson), "Pit Cards");
+        teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(teamJson), "Robot Images");
+        teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(team.getId(), eventJson), "Quick Stats");
 
         teamViewPager.setAdapter(teamViewPagerAdapter);
+        teamViewPager.setOffscreenPageLimit(5);
         teamTabLayout.setupWithViewPager(teamViewPager);
+
+        teamViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        {
+            @Override
+            public void onPageScrolled(int i, float v, int i1)
+            {
+
+            }
+
+            @Override
+            public void onPageSelected(int i)
+            {
+                if(i == 3)
+                    teamFloatingActionMenu.hideMenu(true);
+                else if (teamFloatingActionMenu.isMenuHidden())
+                    teamFloatingActionMenu.showMenu(true);
+
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i)
+            {
+
+            }
+        });
 
         return view;
     }
