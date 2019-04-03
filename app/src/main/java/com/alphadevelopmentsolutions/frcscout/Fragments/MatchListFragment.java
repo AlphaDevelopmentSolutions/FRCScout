@@ -85,7 +85,21 @@ public class MatchListFragment extends MasterFragment
         matchesRecyclerView = view.findViewById(R.id.ScoutCardsRecyclerView);
 
         ArrayList<Match> matchList = new ArrayList<>();
-        Match match = new Match(1,  new Date(111111), 5885, 1234, 2345, 1, 1, 1, 200, 400, 610, 875, 123, 1, 1, 1);
+        Match match = new Match(1,
+                new Date(111111),
+                "eventId",
+                "key",
+                Match.TypeReference.FINALS,
+                1,
+                1,
+                1,
+                200,
+                400,
+                610,
+                875,
+                123,
+                1,
+                1);
         matchList.add(match);
         ScoutCardsRecyclerViewAdapter teamListRecyclerViewAdapter = new ScoutCardsRecyclerViewAdapter(matchList, context);
 

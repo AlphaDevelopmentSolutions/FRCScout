@@ -3,7 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.Classes;
 /**
  * Positions available before a match
  */
-public enum  StartingPosition
+public enum StartingPosition
 {
     LEFT,
     CENTER,
