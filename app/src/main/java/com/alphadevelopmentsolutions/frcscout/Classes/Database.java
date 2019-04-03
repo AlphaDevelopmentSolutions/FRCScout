@@ -777,11 +777,11 @@ public class Database
     {
         int id = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_ID));
         Date date = new Date(cursor.getLong(cursor.getColumnIndex(Match.COLUMN_NAME_DATE)));
-        String eventId = cursor.getString(cursor.getColumnIndex(Match.COLUMN_NAME_DATE));
-        String key = cursor.getString(cursor.getColumnIndex(Match.COLUMN_NAME_DATE));
-        Match.Type matchType = Match.Type.getTypeFromString(cursor.getString(cursor.getColumnIndex(Match.COLUMN_NAME_DATE)));
-        int setNumber = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_DATE));
-        int matchNumber = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_DATE));
+        String eventId = cursor.getString(cursor.getColumnIndex(Match.COLUMN_NAME_EVENT_ID));
+        String key = cursor.getString(cursor.getColumnIndex(Match.COLUMN_NAME_KEY));
+        Match.Type matchType = Match.Type.getTypeFromString(cursor.getString(cursor.getColumnIndex(Match.COLUMN_NAME_MATCH_TYPE)));
+        int setNumber = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_SET_NUMBER));
+        int matchNumber = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_MATCH_NUMBER));
 
         int blueAllianceTeamOneId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID));
         int blueAllianceTeamTwoId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID));
@@ -793,10 +793,6 @@ public class Database
 
         int blueAllianceScore = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE));
         int redAllianceScore = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_SCORE));
-
-        cursor.close();
-
-
 
         return new Match(
                 id,
@@ -820,7 +816,7 @@ public class Database
      * Gets all events in the database
      * @return all events inside database
      */
-    public ArrayList<Match> getMatches(Event event)
+    public ArrayList<Match> getMatches(Team team, Event event)
     {
         ArrayList<Match> matches = new ArrayList<>();
 
@@ -828,8 +824,22 @@ public class Database
         String[] columns = getMatchColumns();
 
         //where statement
-        String whereStatement = Match.COLUMN_NAME_ID + " = ?";
-        String[] whereArgs = {event.getId() + ""};
+        String whereStatement = Match.COLUMN_NAME_EVENT_ID + " = ? AND (" +
+                Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID + " = ? OR " +
+                Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID + " = ? OR " +
+                Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID + " = ? OR " +
+
+                Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID + " = ? OR " +
+                Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID + " = ? OR " +
+                Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID + " = ? )";
+        String[] whereArgs = {event.getBlueAllianceId(),
+                String.valueOf(team.getId()),
+                String.valueOf(team.getId()),
+                String.valueOf(team.getId()),
+                String.valueOf(team.getId()),
+                String.valueOf(team.getId()),
+                String.valueOf(team.getId()),
+        };
 
         //select the info from the db
         Cursor cursor = db.query(
@@ -913,11 +923,11 @@ public class Database
         //set all the values
         ContentValues contentValues = new ContentValues();
         contentValues.put(Match.COLUMN_NAME_DATE, match.getDate().getTime());
-        contentValues.put(Match.COLUMN_NAME_DATE, match.getEventId());
-        contentValues.put(Match.COLUMN_NAME_DATE, match.getKey());
-        contentValues.put(Match.COLUMN_NAME_DATE, match.getMatchType().name());
-        contentValues.put(Match.COLUMN_NAME_DATE, match.getSetNumber());
-        contentValues.put(Match.COLUMN_NAME_DATE, match.getMatchNumber());
+        contentValues.put(Match.COLUMN_NAME_EVENT_ID, match.getEventId());
+        contentValues.put(Match.COLUMN_NAME_KEY, match.getKey());
+        contentValues.put(Match.COLUMN_NAME_MATCH_TYPE, match.getMatchType().name());
+        contentValues.put(Match.COLUMN_NAME_SET_NUMBER, match.getSetNumber());
+        contentValues.put(Match.COLUMN_NAME_MATCH_NUMBER, match.getMatchNumber());
 
         contentValues.put(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID, match.getBlueAllianceTeamOneId());
         contentValues.put(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID, match.getBlueAllianceTeamTwoId());

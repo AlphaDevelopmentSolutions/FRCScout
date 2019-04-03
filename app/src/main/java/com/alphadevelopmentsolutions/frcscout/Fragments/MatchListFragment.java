@@ -88,7 +88,7 @@ public class MatchListFragment extends MasterFragment
 
         matchListRecyclerView = view.findViewById(R.id.MatchListRecyclerView);
 
-        MatchesRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new MatchesRecyclerViewAdapter(eventJson, database.getMatches(event), context);
+        MatchesRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new MatchesRecyclerViewAdapter(eventJson, database.getMatches(team, event), context);
         matchListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         matchListRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
 

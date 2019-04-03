@@ -479,7 +479,7 @@ public abstract class Server extends Api
 
                     Date date = simpleDateFormat.parse(matchObject.getString(Match.COLUMN_NAME_DATE));
                     String eventId = matchObject.getString(Match.COLUMN_NAME_EVENT_ID);
-                    String key = matchObject.getString(Match.COLUMN_NAME_KEY_UNESCAPED);
+                    String key = matchObject.getString(Match.COLUMN_NAME_KEY);
                     Match.Type matchType = Match.Type.getTypeFromString(matchObject.getString(Match.COLUMN_NAME_MATCH_TYPE));
                     int setNumber = matchObject.getInt(Match.COLUMN_NAME_SET_NUMBER);
                     int matchNumber = matchObject.getInt(Match.COLUMN_NAME_MATCH_NUMBER);

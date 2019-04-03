@@ -61,7 +61,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     Match.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
                     Match.COLUMN_NAME_DATE + " INTEGER," +
                     Match.COLUMN_NAME_EVENT_ID + " TEXT," +
-                    Match.COLUMN_NAME_KEY + " TEXT," +
+                    "\"" + Match.COLUMN_NAME_KEY + "\" TEXT," +
                     Match.COLUMN_NAME_MATCH_TYPE + " TEXT," +
                     Match.COLUMN_NAME_SET_NUMBER + " INTEGER," +
                     Match.COLUMN_NAME_MATCH_NUMBER + " INTEGER," +
