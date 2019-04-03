@@ -1,5 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Match
@@ -265,6 +266,11 @@ public class Match
 
         //default to blue
         return AllianceColor.BLUE;
+    }
+
+    public ArrayList<ScoutCard> getScoutCards(Database database, Event event)
+    {
+        return database.getScoutCards(this, event,false);
     }
 
     //endregion

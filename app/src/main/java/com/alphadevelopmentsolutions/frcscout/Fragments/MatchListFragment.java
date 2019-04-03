@@ -1,21 +1,20 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alphadevelopmentsolutions.frcscout.Adapters.ScoutCardsRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Classes.Match;
+import com.alphadevelopmentsolutions.frcscout.Adapters.MatchesRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Classes.Event;
+import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
-
-import java.util.ArrayList;
-import java.util.Date;
+import com.google.gson.Gson;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,10 +32,10 @@ public class MatchListFragment extends MasterFragment
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String teamJson;
+    private String eventJson;
 
-    private OnFragmentInteractionListener mListener;
+    private MatchListFragment.OnFragmentInteractionListener mListener;
 
     public MatchListFragment()
     {
@@ -47,17 +46,16 @@ public class MatchListFragment extends MasterFragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MatchListFragment.
+     * @param teamJson json of the team.
+     * @return A new instance of fragment ScoutCardListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MatchListFragment newInstance(String param1, String param2)
+    public static MatchListFragment newInstance(String teamJson, String eventJson)
     {
         MatchListFragment fragment = new MatchListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM1, teamJson);
+        args.putString(ARG_PARAM2, eventJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,12 +66,18 @@ public class MatchListFragment extends MasterFragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            teamJson = getArguments().getString(ARG_PARAM1);
+            eventJson = getArguments().getString(ARG_PARAM2);
         }
+
+        team = new Gson().fromJson(teamJson, Team.class);
+        event = new Gson().fromJson(eventJson, Event.class);
     }
 
-    private RecyclerView matchesRecyclerView;
+    private RecyclerView matchListRecyclerView;
+
+    private Team team;
+    private Event event;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,29 +86,11 @@ public class MatchListFragment extends MasterFragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_match_list, container, false);
 
-        matchesRecyclerView = view.findViewById(R.id.ScoutCardsRecyclerView);
+        matchListRecyclerView = view.findViewById(R.id.MatchListRecyclerView);
 
-        ArrayList<Match> matchList = new ArrayList<>();
-        Match match = new Match(1,
-                new Date(111111),
-                "eventId",
-                "key",
-                Match.TypeReference.FINALS,
-                1,
-                1,
-                1,
-                200,
-                400,
-                610,
-                875,
-                123,
-                1,
-                1);
-        matchList.add(match);
-        ScoutCardsRecyclerViewAdapter teamListRecyclerViewAdapter = new ScoutCardsRecyclerViewAdapter(matchList, context);
-
-        matchesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        matchesRecyclerView.setAdapter(teamListRecyclerViewAdapter);
+        MatchesRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new MatchesRecyclerViewAdapter(eventJson, database.getMatches(event), context);
+        matchListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        matchListRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
 
         return view;
     }

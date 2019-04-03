@@ -805,6 +805,49 @@ public class Database
     }
 
     /**
+     * Gets all events in the database
+     * @return all events inside database
+     */
+    public ArrayList<Match> getMatches(Event event)
+    {
+        ArrayList<Match> matches = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns = getMatchColumns();
+
+        //where statement
+        String whereStatement = Match.COLUMN_NAME_ID + " = ?";
+        String[] whereArgs = {event.getId() + ""};
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                Match.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while (cursor.moveToNext())
+            {
+
+                matches.add(getMatchFromCursor(cursor));
+            }
+
+            cursor.close();
+
+            return matches;
+        }
+
+
+        return null;
+    }
+
+    /**
      * Gets a specific match from the database and returns it
      *
      * @param match with specified ID
@@ -1090,6 +1133,50 @@ public class Database
             return scoutCards;
         }
         
+        return null;
+    }
+
+    /**
+     * Gets all scout cards for a match at an event
+     * @param match with specified ID
+     * @param event with specified ID
+     * @return scoutcard based off given team ID
+     */
+    public ArrayList<ScoutCard> getScoutCards(Match match, Event event, boolean onlyDrafts)
+    {
+        ArrayList<ScoutCard> scoutCards = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns = getScoutCardColumns();
+
+        //where statement
+        String whereStatement = ScoutCard.COLUMN_NAME_MATCH_ID + " = ? AND " + ScoutCard.COLUMN_NAME_EVENT_ID + " = ? " + ((onlyDrafts) ? " AND " + ScoutCard.COLUMN_NAME_IS_DRAFT + " = 1" : "");
+        String[] whereArgs = {match.getKey() + "", event.getBlueAllianceId()};
+        String orderBy = ScoutCard.COLUMN_NAME_MATCH_ID + " DESC";
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                ScoutCard.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                orderBy);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while(cursor.moveToNext())
+            {
+                scoutCards.add(getScoutCardFromCursor(cursor));
+            }
+
+            cursor.close();
+
+            return scoutCards;
+        }
+
         return null;
     }
 
