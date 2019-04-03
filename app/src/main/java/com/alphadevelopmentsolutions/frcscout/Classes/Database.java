@@ -975,7 +975,7 @@ public class Database
     private ScoutCard getScoutCardFromCursor(Cursor cursor)
     {
         int id = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ID));
-        int matchId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_MATCH_ID));
+        String matchId = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_MATCH_ID));
         int teamId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID));
         String eventId = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
         String allianceColor = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR));

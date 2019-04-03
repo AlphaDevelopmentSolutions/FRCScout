@@ -167,7 +167,7 @@ public class ScoutCardFragment extends MasterFragment
                 {
 
                     //pre game info
-                    int matchId = scoutCardPreGameFragment.getMatchNumber();
+                    String matchId = scoutCardPreGameFragment.getMatchNumber();
                     int teamNumber = scoutCardPreGameFragment.getTeamId();
                     String eventId = (scoutCard == null) ? event.getBlueAllianceId() : scoutCard.getEventId();
                     String allianceColor = scoutCardPreGameFragment.getAllianceColor();

@@ -202,9 +202,9 @@ public class ScoutCardPreGameFragment extends MasterFragment {
         return scouterNameAutoCompleteTextView.getText().toString();
     }
 
-    public int getMatchNumber()
+    public String getMatchNumber()
     {
-        return Integer.parseInt(matchIdEditText.getText().toString());
+        return matchIdEditText.getText().toString();
     }
 
     public String getAllianceColor()

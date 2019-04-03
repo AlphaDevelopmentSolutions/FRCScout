@@ -228,7 +228,7 @@ public abstract class Server extends Api
                 {
                     JSONObject scoutCardObject = response.getJSONArray("Response").getJSONObject(i);
 
-                    int matchId = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_MATCH_ID);
+                    String matchId = scoutCardObject.getString(ScoutCard.COLUMN_NAME_MATCH_ID);
                     int teamId = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_TEAM_ID);
                     String eventId = scoutCardObject.getString(ScoutCard.COLUMN_NAME_EVENT_ID);
                     String allianceColor = scoutCardObject.getString(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR);

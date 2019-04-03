@@ -45,7 +45,7 @@ public class ScoutCard
     public static final String COLUMN_NAME_IS_DRAFT = "IsDraft";
 
     private int id;
-    private int matchId;
+    private String matchId;
     private int teamId;
     private String eventId;
     private String allianceColor;
@@ -82,7 +82,7 @@ public class ScoutCard
 
     public ScoutCard(
             int id,
-            int matchId,
+            String matchId,
             int teamId,
             String eventId,
             String allianceColor,
@@ -171,7 +171,7 @@ public class ScoutCard
         return id;
     }
 
-    public int getMatchId()
+    public String  getMatchId()
     {
         return matchId;
     }
@@ -336,7 +336,7 @@ public class ScoutCard
         this.id = id;
     }
 
-    public void setMatchId(int matchId)
+    public void setMatchId(String matchId)
     {
         this.matchId = matchId;
     }
