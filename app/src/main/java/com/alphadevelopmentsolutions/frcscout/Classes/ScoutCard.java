@@ -36,8 +36,6 @@ public class ScoutCard
     public static final String COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT = "EndGameReturnedToHabitat";
     public static final String COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS = "EndGameReturnedToHabitatAttempts";
 
-    public static final String COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE = "BlueAllianceFinalScore";
-    public static final String COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE = "RedAllianceFinalScore";
     public static final String COLUMN_NAME_DEFENSE_RATING = "DefenseRating";
     public static final String COLUMN_NAME_OFFENSE_RATING = "OffenseRating";
     public static final String COLUMN_NAME_DRIVE_RATING = "DriveRating";
@@ -75,8 +73,6 @@ public class ScoutCard
     private int endGameReturnedToHabitat;
     private int endGameReturnedToHabitatAttempts;
     
-    private int blueAllianceFinalScore;
-    private int redAllianceFinalScore;
     private int defenseRating;
     private int offenseRating;
     private int driveRating;
@@ -114,8 +110,6 @@ public class ScoutCard
             int endGameReturnedToHabitat,
             int endGameReturnedToHabitatAttempts,
 
-            int blueAllianceFinalScore,
-            int redAllianceFinalScore,
             int defenseRating,
             int offenseRating,
             int driveRating,
@@ -152,8 +146,6 @@ public class ScoutCard
         this.endGameReturnedToHabitat = endGameReturnedToHabitat;
         this.endGameReturnedToHabitatAttempts = endGameReturnedToHabitatAttempts;
 
-        this.blueAllianceFinalScore = blueAllianceFinalScore;
-        this.redAllianceFinalScore = redAllianceFinalScore;
         this.defenseRating = defenseRating;
         this.offenseRating = offenseRating;
         this.driveRating = driveRating;
@@ -292,16 +284,6 @@ public class ScoutCard
     public int getEndGameReturnedToHabitatAttempts()
     {
         return endGameReturnedToHabitatAttempts;
-    }
-
-    public int getBlueAllianceFinalScore()
-    {
-        return blueAllianceFinalScore;
-    }
-
-    public int getRedAllianceFinalScore()
-    {
-        return redAllianceFinalScore;
     }
 
     public int getDefenseRating()
@@ -469,16 +451,6 @@ public class ScoutCard
         this.endGameReturnedToHabitatAttempts = endGameReturnedToHabitatAttempts;
     }
 
-    public void setBlueAllianceFinalScore(int blueAllianceFinalScore)
-    {
-        this.blueAllianceFinalScore = blueAllianceFinalScore;
-    }
-
-    public void setRedAllianceFinalScore(int redAllianceFinalScore)
-    {
-        this.redAllianceFinalScore = redAllianceFinalScore;
-    }
-
     public void setDefenseRating(int defenseRating)
     {
         this.defenseRating = defenseRating;
@@ -559,8 +531,6 @@ public class ScoutCard
                 setEndGameReturnedToHabitat(scoutCard.getEndGameReturnedToHabitat());
                 setEndGameReturnedToHabitatAttempts(scoutCard.getEndGameReturnedToHabitatAttempts());
 
-                setBlueAllianceFinalScore(scoutCard.getBlueAllianceFinalScore());
-                setRedAllianceFinalScore(scoutCard.getRedAllianceFinalScore());
                 setDefenseRating(scoutCard.getDefenseRating());
                 setOffenseRating(scoutCard.getOffenseRating());
                 setDriveRating(scoutCard.getDriveRating());

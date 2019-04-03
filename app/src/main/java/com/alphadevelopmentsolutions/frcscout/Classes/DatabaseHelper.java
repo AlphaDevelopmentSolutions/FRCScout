@@ -77,7 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private final String CREATE_SCOUT_CARDS_TABLE =
             "CREATE TABLE " + ScoutCard.TABLE_NAME +" (" +
                     ScoutCard.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                    ScoutCard.COLUMN_NAME_MATCH_ID + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_MATCH_ID + " TEXT," +
                     ScoutCard.COLUMN_NAME_TEAM_ID + " INTEGER," +
                     ScoutCard.COLUMN_NAME_EVENT_ID + " TEXT," +
                     ScoutCard.COLUMN_NAME_ALLIANCE_COLOR + " TEXT," +
@@ -105,8 +105,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT + " INTEGER," +
                     ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS + " INTEGER," +
 
-                    ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE + " INTEGER," +
                     ScoutCard.COLUMN_NAME_DEFENSE_RATING + " INTEGER," +
                     ScoutCard.COLUMN_NAME_OFFENSE_RATING + " INTEGER," +
                     ScoutCard.COLUMN_NAME_DRIVE_RATING + " INTEGER," +

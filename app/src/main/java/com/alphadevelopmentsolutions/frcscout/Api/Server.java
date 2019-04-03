@@ -30,19 +30,6 @@ public abstract class Server extends Api
     {
         private ArrayList<Team> teams;
 
-        private final String API_FIELD_NAME_TEAM_ID = "Id";
-        private final String API_FIELD_NAME_TEAM_NAME = "Name";
-        private final String API_FIELD_NAME_TEAM_CITY = "City";
-        private final String API_FIELD_NAME_TEAM_STATE_PROVINCE = "StateProvince";
-        private final String API_FIELD_NAME_TEAM_COUNTRY = "Country";
-        private final String API_FIELD_NAME_TEAM_ROOKIE_YEAR = "RookieYear";
-        private final String API_FIELD_NAME_TEAM_FACEBOOK_URL = "FacebookURL";
-        private final String API_FIELD_NAME_TEAM_TWITTER_URL = "TwitterURL";
-        private final String API_FIELD_NAME_TEAM_INSTAGRAM_URL = "InstagramURL";
-        private final String API_FIELD_NAME_TEAM_YOUTUBE_URL = "YoutubeURL";
-        private final String API_FIELD_NAME_TEAM_WEBSITE_URL = "WebsiteURL";
-        private final String API_FIELD_NAME_TEAM_IMAGE_FILE_URL = "TODO";
-
         private MainActivity context;
 
         public GetTeamsAtEvent(final MainActivity context, final Event event)
@@ -83,17 +70,17 @@ public abstract class Server extends Api
                 {
                     JSONObject teamObject = response.getJSONArray("Response").getJSONObject(i);
 
-                    int teamId = teamObject.getInt(API_FIELD_NAME_TEAM_ID);
-                    String name = teamObject.getString(API_FIELD_NAME_TEAM_NAME);
-                    String city = teamObject.getString(API_FIELD_NAME_TEAM_CITY);
-                    String stateProvince = teamObject.getString(API_FIELD_NAME_TEAM_STATE_PROVINCE);
-                    String country = teamObject.getString(API_FIELD_NAME_TEAM_COUNTRY);
-                    int rookieYear = teamObject.getInt(API_FIELD_NAME_TEAM_ROOKIE_YEAR);
-                    String facebookURL = teamObject.getString(API_FIELD_NAME_TEAM_FACEBOOK_URL);
-                    String twitterURL = teamObject.getString(API_FIELD_NAME_TEAM_TWITTER_URL);
-                    String instagramURL = teamObject.getString(API_FIELD_NAME_TEAM_INSTAGRAM_URL);
-                    String youtubeURL = teamObject.getString(API_FIELD_NAME_TEAM_YOUTUBE_URL);
-                    String websiteUrl = teamObject.getString(API_FIELD_NAME_TEAM_WEBSITE_URL);
+                    int teamId = teamObject.getInt(Team.COLUMN_NAME_ID);
+                    String name = teamObject.getString(Team.COLUMN_NAME_NAME);
+                    String city = teamObject.getString(Team.COLUMN_NAME_CITY);
+                    String stateProvince = teamObject.getString(Team.COLUMN_NAME_STATEPROVINCE);
+                    String country = teamObject.getString(Team.COLUMN_NAME_COUNTRY);
+                    int rookieYear = teamObject.getInt(Team.COLUMN_NAME_ROOKIE_YEAR);
+                    String facebookURL = teamObject.getString(Team.COLUMN_NAME_FACEBOOK_URL);
+                    String twitterURL = teamObject.getString(Team.COLUMN_NAME_TWITTER_URL);
+                    String instagramURL = teamObject.getString(Team.COLUMN_NAME_INSTAGRAM_URL);
+                    String youtubeURL = teamObject.getString(Team.COLUMN_NAME_YOUTUBE_URL);
+                    String websiteUrl = teamObject.getString(Team.COLUMN_NAME_WEBSITE_URL);
 
                     teams.add(new Team(
                             teamId,
@@ -132,9 +119,6 @@ public abstract class Server extends Api
     public static class GetUsers extends Server
     {
         private ArrayList<User> users;
-
-        private final String API_FIELD_NAME_FIRST_NAME = "FirstName";
-        private final String API_FIELD_NAME_LAST_NAME = "LastName";
 
         private MainActivity context;
 
@@ -175,8 +159,8 @@ public abstract class Server extends Api
                 {
                     JSONObject teamObject = response.getJSONArray("Response").getJSONObject(i);
 
-                    String firstName = teamObject.getString(API_FIELD_NAME_FIRST_NAME);
-                    String lastName = teamObject.getString(API_FIELD_NAME_LAST_NAME);
+                    String firstName = teamObject.getString(User.COLUMN_NAME_FIRST_NAME);
+                    String lastName = teamObject.getString(User.COLUMN_NAME_LAST_NAME);
 
                     users.add(new User(-1, firstName, lastName));
                 }
@@ -203,43 +187,6 @@ public abstract class Server extends Api
     public static class GetScoutCards extends Server
     {
         private ArrayList<ScoutCard> scoutCards;
-
-        private final String API_FIELD_NAME_SCOUT_CARD_MATCH_ID = "MatchId";
-        private final String API_FIELD_NAME_SCOUT_CARD_TEAM_ID = "TeamId";
-        private final String API_FIELD_NAME_SCOUT_CARD_EVENT_ID = "EventId";
-        private final String API_FIELD_NAME_SCOUT_CARD_ALLIANCE_COLOR = "AllianceColor";
-        private final String API_FIELD_NAME_SCOUT_CARD_COMPLETED_BY = "CompletedBy";
-
-        private final String API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_LEVEL = "PreGameStartingLevel";
-        private final String API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_POSITION = "PreGameStartingPosition";
-        private final String API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_PIECE = "PreGameStartingPiece";
-
-        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_EXIT_HABITAT = "AutonomousExitHabitat";
-        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_PICKED_UP = "AutonomousHatchPanelsPickedUp";
-        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS = "AutonomousHatchPanelsSecuredAttempts";
-        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED = "AutonomousHatchPanelsSecured";
-        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_PICKED_UP = "AutonomousCargoPickedUp";
-        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED_ATTEMPTS = "AutonomousCargoStoredAttempts";
-        private final String API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED = "AutonomousCargoStored";
-
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_PICKED_UP = "TeleopHatchPanelsPickedUp";
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS = "TeleopHatchPanelsSecuredAttempts";
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED = "TeleopHatchPanelsSecured";
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_PICKED_UP = "TeleopCargoPickedUp";
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED_ATTEMPTS = "TeleopCargoStoredAttempts";
-        private final String API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED = "TeleopCargoStored";
-
-        private final String API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT = "EndGameReturnedToHabitat";
-        private final String API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS = "EndGameReturnedToHabitatAttempts";
-
-        private final String API_FIELD_NAME_SCOUT_CARD_BLUE_ALLIANCE_FINAL_SCORE = "RedAllianceFinalScore";
-        private final String API_FIELD_NAME_SCOUT_CARD_RED_ALLIANCE_FINAL_SCORE = "BlueAllianceFinalScore";
-        private final String API_FIELD_NAME_SCOUT_CARD_DEFENSE_RATING = "DefenseRating";
-        private final String API_FIELD_NAME_SCOUT_CARD_OFFENSE_RATING = "OffenseRating";
-        private final String API_FIELD_NAME_SCOUT_CARD_DRIVE_RATING = "DriveRating";
-        private final String API_FIELD_NAME_SCOUT_CARD_NOTES = "Notes";
-
-        private final String API_FIELD_NAME_SCOUT_CARD_COMPLETED_DATE = "CompletedDate";
 
         private MainActivity context;
 
@@ -281,42 +228,40 @@ public abstract class Server extends Api
                 {
                     JSONObject scoutCardObject = response.getJSONArray("Response").getJSONObject(i);
 
-                    int matchId = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_MATCH_ID);
-                    int teamId = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TEAM_ID);
-                    String eventId = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_EVENT_ID);
-                    String allianceColor = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_ALLIANCE_COLOR);
-                    String completedBy = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_COMPLETED_BY);
+                    int matchId = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_MATCH_ID);
+                    int teamId = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_TEAM_ID);
+                    String eventId = scoutCardObject.getString(ScoutCard.COLUMN_NAME_EVENT_ID);
+                    String allianceColor = scoutCardObject.getString(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR);
+                    String completedBy = scoutCardObject.getString(ScoutCard.COLUMN_NAME_COMPLETED_BY);
 
-                    int preGameStartingLevel = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_LEVEL);
-                    StartingPosition preGameStartingPosition = StartingPosition.getPositionFromString(scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_POSITION));
-                    StartingPiece preGameStartingPiece = StartingPiece.getPieceFromString(scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_PRE_GAME_STARTING_PIECE));
+                    int preGameStartingLevel = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_LEVEL);
+                    StartingPosition preGameStartingPosition = StartingPosition.getPositionFromString(scoutCardObject.getString(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_POSITION));
+                    StartingPiece preGameStartingPiece = StartingPiece.getPieceFromString(scoutCardObject.getString(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_PIECE));
 
-                    boolean autonomousExitHabitat = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_EXIT_HABITAT) == 1;
-                    int autonomousHatchPanelsPickedUp = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_PICKED_UP);
-                    int autonomousHatchPanelsSecuredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS);
-                    int autonomousHatchPanelsSecured = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_HATCH_PANELS_SECURED);
-                    int autonomousCargoPickedUp = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_PICKED_UP);
-                    int autonomousCargoStoredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED_ATTEMPTS);
-                    int autonomousCargoStored = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_AUTONOMOUS_CARGO_STORED);
+                    boolean autonomousExitHabitat = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT) == 1;
+                    int autonomousHatchPanelsPickedUp = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_PICKED_UP);
+                    int autonomousHatchPanelsSecuredAttempts = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS);
+                    int autonomousHatchPanelsSecured = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED);
+                    int autonomousCargoPickedUp = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_PICKED_UP);
+                    int autonomousCargoStoredAttempts = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS);
+                    int autonomousCargoStored = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED);
 
-                    int teleopHatchPanelsPickedUp = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_PICKED_UP);
-                    int teleopHatchPanelsSecuredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS);
-                    int teleopHatchPanelsSecured = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_HATCH_PANELS_SECURED);
-                    int teleopCargoPickedUp = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_PICKED_UP);
-                    int teleopCargoStoredAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED_ATTEMPTS);
-                    int teleopCargoStored = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_TELEOP_CARGO_STORED);
+                    int teleopHatchPanelsPickedUp = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_PICKED_UP);
+                    int teleopHatchPanelsSecuredAttempts = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS);
+                    int teleopHatchPanelsSecured = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED);
+                    int teleopCargoPickedUp = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_TELEOP_CARGO_PICKED_UP);
+                    int teleopCargoStoredAttempts = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS);
+                    int teleopCargoStored = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED);
 
-                    int endGameReturnedToHabitat = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT);
-                    int endGameReturnedToHabitatAttempts = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS);
+                    int endGameReturnedToHabitat = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT);
+                    int endGameReturnedToHabitatAttempts = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS);
 
-                    int blueAllianceFinalScore = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_BLUE_ALLIANCE_FINAL_SCORE);
-                    int redAllianceFinalScore = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_RED_ALLIANCE_FINAL_SCORE);
-                    int defenseRating = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_DEFENSE_RATING);
-                    int offenseRating = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_OFFENSE_RATING);
-                    int driveRating = scoutCardObject.getInt(API_FIELD_NAME_SCOUT_CARD_DRIVE_RATING);
-                    String notes = scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_NOTES);
+                    int defenseRating = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_DEFENSE_RATING);
+                    int offenseRating = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_OFFENSE_RATING);
+                    int driveRating = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_DRIVE_RATING);
+                    String notes = scoutCardObject.getString(ScoutCard.COLUMN_NAME_NOTES);
 
-                    Date completedDate = simpleDateFormat.parse(scoutCardObject.getString(API_FIELD_NAME_SCOUT_CARD_COMPLETED_DATE));
+                    Date completedDate = simpleDateFormat.parse(scoutCardObject.getString(ScoutCard.COLUMN_NAME_COMPLETED_DATE));
 
                     scoutCards.add(
                             new ScoutCard(
@@ -349,8 +294,6 @@ public abstract class Server extends Api
                                     endGameReturnedToHabitat,
                                     endGameReturnedToHabitatAttempts,
 
-                                    blueAllianceFinalScore,
-                                    redAllianceFinalScore,
                                     defenseRating,
                                     offenseRating,
                                     driveRating,
@@ -381,28 +324,6 @@ public abstract class Server extends Api
     public static class GetPitCards extends Server
     {
         private ArrayList<PitCard> pitCards;
-
-        private final String API_FIELD_NAME_PIT_CARD_TEAM_ID = "TeamId";
-        private final String API_FIELD_NAME_PIT_CARD_EVENT_ID = "EventId";
-
-        private final String API_FIELD_NAME_PIT_CARD_DRIVE_STYLE = "DriveStyle";
-        private final String API_FIELD_NAME_PIT_CARD_ROBOT_WEIGHT = "RobotWeight";
-        private final String API_FIELD_NAME_PIT_CARD_ROBOT_LENGTH = "RobotLength";
-        private final String API_FIELD_NAME_PIT_CARD_ROBOT_WIDTH = "RobotWidth";
-        private final String API_FIELD_NAME_PIT_CARD_ROBOT_HEIGHT = "RobotHeight";
-
-        private final String API_FIELD_NAME_PIT_CARD_AUTO_EXIT_HABITAT = "AutoExitHabitat";
-        private final String API_FIELD_NAME_PIT_CARD_AUTO_HATCH = "AutoHatch";
-        private final String API_FIELD_NAME_PIT_CARD_AUTO_CARGO = "AutoCargo";
-
-        private final String API_FIELD_NAME_PIT_CARD_TELEOP_HATCH = "TeleopHatch";
-        private final String API_FIELD_NAME_PIT_CARD_TELEOP_CARGO = "TeleopCargo";
-
-        private final String API_FIELD_NAME_PIT_CARD_RETURN_TO_HABITAT = "ReturnToHabitat";
-
-        private final String API_FIELD_NAME_PIT_CARD_NOTES = "Notes";
-        private final String API_FIELD_NAME_PIT_CARD_COMPLETED_BY = "CompletedBy";
-
 
         private MainActivity context;
 
@@ -444,26 +365,26 @@ public abstract class Server extends Api
                 {
                     JSONObject pitCardObject = response.getJSONArray("Response").getJSONObject(i);
 
-                    int teamId = pitCardObject.getInt(API_FIELD_NAME_PIT_CARD_TEAM_ID);
-                    String eventId = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_EVENT_ID);
+                    int teamId = pitCardObject.getInt(PitCard.COLUMN_NAME_TEAM_ID);
+                    String eventId = pitCardObject.getString(PitCard.COLUMN_NAME_EVENT_ID);
 
-                    String driveStyle = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_DRIVE_STYLE);
-                    String robotWeight = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_ROBOT_WEIGHT);
-                    String robotLength = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_ROBOT_LENGTH);
-                    String robotWidth = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_ROBOT_WIDTH);
-                    String robotHeight = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_ROBOT_HEIGHT);
+                    String driveStyle = pitCardObject.getString(PitCard.COLUMN_NAME_DRIVE_STYLE);
+                    String robotWeight = pitCardObject.getString(PitCard.COLUMN_NAME_ROBOT_WEIGHT);
+                    String robotLength = pitCardObject.getString(PitCard.COLUMN_NAME_ROBOT_LENGTH);
+                    String robotWidth = pitCardObject.getString(PitCard.COLUMN_NAME_ROBOT_WIDTH);
+                    String robotHeight = pitCardObject.getString(PitCard.COLUMN_NAME_ROBOT_HEIGHT);
 
-                    String autonomousExitHabitat = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_AUTO_EXIT_HABITAT);
-                    String autonomousHatchPanelsSecured = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_AUTO_HATCH);
-                    String autonomousCargoStored = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_AUTO_CARGO);
+                    String autonomousExitHabitat = pitCardObject.getString(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT);
+                    String autonomousHatchPanelsSecured = pitCardObject.getString(PitCard.COLUMN_NAME_AUTO_HATCH);
+                    String autonomousCargoStored = pitCardObject.getString(PitCard.COLUMN_NAME_AUTO_CARGO);
 
-                    String teleopHatchPanelsSecured = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_TELEOP_HATCH);
-                    String teleopCargoStored = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_TELEOP_CARGO);
+                    String teleopHatchPanelsSecured = pitCardObject.getString(PitCard.COLUMN_NAME_TELEOP_HATCH);
+                    String teleopCargoStored = pitCardObject.getString(PitCard.COLUMN_NAME_TELEOP_CARGO);
 
-                    String endGameReturnedToHabitat = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_RETURN_TO_HABITAT);
+                    String endGameReturnedToHabitat = pitCardObject.getString(PitCard.COLUMN_NAME_RETURN_TO_HABITAT);
 
-                    String notes = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_NOTES);
-                    String completedBy = pitCardObject.getString(API_FIELD_NAME_PIT_CARD_COMPLETED_BY);
+                    String notes = pitCardObject.getString(PitCard.COLUMN_NAME_NOTES);
+                    String completedBy = pitCardObject.getString(PitCard.COLUMN_NAME_COMPLETED_BY);
 
 
                     pitCards.add(new PitCard(
@@ -515,10 +436,6 @@ public abstract class Server extends Api
     {
         private ArrayList<RobotMedia> robotMedia;
 
-        private final String API_FIELD_NAME_ROBOT_MEDIA_TEAM_ID = "TeamId";
-        private final String API_FIELD_NAME_ROBOT_MEDIA_FILE_URI = "FileURI";
-
-
         private MainActivity context;
 
         public GetRobotMedia(final MainActivity context, final int teamId)
@@ -559,8 +476,8 @@ public abstract class Server extends Api
                 {
                     JSONObject robotMediaJson = response.getJSONArray("Response").getJSONObject(i);
 
-                    int teamId = robotMediaJson.getInt(API_FIELD_NAME_ROBOT_MEDIA_TEAM_ID);
-                    String fileUri = Keys.WEB_URL + "assets/robot-media/" + robotMediaJson.getString(API_FIELD_NAME_ROBOT_MEDIA_FILE_URI);
+                    int teamId = robotMediaJson.getInt(RobotMedia.COLUMN_NAME_TEAM_ID);
+                    String fileUri = Keys.WEB_URL + "assets/robot-media/" + robotMediaJson.getString(RobotMedia.COLUMN_NAME_FILE_URI);
 
                     fileUri = apiParser.downloadImage(fileUri).getAbsolutePath();
 
@@ -596,14 +513,6 @@ public abstract class Server extends Api
     public static class GetEvents extends Server
     {
         private ArrayList<Event> events;
-
-        private final String API_FIELD_NAME_EVENT_BLUE_ALLIANCE_ID = "BlueAllianceId";
-        private final String API_FIELD_NAME_EVENT_NAME = "Name";
-        private final String API_FIELD_NAME_EVENT_CITY = "City";
-        private final String API_FIELD_NAME_EVENT_STATE_PROVINCE = "StateProvince";
-        private final String API_FIELD_NAME_EVENT_COUNTRY = "Country";
-        private final String API_FIELD_NAME_EVENT_START_DATE = "StartDate";
-        private final String API_FIELD_NAME_EVENT_END_DATE = "EndDate";
 
         private MainActivity context;
 
@@ -642,15 +551,23 @@ public abstract class Server extends Api
                 {
                     JSONObject eventObject = response.getJSONArray("Response").getJSONObject(i);
 
-                    String blueAllianceId = eventObject.getString(API_FIELD_NAME_EVENT_BLUE_ALLIANCE_ID);
-                    String name = eventObject.getString(API_FIELD_NAME_EVENT_NAME);
-                    String city = eventObject.getString(API_FIELD_NAME_EVENT_CITY);
-                    String stateProvince = eventObject.getString(API_FIELD_NAME_EVENT_STATE_PROVINCE);
-                    String country = eventObject.getString(API_FIELD_NAME_EVENT_COUNTRY);
-                    String startDate = eventObject.getString(API_FIELD_NAME_EVENT_START_DATE);
-                    String endDate = eventObject.getString(API_FIELD_NAME_EVENT_END_DATE);
+                    String blueAllianceId = eventObject.getString(Event.COLUMN_NAME_BLUE_ALLIANCE_ID);
+                    String name = eventObject.getString(Event.COLUMN_NAME_NAME);
+                    String city = eventObject.getString(Event.COLUMN_NAME_CITY);
+                    String stateProvince = eventObject.getString(Event.COLUMN_NAME_STATEPROVINCE);
+                    String country = eventObject.getString(Event.COLUMN_NAME_COUNTRY);
+                    String startDate = eventObject.getString(Event.COLUMN_NAME_START_DATE);
+                    String endDate = eventObject.getString(Event.COLUMN_NAME_END_DATE);
 
-                    events.add(new Event(-1, blueAllianceId, name, city, stateProvince, country, simpleDateFormat.parse(startDate), simpleDateFormat.parse(endDate)));
+                    events.add(new Event(
+                            -1,
+                            blueAllianceId,
+                            name,
+                            city,
+                            stateProvince,
+                            country,
+                            simpleDateFormat.parse(startDate),
+                            simpleDateFormat.parse(endDate)));
                 }
 
 
@@ -683,42 +600,40 @@ public abstract class Server extends Api
             {{
                 put("action", "SubmitScoutCard");
 
-                put("MatchId", String.valueOf(scoutCard.getMatchId()));
-                put("TeamId", String.valueOf(scoutCard.getTeamId()));
-                put("EventId", scoutCard.getEventId());
-                put("AllianceColor", scoutCard.getAllianceColor());
-                put("CompletedBy", scoutCard.getCompletedBy());
+                put(ScoutCard.COLUMN_NAME_MATCH_ID, String.valueOf(scoutCard.getMatchId()));
+                put(ScoutCard.COLUMN_NAME_TEAM_ID, String.valueOf(scoutCard.getTeamId()));
+                put(ScoutCard.COLUMN_NAME_EVENT_ID, scoutCard.getEventId());
+                put(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR, scoutCard.getAllianceColor());
+                put(ScoutCard.COLUMN_NAME_COMPLETED_BY, scoutCard.getCompletedBy());
 
-                put("PreGameStartingLevel", String.valueOf(scoutCard.getPreGameStartingLevel()));
-                put("PreGameStartingPosition", scoutCard.getPreGameStartingPosition().name());
-                put("PreGameStartingPiece", scoutCard.getPreGameStartingPiece().name());
+                put(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_LEVEL, String.valueOf(scoutCard.getPreGameStartingLevel()));
+                put(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_POSITION, scoutCard.getPreGameStartingPosition().name());
+                put(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_PIECE, scoutCard.getPreGameStartingPiece().name());
 
-                put("AutonomousExitHabitat", String.valueOf(scoutCard.getAutonomousExitHabitat() ? 1 : 0));
-                put("AutonomousHatchPanelsPickedUp", String.valueOf(scoutCard.getAutonomousHatchPanelsPickedUp()));
-                put("AutonomousHatchPanelsSecuredAttempts", String.valueOf(scoutCard.getAutonomousHatchPanelsSecuredAttempts()));
-                put("AutonomousHatchPanelsSecured", String.valueOf(scoutCard.getAutonomousHatchPanelsSecured()));
-                put("AutonomousCargoPickedUp", String.valueOf(scoutCard.getAutonomousCargoPickedUp()));
-                put("AutonomousCargoStoredAttempts", String.valueOf(scoutCard.getAutonomousCargoStoredAttempts()));
-                put("AutonomousCargoStored", String.valueOf(scoutCard.getAutonomousCargoStored()));
+                put(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT, String.valueOf(scoutCard.getAutonomousExitHabitat() ? 1 : 0));
+                put(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_PICKED_UP, String.valueOf(scoutCard.getAutonomousHatchPanelsPickedUp()));
+                put(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS, String.valueOf(scoutCard.getAutonomousHatchPanelsSecuredAttempts()));
+                put(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED, String.valueOf(scoutCard.getAutonomousHatchPanelsSecured()));
+                put(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_PICKED_UP, String.valueOf(scoutCard.getAutonomousCargoPickedUp()));
+                put(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS, String.valueOf(scoutCard.getAutonomousCargoStoredAttempts()));
+                put(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED, String.valueOf(scoutCard.getAutonomousCargoStored()));
 
-                put("TeleopHatchPanelsPickedUp", String.valueOf(scoutCard.getTeleopHatchPanelsPickedUp()));
-                put("TeleopHatchPanelsSecuredAttempts", String.valueOf(scoutCard.getTeleopHatchPanelsSecuredAttempts()));
-                put("TeleopHatchPanelsSecured", String.valueOf(scoutCard.getTeleopHatchPanelsSecured()));
-                put("TeleopCargoPickedUp", String.valueOf(scoutCard.getTeleopCargoPickedUp()));
-                put("TeleopCargoStoredAttempts", String.valueOf(scoutCard.getTeleopCargoStoredAttempts()));
-                put("TeleopCargoStored", String.valueOf(scoutCard.getTeleopCargoStored()));
+                put(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_PICKED_UP, String.valueOf(scoutCard.getTeleopHatchPanelsPickedUp()));
+                put(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS, String.valueOf(scoutCard.getTeleopHatchPanelsSecuredAttempts()));
+                put(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED, String.valueOf(scoutCard.getTeleopHatchPanelsSecured()));
+                put(ScoutCard.COLUMN_NAME_TELEOP_CARGO_PICKED_UP, String.valueOf(scoutCard.getTeleopCargoPickedUp()));
+                put(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS, String.valueOf(scoutCard.getTeleopCargoStoredAttempts()));
+                put(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED, String.valueOf(scoutCard.getTeleopCargoStored()));
 
-                put("EndGameReturnedToHabitat", String.valueOf(scoutCard.getEndGameReturnedToHabitat()));
-                put("EndGameReturnedToHabitatAttempts", String.valueOf(scoutCard.getEndGameReturnedToHabitatAttempts()));
+                put(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT, String.valueOf(scoutCard.getEndGameReturnedToHabitat()));
+                put(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS, String.valueOf(scoutCard.getEndGameReturnedToHabitatAttempts()));
 
-                put("BlueAllianceFinalScore", String.valueOf(scoutCard.getBlueAllianceFinalScore()));
-                put("RedAllianceFinalScore", String.valueOf(scoutCard.getRedAllianceFinalScore()));
-                put("DefenseRating", String.valueOf(scoutCard.getDefenseRating()));
-                put("OffenseRating", String.valueOf(scoutCard.getOffenseRating()));
-                put("DriveRating", String.valueOf(scoutCard.getDriveRating()));
-                put("Notes", scoutCard.getNotes());
+                put(ScoutCard.COLUMN_NAME_DEFENSE_RATING, String.valueOf(scoutCard.getDefenseRating()));
+                put(ScoutCard.COLUMN_NAME_OFFENSE_RATING, String.valueOf(scoutCard.getOffenseRating()));
+                put(ScoutCard.COLUMN_NAME_DRIVE_RATING, String.valueOf(scoutCard.getDriveRating()));
+                put(ScoutCard.COLUMN_NAME_NOTES, scoutCard.getNotes());
 
-                put("CompletedDate", scoutCard.getCompletedDateForSQL());
+                put(ScoutCard.COLUMN_NAME_COMPLETED_DATE, scoutCard.getCompletedDateForSQL());
             }});
 
             this.context = context;
@@ -763,26 +678,26 @@ public abstract class Server extends Api
             {{
                 put("action", "SubmitPitCard");
 
-                put("TeamId", String.valueOf(pitCard.getTeamId()));
-                put("EventId", pitCard.getEventId());
+                put(PitCard.COLUMN_NAME_TEAM_ID, String.valueOf(pitCard.getTeamId()));
+                put(PitCard.COLUMN_NAME_EVENT_ID, pitCard.getEventId());
 
-                put("DriveStyle", pitCard.getDriveStyle());
-                put("RobotWeight", pitCard.getRobotWeight());
-                put("RobotLength", pitCard.getRobotLength());
-                put("RobotWidth", pitCard.getRobotWidth());
-                put("RobotHeight", pitCard.getRobotHeight());
+                put(PitCard.COLUMN_NAME_DRIVE_STYLE, pitCard.getDriveStyle());
+                put(PitCard.COLUMN_NAME_ROBOT_WEIGHT, pitCard.getRobotWeight());
+                put(PitCard.COLUMN_NAME_ROBOT_LENGTH, pitCard.getRobotLength());
+                put(PitCard.COLUMN_NAME_ROBOT_WIDTH, pitCard.getRobotWidth());
+                put(PitCard.COLUMN_NAME_ROBOT_HEIGHT, pitCard.getRobotHeight());
 
-                put("AutoExitHabitat", pitCard.getAutoExitHabitat());
-                put("AutoHatch", pitCard.getAutoHatch());
-                put("AutoCargo", pitCard.getAutoCargo());
+                put(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT, pitCard.getAutoExitHabitat());
+                put(PitCard.COLUMN_NAME_AUTO_HATCH, pitCard.getAutoHatch());
+                put(PitCard.COLUMN_NAME_AUTO_CARGO, pitCard.getAutoCargo());
 
-                put("TeleopHatch", pitCard.getTeleopHatch());
-                put("TeleopCargo", pitCard.getTeleopCargo());
+                put(PitCard.COLUMN_NAME_TELEOP_HATCH, pitCard.getTeleopHatch());
+                put(PitCard.COLUMN_NAME_TELEOP_CARGO, pitCard.getTeleopCargo());
 
-                put("ReturnToHabitat", pitCard.getReturnToHabitat());
+                put(PitCard.COLUMN_NAME_RETURN_TO_HABITAT, pitCard.getReturnToHabitat());
 
-                put("Notes", pitCard.getNotes());
-                put("CompletedBy", pitCard.getCompletedBy());
+                put(PitCard.COLUMN_NAME_NOTES, pitCard.getNotes());
+                put(PitCard.COLUMN_NAME_COMPLETED_BY, pitCard.getCompletedBy());
             }});
 
             this.context = context;
