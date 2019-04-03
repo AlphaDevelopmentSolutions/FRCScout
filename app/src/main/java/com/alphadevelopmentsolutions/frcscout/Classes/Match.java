@@ -11,6 +11,7 @@ public class Match
     public static final String COLUMN_NAME_DATE = "Date";
     public static final String COLUMN_NAME_EVENT_ID = "EventId";
     public static final String COLUMN_NAME_KEY = "\"Key\"";
+    public static final String COLUMN_NAME_KEY_UNESCAPED = "Key";
     public static final String COLUMN_NAME_MATCH_TYPE = "MatchType";
     public static final String COLUMN_NAME_MATCH_NUMBER = "MatchNumber";
     public static final String COLUMN_NAME_SET_NUMBER = "SetNumber";
@@ -28,7 +29,7 @@ public class Match
      * When assigning a type, use the TypeReference interface for a more
      * plain english aproach
      */
-    enum Type
+    public enum Type
     {
         qm,
         qf,

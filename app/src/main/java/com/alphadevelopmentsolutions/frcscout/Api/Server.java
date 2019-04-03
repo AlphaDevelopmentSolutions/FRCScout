@@ -2,6 +2,7 @@ package com.alphadevelopmentsolutions.frcscout.Api;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
+import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
@@ -426,6 +427,110 @@ public abstract class Server extends Api
         public ArrayList<PitCard> getPitCards()
         {
             return pitCards;
+        }
+
+
+        //endregion
+    }
+
+    public static class GetMatches extends Server
+    {
+        private ArrayList<Match> matches;
+
+        private MainActivity context;
+
+        public GetMatches(final MainActivity context, final Event event)
+        {
+            super("", new HashMap<String, String>()
+            {{
+                put("action", "GetMatches");
+                put("EventId", event.getBlueAllianceId());
+            }});
+
+            matches = new ArrayList<>();
+
+            this.context = context;
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception("Could not connect to the web server.");
+
+                if (!response.getString("Status").toLowerCase().equals("success"))
+                    throw new Exception(response.getString("Response"));
+
+
+                //iterate through, create a new object and add it to the arraylist
+                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
+                {
+                    JSONObject matchObject = response.getJSONArray("Response").getJSONObject(i);
+
+                    Date date = simpleDateFormat.parse(matchObject.getString(Match.COLUMN_NAME_DATE));
+                    String eventId = matchObject.getString(Match.COLUMN_NAME_EVENT_ID);
+                    String key = matchObject.getString(Match.COLUMN_NAME_KEY_UNESCAPED);
+                    Match.Type matchType = Match.Type.getTypeFromString(matchObject.getString(Match.COLUMN_NAME_MATCH_TYPE));
+                    int setNumber = matchObject.getInt(Match.COLUMN_NAME_SET_NUMBER);
+                    int matchNumber = matchObject.getInt(Match.COLUMN_NAME_MATCH_NUMBER);
+
+                    int blueAllianceTeamOneId = matchObject.getInt(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID);
+                    int blueAllianceTeamTwoId = matchObject.getInt(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID);
+                    int blueAllianceTeamThreeId = matchObject.getInt(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID);
+
+                    int redAllianceTeamOneId = matchObject.getInt(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID);
+                    int redAllianceTeamTwoId = matchObject.getInt(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID);
+                    int redAllianceTeamThreeId = matchObject.getInt(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID);
+
+                    int blueAllianceScore = matchObject.getInt(Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE);
+                    int redAllianceScore = matchObject.getInt(Match.COLUMN_NAME_RED_ALLIANCE_SCORE);
+
+
+                    matches.add(new Match(
+                            -1,
+                            date,
+                            eventId,
+                            key,
+                            matchType,
+                            setNumber,
+                            matchNumber,
+
+                            blueAllianceTeamOneId,
+                            blueAllianceTeamTwoId,
+                            blueAllianceTeamThreeId,
+
+                            redAllianceTeamOneId,
+                            redAllianceTeamTwoId,
+                            redAllianceTeamThreeId,
+
+                            blueAllianceScore,
+                            redAllianceScore
+                    ));
+                }
+
+                return true;
+            } catch (Exception e)
+            {
+                context.showSnackbar(e.getMessage());
+                return false;
+            }
+        }
+
+        //region Getters
+
+        public ArrayList<Match> getMatches()
+        {
+            return matches;
         }
 
 

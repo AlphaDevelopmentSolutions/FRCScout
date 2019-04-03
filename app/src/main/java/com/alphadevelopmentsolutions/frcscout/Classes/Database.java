@@ -146,6 +146,16 @@ public class Database
             db.execSQL("DELETE FROM " + tableName);
     }
 
+    public void clearMatches()
+    {
+        ArrayList<String> tableNames = new ArrayList<>();
+
+        tableNames.add(Match.TABLE_NAME);
+
+        for(String tableName : tableNames)
+            db.execSQL("DELETE FROM " + tableName);
+    }
+
     public void clearRobotMedia(boolean clearDrafts)
     {
         ArrayList<String> tableNames = new ArrayList<>();
@@ -155,6 +165,8 @@ public class Database
         for(String tableName : tableNames)
             db.execSQL("DELETE FROM " + tableName + ((clearDrafts) ? "" : " WHERE IsDraft = 0"));
     }
+
+
 
     //region Event Logic
 

@@ -28,6 +28,7 @@ import com.alphadevelopmentsolutions.frcscout.Api.Server;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.EventTeamList;
+import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
@@ -407,6 +408,7 @@ public class MainActivity extends AppCompatActivity implements
                     getDatabase().clearTeams();
                     getDatabase().clearScoutCards(false);
                     getDatabase().clearPitCards(false);
+                    getDatabase().clearMatches();
 
                     final int remainingPercent = (downloadMedia) ? 90 : 100 - progressDialogProgess; //max amount of percentage we have before we can't add anymore to the progress dialog
 
@@ -445,6 +447,27 @@ public class MainActivity extends AppCompatActivity implements
                                 //save a new eventteamlist to the database
                                 (new EventTeamList(-1, team.getId(), event.getBlueAllianceId())).save(getDatabase());
                             }
+                        }
+
+                        context.runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                progressDialog.setTitle("Downloading matches");
+                            }
+                        });
+
+                        //update matches
+                        Server.GetMatches getMatches = new Server.GetMatches(context, event);
+
+                        //get teams at current event
+                        if (getMatches.execute())
+                        {
+                            //get the teams from API
+                            for (Match match : getMatches.getMatches())
+                                match.save(getDatabase());
+
                         }
 
                         context.runOnUiThread(new Runnable()
