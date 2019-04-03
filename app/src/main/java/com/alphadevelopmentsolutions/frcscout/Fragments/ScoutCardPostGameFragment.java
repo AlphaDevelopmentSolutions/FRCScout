@@ -3,7 +3,6 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -72,8 +71,6 @@ public class ScoutCardPostGameFragment extends MasterFragment {
 
     private View.OnClickListener onSaveButtonClickListener;
 
-    private TextInputEditText blueAllianceFinalScoreEditText;
-    private TextInputEditText redAllianceFinalScoreEditText;
     private EditText matchNotesEditText;
 
     private RatingBar offenseRatingBar;
@@ -88,8 +85,6 @@ public class ScoutCardPostGameFragment extends MasterFragment {
 
         scoutCardSaveButton = view.findViewById(R.id.ScoutCardSaveButton);
 
-        blueAllianceFinalScoreEditText = view.findViewById(R.id.BlueAllianceFinalScoreEditText);
-        redAllianceFinalScoreEditText = view.findViewById(R.id.RedAllianceFinalScoreEditText);
         matchNotesEditText = view.findViewById(R.id.MatchNotesEditText);
 
         defenseRatingBar = view.findViewById(R.id.DefenseRatingBar);
@@ -102,8 +97,6 @@ public class ScoutCardPostGameFragment extends MasterFragment {
 
         if(scoutCard != null)
         {
-            blueAllianceFinalScoreEditText.setText(String.valueOf(scoutCard.getBlueAllianceFinalScore()));
-            redAllianceFinalScoreEditText.setText(String.valueOf(scoutCard.getRedAllianceFinalScore()));
 
             defenseRatingBar.setRating(scoutCard.getDefenseRating());
             offenseRatingBar.setRating(scoutCard.getOffenseRating());
@@ -115,12 +108,6 @@ public class ScoutCardPostGameFragment extends MasterFragment {
             if(!scoutCard.isDraft())
             {
                 scoutCardSaveButton.setVisibility(View.GONE);
-
-                blueAllianceFinalScoreEditText.setFocusable(false);
-                blueAllianceFinalScoreEditText.setInputType(InputType.TYPE_NULL);
-
-                redAllianceFinalScoreEditText.setFocusable(false);
-                redAllianceFinalScoreEditText.setInputType(InputType.TYPE_NULL);
 
                 defenseRatingBar.setEnabled(false);
                 offenseRatingBar.setEnabled(false);
@@ -136,16 +123,6 @@ public class ScoutCardPostGameFragment extends MasterFragment {
     }
 
     //region Getters
-
-    public int getBlueAllianceScore()
-    {
-        return Integer.parseInt(blueAllianceFinalScoreEditText.getText().toString());
-    }
-
-    public int getRedAllianceScore()
-    {
-        return Integer.parseInt(redAllianceFinalScoreEditText.getText().toString());
-    }
 
     public int getDefenseRating()
     {
@@ -178,19 +155,6 @@ public class ScoutCardPostGameFragment extends MasterFragment {
      */
     public boolean validateFields()
     {
-        if(!blueAllianceFinalScoreEditText.getText().toString().matches("^[-+]?\\d*$")
-                || blueAllianceFinalScoreEditText.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid blue alliance score.");
-            return false;
-        }
-
-        if(!redAllianceFinalScoreEditText.getText().toString().matches("^[-+]?\\d*$")
-                || redAllianceFinalScoreEditText.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid red alliance score.");
-            return false;
-        }
 
         return true;
     }

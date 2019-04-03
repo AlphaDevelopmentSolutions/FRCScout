@@ -1,7 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -200,8 +199,6 @@ public class ScoutCardFragment extends MasterFragment
                     int endGameReturnedToHabitatAttempts = scoutCardEndGameFragment.getReturnedToHabAttemptLevel();
 
                     //post game info
-                    int blueAllianceFinalScore = scoutCardPostGameFragment.getBlueAllianceScore();
-                    int redAllianceFinalScore = scoutCardPostGameFragment.getRedAllianceScore();
                     int defenseRating = scoutCardPostGameFragment.getDefenseRating();
                     int offenseRating = scoutCardPostGameFragment.getOffenseRating();
                     int driveRating = scoutCardPostGameFragment.getDriveRating();
@@ -240,8 +237,6 @@ public class ScoutCardFragment extends MasterFragment
                         scoutCard.setEndGameReturnedToHabitat(endGameReturnedToHabitat);
                         scoutCard.setEndGameReturnedToHabitatAttempts(endGameReturnedToHabitatAttempts);
 
-                        scoutCard.setBlueAllianceFinalScore(blueAllianceFinalScore);
-                        scoutCard.setRedAllianceFinalScore(redAllianceFinalScore);
                         scoutCard.setDefenseRating(defenseRating);
                         scoutCard.setOffenseRating(offenseRating);
                         scoutCard.setDriveRating(driveRating);
@@ -296,8 +291,6 @@ public class ScoutCardFragment extends MasterFragment
                                 endGameReturnedToHabitat,
                                 endGameReturnedToHabitatAttempts,
         
-                                blueAllianceFinalScore,
-                                redAllianceFinalScore,
                                 defenseRating,
                                 offenseRating,
                                 driveRating,

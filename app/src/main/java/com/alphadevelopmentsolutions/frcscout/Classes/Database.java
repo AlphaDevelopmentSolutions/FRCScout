@@ -955,8 +955,6 @@ public class Database
                     ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT,
                     ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS,
 
-                    ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE,
-                    ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE,
                     ScoutCard.COLUMN_NAME_DEFENSE_RATING,
                     ScoutCard.COLUMN_NAME_OFFENSE_RATING,
                     ScoutCard.COLUMN_NAME_DRIVE_RATING,
@@ -1005,8 +1003,6 @@ public class Database
         int endGameReturnedToHabitat = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT));
         int endGameReturnedToHabitatAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS));
 
-        int blueAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE));
-        int redAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE));
         int defenseRating = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_DEFENSE_RATING));
         int offenseRating = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OFFENSE_RATING));
         int driveRating = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_DRIVE_RATING));
@@ -1045,8 +1041,6 @@ public class Database
                 endGameReturnedToHabitat,
                 endGameReturnedToHabitatAttempts,
 
-                blueAllianceFinalScore,
-                redAllianceFinalScore,
                 defenseRating,
                 offenseRating,
                 driveRating,
@@ -1179,8 +1173,6 @@ public class Database
         contentValues.put(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT, scoutCard.getEndGameReturnedToHabitat());
         contentValues.put(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS, scoutCard.getEndGameReturnedToHabitatAttempts());
 
-        contentValues.put(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE, scoutCard.getBlueAllianceFinalScore());
-        contentValues.put(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE, scoutCard.getRedAllianceFinalScore());
         contentValues.put(ScoutCard.COLUMN_NAME_DEFENSE_RATING, scoutCard.getDefenseRating());
         contentValues.put(ScoutCard.COLUMN_NAME_OFFENSE_RATING, scoutCard.getOffenseRating());
         contentValues.put(ScoutCard.COLUMN_NAME_DRIVE_RATING, scoutCard.getDriveRating());
