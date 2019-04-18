@@ -150,7 +150,7 @@ public class TeamFragment extends MasterFragment
             @Override
             public void onClick(View v)
             {
-                context.changeFragment(ScoutCardFragment.newInstance(null, eventJson, team.getId()), true);
+                context.changeFragment(ScoutCardFragment.newInstance(eventJson,null, null, team.getId()), true);
             }
         });
 
@@ -180,6 +180,9 @@ public class TeamFragment extends MasterFragment
         {
             e.printStackTrace();
         }
+
+        //update the app bar title to the team name
+        context.getSupportActionBar().setTitle(team.getId() + " - " + team.getName());
 
         //load the photo if the file exists
         if(!team.getImageFileURI().equals(""))
@@ -270,6 +273,7 @@ public class TeamFragment extends MasterFragment
     @Override
     public void onDetach()
     {
+        context.getSupportActionBar().setTitle(R.string.app_name);
         super.onDetach();
         mListener = null;
     }

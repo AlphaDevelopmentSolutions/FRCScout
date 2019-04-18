@@ -73,6 +73,7 @@ public class MatchesRecyclerViewAdapter extends RecyclerView.Adapter<MatchesRecy
         ImageView matchOptionsImageView;
         
         Button viewMatchButton;
+        Button addCardButton;
 
         ViewHolder(@NonNull View view)
         {
@@ -94,6 +95,7 @@ public class MatchesRecyclerViewAdapter extends RecyclerView.Adapter<MatchesRecy
             matchOptionsImageView = view.findViewById(R.id.MatchOptionsImageView);
             
             viewMatchButton = view.findViewById(R.id.ViewMatchButton);
+            addCardButton = view.findViewById(R.id.AddCardButton);
         }
     }
 
@@ -126,7 +128,6 @@ public class MatchesRecyclerViewAdapter extends RecyclerView.Adapter<MatchesRecy
             }
         }
 
-
         //set match numbers
         viewHolder.matchIdTextView.setText(match.getMatchType().toString(match));
         
@@ -145,12 +146,6 @@ public class MatchesRecyclerViewAdapter extends RecyclerView.Adapter<MatchesRecy
 
         //set the bold text for the winning team
         Match.Status matchStatus = match.getMatchStatus();
-
-        if(scoutCard == null)
-            viewHolder.viewMatchButton.setVisibility(View.INVISIBLE);
-        else
-            viewHolder.viewMatchButton.setVisibility(View.VISIBLE);
-
 
         //blue won
         if(matchStatus == Match.Status.BLUE)
@@ -204,18 +199,43 @@ public class MatchesRecyclerViewAdapter extends RecyclerView.Adapter<MatchesRecy
 
 
 
-        //Sends you to the scout card fragment
         final ScoutCard finalScoutCard = scoutCard;
 
-        viewHolder.viewMatchButton.setOnClickListener(new View.OnClickListener()
+        //no card available, show the add card button
+        if(scoutCard == null)
         {
-            @Override
-            public void onClick(View v)
+            viewHolder.viewMatchButton.setVisibility(View.GONE);
+            viewHolder.addCardButton.setVisibility(View.VISIBLE);
+
+            //Sends you to the scout card fragment
+            viewHolder.addCardButton.setOnClickListener(new View.OnClickListener()
             {
-                //swap fragments
-                context.changeFragment(ScoutCardFragment.newInstance(gson.toJson(finalScoutCard), gson.toJson(event), -1), true);
-            }
-        });
+                @Override
+                public void onClick(View v)
+                {
+                    //add new card
+                    context.changeFragment(ScoutCardFragment.newInstance(gson.toJson(event), gson.toJson(match),null, team.getId()), true);
+                }
+            });
+        }
+
+        //card available, show the view match button
+        else
+        {
+            viewHolder.viewMatchButton.setVisibility(View.VISIBLE);
+            viewHolder.addCardButton.setVisibility(View.GONE);
+
+            //Sends you to the scout card fragment
+            viewHolder.viewMatchButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    //show match
+                    context.changeFragment(ScoutCardFragment.newInstance(gson.toJson(event), gson.toJson(match), gson.toJson(finalScoutCard), -1), true);
+                }
+            });
+        }
     }
 
     @Override

@@ -228,6 +228,22 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
+            <Button
+                android:id="@+id/AddCardButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_card"
+                android:textAllCaps="true"
+                android:textColor="@color/textLink"
+                android:textSize="@dimen/textSecondary"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ViewMatchButton"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+                app:layout_constraintVertical_bias="0.0" />
+
             <ImageView
                 android:id="@+id/MatchOptionsImageView"
                 android:layout_width="wrap_content"

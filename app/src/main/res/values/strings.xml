@@ -96,4 +96,5 @@
     <string name="pit_cards">Pit Cards</string>
     <string name="robot_images">Robot Images</string>
     <string name="quick_stats">Quick Stats</string>
+    <string name="add_card">Add Card</string>
 </resources>
