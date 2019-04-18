@@ -57,6 +57,10 @@ freeline.py
 freeline/
 freeline_project_description.json
 
-#Keys file
+# Keys file
 app/src/main/java/com/alphadevelopmentsolutions/frcscout/Interfaces/Keys.java
+
+# Release Files
+app/release/*
+app/release/
 

@@ -8,7 +8,6 @@ import com.alphadevelopmentsolutions.frcscout.Interfaces.StatsKeys;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class Team
 {
@@ -300,8 +299,8 @@ public class Team
             avgStats.put(StatsKeys.OFFENSE_RATING, avgStats.get(StatsKeys.OFFENSE_RATING) + scoutCard.getOffenseRating());
             avgStats.put(StatsKeys.DRIVE_RATING, avgStats.get(StatsKeys.DRIVE_RATING) + scoutCard.getDriveRating());
 
-            nulledDefenseRatings = scoutCard.getDefenseRating() == 0 ? nulledDefenseRatings + 1 : nulledDefenseRatings;
-            nulledOffenseRatings = scoutCard.getOffenseRating() == 0 ? nulledOffenseRatings + 1 : nulledOffenseRatings;
+            nulledDefenseRatings = avgStats.get(StatsKeys.DEFENSE_RATING) == 0 ? nulledDefenseRatings + 1 : nulledDefenseRatings;
+            nulledOffenseRatings = avgStats.get(StatsKeys.OFFENSE_RATING) == 0 ? nulledOffenseRatings + 1 : nulledOffenseRatings;
 
             i++;
             
@@ -377,14 +376,8 @@ public class Team
         avgStats.put(StatsKeys.DEFENSE_RATING, avgStats.get(StatsKeys.DEFENSE_RATING) / (i - nulledDefenseRatings) );
         avgStats.put(StatsKeys.OFFENSE_RATING, avgStats.get(StatsKeys.OFFENSE_RATING) / (i - nulledOffenseRatings) );
         avgStats.put(StatsKeys.DRIVE_RATING, avgStats.get(StatsKeys.DRIVE_RATING) / i );
-
-        //verify the min stats are not still at default 1000
-        for(Map.Entry<String, Double> minStat : minStats.entrySet())
-        {
-            if(minStat.getValue() > 900)
-                minStats.put(minStat.getKey(), 0.0);
-        }
-
+        
+        
         stats.put(StatsKeys.MIN, minStats);
         stats.put(StatsKeys.AVG, avgStats);
         stats.put(StatsKeys.MAX, maxStats);

@@ -3,7 +3,6 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -12,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.ScoutCardViewPagerAdapter;
+import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
+import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Classes.StartingPosition;
@@ -32,10 +33,12 @@ import java.util.Date;
 public class ScoutCardFragment extends MasterFragment
 {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "ScoutCardJson";
-    private static final String ARG_PARAM2 = "EventJson";
-    private static final String ARG_PARAM3 = "TeamId";
+    private static final String ARG_PARAM1 = "MatchJson";
+    private static final String ARG_PARAM2 = "ScoutCardJson";
+    private static final String ARG_PARAM3 = "EventJson";
+    private static final String ARG_PARAM4 = "TeamId";
 
+    private String matchJson;
     private String scoutCardJson;
     private String eventJson;
     private int teamId;
@@ -51,33 +54,36 @@ public class ScoutCardFragment extends MasterFragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
+     * @param matchJson match json
      * @param scoutCardJson scout card json
      * @param eventJson event json
      * @param teamId teamId
      * @return A new instance of fragment ScoutCardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ScoutCardFragment newInstance(String scoutCardJson, String eventJson, int teamId)
+    public static ScoutCardFragment newInstance(String eventJson, String matchJson, String scoutCardJson, int teamId)
     {
         ScoutCardFragment fragment = new ScoutCardFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, scoutCardJson);
-        args.putString(ARG_PARAM2, eventJson);
-        args.putInt(ARG_PARAM3, teamId);
+        args.putString(ARG_PARAM1, matchJson);
+        args.putString(ARG_PARAM2, scoutCardJson);
+        args.putString(ARG_PARAM3, eventJson);
+        args.putInt(ARG_PARAM4, teamId);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(final Bundle savedInstanceState)
+    public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null)
         {
-            scoutCardJson = getArguments().getString(ARG_PARAM1);
-            eventJson = getArguments().getString(ARG_PARAM2);
-            teamId = getArguments().getInt(ARG_PARAM3);
+            matchJson = getArguments().getString(ARG_PARAM1);
+            scoutCardJson = getArguments().getString(ARG_PARAM2);
+            eventJson = getArguments().getString(ARG_PARAM3);
+            teamId = getArguments().getInt(ARG_PARAM4);
         }
 
         //start the creation of fragments on a new thread
@@ -92,12 +98,14 @@ public class ScoutCardFragment extends MasterFragment
                 if(eventJson != null && !eventJson.equals(""))
                     event = new Gson().fromJson(eventJson, Event.class);
 
+                if(matchJson != null && !matchJson.equals(""))
+                    match = new Gson().fromJson(matchJson, Match.class);
+
                 scoutCardPreGameFragment = ScoutCardPreGameFragment.newInstance(scoutCardJson, teamId);
                 scoutCardAutoFragment = ScoutCardAutoFragment.newInstance(scoutCardJson);
                 scoutCardTeleopFragment = ScoutCardTeleopFragment.newInstance(scoutCardJson);
                 scoutCardEndGameFragment = ScoutCardEndGameFragment.newInstance(scoutCardJson);
                 scoutCardPostGameFragment = ScoutCardPostGameFragment.newInstance(scoutCardJson);
-
             }
         });
         fragCreationThread.start();
@@ -106,6 +114,7 @@ public class ScoutCardFragment extends MasterFragment
     
     private ScoutCard scoutCard;
     private Event event;
+    private Match match;
 
     private TabLayout scoutCardTabLayout;
     private ViewPager scoutCardViewPager;
@@ -114,11 +123,9 @@ public class ScoutCardFragment extends MasterFragment
     private ScoutCardAutoFragment scoutCardAutoFragment;
     private ScoutCardTeleopFragment scoutCardTeleopFragment;
     private ScoutCardEndGameFragment scoutCardEndGameFragment;
-    private ScoutCardPostGameFragment scoutCardPostGameFragment;
+    private  ScoutCardPostGameFragment scoutCardPostGameFragment;
 
     private Thread fragCreationThread;
-
-    private FloatingActionButton scoutCardSaveFloatingActionButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -133,7 +140,7 @@ public class ScoutCardFragment extends MasterFragment
         scoutCardTabLayout = view.findViewById(R.id.ScoutCardTabLayout);
         scoutCardViewPager = view.findViewById(R.id.ScoutCardViewPager);
 
-        scoutCardSaveFloatingActionButton = view.findViewById(R.id.ScouCardSaveFloatingActionButton);
+        final ScoutCardViewPagerAdapter scoutCardViewPagerAdapter = new ScoutCardViewPagerAdapter(getChildFragmentManager());
 
         //join back with the frag creation thread
         try
@@ -144,19 +151,22 @@ public class ScoutCardFragment extends MasterFragment
             e.printStackTrace();
         }
 
-        ScoutCardViewPagerAdapter scoutCardViewPagerAdapter = new ScoutCardViewPagerAdapter(getChildFragmentManager());
-
         scoutCardViewPagerAdapter.addFragment(scoutCardPreGameFragment, getString(R.string.pre_game));
-        scoutCardViewPagerAdapter.addFragment(scoutCardAutoFragment, getString(R.string.autonomous));
+        scoutCardViewPagerAdapter.addFragment(scoutCardAutoFragment, getString(R.string.auto));
         scoutCardViewPagerAdapter.addFragment(scoutCardTeleopFragment, getString(R.string.teleop));
         scoutCardViewPagerAdapter.addFragment(scoutCardEndGameFragment, getString(R.string.end_game));
         scoutCardViewPagerAdapter.addFragment(scoutCardPostGameFragment, getString(R.string.post_game));
+
+        //update the title of the page to display the match
+        context.getSupportActionBar().setTitle(match.getMatchType().toString(match));
+
 
         scoutCardViewPager.setAdapter(scoutCardViewPagerAdapter);
         scoutCardViewPager.setOffscreenPageLimit(5);
         scoutCardTabLayout.setupWithViewPager(scoutCardViewPager);
 
-        scoutCardSaveFloatingActionButton.setOnClickListener(new View.OnClickListener()
+
+        scoutCardPostGameFragment.setOnSaveButtonClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -164,17 +174,16 @@ public class ScoutCardFragment extends MasterFragment
 
                 //validates all fields are valid on the forms
                 if(scoutCardPreGameFragment.validateFields() &&
-                        scoutCardAutoFragment.validateFields() &&
-                        scoutCardTeleopFragment.validateFields() &&
-                        scoutCardEndGameFragment.validateFields() &&
-                        scoutCardPostGameFragment.validateFields())
+                    scoutCardAutoFragment.validateFields() &&
+                    scoutCardTeleopFragment.validateFields() &&
+                    scoutCardEndGameFragment.validateFields() &&
+                    scoutCardPostGameFragment.validateFields())
                 {
 
                     //pre game info
-                    int matchId = scoutCardPreGameFragment.getMatchNumber();
                     int teamNumber = scoutCardPreGameFragment.getTeamId();
                     String eventId = (scoutCard == null) ? event.getBlueAllianceId() : scoutCard.getEventId();
-                    String allianceColor = scoutCardPreGameFragment.getAllianceColor();
+                    AllianceColor allianceColor = match.getTeamAllianceColor(teamId);
                     String completedBy = scoutCardPreGameFragment.getScouterName();
 
                     int preGameStartingLevel = scoutCardPreGameFragment.getStartingLevel();
@@ -203,8 +212,6 @@ public class ScoutCardFragment extends MasterFragment
                     int endGameReturnedToHabitatAttempts = scoutCardEndGameFragment.getReturnedToHabAttemptLevel();
 
                     //post game info
-                    int blueAllianceFinalScore = scoutCardPostGameFragment.getBlueAllianceScore();
-                    int redAllianceFinalScore = scoutCardPostGameFragment.getRedAllianceScore();
                     int defenseRating = scoutCardPostGameFragment.getDefenseRating();
                     int offenseRating = scoutCardPostGameFragment.getOffenseRating();
                     int driveRating = scoutCardPostGameFragment.getDriveRating();
@@ -215,10 +222,10 @@ public class ScoutCardFragment extends MasterFragment
                     //saving a draft scout card
                     if (scoutCard != null)
                     {
-                        scoutCard.setMatchId(matchId);
+                        scoutCard.setMatchId(match.getKey());
                         scoutCard.setTeamId(teamNumber);
                         scoutCard.setEventId(eventId);
-                        scoutCard.setAllianceColor(allianceColor);
+                        scoutCard.setAllianceColor(allianceColor.name());
                         scoutCard.setCompletedBy(completedBy);
 
                         scoutCard.setPreGameStartingLevel(preGameStartingLevel);
@@ -243,15 +250,13 @@ public class ScoutCardFragment extends MasterFragment
                         scoutCard.setEndGameReturnedToHabitat(endGameReturnedToHabitat);
                         scoutCard.setEndGameReturnedToHabitatAttempts(endGameReturnedToHabitatAttempts);
 
-                        scoutCard.setBlueAllianceFinalScore(blueAllianceFinalScore);
-                        scoutCard.setRedAllianceFinalScore(redAllianceFinalScore);
                         scoutCard.setDefenseRating(defenseRating);
                         scoutCard.setOffenseRating(offenseRating);
                         scoutCard.setDriveRating(driveRating);
                         scoutCard.setNotes(notes);
                         scoutCard.setCompletedDate(completedDate);
                         scoutCard.setDraft(true);
-
+                        
                         //save the scout card
                         if (scoutCard.save(database) > 0)
                         {
@@ -264,23 +269,23 @@ public class ScoutCardFragment extends MasterFragment
                         }
 
 
-                    }
-
+                    } 
+                    
                     //saving a new scoutcard
                     else
                     {
                         ScoutCard scoutCard = new ScoutCard(
                                 -1,
-                                matchId,
+                                match.getKey(),
                                 teamId,
                                 eventId,
-                                allianceColor,
+                                allianceColor.name(),
                                 completedBy,
-
+        
                                 preGameStartingLevel,
                                 preGameStartingPosition,
                                 preGameStartingPiece,
-
+        
                                 autonomousExitHabitat,
                                 autonomousHatchPanelsPickedUp,
                                 autonomousHatchPanelsSecuredAttempts,
@@ -288,19 +293,17 @@ public class ScoutCardFragment extends MasterFragment
                                 autonomousCargoPickedUp,
                                 autonomousCargoStoredAttempts,
                                 autonomousCargoStored,
-
+        
                                 teleopHatchPanelsPickedUp,
                                 teleopHatchPanelsSecuredAttempts,
                                 teleopHatchPanelsSecured,
                                 teleopCargoPickedUp,
                                 teleopCargoStoredAttempts,
                                 teleopCargoStored,
-
+        
                                 endGameReturnedToHabitat,
                                 endGameReturnedToHabitatAttempts,
-
-                                blueAllianceFinalScore,
-                                redAllianceFinalScore,
+        
                                 defenseRating,
                                 offenseRating,
                                 driveRating,
@@ -322,10 +325,6 @@ public class ScoutCardFragment extends MasterFragment
                 }
             }
         });
-
-        if(scoutCard != null)
-            if(!scoutCard.isDraft())
-                scoutCardSaveFloatingActionButton.hide();
 
         return view;
     }

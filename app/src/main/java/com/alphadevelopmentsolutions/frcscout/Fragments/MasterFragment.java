@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
+import com.alphadevelopmentsolutions.frcscout.R;
 
 public class MasterFragment extends Fragment
 {
@@ -20,5 +21,13 @@ public class MasterFragment extends Fragment
 
         context = (MainActivity) getActivity();
         database = context.getDatabase();
+    }
+
+    @Override
+    public void onDetach()
+    {
+        //reset the title of the app upon detach
+        context.getSupportActionBar().setTitle(R.string.app_name);
+        super.onDetach();
     }
 }

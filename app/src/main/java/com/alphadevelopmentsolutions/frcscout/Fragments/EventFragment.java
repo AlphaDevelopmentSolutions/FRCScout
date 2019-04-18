@@ -86,7 +86,6 @@ public class EventFragment extends MasterFragment
         actionBar.setElevation(0);
 
         EventViewPagerAdapter eventViewPagerAdapter = new EventViewPagerAdapter(getChildFragmentManager());
-        eventViewPagerAdapter.addFragment(new MatchListFragment(), "Matches");
         eventViewPagerAdapter.addFragment(new TeamListFragment(), "Teams");
 
         eventViewPager = view.findViewById(R.id.EventViewPager);

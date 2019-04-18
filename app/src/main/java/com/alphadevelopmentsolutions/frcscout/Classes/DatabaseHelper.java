@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper
 {
 
-    private static final int DB_VERSION = 7;
+    private static final int DB_VERSION = 8;
     private static final String DB_NAME = "FRCScout.db";
 
 
@@ -60,25 +60,24 @@ public class DatabaseHelper extends SQLiteOpenHelper
             "CREATE TABLE " + Match.TABLE_NAME +" (" +
                     Match.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
                     Match.COLUMN_NAME_DATE + " INTEGER," +
+                    Match.COLUMN_NAME_EVENT_ID + " TEXT," +
+                    "\"" + Match.COLUMN_NAME_KEY + "\" TEXT," +
+                    Match.COLUMN_NAME_MATCH_TYPE + " TEXT," +
+                    Match.COLUMN_NAME_SET_NUMBER + " INTEGER," +
+                    Match.COLUMN_NAME_MATCH_NUMBER + " INTEGER," +
                     Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID + " INTEGER," +
                     Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID + " INTEGER," +
                     Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID + " INTEGER," +
-                    Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_SCOUT_CARD_ID + " INTEGER," +
-                    Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_SCOUT_CARD_ID + " INTEGER," +
-                    Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_SCOUT_CARD_ID + " INTEGER," +
                     Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE + " INTEGER," +
                     Match.COLUMN_NAME_RED_ALLIANCE_SCORE + " INTEGER," +
                     Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID + " INTEGER," +
                     Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID + " INTEGER," +
-                    Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID + " INTEGER," +
-                    Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_SCOUT_CARD_ID + " INTEGER," +
-                    Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_SCOUT_CARD_ID + " INTEGER," +
-                    Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_SCOUT_CARD_ID + " INTEGER)";
+                    Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID + " INTEGER)";
 
     private final String CREATE_SCOUT_CARDS_TABLE =
             "CREATE TABLE " + ScoutCard.TABLE_NAME +" (" +
                     ScoutCard.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                    ScoutCard.COLUMN_NAME_MATCH_ID + " INTEGER," +
+                    ScoutCard.COLUMN_NAME_MATCH_ID + " TEXT," +
                     ScoutCard.COLUMN_NAME_TEAM_ID + " INTEGER," +
                     ScoutCard.COLUMN_NAME_EVENT_ID + " TEXT," +
                     ScoutCard.COLUMN_NAME_ALLIANCE_COLOR + " TEXT," +
@@ -106,8 +105,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT + " INTEGER," +
                     ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS + " INTEGER," +
 
-                    ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE + " INTEGER," +
-                    ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE + " INTEGER," +
                     ScoutCard.COLUMN_NAME_DEFENSE_RATING + " INTEGER," +
                     ScoutCard.COLUMN_NAME_OFFENSE_RATING + " INTEGER," +
                     ScoutCard.COLUMN_NAME_DRIVE_RATING + " INTEGER," +
