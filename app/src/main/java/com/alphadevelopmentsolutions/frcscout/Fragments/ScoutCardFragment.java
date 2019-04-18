@@ -357,7 +357,6 @@ public class ScoutCardFragment extends MasterFragment
     @Override
     public void onDetach()
     {
-        context.getSupportActionBar().setTitle(R.string.app_name);
         super.onDetach();
         mListener = null;
     }
