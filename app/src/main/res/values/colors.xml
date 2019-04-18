@@ -22,5 +22,7 @@
     <color name="good">#64FF62</color>
     <color name="warning">#FFA74F</color>
     <color name="bad">#E67C73</color>
+    <color name="blue_alliance">#EEEEFF</color>
+    <color name="red_alliance">#FFEEEE</color>
 
 </resources>

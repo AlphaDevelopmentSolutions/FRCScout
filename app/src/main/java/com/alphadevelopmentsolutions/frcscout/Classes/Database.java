@@ -802,14 +802,17 @@ public class Database
                 matchType,
                 setNumber,
                 matchNumber,
+
                 blueAllianceTeamOneId,
                 blueAllianceTeamTwoId,
                 blueAllianceTeamThreeId,
-                blueAllianceScore,
-                redAllianceScore,
+
                 redAllianceTeamOne,
                 redAllianceTeamTwo,
-                redAllianceTeamThree);
+                redAllianceTeamThree,
+
+                blueAllianceScore,
+                redAllianceScore);
     }
 
     /**

@@ -70,14 +70,18 @@ public class MatchListFragment extends MasterFragment
             eventJson = getArguments().getString(ARG_PARAM2);
         }
 
-        team = new Gson().fromJson(teamJson, Team.class);
-        event = new Gson().fromJson(eventJson, Event.class);
+        gson = new Gson();
+
+        team = gson.fromJson(teamJson, Team.class);
+        event = gson.fromJson(eventJson, Event.class);
     }
 
     private RecyclerView matchListRecyclerView;
 
     private Team team;
     private Event event;
+
+    private Gson gson;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,7 +92,7 @@ public class MatchListFragment extends MasterFragment
 
         matchListRecyclerView = view.findViewById(R.id.MatchListRecyclerView);
 
-        MatchesRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new MatchesRecyclerViewAdapter(eventJson, database.getMatches(team, event), context);
+        MatchesRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new MatchesRecyclerViewAdapter(event, team, database.getMatches(team, event), context);
         matchListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         matchListRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
 

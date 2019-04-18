@@ -51,6 +51,27 @@ public class Match
             else
                 return Type.f;
         }
+
+        public String toString(Match match)
+        {
+            switch (this)
+            {
+                case qm:
+                    return "Quals " + match.getMatchNumber();
+
+                case qf:
+                    return "Quarters " + match.getSetNumber() + " Match " + match.getMatchNumber();
+
+                case sf:
+                    return "Semis " + match.getSetNumber() + " Match " + match.getMatchNumber();
+
+                case f:
+                    return "Finals " + match.getMatchNumber();
+
+                default:
+                    return "";
+            }
+        }
     }
 
     public interface TypeReference
@@ -59,6 +80,13 @@ public class Match
         Type QUARTER_FINALS = Type.qf;
         Type SEMI_FINALS = Type.sf;
         Type FINALS = Type.f;
+    }
+
+    public enum Status
+    {
+        TIE,
+        BLUE,
+        RED
     }
 
     private int id;
@@ -86,12 +114,15 @@ public class Match
             Type matchType,
             int setNumber,
             int matchNumber,
+
             int blueAllianceTeamOneId,
             int blueAllianceTeamTwoId,
             int blueAllianceTeamThreeId,
+
             int redAllianceTeamOneId,
             int redAllianceTeamTwoId,
             int redAllianceTeamThreeId,
+
             int blueAllianceScore,
             int redAllianceScore)
     {
@@ -102,14 +133,17 @@ public class Match
         this.matchType = matchType;
         this.setNumber = setNumber;
         this.matchNumber = matchNumber;
+
         this.blueAllianceTeamOneId = blueAllianceTeamOneId;
         this.blueAllianceTeamTwoId = blueAllianceTeamTwoId;
         this.blueAllianceTeamThreeId = blueAllianceTeamThreeId;
-        this.blueAllianceScore = blueAllianceScore;
-        this.redAllianceScore = redAllianceScore;
+
         this.redAllianceTeamOneId = redAllianceTeamOneId;
         this.redAllianceTeamTwoId = redAllianceTeamTwoId;
         this.redAllianceTeamThreeId = redAllianceTeamThreeId;
+
+        this.blueAllianceScore = blueAllianceScore;
+        this.redAllianceScore = redAllianceScore;
     }
 
     /**
@@ -198,55 +232,18 @@ public class Match
         return redAllianceTeamThreeId;
     }
 
-
     /**
-     * Returns whether the current team in question won
-     * @param allianceColor color of the alliance to check win status
-     * @return boolean if team won
+     * Returns either the winning team or tie status from the match
+     * @return Status enum
      */
-    public boolean teamWon(String allianceColor)
+    public Status getMatchStatus()
     {
-        if(allianceColor.equals(AllianceColor.RED.name()))
-            return getRedAllianceScore() > getBlueAllianceScore();
+        if(blueAllianceScore == redAllianceScore)
+            return Status.TIE;
+        else if (blueAllianceScore > redAllianceScore)
+            return Status.BLUE;
         else
-            return getBlueAllianceScore() > getRedAllianceScore();
-    }
-
-    /**
-     * Returns whether the current team in question lost
-     * @param allianceColor color of the alliance to check lose status
-     * @return boolean if team lost
-     */
-    public boolean teamLost(String allianceColor)
-    {
-        if(allianceColor.equals(AllianceColor.RED.name()))
-            return getRedAllianceScore() < getBlueAllianceScore();
-        else
-            return getBlueAllianceScore() < getRedAllianceScore();
-    }
-
-    /**
-     * Returns whether the current team in question tied
-     * @return boolean if team tied
-     */
-    public boolean teamTied()
-    {
-        return getRedAllianceScore() == getBlueAllianceScore();
-    }
-
-    /**
-     * Returns the outcome of the match
-     * @param allianceColor to check
-     * @return outcome of the game for a allianceColor
-     */
-    public String getOutcomeStatus(String allianceColor)
-    {
-        if(teamWon(allianceColor))
-            return GameScoreStatus.WIN.name();
-        else if(teamLost(allianceColor))
-            return GameScoreStatus.LOSE.name();
-        else
-            return GameScoreStatus.TIE.name();
+            return Status.RED;
     }
 
     /**
