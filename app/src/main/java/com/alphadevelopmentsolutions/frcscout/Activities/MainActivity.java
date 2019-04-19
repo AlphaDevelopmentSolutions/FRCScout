@@ -40,6 +40,7 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.ConfigFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.LoginFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.MasterFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardFragment;
@@ -54,6 +55,7 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardPostGameFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardPreGameFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardTeleopFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.SplashFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
@@ -82,7 +84,8 @@ public class MainActivity extends AppCompatActivity implements
         RobotMediaListFragment.OnFragmentInteractionListener,
         QuickStatsFragment.OnFragmentInteractionListener,
         EventListFragment.OnFragmentInteractionListener,
-        ConfigFragment.OnFragmentInteractionListener
+        ConfigFragment.OnFragmentInteractionListener,
+        SplashFragment.OnFragmentInteractionListener
 {
 
     private Database database;
@@ -103,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -115,6 +119,9 @@ public class MainActivity extends AppCompatActivity implements
         context = this;
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        //default to the splash frag until changed
+        changeFragment(new SplashFragment(), false);
 
         //we need write permission before anything
         //android >= marshmallow
