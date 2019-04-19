@@ -118,7 +118,15 @@ public class ConfigFragment extends MasterFragment
                             //valid config
                             if(getServerConfig.execute())
                             {
-                                context.changeFragment(new EventListFragment(), false);
+                                context.runOnUiThread(new Runnable()
+                                {
+                                    @Override
+                                    public void run()
+                                    {
+                                        context.updateApplicationData(false);
+                                        context.changeFragment(new EventListFragment(), false);
+                                    }
+                                });
                             }
 
                             //invalid config
