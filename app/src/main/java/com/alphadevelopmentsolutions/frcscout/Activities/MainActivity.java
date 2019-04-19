@@ -5,12 +5,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -34,6 +36,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ConfigFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.LoginFragment;
@@ -78,7 +81,8 @@ public class MainActivity extends AppCompatActivity implements
         RobotMediaFragment.OnFragmentInteractionListener,
         RobotMediaListFragment.OnFragmentInteractionListener,
         QuickStatsFragment.OnFragmentInteractionListener,
-        EventListFragment.OnFragmentInteractionListener
+        EventListFragment.OnFragmentInteractionListener,
+        ConfigFragment.OnFragmentInteractionListener
 {
 
     private Database database;
@@ -92,6 +96,9 @@ public class MainActivity extends AppCompatActivity implements
     private final int ACTION_BAR_ELEVATION = 11;
     
     private int progressDialogProgess;
+
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor sharedPreferencesEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -107,20 +114,69 @@ public class MainActivity extends AppCompatActivity implements
 
         context = this;
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         //we need write permission before anything
+        //android >= marshmallow
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
+            //write permission not granted, request
             if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 5885);
             }
+
+            //permission granted, continue
             else
             {
-
+                //if not previous saved state, eg not rotation
                 if (savedInstanceState == null)
                 {
+                    //validate the app config to ensure all properties are filled
+                    if (validateConfig())
+                    {
+                        //check any teams are on device and if the device is online
+                        //if no teams, update data
+                        if (getDatabase().getTeams().size() == 0 && isOnline())
+                            updateApplicationData(false);
+
+                        //join back up with the update thread if it is not null
+                        if (updateThread != null)
+                        {
+                            try
+                            {
+                                updateThread.join();
+                            } catch (InterruptedException e)
+                            {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        //change the frag to the eventlist
+                        changeFragment(new EventListFragment(), false);
+                    }
+                    else
+                    {
+                        changeFragment(new ConfigFragment(), false);
+                    }
+                }
+            }
+        }
+
+        //android < marshmallow
+        else
+        {
+            //if not previous saved state, eg not rotation
+            if (savedInstanceState == null)
+            {
+                //validate the app config to ensure all properties are filled
+                if(validateConfig())
+                {
+                    //check any teams are on device and if the device is online
+                    //if no teams, update data
                     if (getDatabase().getTeams().size() == 0 && isOnline())
                         updateApplicationData(false);
 
+                    //join back up with the update thread if it is not null
                     if (updateThread != null)
                     {
                         try
@@ -132,30 +188,13 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     }
 
+                    //change the frag to the eventlist
                     changeFragment(new EventListFragment(), false);
                 }
-            }
-        }
-        else
-        {
-
-            if (savedInstanceState == null)
-            {
-                if (getDatabase().getTeams().size() == 0 && isOnline())
-                    updateApplicationData(false);
-
-                if (updateThread != null)
+                else
                 {
-                    try
-                    {
-                        updateThread.join();
-                    } catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
+                    changeFragment(new ConfigFragment(), false);
                 }
-
-                changeFragment(new TeamListFragment(), false);
             }
         }
 
@@ -623,11 +662,20 @@ public class MainActivity extends AppCompatActivity implements
         return database;
     }
 
+    /**
+     * Displays the snackbar
+     * @param message to be displayed
+     */
     public void showSnackbar(String message)
     {
         (Snackbar.make(mainFrame, message, Snackbar.LENGTH_SHORT)).show();
     }
 
+    /**
+     * Changes the current fragment to the specified one
+     * @param fragment to change to
+     * @param addToBackstack if frag should be added to backstack, if false all frags pop and specified one is shown
+     */
     public void changeFragment(Fragment fragment, boolean addToBackstack)
     {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -637,6 +685,80 @@ public class MainActivity extends AppCompatActivity implements
         fragmentTransaction.commit();
 
 //        elevateActionBar();
-
     }
+
+    /**
+     * Sets or adds a preference into the shared preferences
+     * @param key sharedpref key
+     * @param value sharedpref value
+     */
+    public void setPreference(String key, Object value)
+    {
+        sharedPreferencesEditor = sharedPreferences.edit();
+
+        if(value instanceof String)
+            sharedPreferencesEditor.putString(key, (String) value);
+
+        else if(value instanceof Integer)
+            sharedPreferencesEditor.putInt(key, (Integer) value);
+
+        else if(value instanceof Boolean)
+            sharedPreferencesEditor.putBoolean(key, (Boolean) value);
+
+        else if(value instanceof Long)
+            sharedPreferencesEditor.putLong(key, (Long) value);
+
+        else if(value instanceof Float)
+            sharedPreferencesEditor.putFloat(key, (Float) value);
+
+        sharedPreferencesEditor.apply();
+    }
+
+    /**
+     * Sets or adds a preference into the shared preferences
+     * @param key sharedpref key
+     * @param defaultValue sharedpref defaultVal
+     */
+    public Object getPreference(String key, Object defaultValue)
+    {
+        if(defaultValue instanceof String)
+            return sharedPreferences.getString(key, (String) defaultValue);
+
+        else if(defaultValue instanceof Integer)
+            return sharedPreferences.getInt(key, (Integer) defaultValue);
+
+        else if(defaultValue instanceof Boolean)
+            return sharedPreferences.getBoolean(key, (Boolean) defaultValue);
+
+        else if(defaultValue instanceof Long)
+            return sharedPreferences.getLong(key, (Long) defaultValue);
+
+        else if(defaultValue instanceof Float)
+            return sharedPreferences.getFloat(key, (Float) defaultValue);
+
+        else return null;
+    }
+
+    /**
+     * Clears all api configs from the phone
+     */
+    public void clearApiConfig()
+    {
+        setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "");
+        setPreference(Constants.SharedPrefKeys.API_URL_KEY, "");
+        setPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "");
+    }
+
+    /**
+     * Check all the shared pref settings to validate the app is setup with the required info
+     * @return boolean if config is valid
+     */
+    private boolean validateConfig()
+    {
+        return !getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").equals("") &&
+                !getPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "").equals("") &&
+                !getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").equals("");
+    }
+
+
 }

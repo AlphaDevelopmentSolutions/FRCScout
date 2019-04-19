@@ -98,4 +98,9 @@
     <string name="quick_stats">Quick Stats</string>
     <string name="add_card">Add Card</string>
     <string name="events">Events</string>
+    <string name="enter_web_url">Enter Web URL</string>
+    <string name="url_placeholder">http(s)://subdomain.domain.com/</string>
+    <string name="connect">Connect</string>
+    <string name="server_error">Could not connect to the web server.</string>
+    <string name="invalid_url">Invalid Web URL</string>
 </resources>

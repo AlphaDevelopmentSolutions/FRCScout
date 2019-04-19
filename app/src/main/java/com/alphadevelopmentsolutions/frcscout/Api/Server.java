@@ -10,7 +10,8 @@ import com.alphadevelopmentsolutions.frcscout.Classes.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Classes.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
-import com.alphadevelopmentsolutions.frcscout.Interfaces.Keys;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
+import com.alphadevelopmentsolutions.frcscout.R;
 
 import org.json.JSONObject;
 
@@ -20,13 +21,104 @@ import java.util.HashMap;
 
 public abstract class Server extends Api
 {
-    Server(String URLExtension, HashMap<String, String> postData)
+    Server(String URL, String key, HashMap<String, String> postData)
     {
-        super(Keys.API_URL + URLExtension, postData);
+        super(URL, key, postData);
     }
 
     //region Getters
 
+    public static class Hello extends Server
+    {
+        private MainActivity context;
+
+        public Hello(final MainActivity context)
+        {
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
+            {{
+                put("action", "Hello");
+            }});
+            
+            this.context = context;
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception(context.getString(R.string.server_error));
+
+                if (!response.getString("Status").toLowerCase().equals("success"))
+                    throw new Exception(context.getString(R.string.server_error));
+                
+                return true;
+            } catch (Exception e)
+            {
+                return false;
+            }
+        }
+    }
+
+    public static class GetServerConfig extends Server
+    {
+        private MainActivity context;
+
+        public GetServerConfig(final MainActivity context)
+        {
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
+            {{
+                put("action", "GetServerConfig");
+            }});
+
+            this.context = context;
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception(context.getString(R.string.server_error));
+
+                if (!response.getString("Status").toLowerCase().equals("success"))
+                    throw new Exception(response.getString("Response"));
+
+                //get the json obj from the server
+//                JSONObject serverConfigsObject = response.getJSONObject("Response");
+
+                String apiKey = response.getString("Response");
+
+                //store the configs into the shared prefs
+                context.setPreference(Constants.SharedPrefKeys.API_KEY_KEY, apiKey);
+
+                return true;
+            } catch (Exception e)
+            {
+                context.showSnackbar(e.getMessage());
+                return false;
+            }
+        }
+    }
+    
     public static class GetTeamsAtEvent extends Server
     {
         private ArrayList<Team> teams;
@@ -35,7 +127,7 @@ public abstract class Server extends Api
 
         public GetTeamsAtEvent(final MainActivity context, final Event event)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
                 put("action", "GetTeamsAtEvent");
                 put("EventId", event.getBlueAllianceId());
@@ -60,7 +152,7 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
                 if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
@@ -125,7 +217,7 @@ public abstract class Server extends Api
 
         public GetUsers(final MainActivity context)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
                 put("action", "GetUsers");
             }});
@@ -149,7 +241,7 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
                 if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
@@ -193,7 +285,7 @@ public abstract class Server extends Api
 
         public GetScoutCards(final MainActivity context, final Event event)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
                 put("action", "GetScoutCards");
                 put("EventId", event.getBlueAllianceId());
@@ -218,7 +310,7 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
                 if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
@@ -330,7 +422,7 @@ public abstract class Server extends Api
 
         public GetPitCards(final MainActivity context, final Event event)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
                 put("action", "GetPitCards");
                 put("EventId", event.getBlueAllianceId());
@@ -355,7 +447,7 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
                 if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
@@ -441,7 +533,7 @@ public abstract class Server extends Api
 
         public GetMatches(final MainActivity context, final Event event)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
                 put("action", "GetMatches");
                 put("EventId", event.getBlueAllianceId());
@@ -466,7 +558,7 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
                 if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
@@ -545,7 +637,7 @@ public abstract class Server extends Api
 
         public GetRobotMedia(final MainActivity context, final int teamId)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
                 put("action", "GetRobotMedia");
                 put("TeamId", String.valueOf(teamId));
@@ -570,7 +662,7 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
                 if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
@@ -582,7 +674,7 @@ public abstract class Server extends Api
                     JSONObject robotMediaJson = response.getJSONArray("Response").getJSONObject(i);
 
                     int teamId = robotMediaJson.getInt(RobotMedia.COLUMN_NAME_TEAM_ID);
-                    String fileUri = Keys.WEB_URL + "assets/robot-media/" + robotMediaJson.getString(RobotMedia.COLUMN_NAME_FILE_URI);
+                    String fileUri = context.getPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "").toString() + "assets/robot-media/" + robotMediaJson.getString(RobotMedia.COLUMN_NAME_FILE_URI);
 
                     fileUri = apiParser.downloadImage(fileUri).getAbsolutePath();
 
@@ -614,7 +706,6 @@ public abstract class Server extends Api
         //endregion
     }
 
-
     public static class GetEvents extends Server
     {
         private ArrayList<Event> events;
@@ -623,7 +714,7 @@ public abstract class Server extends Api
 
         public GetEvents(final MainActivity context)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
                 put("action", "GetEvents");
             }});
@@ -646,7 +737,7 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
                 if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
@@ -689,8 +780,7 @@ public abstract class Server extends Api
             return events;
         }
     }
-
-
+    
     //endregion
 
     //region Setters
@@ -701,7 +791,7 @@ public abstract class Server extends Api
 
         public SubmitScoutCard(final MainActivity context, final ScoutCard scoutCard)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
                 put("action", "SubmitScoutCard");
 
@@ -758,7 +848,7 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
                 if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
@@ -779,7 +869,7 @@ public abstract class Server extends Api
 
         public SubmitPitCard(final MainActivity context, final PitCard pitCard)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
                 put("action", "SubmitPitCard");
 
@@ -822,7 +912,7 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
                 if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));
@@ -843,7 +933,7 @@ public abstract class Server extends Api
 
         public SubmitRobotMedia(final MainActivity context, final RobotMedia robotMedia)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
                 put("action", "SubmitRobotMedia");
 
@@ -868,7 +958,7 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
                 if (!response.getString("Status").toLowerCase().equals("success"))
                     throw new Exception(response.getString("Response"));

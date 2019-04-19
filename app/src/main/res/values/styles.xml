@@ -30,4 +30,13 @@
         <item name="android:textSize">@dimen/textSecondary</item>
     </style>
 
+    <style name="TextInputLayoutLight" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#FFF</item>
+    </style>
+
+    <style name="EditTextLight" parent="Widget.AppCompat.EditText">
+        <item name="colorControlNormal">#FFF</item>
+        <item name="colorControlActivated">#FFF</item>
+    </style>
+
 </resources>

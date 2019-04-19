@@ -1,6 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Api;
 
-import com.alphadevelopmentsolutions.frcscout.Interfaces.Keys;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -12,6 +12,7 @@ public abstract class Api
 {
     private String URL;
     private String action;
+    private String key;
 
     private HashMap<String, String> postData;
 
@@ -30,9 +31,10 @@ public abstract class Api
 
     protected SimpleDateFormat simpleDateFormat;
 
-    Api(String URL, HashMap<String, String> postData)
+    Api(String URL, String key, HashMap<String, String> postData)
     {
         this.URL = URL;
+        this.key = key;
 
         if(postData != null)
             this.postData = postData;
@@ -64,7 +66,7 @@ public abstract class Api
 
         //Specify version of current API
         formattedPostData
-                .append("key=" + Keys.API_KEY);
+                .append("key=" + key);
 
         //add each post data to the string builder
         for(Map.Entry<String, String> pair : postData.entrySet())
