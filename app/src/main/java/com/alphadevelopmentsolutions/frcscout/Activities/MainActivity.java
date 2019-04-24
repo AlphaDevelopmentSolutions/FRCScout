@@ -29,7 +29,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Api.Server;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
@@ -41,6 +43,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ChecklistFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ConfigFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment;
@@ -90,7 +93,8 @@ public class MainActivity extends AppCompatActivity implements
         QuickStatsFragment.OnFragmentInteractionListener,
         EventListFragment.OnFragmentInteractionListener,
         ConfigFragment.OnFragmentInteractionListener,
-        SplashFragment.OnFragmentInteractionListener
+        SplashFragment.OnFragmentInteractionListener,
+        ChecklistFragment.OnFragmentInteractionListener
 {
 
     private Database database;
@@ -117,6 +121,16 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //open the database as soon as the app starts
+        database = new Database(this);
+        database.open();
+
+        mainFrame = findViewById(R.id.MainFrame);
+
+        context = this;
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -127,15 +141,13 @@ public class MainActivity extends AppCompatActivity implements
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        //open the database as soon as the app starts
-        database = new Database(this);
-        database.open();
+        View navHeader = navigationView.getHeaderView(0);
 
-        mainFrame = findViewById(R.id.MainFrame);
+        TextView teamNumberTextView = navHeader.findViewById(R.id.TeamNumberTextView);
+        TextView teamNameTextView = navHeader.findViewById(R.id.TeamNameTextView);
 
-        context = this;
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        teamNumberTextView.setText(String.valueOf(getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1)));
+        teamNameTextView.setText(getPreference(Constants.SharedPrefKeys.TEAM_NAME_KEY, "").toString());
 
         //default to the splash frag until changed
         changeFragment(new SplashFragment(), false);
@@ -245,11 +257,11 @@ public class MainActivity extends AppCompatActivity implements
 
         if (id == R.id.nav_teams)
         {
-
+            changeFragment(new EventListFragment(), false);
         }
         else if(id == R.id.nav_checklist)
         {
-
+            changeFragment(new ChecklistFragment(), false);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

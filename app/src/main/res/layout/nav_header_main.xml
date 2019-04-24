@@ -22,12 +22,12 @@
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:layout_constraintBottom_toTopOf="@+id/TeamIdTextView"
+        app:layout_constraintBottom_toTopOf="@+id/TeamNumberTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@mipmap/ic_launcher"/>
 
     <TextView
-        android:id="@+id/TeamIdTextView"
+        android:id="@+id/TeamNumberTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
