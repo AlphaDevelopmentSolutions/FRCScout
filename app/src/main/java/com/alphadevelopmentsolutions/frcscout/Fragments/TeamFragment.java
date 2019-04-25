@@ -108,7 +108,6 @@ public class TeamFragment extends MasterFragment
     private FontAwesomeIcon websiteFontAwesomeSolidIcon;
 
     private FloatingActionMenu teamFloatingActionMenu;
-    private FloatingActionButton addMatchFloatingActionButton;
     private FloatingActionButton addPitCardFloatingActionButton;
     private FloatingActionButton addRobotPhotoFloatingActionButton;
 
@@ -140,19 +139,8 @@ public class TeamFragment extends MasterFragment
         websiteFontAwesomeSolidIcon = view.findViewById(R.id.WebsiteFontAwesomeSolidIcon);
 
         teamFloatingActionMenu = view.findViewById(R.id.TeamFloatingActionMenu);
-        addMatchFloatingActionButton = view.findViewById(R.id.AddMatchFloatingActionButton);
         addPitCardFloatingActionButton = view.findViewById(R.id.AddPitCardFloatingActingButton);
         addRobotPhotoFloatingActionButton = view.findViewById(R.id.AddRobotPhotoFloatingActionButton);
-
-        //logic for adding a new match
-        addMatchFloatingActionButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                context.changeFragment(ScoutCardFragment.newInstance(eventJson,null, null, team.getId()), true);
-            }
-        });
 
         addPitCardFloatingActionButton.setOnClickListener(new View.OnClickListener()
         {

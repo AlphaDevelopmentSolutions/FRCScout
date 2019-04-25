@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -123,9 +124,12 @@ public class ScoutCardFragment extends MasterFragment
     private ScoutCardAutoFragment scoutCardAutoFragment;
     private ScoutCardTeleopFragment scoutCardTeleopFragment;
     private ScoutCardEndGameFragment scoutCardEndGameFragment;
-    private  ScoutCardPostGameFragment scoutCardPostGameFragment;
+    private ScoutCardPostGameFragment scoutCardPostGameFragment;
 
     private Thread fragCreationThread;
+
+
+    private FloatingActionButton scoutCardSaveFloatingActionButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -139,6 +143,8 @@ public class ScoutCardFragment extends MasterFragment
 
         scoutCardTabLayout = view.findViewById(R.id.ScoutCardTabLayout);
         scoutCardViewPager = view.findViewById(R.id.ScoutCardViewPager);
+
+        scoutCardSaveFloatingActionButton = view.findViewById(R.id.ScouCardSaveFloatingActionButton);
 
         final ScoutCardViewPagerAdapter scoutCardViewPagerAdapter = new ScoutCardViewPagerAdapter(getChildFragmentManager());
 
@@ -166,7 +172,7 @@ public class ScoutCardFragment extends MasterFragment
         scoutCardTabLayout.setupWithViewPager(scoutCardViewPager);
 
 
-        scoutCardPostGameFragment.setOnSaveButtonClickListener(new View.OnClickListener()
+        scoutCardSaveFloatingActionButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
