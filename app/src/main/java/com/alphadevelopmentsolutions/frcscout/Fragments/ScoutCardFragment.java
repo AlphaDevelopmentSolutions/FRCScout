@@ -128,7 +128,6 @@ public class ScoutCardFragment extends MasterFragment
 
     private Thread fragCreationThread;
 
-
     private FloatingActionButton scoutCardSaveFloatingActionButton;
 
     @Override
@@ -144,7 +143,7 @@ public class ScoutCardFragment extends MasterFragment
         scoutCardTabLayout = view.findViewById(R.id.ScoutCardTabLayout);
         scoutCardViewPager = view.findViewById(R.id.ScoutCardViewPager);
 
-        scoutCardSaveFloatingActionButton = view.findViewById(R.id.ScouCardSaveFloatingActionButton);
+        scoutCardSaveFloatingActionButton = view.findViewById(R.id.ScoutCardSaveFloatingActionButton);
 
         final ScoutCardViewPagerAdapter scoutCardViewPagerAdapter = new ScoutCardViewPagerAdapter(getChildFragmentManager());
 
