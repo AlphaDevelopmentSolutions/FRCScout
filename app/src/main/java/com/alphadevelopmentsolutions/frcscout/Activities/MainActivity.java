@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor sharedPreferencesEditor;
 
-    private Toolbar toolbar;
+    private AppBarLayout appBarLayout;
 
     private TextView teamNumberTextView;
     private TextView teamNameTextView;
@@ -131,12 +132,13 @@ public class MainActivity extends AppCompatActivity implements
         database.open();
 
         mainFrame = findViewById(R.id.MainFrame);
+        appBarLayout = findViewById(R.id.AppBarLayout);
 
         context = this;
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -150,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements
 
         teamNumberTextView = navHeader.findViewById(R.id.TeamNumberTextView);
         teamNameTextView = navHeader.findViewById(R.id.TeamNameTextView);
+
 
         //default to the splash frag until changed
         changeFragment(new SplashFragment(), false);
@@ -300,12 +303,12 @@ public class MainActivity extends AppCompatActivity implements
 
     public void dropActionBar()
     {
-        toolbar.setElevation(0);
+        appBarLayout.setElevation(0);
     }
 
     public void elevateActionBar()
     {
-        toolbar.setElevation(ACTION_BAR_ELEVATION);
+        appBarLayout.setElevation(ACTION_BAR_ELEVATION);
     }
 
     @Override
@@ -741,11 +744,18 @@ public class MainActivity extends AppCompatActivity implements
      */
     public void showSnackbar(String message)
     {
+        hideKeyboard();
+        (Snackbar.make(mainFrame, message, Snackbar.LENGTH_SHORT)).show();
+    }
+
+    /**
+     * Hides the keyboard from view if it is showing
+     */
+    public void hideKeyboard()
+    {
         //hide the keyboard before showing the snackbar
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
-
-        (Snackbar.make(mainFrame, message, Snackbar.LENGTH_SHORT)).show();
     }
 
     /**
@@ -760,6 +770,8 @@ public class MainActivity extends AppCompatActivity implements
         if(addToBackstack) fragmentTransaction.addToBackStack(null); //add to the backstack
         else getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE); //pop all backstacks
         fragmentTransaction.commit();
+
+        hideKeyboard();
 
 //        elevateActionBar();
     }
