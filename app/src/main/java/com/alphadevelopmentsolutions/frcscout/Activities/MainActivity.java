@@ -153,9 +153,7 @@ public class MainActivity extends AppCompatActivity implements
         teamNumberTextView = navHeader.findViewById(R.id.TeamNumberTextView);
         teamNameTextView = navHeader.findViewById(R.id.TeamNameTextView);
 
-
-        //default to the splash frag until changed
-        changeFragment(new SplashFragment(), false);
+        updateNavText();
 
         //we need write permission before anything
         //android >= marshmallow
@@ -172,7 +170,10 @@ public class MainActivity extends AppCompatActivity implements
                 //if not previous saved state, eg not rotation
                 if (savedInstanceState == null)
                 {
-                    updateNavText();
+                    //default to the splash frag until changed
+                    changeFragment(new SplashFragment(), false);
+
+                    navigationView.setCheckedItem(R.id.nav_teams);
 
                     //validate the app config to ensure all properties are filled
                     if (validateConfig())
@@ -211,6 +212,11 @@ public class MainActivity extends AppCompatActivity implements
             //if not previous saved state, eg not rotation
             if (savedInstanceState == null)
             {
+                //default to the splash frag until changed
+                changeFragment(new SplashFragment(), false);
+
+                navigationView.setCheckedItem(R.id.nav_teams);
+
                 //validate the app config to ensure all properties are filled
                 if(validateConfig())
                 {
