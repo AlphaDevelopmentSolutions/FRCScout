@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -30,6 +31,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -739,6 +741,10 @@ public class MainActivity extends AppCompatActivity implements
      */
     public void showSnackbar(String message)
     {
+        //hide the keyboard before showing the snackbar
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
+
         (Snackbar.make(mainFrame, message, Snackbar.LENGTH_SHORT)).show();
     }
 
