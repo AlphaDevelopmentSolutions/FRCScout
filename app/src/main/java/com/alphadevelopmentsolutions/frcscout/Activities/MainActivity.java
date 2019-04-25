@@ -114,6 +114,9 @@ public class MainActivity extends AppCompatActivity implements
 
     private Toolbar toolbar;
 
+    private TextView teamNumberTextView;
+    private TextView teamNameTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -143,11 +146,8 @@ public class MainActivity extends AppCompatActivity implements
 
         View navHeader = navigationView.getHeaderView(0);
 
-        TextView teamNumberTextView = navHeader.findViewById(R.id.TeamNumberTextView);
-        TextView teamNameTextView = navHeader.findViewById(R.id.TeamNameTextView);
-
-        teamNumberTextView.setText(String.valueOf(getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1)));
-        teamNameTextView.setText(getPreference(Constants.SharedPrefKeys.TEAM_NAME_KEY, "").toString());
+        teamNumberTextView = navHeader.findViewById(R.id.TeamNumberTextView);
+        teamNameTextView = navHeader.findViewById(R.id.TeamNameTextView);
 
         //default to the splash frag until changed
         changeFragment(new SplashFragment(), false);
@@ -167,6 +167,8 @@ public class MainActivity extends AppCompatActivity implements
                 //if not previous saved state, eg not rotation
                 if (savedInstanceState == null)
                 {
+                    updateNavText();
+
                     //validate the app config to ensure all properties are filled
                     if (validateConfig())
                     {
@@ -827,6 +829,15 @@ public class MainActivity extends AppCompatActivity implements
         return !getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").equals("") &&
                 !getPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "").equals("") &&
                 !getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").equals("");
+    }
+
+    /**
+     * Updates the nav bar text for team name and number
+     */
+    public void updateNavText()
+    {
+        teamNumberTextView.setText(String.valueOf(getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1)));
+        teamNameTextView.setText(getPreference(Constants.SharedPrefKeys.TEAM_NAME_KEY, "").toString());
     }
 
 

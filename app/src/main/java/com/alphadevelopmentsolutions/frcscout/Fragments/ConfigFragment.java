@@ -123,6 +123,7 @@ public class ConfigFragment extends MasterFragment
                                     @Override
                                     public void run()
                                     {
+                                        context.updateNavText();
                                         context.updateApplicationData(false);
                                         context.changeFragment(new EventListFragment(), false);
                                     }

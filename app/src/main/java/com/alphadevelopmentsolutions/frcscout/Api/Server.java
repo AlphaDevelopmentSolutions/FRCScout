@@ -13,6 +13,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.User;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -103,12 +104,16 @@ public abstract class Server extends Api
                     throw new Exception(response.getString("Response"));
 
                 //get the json obj from the server
-//                JSONObject serverConfigsObject = response.getJSONObject("Response");
+                JSONObject serverConfigObject = response.getJSONObject("Response");
 
-                String apiKey = response.getString("Response");
+                String apiKey = serverConfigObject.getString("ApiKey");
+                int teamNumber = serverConfigObject.getInt("TeamNumber");
+                String teamName = serverConfigObject.getString("TeamName");
 
                 //store the configs into the shared prefs
                 context.setPreference(Constants.SharedPrefKeys.API_KEY_KEY, apiKey);
+                context.setPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, teamNumber);
+                context.setPreference(Constants.SharedPrefKeys.TEAM_NAME_KEY, teamName);
 
                 return true;
             } catch (Exception e)
