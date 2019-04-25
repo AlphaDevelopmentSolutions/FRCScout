@@ -66,7 +66,7 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType)
     {
         //Inflate the event layout for the each item in the list
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_scout_card, viewGroup, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_match_card, viewGroup, false);
 
         return new ScoutCardsRecyclerViewAdapter.ViewHolder(view);
     }
