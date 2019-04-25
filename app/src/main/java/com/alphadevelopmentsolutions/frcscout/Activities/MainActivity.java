@@ -120,6 +120,8 @@ public class MainActivity extends AppCompatActivity implements
     private TextView teamNumberTextView;
     private TextView teamNameTextView;
 
+    private NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -142,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -153,100 +155,71 @@ public class MainActivity extends AppCompatActivity implements
         teamNumberTextView = navHeader.findViewById(R.id.TeamNumberTextView);
         teamNameTextView = navHeader.findViewById(R.id.TeamNameTextView);
 
+        //updates the nav text to the current team saved in shared pref
         updateNavText();
 
-        //we need write permission before anything
-        //android >= marshmallow
+        //android >= marshmallow, permission needed
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
             //write permission not granted, request
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 5885);
-            }
 
             //permission granted, continue
             else
-            {
-                //if not previous saved state, eg not rotation
-                if (savedInstanceState == null)
-                {
-                    //default to the splash frag until changed
-                    changeFragment(new SplashFragment(), false);
-
-                    navigationView.setCheckedItem(R.id.nav_teams);
-
-                    //validate the app config to ensure all properties are filled
-                    if (validateConfig())
-                    {
-                        //check any teams are on device and if the device is online
-                        //if no teams, update data
-                        if (getDatabase().getTeams().size() == 0 && isOnline())
-                            updateApplicationData(false);
-
-                        //join back up with the update thread if it is not null
-                        if (updateThread != null)
-                        {
-                            try
-                            {
-                                updateThread.join();
-                            } catch (InterruptedException e)
-                            {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        //change the frag to the eventlist
-                        changeFragment(new EventListFragment(), false);
-                    }
-                    else
-                    {
-                        changeFragment(new ConfigFragment(), false);
-                    }
-                }
-            }
+                loadView(savedInstanceState);
         }
 
-        //android < marshmallow
+        //android < marshmallow, permission not needed
         else
+            loadView(savedInstanceState);
+
+
+    }
+
+    /**
+     * All view loading logic is stored here
+     * used for when the activity initially starts up
+     * @param savedInstanceState
+     */
+    private void loadView(Bundle savedInstanceState)
+    {
+        //if not previous saved state, eg not rotation
+        if (savedInstanceState == null)
         {
-            //if not previous saved state, eg not rotation
-            if (savedInstanceState == null)
+
+            //default to the splash frag until changed
+            changeFragment(new SplashFragment(), false);
+
+            navigationView.setCheckedItem(R.id.nav_teams);
+
+            //validate the app config to ensure all properties are filled
+            if (validateConfig())
             {
-                //default to the splash frag until changed
-                changeFragment(new SplashFragment(), false);
+                //check any teams are on device and if the device is online
+                //if no teams, update data
+                if (getDatabase().getTeams().size() == 0 && isOnline())
+                    updateApplicationData(false);
 
-                navigationView.setCheckedItem(R.id.nav_teams);
-
-                //validate the app config to ensure all properties are filled
-                if(validateConfig())
+                //join back up with the update thread if it is not null
+                if (updateThread != null)
                 {
-                    //check any teams are on device and if the device is online
-                    //if no teams, update data
-                    if (getDatabase().getTeams().size() == 0 && isOnline())
-                        updateApplicationData(false);
-
-                    //join back up with the update thread if it is not null
-                    if (updateThread != null)
+                    try
                     {
-                        try
-                        {
-                            updateThread.join();
-                        } catch (InterruptedException e)
-                        {
-                            e.printStackTrace();
-                        }
+                        updateThread.join();
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
                     }
+                }
 
-                    //change the frag to the eventlist
-                    changeFragment(new EventListFragment(), false);
-                }
-                else
-                {
-                    changeFragment(new ConfigFragment(), false);
-                }
+                //change the frag to the eventlist
+                changeFragment(new EventListFragment(), false);
+            } else
+            {
+                changeFragment(new ConfigFragment(), false);
             }
         }
-
     }
 
     @Override
