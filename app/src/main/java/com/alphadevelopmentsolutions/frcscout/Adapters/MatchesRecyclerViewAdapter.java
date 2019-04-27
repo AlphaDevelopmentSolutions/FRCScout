@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
+import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
@@ -146,8 +147,76 @@ public class MatchesRecyclerViewAdapter extends RecyclerView.Adapter<MatchesRecy
         viewHolder.blueAllianceScoreTextView.setText(String.valueOf(match.getBlueAllianceScore()));
         viewHolder.redAllianceScoreTextView.setText(String.valueOf(match.getRedAllianceScore()));
 
+        AllianceColor selectedTeamAllianceColor = null;
+        SpannableString spannableString;
+
         //set the bold text for the winning team
         Match.Status matchStatus = match.getMatchStatus();
+
+        //add the underline when viewing matches for a specific team
+        if(team.getId() == match.getBlueAllianceTeamOneId())
+        {
+            spannableString = new SpannableString(String.valueOf(team.getId()));
+            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
+            viewHolder.blueAllianceTeamOneIdTextView.setText(spannableString);
+
+            selectedTeamAllianceColor = AllianceColor.BLUE;
+        }
+        else if(team.getId() == match.getBlueAllianceTeamTwoId())
+        {
+            spannableString = new SpannableString(String.valueOf(team.getId()));
+            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
+            viewHolder.blueAllianceTeamTwoIdTextView.setText(spannableString);
+
+            selectedTeamAllianceColor = AllianceColor.BLUE;
+        }
+        else if(team.getId() == match.getBlueAllianceTeamThreeId())
+        {
+            spannableString = new SpannableString(String.valueOf(team.getId()));
+            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
+            viewHolder.blueAllianceTeamThreeIdTextView.setText(spannableString);
+
+            selectedTeamAllianceColor = AllianceColor.BLUE;
+        }
+        else if(team.getId() == match.getRedAllianceTeamOneId())
+        {
+            spannableString = new SpannableString(String.valueOf(team.getId()));
+            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
+            viewHolder.redAllianceTeamOneIdTextView.setText(spannableString);
+
+            selectedTeamAllianceColor = AllianceColor.RED;
+        }
+        else if(team.getId() == match.getRedAllianceTeamTwoId())
+        {
+            spannableString = new SpannableString(String.valueOf(team.getId()));
+            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
+            viewHolder.redAllianceTeamTwoIdTextView.setText(spannableString);
+
+            selectedTeamAllianceColor = AllianceColor.RED;
+        }
+        else if(team.getId() == match.getRedAllianceTeamThreeId())
+        {
+            spannableString = new SpannableString(String.valueOf(team.getId()));
+            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
+            viewHolder.redAllianceTeamThreeIdTextView.setText(spannableString);
+
+            selectedTeamAllianceColor = AllianceColor.RED;
+        }
+
+        //underline the score of the selected team
+        if(selectedTeamAllianceColor == AllianceColor.BLUE)
+        {
+            spannableString = new SpannableString(String.valueOf(match.getBlueAllianceScore()));
+            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
+            viewHolder.blueAllianceScoreTextView.setText(spannableString);
+        }
+        else
+        {
+            spannableString = new SpannableString(String.valueOf(match.getRedAllianceScore()));
+            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
+            viewHolder.redAllianceScoreTextView.setText(spannableString);
+        }
+
 
         //blue won
         if(matchStatus == Match.Status.BLUE)
@@ -187,44 +256,6 @@ public class MatchesRecyclerViewAdapter extends RecyclerView.Adapter<MatchesRecy
             viewHolder.redAllianceTeamTwoIdTextView.setTypeface(null, Typeface.NORMAL);
             viewHolder.redAllianceTeamThreeIdTextView.setTypeface(null, Typeface.NORMAL);
             viewHolder.redAllianceScoreTextView.setTypeface(null, Typeface.NORMAL);
-        }
-
-        //add the underline when viewing matches for a specific team
-        if(team.getId() == match.getBlueAllianceTeamOneId())
-        {
-            SpannableString spannableString = new SpannableString(String.valueOf(team.getId()));
-            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
-            viewHolder.blueAllianceTeamOneIdTextView.setText(spannableString);
-        }
-        else if(team.getId() == match.getBlueAllianceTeamTwoId())
-        {
-            SpannableString spannableString = new SpannableString(String.valueOf(team.getId()));
-            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
-            viewHolder.blueAllianceTeamTwoIdTextView.setText(spannableString);
-        }
-        else if(team.getId() == match.getBlueAllianceTeamThreeId())
-        {
-            SpannableString spannableString = new SpannableString(String.valueOf(team.getId()));
-            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
-            viewHolder.blueAllianceTeamThreeIdTextView.setText(spannableString);
-        }
-        else if(team.getId() == match.getRedAllianceTeamOneId())
-        {
-            SpannableString spannableString = new SpannableString(String.valueOf(team.getId()));
-            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
-            viewHolder.redAllianceTeamOneIdTextView.setText(spannableString);
-        }
-        else if(team.getId() == match.getRedAllianceTeamTwoId())
-        {
-            SpannableString spannableString = new SpannableString(String.valueOf(team.getId()));
-            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
-            viewHolder.redAllianceTeamTwoIdTextView.setText(spannableString);
-        }
-        else if(team.getId() == match.getRedAllianceTeamThreeId())
-        {
-            SpannableString spannableString = new SpannableString(String.valueOf(team.getId()));
-            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
-            viewHolder.redAllianceTeamThreeIdTextView.setText(spannableString);
         }
 
         //Opens an option menu for various options on that score card
