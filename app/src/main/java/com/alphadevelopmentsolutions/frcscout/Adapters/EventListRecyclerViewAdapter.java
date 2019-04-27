@@ -56,7 +56,7 @@ public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventList
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType)
     {
         //Inflate the event layout for the each item in the list
-        View view  = LayoutInflater.from(context).inflate(R.layout.layout_event_card, viewGroup, false);
+        View view  = LayoutInflater.from(context).inflate(R.layout.layout_card_event, viewGroup, false);
 
         return new EventListRecyclerViewAdapter.ViewHolder(view);
     }

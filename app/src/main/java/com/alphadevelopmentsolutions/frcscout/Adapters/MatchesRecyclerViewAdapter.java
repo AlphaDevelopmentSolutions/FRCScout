@@ -3,7 +3,6 @@ package com.alphadevelopmentsolutions.frcscout.Adapters;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
@@ -107,7 +106,7 @@ public class MatchesRecyclerViewAdapter extends RecyclerView.Adapter<MatchesRecy
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType)
     {
         //Inflate the event layout for the each item in the list
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_match_card, viewGroup, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_card_match, viewGroup, false);
 
         return new MatchesRecyclerViewAdapter.ViewHolder(view);
     }
