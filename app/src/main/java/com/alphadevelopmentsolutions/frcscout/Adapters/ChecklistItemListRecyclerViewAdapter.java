@@ -175,6 +175,7 @@ public class ChecklistItemListRecyclerViewAdapter extends RecyclerView.Adapter<C
         }
         else
         {
+            viewHolder.completedByAutoCompleteTextView.setEnabled(false);
             viewHolder.toggleStatusButton.setEnabled(false);
         }
 
