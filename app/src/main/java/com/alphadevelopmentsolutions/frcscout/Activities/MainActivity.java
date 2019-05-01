@@ -38,6 +38,7 @@ import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Api.Server;
 import com.alphadevelopmentsolutions.frcscout.Classes.ChecklistItem;
+import com.alphadevelopmentsolutions.frcscout.Classes.ChecklistItemResult;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.EventTeamList;
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements
                 //check any teams are on device and if the device is online
                 //if no teams, update data
                 if (getDatabase().getTeams().size() == 0 && isOnline())
-                    updateApplicationData(false);
+                    downloadApplicationData(false);
 
                 //join back up with the update thread if it is not null
                 if (updateThread != null)
@@ -310,80 +311,7 @@ public class MainActivity extends AppCompatActivity implements
                             .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which)
                                 {
-                                    final ProgressDialog progressDialog = new ProgressDialog(context);
-
-                                    final ArrayList<Team> teams = getDatabase().getTeams();
-                                    final int totalTeams = teams.size();
-                                    progressDialog.setMax(totalTeams);
-                                    progressDialog.setProgress(0);
-                                    progressDialog.setTitle("Uploading data...");
-                                    progressDialog.show();
-
-                                    Thread uploadThread = new Thread(new Runnable()
-                                    {
-                                        @Override
-                                        public void run()
-                                        {
-
-                                            boolean success = true;
-
-                                            for(Event event : getDatabase().getEvents())
-                                            {
-
-                                                for (Team team : teams)
-                                                {
-                                                    for (ScoutCard scoutCard : getDatabase().getScoutCards(team, event,true))
-                                                    {
-                                                        Server.SubmitScoutCard submitScoutCard = new Server.SubmitScoutCard(context, scoutCard);
-                                                        if (submitScoutCard.execute())
-                                                        {
-                                                            scoutCard.setDraft(false);
-                                                            scoutCard.save(getDatabase());
-                                                        } else
-                                                            success = false;
-                                                    }
-
-                                                    for (PitCard pitCard : getDatabase().getPitCards(team, event, true))
-                                                    {
-                                                        Server.SubmitPitCard submitScoutCard = new Server.SubmitPitCard(context, pitCard);
-                                                        if (submitScoutCard.execute())
-                                                        {
-                                                            pitCard.setDraft(false);
-                                                            pitCard.save(getDatabase());
-                                                        } else
-                                                            success = false;
-                                                    }
-
-                                                    for (RobotMedia robotMedia : getDatabase().getRobotMedia(team, true))
-                                                    {
-                                                        Server.SubmitRobotMedia submitRobotMedia = new Server.SubmitRobotMedia(context, robotMedia);
-                                                        if (submitRobotMedia.execute())
-                                                        {
-                                                            robotMedia.setDraft(false);
-                                                            robotMedia.save(getDatabase());
-                                                        } else
-                                                            success = false;
-                                                    }
-                                                }
-
-                                            }
-
-                                            final boolean finalSuccess = success;
-                                            runOnUiThread(new Runnable()
-                                            {
-                                                @Override
-                                                public void run()
-                                                {
-                                                    progressDialog.hide();
-
-                                                    if(finalSuccess)
-                                                        context.recreate();
-                                                }
-                                            });
-                                        }
-                                    });
-
-                                    uploadThread.start();
+                                    uploadApplicationData();
 
                                 }
                             })
@@ -409,13 +337,13 @@ public class MainActivity extends AppCompatActivity implements
                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which)
                             {
-                                updateApplicationData(true);
+                                downloadApplicationData(true);
                             }
                         })
                         .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which)
                             {
-                                updateApplicationData(false);
+                                downloadApplicationData(false);
 
                             }
                         })
@@ -429,10 +357,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Updates all app data from the server
+     * Downloads all app data from the server
      * @param downloadMedia whether or not the app should download robot media from server
      */
-    public void updateApplicationData(final boolean downloadMedia)
+    public void downloadApplicationData(final boolean downloadMedia)
     {
         //update all app data
         if(isOnline())
@@ -474,7 +402,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     }
 
-                    progressDialogProgess = 20;
+                    progressDialogProgess = 10;
 
                     context.runOnUiThread(new Runnable()
                     {
@@ -489,7 +417,6 @@ public class MainActivity extends AppCompatActivity implements
 
                     //update events
                     Server.GetEvents getEvents = new Server.GetEvents(context);
-
                     if (getEvents.execute())
                     {
                         getDatabase().clearEvents();
@@ -503,6 +430,34 @@ public class MainActivity extends AppCompatActivity implements
                     getDatabase().clearScoutCards(false);
                     getDatabase().clearPitCards(false);
                     getDatabase().clearMatches();
+                    getDatabase().clearChecklistItems();
+                    getDatabase().clearChecklistItemResults(false);
+
+                    progressDialogProgess = 20;
+                    context.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            progressDialog.setTitle("Downloading checklist data");
+                            progressDialog.setProgress(progressDialogProgess);
+                        }
+                    });
+
+                    //download checklist data
+                    Server.GetChecklistItems getChecklistItems = new Server.GetChecklistItems(context);
+                    if(getChecklistItems.execute())
+                    {
+                        for(ChecklistItem checklistItem : getChecklistItems.getChecklistItems())
+                            checklistItem.save(getDatabase());
+                    }
+
+                    Server.GetChecklistItemResults getChecklistItemResults = new Server.GetChecklistItemResults(context);
+                    if(getChecklistItemResults.execute())
+                    {
+                        for(ChecklistItemResult checklistItemResult : getChecklistItemResults.getChecklistItemResults())
+                            checklistItemResult.save(getDatabase());
+                    }
 
                     final int remainingPercent = (downloadMedia) ? 90 : 100 - progressDialogProgess; //max amount of percentage we have before we can't add anymore to the progress dialog
 
@@ -684,6 +639,106 @@ public class MainActivity extends AppCompatActivity implements
         {
             showSnackbar(getString(R.string.no_internet));
         }
+    }
+
+    /**
+     * Uploads all stored app data to server
+     */
+    private void uploadApplicationData()
+    {
+        final ProgressDialog progressDialog = new ProgressDialog(context);
+
+        final ArrayList<Team> teams = getDatabase().getTeams();
+        final int totalTeams = teams.size();
+
+        progressDialog.setMax(totalTeams);
+        progressDialog.setProgress(0);
+        progressDialog.setTitle("Uploading data...");
+        progressDialog.show();
+
+        Thread uploadThread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+                boolean success = true;
+
+                for(Event event : getDatabase().getEvents())
+                {
+
+                    //upload team specific data
+                    for (Team team : teams)
+                    {
+                        for (ScoutCard scoutCard : getDatabase().getScoutCards(team, event,true))
+                        {
+                            Server.SubmitScoutCard submitScoutCard = new Server.SubmitScoutCard(context, scoutCard);
+                            if (submitScoutCard.execute())
+                            {
+                                scoutCard.setDraft(false);
+                                scoutCard.save(getDatabase());
+                            } else
+                                success = false;
+                        }
+
+                        for (PitCard pitCard : getDatabase().getPitCards(team, event, true))
+                        {
+                            Server.SubmitPitCard submitScoutCard = new Server.SubmitPitCard(context, pitCard);
+                            if (submitScoutCard.execute())
+                            {
+                                pitCard.setDraft(false);
+                                pitCard.save(getDatabase());
+                            } else
+                                success = false;
+                        }
+
+                        for (RobotMedia robotMedia : getDatabase().getRobotMedia(team, true))
+                        {
+                            Server.SubmitRobotMedia submitRobotMedia = new Server.SubmitRobotMedia(context, robotMedia);
+                            if (submitRobotMedia.execute())
+                            {
+                                robotMedia.setDraft(false);
+                                robotMedia.save(getDatabase());
+                            } else
+                                success = false;
+                        }
+                    }
+
+                    //Checklist item results
+                    for(ChecklistItem checklistItem : getDatabase().getChecklistItems())
+                    {
+                        for(ChecklistItemResult checklistItemResult : checklistItem.getResults(getDatabase()))
+                        {
+                            Server.SubmitChecklistItemResult submitChecklistItemResult = new Server.SubmitChecklistItemResult(context, checklistItemResult);
+                            if(submitChecklistItemResult.execute())
+                            {
+                                checklistItemResult.setDraft(false);
+                                checklistItemResult.save(getDatabase());
+                            }
+                            else
+                                success = false;
+
+                        }
+                    }
+
+                }
+
+                final boolean finalSuccess = success;
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        progressDialog.hide();
+
+                        if(finalSuccess)
+                            context.recreate();
+                    }
+                });
+            }
+        });
+
+        uploadThread.start();
     }
 
     private boolean isOnline()

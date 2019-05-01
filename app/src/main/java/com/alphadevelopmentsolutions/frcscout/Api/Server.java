@@ -60,7 +60,7 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString(API_FIELD_NAME_STATUS).toLowerCase().equals(API_FIELD_NAME_STATUS_SUCCESS))
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
                     throw new Exception(context.getString(R.string.server_error));
                 
                 return true;
@@ -101,7 +101,7 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString(API_FIELD_NAME_STATUS).toLowerCase().equals(API_FIELD_NAME_STATUS_SUCCESS))
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
                     throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
                 //get the json obj from the server
@@ -160,7 +160,7 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString(API_FIELD_NAME_STATUS).toLowerCase().equals(API_FIELD_NAME_STATUS_SUCCESS))
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
                     throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
@@ -249,7 +249,7 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString(API_FIELD_NAME_STATUS).toLowerCase().equals(API_FIELD_NAME_STATUS_SUCCESS))
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
                     throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
@@ -318,7 +318,7 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString(API_FIELD_NAME_STATUS).toLowerCase().equals(API_FIELD_NAME_STATUS_SUCCESS))
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
                     throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
@@ -455,7 +455,7 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString(API_FIELD_NAME_STATUS).toLowerCase().equals(API_FIELD_NAME_STATUS_SUCCESS))
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
                     throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
@@ -566,7 +566,7 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString(API_FIELD_NAME_STATUS).toLowerCase().equals(API_FIELD_NAME_STATUS_SUCCESS))
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
                     throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
@@ -670,7 +670,7 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString(API_FIELD_NAME_STATUS).toLowerCase().equals(API_FIELD_NAME_STATUS_SUCCESS))
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
                     throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
@@ -745,7 +745,7 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString(API_FIELD_NAME_STATUS).toLowerCase().equals(API_FIELD_NAME_STATUS_SUCCESS))
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
                     throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
                 //iterate through, create a new object and add it to the arraylist
@@ -793,12 +793,11 @@ public abstract class Server extends Api
 
         private MainActivity context;
 
-        public GetChecklistItems(final MainActivity context, final Event event)
+        public GetChecklistItems(final MainActivity context)
         {
             super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
                 put(API_PARAM_API_ACTION, "GetChecklistItems");
-                put("EventId", event.getBlueAllianceId());
             }});
 
             checklistItems = new ArrayList<>();
@@ -822,7 +821,7 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString(API_FIELD_NAME_STATUS).toLowerCase().equals(API_FIELD_NAME_STATUS_SUCCESS))
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
                     throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
@@ -868,12 +867,11 @@ public abstract class Server extends Api
 
         private MainActivity context;
 
-        public GetChecklistItemResults(final MainActivity context, final Event event)
+        public GetChecklistItemResults(final MainActivity context)
         {
             super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
                 put(API_PARAM_API_ACTION, "GetChecklistItemResults");
-                put("EventId", event.getBlueAllianceId());
             }});
 
             checklistItemResults = new ArrayList<>();
@@ -897,7 +895,7 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString(API_FIELD_NAME_STATUS).toLowerCase().equals(API_FIELD_NAME_STATUS_SUCCESS))
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
                     throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
@@ -1015,7 +1013,7 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString(API_FIELD_NAME_STATUS).toLowerCase().equals(API_FIELD_NAME_STATUS_SUCCESS))
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
                     throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
@@ -1079,7 +1077,7 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString(API_FIELD_NAME_STATUS).toLowerCase().equals(API_FIELD_NAME_STATUS_SUCCESS))
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
                     throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
@@ -1125,7 +1123,7 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString(API_FIELD_NAME_STATUS).toLowerCase().equals(API_FIELD_NAME_STATUS_SUCCESS))
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
                     throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
@@ -1176,7 +1174,7 @@ public abstract class Server extends Api
                 if (response == null)
                     throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString(API_FIELD_NAME_STATUS).toLowerCase().equals(API_FIELD_NAME_STATUS_SUCCESS))
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
                     throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
                 return true;

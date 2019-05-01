@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.Nullable;
 
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition;
@@ -134,6 +135,26 @@ public class Database
         ArrayList<String> tableNames = new ArrayList<>();
 
         tableNames.add(PitCard.TABLE_NAME);
+
+        for(String tableName : tableNames)
+            db.execSQL("DELETE FROM " + tableName + ((clearDrafts) ? "" : " WHERE IsDraft = 0"));
+    }
+
+    public void clearChecklistItems()
+    {
+        ArrayList<String> tableNames = new ArrayList<>();
+
+        tableNames.add(ChecklistItem.TABLE_NAME);
+
+        for(String tableName : tableNames)
+            db.execSQL("DELETE FROM " + tableName);
+    }
+
+    public void clearChecklistItemResults(boolean clearDrafts)
+    {
+        ArrayList<String> tableNames = new ArrayList<>();
+
+        tableNames.add(ChecklistItemResult.TABLE_NAME);
 
         for(String tableName : tableNames)
             db.execSQL("DELETE FROM " + tableName + ((clearDrafts) ? "" : " WHERE IsDraft = 0"));
@@ -822,7 +843,7 @@ public class Database
      * Gets all events in the database
      * @return all events inside database
      */
-    public ArrayList<Match> getMatches(Team team, Event event)
+    public ArrayList<Match> getMatches(@Nullable Team team, Event event)
     {
         ArrayList<Match> matches = new ArrayList<>();
 
@@ -830,29 +851,37 @@ public class Database
         String[] columns = getMatchColumns();
 
         //where statement
-        String whereStatement = Match.COLUMN_NAME_EVENT_ID + " = ? AND (" +
-                Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID + " = ? OR " +
-                Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID + " = ? OR " +
-                Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID + " = ? OR " +
+        String whereStatement = Match.COLUMN_NAME_EVENT_ID + " = ?";
 
-                Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID + " = ? OR " +
-                Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID + " = ? OR " +
-                Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID + " = ? )";
-        String[] whereArgs = {event.getBlueAllianceId(),
-                String.valueOf(team.getId()),
-                String.valueOf(team.getId()),
-                String.valueOf(team.getId()),
-                String.valueOf(team.getId()),
-                String.valueOf(team.getId()),
-                String.valueOf(team.getId()),
-        };
+        ArrayList<String> whereArgsList = new ArrayList<>();
+        whereArgsList.add(event.getBlueAllianceId());
+
+        if(team != null)
+        {
+            whereStatement +=
+                    "AND (" +
+                    Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID + " = ? OR " +
+                    Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID + " = ? OR " +
+                    Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID + " = ? OR " +
+
+                    Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID + " = ? OR " +
+                    Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID + " = ? OR " +
+                    Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID + " = ? )";
+
+            whereArgsList.add(String.valueOf(team.getId()));
+            whereArgsList.add(String.valueOf(team.getId()));
+            whereArgsList.add(String.valueOf(team.getId()));
+            whereArgsList.add(String.valueOf(team.getId()));
+            whereArgsList.add(String.valueOf(team.getId()));
+            whereArgsList.add(String.valueOf(team.getId()));
+        }
 
         //select the info from the db
         Cursor cursor = db.query(
                 Match.TABLE_NAME,
                 columns,
                 whereStatement,
-                whereArgs,
+                (String[]) whereArgsList.toArray(),
                 null,
                 null,
                 null);
