@@ -13,13 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.ChecklistItemListRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Adapters.EventListRecyclerViewAdapter;
 import com.alphadevelopmentsolutions.frcscout.Adapters.MatchListRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Classes.Event;
-import com.alphadevelopmentsolutions.frcscout.Classes.Match;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
-import com.google.gson.Gson;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,6 +84,8 @@ public class ChecklistFragment extends MasterFragment
             MatchListRecyclerViewAdapter matchListRecyclerViewAdapter = new MatchListRecyclerViewAdapter(event, team, database.getMatches(team, event), context, (this).getClass());
             recyclerView.setAdapter(matchListRecyclerViewAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+            context.setTitle(event.getName());
         }
 
         //match and event selected, show the checklist
@@ -101,6 +98,8 @@ public class ChecklistFragment extends MasterFragment
             ChecklistItemListRecyclerViewAdapter checklistItemListRecyclerViewAdapter = new ChecklistItemListRecyclerViewAdapter(event, match, team, database.getChecklistItems(), database.getUsers(), context);
             recyclerView.setAdapter(checklistItemListRecyclerViewAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+            context.setTitle(match.toString());
         }
 
 

@@ -272,6 +272,15 @@ public class Match
         return database.getScoutCards(this, event,false);
     }
 
+    /**
+     * Converts the match object into a string title
+     * @return string title of match
+     */
+    public String toString()
+    {
+        return getMatchType().toString(this);
+    }
+
     //endregion
 
     //region Setters

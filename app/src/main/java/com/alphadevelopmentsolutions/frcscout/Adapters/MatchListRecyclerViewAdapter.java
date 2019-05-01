@@ -127,7 +127,7 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
         final Match match = matches.get(viewHolder.getAdapterPosition());
 
         //set match numbers
-        viewHolder.matchIdTextView.setText(match.getMatchType().toString(match));
+        viewHolder.matchIdTextView.setText(match.toString());
         
         //set teams
         viewHolder.blueAllianceTeamOneIdTextView.setText(String.valueOf(match.getBlueAllianceTeamOneId()));
@@ -326,6 +326,7 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
         //logic for going to the checklist frag
         else if(fragmentOnClick.equals(ChecklistFragment.class))
         {
+            viewHolder.viewMatchButton.setText(context.getString(R.string.view_checklist));
             //Sends you to the checklist fragment
             viewHolder.viewMatchButton.setOnClickListener(new View.OnClickListener()
             {

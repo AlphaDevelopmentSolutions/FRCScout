@@ -79,7 +79,7 @@ public class EventListFragment extends MasterFragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_event_list, container, false);
 
-        context.getSupportActionBar().setTitle(R.string.events);
+        context.setTitle(R.string.events);
         context.lockDrawerLayout();
 
         //showing this view means the user has not selected an event, clear the shared pref

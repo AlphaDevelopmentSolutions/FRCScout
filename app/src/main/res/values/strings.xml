@@ -117,4 +117,5 @@
     <string name="current_status">Current Status -\u0020</string>
     <string name="mark_incomplete">Mark Incomplete</string>
     <string name="mark_complete">Mark Complete</string>
+    <string name="view_checklist">View Checklist</string>
 </resources>

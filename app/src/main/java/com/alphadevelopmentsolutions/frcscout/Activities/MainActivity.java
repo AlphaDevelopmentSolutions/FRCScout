@@ -929,5 +929,23 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    /**
+     * Sets the title of the nav bar
+     * @param title to set the nav bar title to
+     */
+    public void setTitle(String title)
+    {
+        getSupportActionBar().setTitle(title);
+    }
+
+    /**
+     * Sets the title of the nav bar
+     * @param titleId to set the nav bar title to
+     */
+    public void setTitle(int titleId)
+    {
+        getSupportActionBar().setTitle(titleId);
+    }
+
 
 }
