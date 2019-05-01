@@ -379,6 +379,13 @@ public class Team
         avgStats.put(StatsKeys.DEFENSE_RATING, avgStats.get(StatsKeys.DEFENSE_RATING) / (i - nulledDefenseRatings) );
         avgStats.put(StatsKeys.OFFENSE_RATING, avgStats.get(StatsKeys.OFFENSE_RATING) / (i - nulledOffenseRatings) );
         avgStats.put(StatsKeys.DRIVE_RATING, avgStats.get(StatsKeys.DRIVE_RATING) / i );
+
+        //correct the default 1000.0 value if no stats available
+        if(minStats.get(StatsKeys.DEFENSE_RATING) > 100)
+            minStats.put(StatsKeys.DEFENSE_RATING, 0.0);
+
+        if(minStats.get(StatsKeys.OFFENSE_RATING) > 100)
+            minStats.put(StatsKeys.OFFENSE_RATING, 0.0);
         
         
         stats.put(StatsKeys.MIN, minStats);
