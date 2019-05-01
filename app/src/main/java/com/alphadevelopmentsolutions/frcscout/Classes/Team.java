@@ -304,7 +304,7 @@ public class Team
             avgStats.put(StatsKeys.DRIVE_RATING, avgStats.get(StatsKeys.DRIVE_RATING) + scoutCard.getDriveRating());
 
             nulledDefenseRatings = scoutCard.getDefenseRating() == 0 ? nulledDefenseRatings + 1 : nulledDefenseRatings;
-            nulledOffenseRatings = scoutCard.getOffenseRating() == 0 ? nulledOffenseRatings + 1 : nulledOffenseRatings
+            nulledOffenseRatings = scoutCard.getOffenseRating() == 0 ? nulledOffenseRatings + 1 : nulledOffenseRatings;
 
             i++;
             

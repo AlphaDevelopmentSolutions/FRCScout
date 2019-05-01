@@ -33,6 +33,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -156,6 +157,18 @@ public class MainActivity extends AppCompatActivity implements
 
         teamNumberTextView = navHeader.findViewById(R.id.TeamNumberTextView);
         teamNameTextView = navHeader.findViewById(R.id.TeamNameTextView);
+
+        //change event button logic
+        Button changeEventButton = findViewById(R.id.ChangeEventButton);
+        changeEventButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                //send to eventlist frag
+                changeFragment(new EventListFragment(), false);
+            }
+        });
 
         //updates the nav text to the current team saved in shared pref
         updateNavText();

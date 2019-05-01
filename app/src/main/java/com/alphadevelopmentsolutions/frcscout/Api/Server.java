@@ -680,7 +680,7 @@ public abstract class Server extends Api
                     JSONObject robotMediaJson = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
 
                     int teamId = robotMediaJson.getInt(RobotMedia.COLUMN_NAME_TEAM_ID);
-                    String fileUri = context.getPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "").toString() + "assets/robot-media/" + robotMediaJson.getString(RobotMedia.COLUMN_NAME_FILE_URI);
+                    String fileUri = context.getPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "").toString() + "/assets/robot-media/" + robotMediaJson.getString(RobotMedia.COLUMN_NAME_FILE_URI);
 
                     fileUri = apiParser.downloadImage(fileUri).getAbsolutePath();
 
@@ -910,7 +910,7 @@ public abstract class Server extends Api
                     String status = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_STATUS);
                     String completedBy = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY);
 
-                    Date completedDate = new Date(checklistItemResultObject.getInt(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE));
+                    Date completedDate = simpleDateFormat.parse(checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE));
 
                     checklistItemResults.add(
                             new ChecklistItemResult(

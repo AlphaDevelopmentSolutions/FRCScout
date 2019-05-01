@@ -44,7 +44,7 @@
     <string name="no_internet">Not connected to internet.</string>
     <string name="upload_scout_cards">Upload Scout Cards?</string>
     <string name="upload_scout_cards_warning">This will delete scout cards stored on device.</string>
-    <string name="change_event">Change Event?</string>
+    <string name="change_event">Change Event</string>
     <string name="select_event">Select Event</string>
     <string name="set_event">Set Event</string>
     <string name="alliance_color">AllianceColor</string>
