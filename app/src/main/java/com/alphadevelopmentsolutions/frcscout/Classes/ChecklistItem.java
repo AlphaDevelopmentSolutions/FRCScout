@@ -1,31 +1,31 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
-
-import com.alphadevelopmentsolutions.frcscout.Interfaces.Status;
-
 import java.util.ArrayList;
-import java.util.Date;
 
 public class ChecklistItem
 {
 
     public static final String TABLE_NAME = "checklist_items";
-    public static final String COLUMN_NAME_ID = "Id";
+    public static final String COLUMN_NAME_ID = "LocalId";
+    public static final String COLUMN_NAME_SERVER_ID = "Id";
     public static final String COLUMN_NAME_TITLE = "Title";
     public static final String COLUMN_NAME_DESCRIPTION = "Description";
 
     private int id;
+    private int serverId;
 
     private String title;
     private String description;
 
     public ChecklistItem(
             int id,
+            int serverId,
 
             String title,
             String description)
     {
         this.id = id;
+        this.serverId = serverId;
 
         this.title = title;
         this.description = description;
@@ -45,6 +45,11 @@ public class ChecklistItem
     public int getId()
     {
         return id;
+    }
+
+    public int getServerId()
+    {
+        return serverId;
     }
 
     public String getTitle()
@@ -77,6 +82,11 @@ public class ChecklistItem
         this.id = id;
     }
 
+    public void setServerId(int serverId)
+    {
+        this.serverId = serverId;
+    }
+
     public void setTitle(String title)
     {
         this.title = title;
@@ -107,6 +117,7 @@ public class ChecklistItem
 
             if (checklistItem != null)
             {
+                setServerId(checklistItem.getServerId());
                 setTitle(checklistItem.getTitle());
                 setDescription(checklistItem.getDescription());
                 return true;

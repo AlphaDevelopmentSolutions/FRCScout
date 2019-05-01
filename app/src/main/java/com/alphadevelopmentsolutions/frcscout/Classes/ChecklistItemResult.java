@@ -1,5 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ChecklistItemResult
@@ -93,6 +94,17 @@ public class ChecklistItemResult
     public boolean isDraft()
     {
         return isDraft;
+    }
+
+    /**
+     * Gets the completed date formated for MySQL timestamp
+     * @return MySQL time stamp formatted date
+     */
+    public String getCompletedDateForSQL()
+    {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd H:mm:ss");
+
+        return simpleDateFormat.format(getCompletedDate());
     }
 
     //endregion

@@ -108,7 +108,7 @@ public class ChecklistItemListRecyclerViewAdapter extends RecyclerView.Adapter<C
         if(checklistItemResult == null)
             checklistItemResult = new ChecklistItemResult(
                     -1,
-                    checklistItem.getId(),
+                    checklistItem.getServerId(),
                     match.getKey(),
 
                     Status.INCOMPLETE,
@@ -140,37 +140,43 @@ public class ChecklistItemListRecyclerViewAdapter extends RecyclerView.Adapter<C
             viewHolder.toggleStatusButton.setText(R.string.mark_incomplete);
         }
 
-
-        //update the status and save the item to the database
-        viewHolder.toggleStatusButton.setOnClickListener(new View.OnClickListener()
+        //disable the editing of non draft results
+        if(finalChecklistItemResult.isDraft())
         {
-            @Override
-            public void onClick(View v)
+            //update the status and save the item to the database
+            viewHolder.toggleStatusButton.setOnClickListener(new View.OnClickListener()
             {
-                if(!viewHolder.completedByAutoCompleteTextView.getText().toString().equals(""))
+                @Override
+                public void onClick(View v)
                 {
-                    if (finalChecklistItemResult.getStatus().equals(Status.COMPLETE))
+                    if (!viewHolder.completedByAutoCompleteTextView.getText().toString().equals(""))
                     {
-                        finalChecklistItemResult.setStatus(Status.INCOMPLETE);
-                        viewHolder.statusTextView.setText(Status.INCOMPLETE);
-                        viewHolder.statusTextView.setTextColor(context.getResources().getColor(R.color.bad));
-                        viewHolder.toggleStatusButton.setText(R.string.mark_complete);
+                        if (finalChecklistItemResult.getStatus().equals(Status.COMPLETE))
+                        {
+                            finalChecklistItemResult.setStatus(Status.INCOMPLETE);
+                            viewHolder.statusTextView.setText(Status.INCOMPLETE);
+                            viewHolder.statusTextView.setTextColor(context.getResources().getColor(R.color.bad));
+                            viewHolder.toggleStatusButton.setText(R.string.mark_complete);
+                        } else
+                        {
+                            finalChecklistItemResult.setStatus(Status.COMPLETE);
+                            viewHolder.statusTextView.setText(Status.COMPLETE);
+                            viewHolder.statusTextView.setTextColor(context.getResources().getColor(R.color.good));
+                            viewHolder.toggleStatusButton.setText(R.string.mark_incomplete);
+                        }
+
+                        finalChecklistItemResult.setCompletedBy(viewHolder.completedByAutoCompleteTextView.getText().toString());
+                        finalChecklistItemResult.save(context.getDatabase());
                     } else
-                    {
-                        finalChecklistItemResult.setStatus(Status.COMPLETE);
-                        viewHolder.statusTextView.setText(Status.COMPLETE);
-                        viewHolder.statusTextView.setTextColor(context.getResources().getColor(R.color.good));
-                        viewHolder.toggleStatusButton.setText(R.string.mark_incomplete);
-                    }
+                        context.showSnackbar("Please enter completed by.");
 
-                    finalChecklistItemResult.setCompletedBy(viewHolder.completedByAutoCompleteTextView.getText().toString());
-                    finalChecklistItemResult.save(context.getDatabase());
                 }
-                else
-                    context.showSnackbar("Please enter completed by.");
-
-            }
-        });
+            });
+        }
+        else
+        {
+            viewHolder.toggleStatusButton.setEnabled(false);
+        }
 
 
 

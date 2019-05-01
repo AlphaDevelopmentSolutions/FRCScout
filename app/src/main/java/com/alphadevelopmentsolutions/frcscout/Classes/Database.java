@@ -2089,6 +2089,7 @@ public class Database
         return new String[]
                 {
                         ChecklistItem.COLUMN_NAME_ID,
+                        ChecklistItem.COLUMN_NAME_SERVER_ID,
 
                         ChecklistItem.COLUMN_NAME_TITLE,
                         ChecklistItem.COLUMN_NAME_DESCRIPTION,
@@ -2104,12 +2105,14 @@ public class Database
     private ChecklistItem getChecklistItemFromCursor(Cursor cursor)
     {
         int id = cursor.getInt(cursor.getColumnIndex(ChecklistItem.COLUMN_NAME_ID));
+        int serverId = cursor.getInt(cursor.getColumnIndex(ChecklistItem.COLUMN_NAME_SERVER_ID));
 
         String title = cursor.getString(cursor.getColumnIndex(ChecklistItem.COLUMN_NAME_TITLE));
         String description = cursor.getString(cursor.getColumnIndex(ChecklistItem.COLUMN_NAME_DESCRIPTION));
 
         return new ChecklistItem(
                 id,
+                serverId,
 
                 title,
                 description);
@@ -2201,6 +2204,7 @@ public class Database
     {
         //set all the values
         ContentValues contentValues = new ContentValues();
+        contentValues.put(ChecklistItem.COLUMN_NAME_SERVER_ID, String.valueOf(checklistItem.getServerId()));
         contentValues.put(ChecklistItem.COLUMN_NAME_TITLE, checklistItem.getTitle());
         contentValues.put(ChecklistItem.COLUMN_NAME_DESCRIPTION, checklistItem.getDescription());
 
@@ -2313,7 +2317,7 @@ public class Database
 
         //where statement
         String whereStatement = ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID + " = ?";
-        String[] whereArgs = {checklistItem.getId() + ""};
+        String[] whereArgs = {checklistItem.getServerId() + ""};
         String orderBy = ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE + " DESC";
 
         //select the info from the db

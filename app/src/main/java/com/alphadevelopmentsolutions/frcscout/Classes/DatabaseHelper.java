@@ -148,6 +148,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private final String CREATE_CHECKLIST_ITEMS_TABLE =
             "CREATE TABLE " + ChecklistItem.TABLE_NAME +" (" +
                     ChecklistItem.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    ChecklistItem.COLUMN_NAME_SERVER_ID + " INTEGER," +
                     ChecklistItem.COLUMN_NAME_TITLE + " TEXT," +
                     ChecklistItem.COLUMN_NAME_DESCRIPTION + " TEXT)";
 

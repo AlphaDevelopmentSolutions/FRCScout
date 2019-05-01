@@ -20,14 +20,14 @@ public abstract class Api
 
     private final String MYSQL_DATE_FORMAT = "yyyy-MM-dd H:mm:ss";
 
-    protected final String API_FIELD_NAME_STATUS = "status";
-    protected final String API_FIELD_NAME_RESPONSE = "response";
-    protected final String API_FIELD_NAME_STATUS_SUCCESS = "success";
+    protected final String API_FIELD_NAME_STATUS = "Status";
+    protected final String API_FIELD_NAME_RESPONSE = "Response";
+    protected final String API_FIELD_NAME_STATUS_SUCCESS = "Success";
     protected final String API_FIELD_NAME_STATUS_FAILED = "error";
 
     protected static final String API_PARAM_SESSION_KEY = "key";
     protected static final String API_PARAM_API_VERSION = "apiVersion";
-    protected static final String API_PARAM_API_ACTION = "apiAction";
+    protected static final String API_PARAM_API_ACTION = "action";
 
     protected SimpleDateFormat simpleDateFormat;
 
@@ -65,8 +65,7 @@ public abstract class Api
         StringBuilder formattedPostData = new StringBuilder();
 
         //Specify version of current API
-        formattedPostData
-                .append("key=" + key);
+        formattedPostData.append(API_PARAM_SESSION_KEY + "=").append(key);
 
         //add each post data to the string builder
         for(Map.Entry<String, String> pair : postData.entrySet())
