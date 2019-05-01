@@ -95,7 +95,7 @@ public class ChecklistItemListRecyclerViewAdapter extends RecyclerView.Adapter<C
         ChecklistItemResult checklistItemResult = null;
 
         //filter by match id
-        for(ChecklistItemResult storedChecklistItemResult : checklistItem.getResults(context.getDatabase()))
+        for(ChecklistItemResult storedChecklistItemResult : checklistItem.getResults(context.getDatabase(), false))
         {
             if(storedChecklistItemResult.getMatchId().equals(match.getKey()))
             {

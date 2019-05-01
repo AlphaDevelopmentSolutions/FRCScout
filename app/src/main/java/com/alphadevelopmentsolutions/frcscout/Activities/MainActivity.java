@@ -707,7 +707,7 @@ public class MainActivity extends AppCompatActivity implements
                     //Checklist item results
                     for(ChecklistItem checklistItem : getDatabase().getChecklistItems())
                     {
-                        for(ChecklistItemResult checklistItemResult : checklistItem.getResults(getDatabase()))
+                        for(ChecklistItemResult checklistItemResult : checklistItem.getResults(getDatabase(), true))
                         {
                             Server.SubmitChecklistItemResult submitChecklistItemResult = new Server.SubmitChecklistItemResult(context, checklistItemResult);
                             if(submitChecklistItemResult.execute())

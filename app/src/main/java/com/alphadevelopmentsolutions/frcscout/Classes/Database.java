@@ -11,7 +11,9 @@ import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Objects;
 
 public class Database
 {
@@ -881,7 +883,7 @@ public class Database
                 Match.TABLE_NAME,
                 columns,
                 whereStatement,
-                (String[]) whereArgsList.toArray(),
+                Arrays.copyOf(Objects.requireNonNull(whereArgsList.toArray()), whereArgsList.size(), String[].class),
                 null,
                 null,
                 null);
@@ -2337,7 +2339,7 @@ public class Database
      * Gets the ChecklistItemResult data
      * @return object based off given team ID
      */
-    public ArrayList<ChecklistItemResult> getChecklistItemResults(ChecklistItem checklistItem)
+    public ArrayList<ChecklistItemResult> getChecklistItemResults(ChecklistItem checklistItem, boolean onlyDrafts)
     {
         ArrayList<ChecklistItemResult> checklistItemResults = new ArrayList<>();
 
@@ -2345,7 +2347,7 @@ public class Database
         String[] columns = getChecklistItemResultColumns();
 
         //where statement
-        String whereStatement = ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID + " = ?";
+        String whereStatement = ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID + " = ? " + ((onlyDrafts) ? " AND " + ScoutCard.COLUMN_NAME_IS_DRAFT + " = 1" : "");
         String[] whereArgs = {checklistItem.getServerId() + ""};
         String orderBy = ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE + " DESC";
 

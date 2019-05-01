@@ -67,10 +67,10 @@ public class ChecklistItem
      * @param database used to load object
      * @return arraylist of results
      */
-    public ArrayList<ChecklistItemResult> getResults(Database database)
+    public ArrayList<ChecklistItemResult> getResults(Database database, boolean onlyDrafts)
     {
         //get results from database
-        return database.getChecklistItemResults(this);
+        return database.getChecklistItemResults(this, onlyDrafts);
     }
 
     //endregion
