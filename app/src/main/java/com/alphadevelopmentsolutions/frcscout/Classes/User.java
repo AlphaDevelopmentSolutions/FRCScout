@@ -48,7 +48,7 @@ public class User
         return lastName;
     }
 
-    public String getName()
+    public String toString()
     {
         return getFirstName() + " " + getLastName();
     }

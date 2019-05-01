@@ -75,7 +75,7 @@ public class ScoutCardPreGameFragment extends MasterFragment {
                 scouterNames = new ArrayList<>();
 
                 for(User user : database.getUsers())
-                    scouterNames.add(user.getName());
+                    scouterNames.add(user.toString());
 
                 scouterNameAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, scouterNames);
             }

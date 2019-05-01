@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.ChecklistItemResult;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
+import com.alphadevelopmentsolutions.frcscout.Classes.User;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Status;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
@@ -26,6 +28,9 @@ public class ChecklistItemListRecyclerViewAdapter extends RecyclerView.Adapter<C
 {
 
     private ArrayList<ChecklistItem> checklistItems;
+    private ArrayList<User> users;
+
+    private ArrayAdapter<String> userNamesAdapter;
 
     private MainActivity context;
 
@@ -38,15 +43,25 @@ public class ChecklistItemListRecyclerViewAdapter extends RecyclerView.Adapter<C
     private Gson gson;
 
 
-    public ChecklistItemListRecyclerViewAdapter(Event event, Match match, Team team, ArrayList<ChecklistItem> checklistItems, MainActivity context)
+    public ChecklistItemListRecyclerViewAdapter(Event event, Match match, Team team, ArrayList<ChecklistItem> checklistItems, ArrayList<User> users, MainActivity context)
     {
         this.checklistItems = checklistItems;
+        this.users = users;
         this.context = context;
         this.event = event;
         this.team = team;
         this.match = match;
 
         gson = new Gson();
+
+        ArrayList<String> userNames = new ArrayList<>();
+
+        for(User user : users)
+        {
+            userNames.add(user.toString());
+        }
+
+        userNamesAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, userNames);
 
     }
 
@@ -83,7 +98,12 @@ public class ChecklistItemListRecyclerViewAdapter extends RecyclerView.Adapter<C
         //Inflate the event layout for the each item in the list
         View view = LayoutInflater.from(context).inflate(R.layout.layout_card_checklist_item, viewGroup, false);
 
-        return new ChecklistItemListRecyclerViewAdapter.ViewHolder(view);
+
+
+        ChecklistItemListRecyclerViewAdapter.ViewHolder viewHolder = new ChecklistItemListRecyclerViewAdapter.ViewHolder(view);
+        viewHolder.completedByAutoCompleteTextView.setAdapter(userNamesAdapter);
+
+        return viewHolder;
     }
 
     @Override
@@ -169,7 +189,6 @@ public class ChecklistItemListRecyclerViewAdapter extends RecyclerView.Adapter<C
                         finalChecklistItemResult.save(context.getDatabase());
                     } else
                         context.showSnackbar("Please enter completed by.");
-
                 }
             });
         }
@@ -178,9 +197,6 @@ public class ChecklistItemListRecyclerViewAdapter extends RecyclerView.Adapter<C
             viewHolder.completedByAutoCompleteTextView.setEnabled(false);
             viewHolder.toggleStatusButton.setEnabled(false);
         }
-
-
-
     }
 
     @Override
