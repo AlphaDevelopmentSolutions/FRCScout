@@ -299,7 +299,7 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
                     public void onClick(View v)
                     {
                         //add new card
-                        context.changeFragment(ScoutCardFragment.newInstance(gson.toJson(event), gson.toJson(match), null, team.getId()), true);
+                        context.changeFragment(ScoutCardFragment.newInstance(gson.toJson(match), null, team.getId()), true);
                     }
                 });
             }
@@ -317,7 +317,7 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
                     public void onClick(View v)
                     {
                         //show match
-                        context.changeFragment(ScoutCardFragment.newInstance(gson.toJson(event), gson.toJson(match), gson.toJson(finalScoutCard), -1), true);
+                        context.changeFragment(ScoutCardFragment.newInstance(gson.toJson(match), gson.toJson(finalScoutCard), -1), true);
                     }
                 });
             }

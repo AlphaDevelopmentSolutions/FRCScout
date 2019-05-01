@@ -98,7 +98,7 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
             public void onClick(View v)
             {
                 //swap fragments
-               context.changeFragment(ScoutCardFragment.newInstance(eventJson, null, new Gson().toJson(scoutCards.get(viewHolder.getAdapterPosition())), -1), true);
+               context.changeFragment(ScoutCardFragment.newInstance(null, new Gson().toJson(scoutCards.get(viewHolder.getAdapterPosition())), -1), true);
             }
         });
     }

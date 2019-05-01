@@ -227,8 +227,13 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }
 
-                //change the frag to the eventlist
-                changeFragment(new EventListFragment(), false);
+                //event previously selected, switch to team list
+                if((Integer) getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) > 0)
+                    changeFragment(TeamListFragment.newInstance(), false);
+
+                else
+                    //change the frag to the eventlist
+                    changeFragment(new EventListFragment(), false);
             } else
             {
                 changeFragment(new ConfigFragment(), false);

@@ -12,10 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.ScoutCardViewPagerAdapter;
-import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor;
-import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
+import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor;
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.R;
@@ -36,12 +35,10 @@ public class ScoutCardFragment extends MasterFragment
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "MatchJson";
     private static final String ARG_PARAM2 = "ScoutCardJson";
-    private static final String ARG_PARAM3 = "EventJson";
     private static final String ARG_PARAM4 = "TeamId";
 
     private String matchJson;
     private String scoutCardJson;
-    private String eventJson;
     private int teamId;
 
     private OnFragmentInteractionListener mListener;
@@ -57,18 +54,16 @@ public class ScoutCardFragment extends MasterFragment
      *
      * @param matchJson match json
      * @param scoutCardJson scout card json
-     * @param eventJson event json
      * @param teamId teamId
      * @return A new instance of fragment ScoutCardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ScoutCardFragment newInstance(String eventJson, String matchJson, String scoutCardJson, int teamId)
+    public static ScoutCardFragment newInstance(String matchJson, String scoutCardJson, int teamId)
     {
         ScoutCardFragment fragment = new ScoutCardFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, matchJson);
         args.putString(ARG_PARAM2, scoutCardJson);
-        args.putString(ARG_PARAM3, eventJson);
         args.putInt(ARG_PARAM4, teamId);
         fragment.setArguments(args);
         return fragment;
@@ -83,7 +78,6 @@ public class ScoutCardFragment extends MasterFragment
         {
             matchJson = getArguments().getString(ARG_PARAM1);
             scoutCardJson = getArguments().getString(ARG_PARAM2);
-            eventJson = getArguments().getString(ARG_PARAM3);
             teamId = getArguments().getInt(ARG_PARAM4);
         }
 
@@ -95,9 +89,6 @@ public class ScoutCardFragment extends MasterFragment
             {
                 if(scoutCardJson != null && !scoutCardJson.equals(""))
                     scoutCard = new Gson().fromJson(scoutCardJson, ScoutCard.class);
-
-                if(eventJson != null && !eventJson.equals(""))
-                    event = new Gson().fromJson(eventJson, Event.class);
 
                 if(matchJson != null && !matchJson.equals(""))
                     match = new Gson().fromJson(matchJson, Match.class);
@@ -114,7 +105,6 @@ public class ScoutCardFragment extends MasterFragment
     }
     
     private ScoutCard scoutCard;
-    private Event event;
     private Match match;
 
     private TabLayout scoutCardTabLayout;
