@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -11,12 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.ScoutCardViewPagerAdapter;
-import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
-import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
-import com.alphadevelopmentsolutions.frcscout.Classes.StartingPiece;
-import com.alphadevelopmentsolutions.frcscout.Classes.StartingPosition;
+import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor;
+import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece;
+import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
 
@@ -35,12 +35,10 @@ public class ScoutCardFragment extends MasterFragment
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "MatchJson";
     private static final String ARG_PARAM2 = "ScoutCardJson";
-    private static final String ARG_PARAM3 = "EventJson";
     private static final String ARG_PARAM4 = "TeamId";
 
     private String matchJson;
     private String scoutCardJson;
-    private String eventJson;
     private int teamId;
 
     private OnFragmentInteractionListener mListener;
@@ -56,18 +54,16 @@ public class ScoutCardFragment extends MasterFragment
      *
      * @param matchJson match json
      * @param scoutCardJson scout card json
-     * @param eventJson event json
      * @param teamId teamId
      * @return A new instance of fragment ScoutCardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ScoutCardFragment newInstance(String eventJson, String matchJson, String scoutCardJson, int teamId)
+    public static ScoutCardFragment newInstance(String matchJson, String scoutCardJson, int teamId)
     {
         ScoutCardFragment fragment = new ScoutCardFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, matchJson);
         args.putString(ARG_PARAM2, scoutCardJson);
-        args.putString(ARG_PARAM3, eventJson);
         args.putInt(ARG_PARAM4, teamId);
         fragment.setArguments(args);
         return fragment;
@@ -82,7 +78,6 @@ public class ScoutCardFragment extends MasterFragment
         {
             matchJson = getArguments().getString(ARG_PARAM1);
             scoutCardJson = getArguments().getString(ARG_PARAM2);
-            eventJson = getArguments().getString(ARG_PARAM3);
             teamId = getArguments().getInt(ARG_PARAM4);
         }
 
@@ -94,9 +89,6 @@ public class ScoutCardFragment extends MasterFragment
             {
                 if(scoutCardJson != null && !scoutCardJson.equals(""))
                     scoutCard = new Gson().fromJson(scoutCardJson, ScoutCard.class);
-
-                if(eventJson != null && !eventJson.equals(""))
-                    event = new Gson().fromJson(eventJson, Event.class);
 
                 if(matchJson != null && !matchJson.equals(""))
                     match = new Gson().fromJson(matchJson, Match.class);
@@ -113,7 +105,6 @@ public class ScoutCardFragment extends MasterFragment
     }
     
     private ScoutCard scoutCard;
-    private Event event;
     private Match match;
 
     private TabLayout scoutCardTabLayout;
@@ -123,9 +114,11 @@ public class ScoutCardFragment extends MasterFragment
     private ScoutCardAutoFragment scoutCardAutoFragment;
     private ScoutCardTeleopFragment scoutCardTeleopFragment;
     private ScoutCardEndGameFragment scoutCardEndGameFragment;
-    private  ScoutCardPostGameFragment scoutCardPostGameFragment;
+    private ScoutCardPostGameFragment scoutCardPostGameFragment;
 
     private Thread fragCreationThread;
+
+    private FloatingActionButton scoutCardSaveFloatingActionButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -139,6 +132,8 @@ public class ScoutCardFragment extends MasterFragment
 
         scoutCardTabLayout = view.findViewById(R.id.ScoutCardTabLayout);
         scoutCardViewPager = view.findViewById(R.id.ScoutCardViewPager);
+
+        scoutCardSaveFloatingActionButton = view.findViewById(R.id.ScoutCardSaveFloatingActionButton);
 
         final ScoutCardViewPagerAdapter scoutCardViewPagerAdapter = new ScoutCardViewPagerAdapter(getChildFragmentManager());
 
@@ -165,166 +160,168 @@ public class ScoutCardFragment extends MasterFragment
         scoutCardViewPager.setOffscreenPageLimit(5);
         scoutCardTabLayout.setupWithViewPager(scoutCardViewPager);
 
-
-        scoutCardPostGameFragment.setOnSaveButtonClickListener(new View.OnClickListener()
+        if(scoutCard == null || scoutCard.isDraft())
         {
-            @Override
-            public void onClick(View v)
+            scoutCardSaveFloatingActionButton.setOnClickListener(new View.OnClickListener()
             {
-
-                //validates all fields are valid on the forms
-                if(scoutCardPreGameFragment.validateFields() &&
-                    scoutCardAutoFragment.validateFields() &&
-                    scoutCardTeleopFragment.validateFields() &&
-                    scoutCardEndGameFragment.validateFields() &&
-                    scoutCardPostGameFragment.validateFields())
+                @Override
+                public void onClick(View v)
                 {
 
-                    //pre game info
-                    int teamNumber = scoutCardPreGameFragment.getTeamId();
-                    String eventId = (scoutCard == null) ? event.getBlueAllianceId() : scoutCard.getEventId();
-                    AllianceColor allianceColor = match.getTeamAllianceColor(teamId);
-                    String completedBy = scoutCardPreGameFragment.getScouterName();
-
-                    int preGameStartingLevel = scoutCardPreGameFragment.getStartingLevel();
-                    StartingPosition preGameStartingPosition = scoutCardPreGameFragment.getStartingPosition();
-                    StartingPiece preGameStartingPiece = scoutCardPreGameFragment.getStartingPiece();
-
-                    //auto info
-                    boolean autonomousExitHabitat = scoutCardAutoFragment.getAutonomousExitHab();
-                    int autonomousHatchPanelsPickedUp = scoutCardAutoFragment.getAutonomousHatchPanelsPickedUp();
-                    int autonomousHatchPanelsSecuredAttempts = scoutCardAutoFragment.getAutonomousHatchPanelsDropped();
-                    int autonomousHatchPanelsSecured = scoutCardAutoFragment.getAutonomousHatchPanelsSecured();
-                    int autonomousCargoPickedUp = scoutCardAutoFragment.getAutonomousCargoPickedUp();
-                    int autonomousCargoStoredAttempts = scoutCardAutoFragment.getAutonomousCargoDropped();
-                    int autonomousCargoStored = scoutCardAutoFragment.getAutonomousCargoStored();
-
-                    //teleop info
-                    int teleopHatchPanelsPickedUp = scoutCardTeleopFragment.getTeleopHatchPanelsPickedUp();
-                    int teleopHatchPanelsSecuredAttempts = scoutCardTeleopFragment.getTeleopHatchPanelsDropped();
-                    int teleopHatchPanelsSecured = scoutCardTeleopFragment.getTeleopHatchPanelsSecured();
-                    int teleopCargoPickedUp = scoutCardTeleopFragment.getTeleopCargoPickedUp();
-                    int teleopCargoStoredAttempts = scoutCardTeleopFragment.getTeleopCargoDropped();
-                    int teleopCargoStored = scoutCardTeleopFragment.getTeleopCargoStored();
-
-                    //endgame info
-                    int endGameReturnedToHabitat = scoutCardEndGameFragment.getReturnedToHabLevel();
-                    int endGameReturnedToHabitatAttempts = scoutCardEndGameFragment.getReturnedToHabAttemptLevel();
-
-                    //post game info
-                    int defenseRating = scoutCardPostGameFragment.getDefenseRating();
-                    int offenseRating = scoutCardPostGameFragment.getOffenseRating();
-                    int driveRating = scoutCardPostGameFragment.getDriveRating();
-                    String notes = scoutCardPostGameFragment.getNotes();
-
-                    Date completedDate = new Date(System.currentTimeMillis());
-
-                    //saving a draft scout card
-                    if (scoutCard != null)
+                    //validates all fields are valid on the forms
+                    if (scoutCardPreGameFragment.validateFields() &&
+                            scoutCardAutoFragment.validateFields() &&
+                            scoutCardTeleopFragment.validateFields() &&
+                            scoutCardEndGameFragment.validateFields() &&
+                            scoutCardPostGameFragment.validateFields())
                     {
-                        scoutCard.setMatchId(match.getKey());
-                        scoutCard.setTeamId(teamNumber);
-                        scoutCard.setEventId(eventId);
-                        scoutCard.setAllianceColor(allianceColor.name());
-                        scoutCard.setCompletedBy(completedBy);
 
-                        scoutCard.setPreGameStartingLevel(preGameStartingLevel);
-                        scoutCard.setPreGameStartingPosition(preGameStartingPosition);
-                        scoutCard.setPreGameStartingPiece(preGameStartingPiece);
+                        //pre game info
+                        int teamNumber = scoutCardPreGameFragment.getTeamId();
+                        String eventId = (scoutCard == null) ? event.getBlueAllianceId() : scoutCard.getEventId();
+                        AllianceColor allianceColor = match.getTeamAllianceColor(teamId);
+                        String completedBy = scoutCardPreGameFragment.getScouterName();
 
-                        scoutCard.setAutonomousExitHabitat(autonomousExitHabitat);
-                        scoutCard.setAutonomousHatchPanelsPickedUp(autonomousHatchPanelsPickedUp);
-                        scoutCard.setAutonomousHatchPanelsSecuredAttempts(autonomousHatchPanelsSecuredAttempts);
-                        scoutCard.setAutonomousHatchPanelsSecured(autonomousHatchPanelsSecured);
-                        scoutCard.setAutonomousCargoPickedUp(autonomousCargoPickedUp);
-                        scoutCard.setAutonomousCargoStoredAttempts(autonomousCargoStoredAttempts);
-                        scoutCard.setAutonomousCargoStored(autonomousCargoStored);
+                        int preGameStartingLevel = scoutCardPreGameFragment.getStartingLevel();
+                        StartingPosition preGameStartingPosition = scoutCardPreGameFragment.getStartingPosition();
+                        StartingPiece preGameStartingPiece = scoutCardPreGameFragment.getStartingPiece();
 
-                        scoutCard.setTeleopHatchPanelsPickedUp(teleopHatchPanelsPickedUp);
-                        scoutCard.setTeleopHatchPanelsSecuredAttempts(teleopHatchPanelsSecuredAttempts);
-                        scoutCard.setTeleopHatchPanelsSecured(teleopHatchPanelsSecured);
-                        scoutCard.setTeleopCargoPickedUp(teleopCargoPickedUp);
-                        scoutCard.setTeleopCargoStoredAttempts(teleopCargoStoredAttempts);
-                        scoutCard.setTeleopCargoStored(teleopCargoStored);
+                        //auto info
+                        boolean autonomousExitHabitat = scoutCardAutoFragment.getAutonomousExitHab();
+                        int autonomousHatchPanelsPickedUp = scoutCardAutoFragment.getAutonomousHatchPanelsPickedUp();
+                        int autonomousHatchPanelsSecuredAttempts = scoutCardAutoFragment.getAutonomousHatchPanelsDropped();
+                        int autonomousHatchPanelsSecured = scoutCardAutoFragment.getAutonomousHatchPanelsSecured();
+                        int autonomousCargoPickedUp = scoutCardAutoFragment.getAutonomousCargoPickedUp();
+                        int autonomousCargoStoredAttempts = scoutCardAutoFragment.getAutonomousCargoDropped();
+                        int autonomousCargoStored = scoutCardAutoFragment.getAutonomousCargoStored();
 
-                        scoutCard.setEndGameReturnedToHabitat(endGameReturnedToHabitat);
-                        scoutCard.setEndGameReturnedToHabitatAttempts(endGameReturnedToHabitatAttempts);
+                        //teleop info
+                        int teleopHatchPanelsPickedUp = scoutCardTeleopFragment.getTeleopHatchPanelsPickedUp();
+                        int teleopHatchPanelsSecuredAttempts = scoutCardTeleopFragment.getTeleopHatchPanelsDropped();
+                        int teleopHatchPanelsSecured = scoutCardTeleopFragment.getTeleopHatchPanelsSecured();
+                        int teleopCargoPickedUp = scoutCardTeleopFragment.getTeleopCargoPickedUp();
+                        int teleopCargoStoredAttempts = scoutCardTeleopFragment.getTeleopCargoDropped();
+                        int teleopCargoStored = scoutCardTeleopFragment.getTeleopCargoStored();
 
-                        scoutCard.setDefenseRating(defenseRating);
-                        scoutCard.setOffenseRating(offenseRating);
-                        scoutCard.setDriveRating(driveRating);
-                        scoutCard.setNotes(notes);
-                        scoutCard.setCompletedDate(completedDate);
-                        scoutCard.setDraft(true);
-                        
-                        //save the scout card
-                        if (scoutCard.save(database) > 0)
+                        //endgame info
+                        int endGameReturnedToHabitat = scoutCardEndGameFragment.getReturnedToHabLevel();
+                        int endGameReturnedToHabitatAttempts = scoutCardEndGameFragment.getReturnedToHabAttemptLevel();
+
+                        //post game info
+                        int defenseRating = scoutCardPostGameFragment.getDefenseRating();
+                        int offenseRating = scoutCardPostGameFragment.getOffenseRating();
+                        int driveRating = scoutCardPostGameFragment.getDriveRating();
+                        String notes = scoutCardPostGameFragment.getNotes();
+
+                        Date completedDate = new Date(System.currentTimeMillis());
+
+                        //saving a draft scout card
+                        if (scoutCard != null)
                         {
-                            context.showSnackbar("Saved Successfully.");
-                            context.getSupportFragmentManager().popBackStackImmediate();
+                            scoutCard.setMatchId(match.getKey());
+                            scoutCard.setTeamId(teamNumber);
+                            scoutCard.setEventId(eventId);
+                            scoutCard.setAllianceColor(allianceColor.name());
+                            scoutCard.setCompletedBy(completedBy);
+
+                            scoutCard.setPreGameStartingLevel(preGameStartingLevel);
+                            scoutCard.setPreGameStartingPosition(preGameStartingPosition);
+                            scoutCard.setPreGameStartingPiece(preGameStartingPiece);
+
+                            scoutCard.setAutonomousExitHabitat(autonomousExitHabitat);
+                            scoutCard.setAutonomousHatchPanelsPickedUp(autonomousHatchPanelsPickedUp);
+                            scoutCard.setAutonomousHatchPanelsSecuredAttempts(autonomousHatchPanelsSecuredAttempts);
+                            scoutCard.setAutonomousHatchPanelsSecured(autonomousHatchPanelsSecured);
+                            scoutCard.setAutonomousCargoPickedUp(autonomousCargoPickedUp);
+                            scoutCard.setAutonomousCargoStoredAttempts(autonomousCargoStoredAttempts);
+                            scoutCard.setAutonomousCargoStored(autonomousCargoStored);
+
+                            scoutCard.setTeleopHatchPanelsPickedUp(teleopHatchPanelsPickedUp);
+                            scoutCard.setTeleopHatchPanelsSecuredAttempts(teleopHatchPanelsSecuredAttempts);
+                            scoutCard.setTeleopHatchPanelsSecured(teleopHatchPanelsSecured);
+                            scoutCard.setTeleopCargoPickedUp(teleopCargoPickedUp);
+                            scoutCard.setTeleopCargoStoredAttempts(teleopCargoStoredAttempts);
+                            scoutCard.setTeleopCargoStored(teleopCargoStored);
+
+                            scoutCard.setEndGameReturnedToHabitat(endGameReturnedToHabitat);
+                            scoutCard.setEndGameReturnedToHabitatAttempts(endGameReturnedToHabitatAttempts);
+
+                            scoutCard.setDefenseRating(defenseRating);
+                            scoutCard.setOffenseRating(offenseRating);
+                            scoutCard.setDriveRating(driveRating);
+                            scoutCard.setNotes(notes);
+                            scoutCard.setCompletedDate(completedDate);
+                            scoutCard.setDraft(true);
+
+                            //save the scout card
+                            if (scoutCard.save(database) > 0)
+                            {
+                                context.showSnackbar("Saved Successfully.");
+                                context.getSupportFragmentManager().popBackStackImmediate();
+                            } else
+                            {
+                                context.showSnackbar("Saved Failed.");
+                            }
+
+
                         }
+
+                        //saving a new scoutcard
                         else
                         {
-                            context.showSnackbar("Saved Failed.");
-                        }
+                            ScoutCard scoutCard = new ScoutCard(
+                                    -1,
+                                    match.getKey(),
+                                    teamId,
+                                    eventId,
+                                    allianceColor.name(),
+                                    completedBy,
 
+                                    preGameStartingLevel,
+                                    preGameStartingPosition,
+                                    preGameStartingPiece,
 
-                    } 
-                    
-                    //saving a new scoutcard
-                    else
-                    {
-                        ScoutCard scoutCard = new ScoutCard(
-                                -1,
-                                match.getKey(),
-                                teamId,
-                                eventId,
-                                allianceColor.name(),
-                                completedBy,
-        
-                                preGameStartingLevel,
-                                preGameStartingPosition,
-                                preGameStartingPiece,
-        
-                                autonomousExitHabitat,
-                                autonomousHatchPanelsPickedUp,
-                                autonomousHatchPanelsSecuredAttempts,
-                                autonomousHatchPanelsSecured,
-                                autonomousCargoPickedUp,
-                                autonomousCargoStoredAttempts,
-                                autonomousCargoStored,
-        
-                                teleopHatchPanelsPickedUp,
-                                teleopHatchPanelsSecuredAttempts,
-                                teleopHatchPanelsSecured,
-                                teleopCargoPickedUp,
-                                teleopCargoStoredAttempts,
-                                teleopCargoStored,
-        
-                                endGameReturnedToHabitat,
-                                endGameReturnedToHabitatAttempts,
-        
-                                defenseRating,
-                                offenseRating,
-                                driveRating,
-                                notes,
-                                completedDate,
-                                true);
+                                    autonomousExitHabitat,
+                                    autonomousHatchPanelsPickedUp,
+                                    autonomousHatchPanelsSecuredAttempts,
+                                    autonomousHatchPanelsSecured,
+                                    autonomousCargoPickedUp,
+                                    autonomousCargoStoredAttempts,
+                                    autonomousCargoStored,
 
-                        //save the scout card
-                        if (scoutCard.save(database) > 0)
-                        {
-                            context.showSnackbar("Saved Successfully.");
-                            context.getSupportFragmentManager().popBackStackImmediate();
-                        }
-                        else
-                        {
-                            context.showSnackbar("Saved Failed.");
+                                    teleopHatchPanelsPickedUp,
+                                    teleopHatchPanelsSecuredAttempts,
+                                    teleopHatchPanelsSecured,
+                                    teleopCargoPickedUp,
+                                    teleopCargoStoredAttempts,
+                                    teleopCargoStored,
+
+                                    endGameReturnedToHabitat,
+                                    endGameReturnedToHabitatAttempts,
+
+                                    defenseRating,
+                                    offenseRating,
+                                    driveRating,
+                                    notes,
+                                    completedDate,
+                                    true);
+
+                            //save the scout card
+                            if (scoutCard.save(database) > 0)
+                            {
+                                context.showSnackbar("Saved Successfully.");
+                                context.getSupportFragmentManager().popBackStackImmediate();
+                            } else
+                            {
+                                context.showSnackbar("Saved Failed.");
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
+        else
+            scoutCardSaveFloatingActionButton.setVisibility(View.GONE);
 
         return view;
     }

@@ -6,14 +6,28 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
-        <item name="actionBarTheme">@style/AppTheme.ActionBarTheme</item> <!-- used for the back arrow on the action bar -->
+        <item name="actionBarTheme">@style/AppTheme.ActionBarTheme
+        </item> <!-- used for the back arrow on the action bar -->
         <item name="toolbarStyle">@style/CustomToolBarStyle</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Splash application theme. -->
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary</item>
+        <item name="colorAccent">@color/primary</item>
+        <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
 
     <style name="AppTheme.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <!-- THIS is where you can color the arrow and the overflow button! -->
         <item name="colorControlNormal">#FFF</item> <!-- sets the color for the back arrow -->
-        <item name="actionOverflowButtonStyle">@style/actionOverflowButtonStyle</item> <!-- sets the style for the overflow button -->
+        <item name="actionOverflowButtonStyle">@style/actionOverflowButtonStyle
+        </item> <!-- sets the style for the overflow button -->
     </style>
 
     <!-- This style is where you define the tint color of your overflow menu button -->
@@ -29,5 +43,23 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:textSize">@dimen/textSecondary</item>
     </style>
+
+    <style name="TextInputLayoutLight" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#FFF</item>
+    </style>
+
+    <style name="EditTextLight" parent="Widget.AppCompat.EditText">
+        <item name="colorControlNormal">#FFF</item>
+        <item name="colorControlActivated">#FFF</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
 </resources>

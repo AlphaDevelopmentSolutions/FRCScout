@@ -3,6 +3,8 @@ package com.alphadevelopmentsolutions.frcscout.Adapters;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,19 +13,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
+import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ChecklistFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MatchesRecyclerViewAdapter extends RecyclerView.Adapter<MatchesRecyclerViewAdapter.ViewHolder>
+public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchListRecyclerViewAdapter.ViewHolder>
 {
 
     private ArrayList<Match> matches;
@@ -38,20 +42,27 @@ public class MatchesRecyclerViewAdapter extends RecyclerView.Adapter<MatchesRecy
 
     private HashMap<Match, ArrayList<ScoutCard>> scoutCards;
 
-    public MatchesRecyclerViewAdapter(Event event, Team team, ArrayList<Match> matches, MainActivity context)
+    private Type fragmentOnClick;
+
+    public MatchListRecyclerViewAdapter(Event event, Team team, ArrayList<Match> matches, MainActivity context, Type fragmentOnClick)
     {
         this.matches = matches;
         this.context = context;
         this.event = event;
         this.team = team;
+        this.fragmentOnClick = fragmentOnClick;
 
         gson = new Gson();
 
         scoutCards = new HashMap<>();
 
-        for(Match match : matches)
-            //get the scout card from the match
-            scoutCards.put(match, match.getScoutCards(context.getDatabase(), event));
+        if(fragmentOnClick.equals(ScoutCard.class))
+        {
+            //load all the scout cards for a match
+            for (Match match : matches)
+                //get the scout card from the match
+                scoutCards.put(match, match.getScoutCards(context.getDatabase(), event));
+        }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder
@@ -104,32 +115,19 @@ public class MatchesRecyclerViewAdapter extends RecyclerView.Adapter<MatchesRecy
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType)
     {
         //Inflate the event layout for the each item in the list
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_scout_card, viewGroup, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_card_match, viewGroup, false);
 
-        return new MatchesRecyclerViewAdapter.ViewHolder(view);
+        return new MatchListRecyclerViewAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MatchesRecyclerViewAdapter.ViewHolder viewHolder, int position)
+    public void onBindViewHolder(@NonNull final MatchListRecyclerViewAdapter.ViewHolder viewHolder, int position)
     {
 
         final Match match = matches.get(viewHolder.getAdapterPosition());
 
-        //get the list of scout cards from the hashmap and pull the one for the current team
-        final ArrayList<ScoutCard> scoutCards = this.scoutCards.get(match);
-        ScoutCard scoutCard = null;
-
-        for(ScoutCard storedScoutCard : scoutCards)
-        {
-            if(storedScoutCard.getTeamId() == team.getId())
-            {
-                scoutCard = storedScoutCard;
-                break;
-            }
-        }
-
         //set match numbers
-        viewHolder.matchIdTextView.setText(match.getMatchType().toString(match));
+        viewHolder.matchIdTextView.setText(match.toString());
         
         //set teams
         viewHolder.blueAllianceTeamOneIdTextView.setText(String.valueOf(match.getBlueAllianceTeamOneId()));
@@ -144,8 +142,76 @@ public class MatchesRecyclerViewAdapter extends RecyclerView.Adapter<MatchesRecy
         viewHolder.blueAllianceScoreTextView.setText(String.valueOf(match.getBlueAllianceScore()));
         viewHolder.redAllianceScoreTextView.setText(String.valueOf(match.getRedAllianceScore()));
 
+        AllianceColor selectedTeamAllianceColor = null;
+        SpannableString spannableString;
+
         //set the bold text for the winning team
         Match.Status matchStatus = match.getMatchStatus();
+
+        //add the underline when viewing matches for a specific team
+        if(team.getId() == match.getBlueAllianceTeamOneId())
+        {
+            spannableString = new SpannableString(String.valueOf(team.getId()));
+            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
+            viewHolder.blueAllianceTeamOneIdTextView.setText(spannableString);
+
+            selectedTeamAllianceColor = AllianceColor.BLUE;
+        }
+        else if(team.getId() == match.getBlueAllianceTeamTwoId())
+        {
+            spannableString = new SpannableString(String.valueOf(team.getId()));
+            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
+            viewHolder.blueAllianceTeamTwoIdTextView.setText(spannableString);
+
+            selectedTeamAllianceColor = AllianceColor.BLUE;
+        }
+        else if(team.getId() == match.getBlueAllianceTeamThreeId())
+        {
+            spannableString = new SpannableString(String.valueOf(team.getId()));
+            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
+            viewHolder.blueAllianceTeamThreeIdTextView.setText(spannableString);
+
+            selectedTeamAllianceColor = AllianceColor.BLUE;
+        }
+        else if(team.getId() == match.getRedAllianceTeamOneId())
+        {
+            spannableString = new SpannableString(String.valueOf(team.getId()));
+            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
+            viewHolder.redAllianceTeamOneIdTextView.setText(spannableString);
+
+            selectedTeamAllianceColor = AllianceColor.RED;
+        }
+        else if(team.getId() == match.getRedAllianceTeamTwoId())
+        {
+            spannableString = new SpannableString(String.valueOf(team.getId()));
+            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
+            viewHolder.redAllianceTeamTwoIdTextView.setText(spannableString);
+
+            selectedTeamAllianceColor = AllianceColor.RED;
+        }
+        else if(team.getId() == match.getRedAllianceTeamThreeId())
+        {
+            spannableString = new SpannableString(String.valueOf(team.getId()));
+            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
+            viewHolder.redAllianceTeamThreeIdTextView.setText(spannableString);
+
+            selectedTeamAllianceColor = AllianceColor.RED;
+        }
+
+        //underline the score of the selected team
+        if(selectedTeamAllianceColor == AllianceColor.BLUE)
+        {
+            spannableString = new SpannableString(String.valueOf(match.getBlueAllianceScore()));
+            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
+            viewHolder.blueAllianceScoreTextView.setText(spannableString);
+        }
+        else
+        {
+            spannableString = new SpannableString(String.valueOf(match.getRedAllianceScore()));
+            spannableString.setSpan(new UnderlineSpan(), 0, spannableString.length(), 0);
+            viewHolder.redAllianceScoreTextView.setText(spannableString);
+        }
+
 
         //blue won
         if(matchStatus == Match.Status.BLUE)
@@ -198,41 +264,76 @@ public class MatchesRecyclerViewAdapter extends RecyclerView.Adapter<MatchesRecy
         }); //TODO: options menu
 
 
-
-        final ScoutCard finalScoutCard = scoutCard;
-
-        //no card available, show the add card button
-        if(scoutCard == null)
+        //logic for showing the view scout card button
+        if(fragmentOnClick.equals(ScoutCard.class))
         {
-            viewHolder.viewMatchButton.setVisibility(View.GONE);
-            viewHolder.addCardButton.setVisibility(View.VISIBLE);
+            //get the list of scout cards from the hashmap and pull the one for the current team
+            final ArrayList<ScoutCard> scoutCards = this.scoutCards.get(match);
 
-            //Sends you to the scout card fragment
-            viewHolder.addCardButton.setOnClickListener(new View.OnClickListener()
+            ScoutCard scoutCard = null;
+
+            if(scoutCards.size() > 0)
             {
-                @Override
-                public void onClick(View v)
+                for (ScoutCard storedScoutCard : scoutCards)
                 {
-                    //add new card
-                    context.changeFragment(ScoutCardFragment.newInstance(gson.toJson(event), gson.toJson(match),null, team.getId()), true);
+                    if (storedScoutCard.getTeamId() == team.getId())
+                    {
+                        scoutCard = storedScoutCard;
+                        break;
+                    }
                 }
-            });
+            }
+
+            final ScoutCard finalScoutCard = scoutCard;
+
+            //no card available, show the add card button
+            if (scoutCard == null)
+            {
+                viewHolder.viewMatchButton.setVisibility(View.GONE);
+                viewHolder.addCardButton.setVisibility(View.VISIBLE);
+
+                //Sends you to the scout card fragment
+                viewHolder.addCardButton.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        //add new card
+                        context.changeFragment(ScoutCardFragment.newInstance(gson.toJson(match), null, team.getId()), true);
+                    }
+                });
+            }
+
+            //card available, show the view match button
+            else
+            {
+                viewHolder.viewMatchButton.setVisibility(View.VISIBLE);
+                viewHolder.addCardButton.setVisibility(View.GONE);
+
+                //Sends you to the scout card fragment
+                viewHolder.viewMatchButton.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        //show match
+                        context.changeFragment(ScoutCardFragment.newInstance(gson.toJson(match), gson.toJson(finalScoutCard), -1), true);
+                    }
+                });
+            }
         }
 
-        //card available, show the view match button
-        else
+        //logic for going to the checklist frag
+        else if(fragmentOnClick.equals(ChecklistFragment.class))
         {
-            viewHolder.viewMatchButton.setVisibility(View.VISIBLE);
-            viewHolder.addCardButton.setVisibility(View.GONE);
-
-            //Sends you to the scout card fragment
+            viewHolder.viewMatchButton.setText(context.getString(R.string.view_checklist));
+            //Sends you to the checklist fragment
             viewHolder.viewMatchButton.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
                 {
-                    //show match
-                    context.changeFragment(ScoutCardFragment.newInstance(gson.toJson(event), gson.toJson(match), gson.toJson(finalScoutCard), -1), true);
+                    context.changeFragment(ChecklistFragment.newInstance(gson.toJson(team), gson.toJson(matches.get(viewHolder.getAdapterPosition()))), true);
                 }
             });
         }

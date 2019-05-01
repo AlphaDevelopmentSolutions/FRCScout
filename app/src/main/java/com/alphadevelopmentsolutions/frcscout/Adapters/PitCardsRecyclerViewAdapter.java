@@ -62,7 +62,7 @@ public class PitCardsRecyclerViewAdapter extends RecyclerView.Adapter<PitCardsRe
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType)
     {
         //Inflate the event layout for the each item in the list
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_pit_card, viewGroup, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_card_pit, viewGroup, false);
 
         return new PitCardsRecyclerViewAdapter.ViewHolder(view);
     }

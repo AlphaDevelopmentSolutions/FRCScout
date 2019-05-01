@@ -44,12 +44,12 @@
     <string name="no_internet">Not connected to internet.</string>
     <string name="upload_scout_cards">Upload Scout Cards?</string>
     <string name="upload_scout_cards_warning">This will delete scout cards stored on device.</string>
-    <string name="change_event">Change Event?</string>
+    <string name="change_event">Change Event</string>
     <string name="select_event">Select Event</string>
     <string name="set_event">Set Event</string>
     <string name="alliance_color">AllianceColor</string>
     <string name="pit_card">Pit Card</string>
-    <string name="completed_by">Completed By:\u0020</string>
+    <string name="completed_by">Completed By\u0020</string>
     <string name="colon">:</string>
     <string name="drive_style">Drivetrain</string>
     <string name="hatch_panels_attempts">Hatch Panels Dropped</string>
@@ -98,4 +98,24 @@
     <string name="quick_stats">Quick Stats</string>
     <string name="add_card">Add Card</string>
     <string name="events">Events</string>
+    <string name="enter_web_url">Enter Web URL</string>
+    <string name="url_placeholder">http(s)://subdomain.domain.com/</string>
+    <string name="connect">Connect</string>
+    <string name="server_error">Could not connect to the web server.</string>
+    <string name="invalid_url">Invalid Web URL</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="teams">Teams</string>
+    <string name="checklist">Checklist</string>
+    <string name="name">Name</string>
+    <string name="current_status">Current Status -\u0020</string>
+    <string name="mark_incomplete">Mark Incomplete</string>
+    <string name="mark_complete">Mark Complete</string>
+    <string name="view_checklist">View Checklist</string>
 </resources>

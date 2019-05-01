@@ -23,14 +23,8 @@ import com.google.gson.Gson;
  * Use the {@link RobotMediaListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RobotMediaListFragment extends MasterFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-
-    // TODO: Rename and change types of parameters
-    private String teamJson;
-
+public class RobotMediaListFragment extends MasterFragment
+{
 
     private OnFragmentInteractionListener mListener;
 
@@ -49,7 +43,7 @@ public class RobotMediaListFragment extends MasterFragment {
     public static RobotMediaListFragment newInstance(String teamJson) {
         RobotMediaListFragment fragment = new RobotMediaListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, teamJson);
+        args.putString(ARG_TEAM_JSON, teamJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,15 +52,11 @@ public class RobotMediaListFragment extends MasterFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            teamJson = getArguments().getString(ARG_PARAM1);
+            teamJson = getArguments().getString(ARG_TEAM_JSON);
         }
-
-        team = new Gson().fromJson(teamJson, Team.class);
     }
 
     private RecyclerView robotMediaRecyclerView;
-
-    private Team team;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,6 +70,7 @@ public class RobotMediaListFragment extends MasterFragment {
             @Override
             public void run() {
 
+                joinLoadingThread();
 
                 final RobotMediaListRecyclerViewAdapter robotMediaListRecyclerViewAdapter = new RobotMediaListRecyclerViewAdapter(team, database.getRobotMedia(team, false), context);
 

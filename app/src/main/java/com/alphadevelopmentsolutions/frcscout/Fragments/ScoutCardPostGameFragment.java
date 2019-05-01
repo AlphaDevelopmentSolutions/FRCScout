@@ -67,8 +67,6 @@ public class ScoutCardPostGameFragment extends MasterFragment {
 
     private ScoutCard scoutCard;
 
-    private Button scoutCardSaveButton;
-
     private View.OnClickListener onSaveButtonClickListener;
 
     private EditText matchNotesEditText;
@@ -83,17 +81,12 @@ public class ScoutCardPostGameFragment extends MasterFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_scout_card_post_game, container, false);
 
-        scoutCardSaveButton = view.findViewById(R.id.ScoutCardSaveButton);
 
         matchNotesEditText = view.findViewById(R.id.MatchNotesEditText);
 
         defenseRatingBar = view.findViewById(R.id.DefenseRatingBar);
         offenseRatingBar = view.findViewById(R.id.OffenseRatingBar);
         driveRatingBar = view.findViewById(R.id.DriveRatingBar);
-
-        if(onSaveButtonClickListener != null)
-            scoutCardSaveButton.setOnClickListener(onSaveButtonClickListener);
-
 
         if(scoutCard != null)
         {
@@ -107,8 +100,6 @@ public class ScoutCardPostGameFragment extends MasterFragment {
             //only disable if card is not draft
             if(!scoutCard.isDraft())
             {
-                scoutCardSaveButton.setVisibility(View.GONE);
-
                 defenseRatingBar.setEnabled(false);
                 offenseRatingBar.setEnabled(false);
                 driveRatingBar.setEnabled(false);
