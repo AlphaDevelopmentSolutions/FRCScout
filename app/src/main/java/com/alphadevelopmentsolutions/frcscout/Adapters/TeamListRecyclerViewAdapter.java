@@ -94,7 +94,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
             @Override
             public void onClick(View v)
             {
-               context.changeFragment(TeamFragment.newInstance(new Gson().toJson(teamList.get(viewHolder.getAdapterPosition())), eventJson), true);
+               context.changeFragment(TeamFragment.newInstance(new Gson().toJson(teamList.get(viewHolder.getAdapterPosition()))), true);
             }
         });
     }

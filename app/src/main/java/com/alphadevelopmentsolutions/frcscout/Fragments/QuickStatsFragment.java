@@ -32,15 +32,6 @@ import java.util.HashMap;
  */
 public class QuickStatsFragment extends MasterFragment
 {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private int teamId;
-    private String eventJson;
-
     private OnFragmentInteractionListener mListener;
 
     public QuickStatsFragment()
@@ -52,16 +43,15 @@ public class QuickStatsFragment extends MasterFragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param teamId id for team.
+     * @param teamJson
      * @return A new instance of fragment QuickStatsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static QuickStatsFragment newInstance(int teamId, String eventJson)
+    public static QuickStatsFragment newInstance(String teamJson)
     {
         QuickStatsFragment fragment = new QuickStatsFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, teamId);
-        args.putString(ARG_PARAM2, eventJson);
+        args.putString(ARG_TEAM_JSON, teamJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,8 +62,7 @@ public class QuickStatsFragment extends MasterFragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            teamId = getArguments().getInt(ARG_PARAM1);
-            eventJson = getArguments().getString(ARG_PARAM2);
+            teamJson = getArguments().getString(ARG_TEAM_JSON);
         }
 
         loadStatsThread = new Thread(new Runnable()
@@ -81,177 +70,174 @@ public class QuickStatsFragment extends MasterFragment
             @Override
             public void run()
             {
-                if(teamId > 0)
+
+                joinLoadingThread();
+
+                //get the stats from the team object
+                HashMap<String, HashMap<String, Double>> allStats = team.getStats(database, event);
+                minTableRows = new ArrayList<>();
+                avgTableRows = new ArrayList<>();
+                maxTableRows = new ArrayList<>();
+
+                //generate padding based on screen size
+                int padding = context.getResources().getDimensionPixelSize(R.dimen.material_padding);
+
+                //iterate through each category in the stats interface
+                for(final String CATEGORY_KEY : StatsKeys.STATS_CATEGORY_ORDER_KEYS)
                 {
-                    Team team = new Team(teamId, database);
+                    //get the stats for each category
+                    HashMap<String, Double> stats = allStats.get(CATEGORY_KEY);
 
-                    Event event = new Gson().fromJson(eventJson, Event.class);
-
-                    //get the stats from the team object
-                    HashMap<String, HashMap<String, Double>> allStats = team.getStats(database, event);
-                    minTableRows = new ArrayList<>();
-                    avgTableRows = new ArrayList<>();
-                    maxTableRows = new ArrayList<>();
-
-                    //generate padding based on screen size
-                    int padding = context.getResources().getDimensionPixelSize(R.dimen.material_padding);
-
-                    //iterate through each category in the stats interface
-                    for(final String CATEGORY_KEY : StatsKeys.STATS_CATEGORY_ORDER_KEYS)
+                    //iterate through each stat in the stats interface
+                    for(String KEY : StatsKeys.STATS_ORDER_KEYS)
                     {
-                        //get the stats for each category
-                        HashMap<String, Double> stats = allStats.get(CATEGORY_KEY);
+                        //get the stat
+                        double stat = stats.get(KEY);
 
-                        //iterate through each stat in the stats interface
-                        for(String KEY : StatsKeys.STATS_ORDER_KEYS)
+                        //generate the textview
+                        TextView textView = new TextView(context);
+                        textView.setText(String.valueOf(((!CATEGORY_KEY.equals(StatsKeys.AVG)) ? (int) Math.ceil(stat) : Math.round(stat * 100.00) / 100.00)));
+                        textView.setPadding(padding, padding, padding, padding);
+
+                        //create the tablerow to add to the table layout
+                        final TableRow tableRow = new TableRow(context);
+
+                        //color logic
+                        if(KEY.equals(StatsKeys.AUTO_EXIT_HAB))
                         {
-                            //get the stat
-                            double stat = stats.get(KEY);
-
-                            //generate the textview
-                            TextView textView = new TextView(context);
-                            textView.setText(String.valueOf(((!CATEGORY_KEY.equals(StatsKeys.AVG)) ? (int) Math.ceil(stat) : Math.round(stat * 100.00) / 100.00)));
-                            textView.setPadding(padding, padding, padding, padding);
-
-                            //create the tablerow to add to the table layout
-                            final TableRow tableRow = new TableRow(context);
-
-                            //color logic
-                            if(KEY.equals(StatsKeys.AUTO_EXIT_HAB))
-                            {
-                                if(stat > 0)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.good));
-                                else
-                                    tableRow.setBackgroundColor(context.getColor(R.color.bad));
-                            }
-
-                            else if(KEY.equals(StatsKeys.AUTO_HATCH))
-                            {
-                                if(stat > 0)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.good));
-                                else
-                                    tableRow.setBackgroundColor(context.getColor(R.color.bad));
-                            }
-
-                            else if(KEY.equals(StatsKeys.AUTO_HATCH_DROPPED))
-                            {
-                                if(stat > 0)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.bad));
-                                else
-                                    tableRow.setBackgroundColor(context.getColor(R.color.good));
-                            }
-
-                            else if(KEY.equals(StatsKeys.AUTO_CARGO))
-                            {
-                                if(stat > 0)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.good));
-                                else
-                                    tableRow.setBackgroundColor(context.getColor(R.color.bad));
-                            }
-
-                            else if(KEY.equals(StatsKeys.AUTO_CARGO_DROPPED))
-                            {
-                                if(stat > 0)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.bad));
-                                else
-                                    tableRow.setBackgroundColor(context.getColor(R.color.good));
-                            }
-
-                            else if(KEY.equals(StatsKeys.TELEOP_HATCH))
-                            {
-                                if(stat > 0)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.good));
-                                else
-                                    tableRow.setBackgroundColor(context.getColor(R.color.bad));
-                            }
-
-                            else if(KEY.equals(StatsKeys.TELEOP_HATCH_DROPPED))
-                            {
-                                if(stat > 0)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.bad));
-                                else
-                                    tableRow.setBackgroundColor(context.getColor(R.color.good));
-                            }
-
-                            else if(KEY.equals(StatsKeys.TELEOP_CARGO))
-                            {
-                                if(stat > 0)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.good));
-                                else
-                                    tableRow.setBackgroundColor(context.getColor(R.color.bad));
-                            }
-
-                            else if(KEY.equals(StatsKeys.TELEOP_CARGO_DROPPED))
-                            {
-                                if(stat > 0)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.bad));
-                                else
-                                    tableRow.setBackgroundColor(context.getColor(R.color.good));
-                            }
-
-                            else if(KEY.equals(StatsKeys.RETURNED_HAB))
-                            {
-                                if(stat > 0)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.good));
-                                else
-                                    tableRow.setBackgroundColor(context.getColor(R.color.bad));
-                            }
-
-                            else if(KEY.equals(StatsKeys.RETURNED_HAB_FAILS))
-                            {
-                                if(stat > 0)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.bad));
-                                else
-                                    tableRow.setBackgroundColor(context.getColor(R.color.good));
-                            }
-
-                            else if(KEY.equals(StatsKeys.DEFENSE_RATING))
-                            {
-                                if(stat >= 0 && stat <= 1.6)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.bad));
-                                else if (stat <= 3.2)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.warning));
-                                else
-                                    tableRow.setBackgroundColor(context.getColor(R.color.good));
-                            }
-
-                            else if(KEY.equals(StatsKeys.OFFENSE_RATING))
-                            {
-                                if(stat >= 0 && stat <= 1.6)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.bad));
-                                else if (stat <= 3.2)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.warning));
-                                else
-                                    tableRow.setBackgroundColor(context.getColor(R.color.good));
-                            }
-
-                            else if(KEY.equals(StatsKeys.DRIVE_RATING))
-                            {
-                                if(stat >= 0 && stat <= 1.6)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.bad));
-                                else if (stat <= 3.2)
-                                    tableRow.setBackgroundColor(context.getColor(R.color.warning));
-                                else
-                                    tableRow.setBackgroundColor(context.getColor(R.color.good));
-                            }
-
-                            //set the gravity to center the text and add it
-                            tableRow.setGravity(Gravity.CENTER);
-                            tableRow.addView(textView);
-
-                            //add each tablerow to the array
-                            if(CATEGORY_KEY.equals(StatsKeys.MIN))
-                                minTableRows.add(tableRow);
-                            else if(CATEGORY_KEY.equals(StatsKeys.AVG))
-                                avgTableRows.add(tableRow);
+                            if(stat > 0)
+                                tableRow.setBackgroundColor(context.getColor(R.color.good));
                             else
-                                maxTableRows.add(tableRow);
+                                tableRow.setBackgroundColor(context.getColor(R.color.bad));
                         }
 
+                        else if(KEY.equals(StatsKeys.AUTO_HATCH))
+                        {
+                            if(stat > 0)
+                                tableRow.setBackgroundColor(context.getColor(R.color.good));
+                            else
+                                tableRow.setBackgroundColor(context.getColor(R.color.bad));
+                        }
+
+                        else if(KEY.equals(StatsKeys.AUTO_HATCH_DROPPED))
+                        {
+                            if(stat > 0)
+                                tableRow.setBackgroundColor(context.getColor(R.color.bad));
+                            else
+                                tableRow.setBackgroundColor(context.getColor(R.color.good));
+                        }
+
+                        else if(KEY.equals(StatsKeys.AUTO_CARGO))
+                        {
+                            if(stat > 0)
+                                tableRow.setBackgroundColor(context.getColor(R.color.good));
+                            else
+                                tableRow.setBackgroundColor(context.getColor(R.color.bad));
+                        }
+
+                        else if(KEY.equals(StatsKeys.AUTO_CARGO_DROPPED))
+                        {
+                            if(stat > 0)
+                                tableRow.setBackgroundColor(context.getColor(R.color.bad));
+                            else
+                                tableRow.setBackgroundColor(context.getColor(R.color.good));
+                        }
+
+                        else if(KEY.equals(StatsKeys.TELEOP_HATCH))
+                        {
+                            if(stat > 0)
+                                tableRow.setBackgroundColor(context.getColor(R.color.good));
+                            else
+                                tableRow.setBackgroundColor(context.getColor(R.color.bad));
+                        }
+
+                        else if(KEY.equals(StatsKeys.TELEOP_HATCH_DROPPED))
+                        {
+                            if(stat > 0)
+                                tableRow.setBackgroundColor(context.getColor(R.color.bad));
+                            else
+                                tableRow.setBackgroundColor(context.getColor(R.color.good));
+                        }
+
+                        else if(KEY.equals(StatsKeys.TELEOP_CARGO))
+                        {
+                            if(stat > 0)
+                                tableRow.setBackgroundColor(context.getColor(R.color.good));
+                            else
+                                tableRow.setBackgroundColor(context.getColor(R.color.bad));
+                        }
+
+                        else if(KEY.equals(StatsKeys.TELEOP_CARGO_DROPPED))
+                        {
+                            if(stat > 0)
+                                tableRow.setBackgroundColor(context.getColor(R.color.bad));
+                            else
+                                tableRow.setBackgroundColor(context.getColor(R.color.good));
+                        }
+
+                        else if(KEY.equals(StatsKeys.RETURNED_HAB))
+                        {
+                            if(stat > 0)
+                                tableRow.setBackgroundColor(context.getColor(R.color.good));
+                            else
+                                tableRow.setBackgroundColor(context.getColor(R.color.bad));
+                        }
+
+                        else if(KEY.equals(StatsKeys.RETURNED_HAB_FAILS))
+                        {
+                            if(stat > 0)
+                                tableRow.setBackgroundColor(context.getColor(R.color.bad));
+                            else
+                                tableRow.setBackgroundColor(context.getColor(R.color.good));
+                        }
+
+                        else if(KEY.equals(StatsKeys.DEFENSE_RATING))
+                        {
+                            if(stat >= 0 && stat <= 1.6)
+                                tableRow.setBackgroundColor(context.getColor(R.color.bad));
+                            else if (stat <= 3.2)
+                                tableRow.setBackgroundColor(context.getColor(R.color.warning));
+                            else
+                                tableRow.setBackgroundColor(context.getColor(R.color.good));
+                        }
+
+                        else if(KEY.equals(StatsKeys.OFFENSE_RATING))
+                        {
+                            if(stat >= 0 && stat <= 1.6)
+                                tableRow.setBackgroundColor(context.getColor(R.color.bad));
+                            else if (stat <= 3.2)
+                                tableRow.setBackgroundColor(context.getColor(R.color.warning));
+                            else
+                                tableRow.setBackgroundColor(context.getColor(R.color.good));
+                        }
+
+                        else if(KEY.equals(StatsKeys.DRIVE_RATING))
+                        {
+                            if(stat >= 0 && stat <= 1.6)
+                                tableRow.setBackgroundColor(context.getColor(R.color.bad));
+                            else if (stat <= 3.2)
+                                tableRow.setBackgroundColor(context.getColor(R.color.warning));
+                            else
+                                tableRow.setBackgroundColor(context.getColor(R.color.good));
+                        }
+
+                        //set the gravity to center the text and add it
+                        tableRow.setGravity(Gravity.CENTER);
+                        tableRow.addView(textView);
+
+                        //add each tablerow to the array
+                        if(CATEGORY_KEY.equals(StatsKeys.MIN))
+                            minTableRows.add(tableRow);
+                        else if(CATEGORY_KEY.equals(StatsKeys.AVG))
+                            avgTableRows.add(tableRow);
+                        else
+                            maxTableRows.add(tableRow);
                     }
 
                 }
+
             }
+
         });
 
         loadStatsThread.start();
