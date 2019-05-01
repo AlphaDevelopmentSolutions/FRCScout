@@ -50,10 +50,8 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ChecklistFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ConfigFragment;
-import com.alphadevelopmentsolutions.frcscout.Fragments.EventFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.LoginFragment;
-import com.alphadevelopmentsolutions.frcscout.Fragments.MatchFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardListFragment;
@@ -80,8 +78,6 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         MatchListFragment.OnFragmentInteractionListener,
         TeamListFragment.OnFragmentInteractionListener,
-        EventFragment.OnFragmentInteractionListener,
-        MatchFragment.OnFragmentInteractionListener,
         TeamFragment.OnFragmentInteractionListener,
         ScoutCardFragment.OnFragmentInteractionListener,
         LoginFragment.OnFragmentInteractionListener,
