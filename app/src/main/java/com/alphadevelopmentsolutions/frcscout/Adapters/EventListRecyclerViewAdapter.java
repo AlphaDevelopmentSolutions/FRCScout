@@ -88,15 +88,18 @@ public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventList
             @Override
             public void onClick(View v)
             {
+
+                //store the selected event in the shared pref
+                context.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, eventList.get(viewHolder.getAdapterPosition()).getId());
+
                 if(fragmentOnClick.equals(TeamListFragment.class))
-                    context.changeFragment(TeamListFragment.newInstance(gson.toJson(eventList.get(viewHolder.getAdapterPosition()))), true);
+                    context.changeFragment(TeamListFragment.newInstance(), false);
 
                 else if(fragmentOnClick.equals(ChecklistFragment.class))
                 {
-                    Team team = new Team((int) context.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1));
-                    team.load(context.getDatabase());
+                    Team team = new Team((int) context.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1), context.getDatabase());
 
-                    context.changeFragment(ChecklistFragment.newInstance(gson.toJson(team), gson.toJson(eventList.get(viewHolder.getAdapterPosition())), null), true);
+                    context.changeFragment(ChecklistFragment.newInstance(gson.toJson(team), null), false);
                 }
             }
         });

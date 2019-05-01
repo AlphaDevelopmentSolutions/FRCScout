@@ -70,10 +70,13 @@ public class Team
     /**
      * Used for loading
      * @param id to load
+     * @param database used to load
      */
-    public Team(int id)
+    public Team(int id, Database database)
     {
         this.id = id;
+
+        load(database);
     }
 
     //region Getters

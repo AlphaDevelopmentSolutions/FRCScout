@@ -3,6 +3,8 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,14 +33,8 @@ public class ChecklistFragment extends MasterFragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private static final String ARG_PARAM3 = "param3";
 
     // TODO: Rename and change types of parameters
-    private String teamJson;
-    private String eventJson;
-    private String matchJson;
 
     private OnFragmentInteractionListener mListener;
 
@@ -52,18 +48,16 @@ public class ChecklistFragment extends MasterFragment
      * this fragment using the provided parameters.
      *
      * @param teamJson
-     * @param eventJson
      * @param matchJson
      * @return A new instance of fragment ChecklistFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ChecklistFragment newInstance(String teamJson, String eventJson, String matchJson)
+    public static ChecklistFragment newInstance(@NonNull String teamJson, @Nullable String matchJson)
     {
         ChecklistFragment fragment = new ChecklistFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, teamJson);
-        args.putString(ARG_PARAM2, eventJson);
-        args.putString(ARG_PARAM3, matchJson);
+        args.putString(ARG_TEAM_JSON, teamJson);
+        args.putString(ARG_MATCH_JSON, matchJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,47 +66,7 @@ public class ChecklistFragment extends MasterFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            teamJson = getArguments().getString(ARG_PARAM1);
-            eventJson = getArguments().getString(ARG_PARAM2);
-            matchJson = getArguments().getString(ARG_PARAM3);
-        }
-
-        loadingThread = new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                gson = new Gson();
-
-                //load the team from json
-                if(teamJson != null && !teamJson.equals(""))
-                    team = gson.fromJson(teamJson, Team.class);
-
-                //load the event from json
-                if(eventJson != null && !eventJson.equals(""))
-                    event = gson.fromJson(eventJson, Event.class);
-
-                //load the match from json
-                if(matchJson != null && !matchJson.equals(""))
-                    match = gson.fromJson(matchJson, Match.class);
-            }
-        });
-
-        loadingThread.start();
-
     }
-
-    private Thread loadingThread;
-
-    private Gson gson;
-
-    private Event event;
-
-    private Match match;
-
-    private Team team;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -123,29 +77,10 @@ public class ChecklistFragment extends MasterFragment
 
         RecyclerView recyclerView;
 
-        //join back up with the loading thread
-        try
-        {
-            loadingThread.join();
-        } catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
-
-        //no event selected, show event list
-        if(event == null)
-        {
-            view = inflater.inflate(R.layout.fragment_event_list, container, false);
-
-            recyclerView = view.findViewById(R.id.EventListRecyclerView);
-
-            EventListRecyclerViewAdapter eventListRecyclerViewAdapter = new EventListRecyclerViewAdapter(database.getEvents(), context, (this).getClass());
-            recyclerView.setAdapter(eventListRecyclerViewAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        }
+        joinLoadingThread();
 
         //no match selected, show match list
-        else if (match == null)
+        if (match == null)
         {
             view = inflater.inflate(R.layout.fragment_match_list, container, false);
 

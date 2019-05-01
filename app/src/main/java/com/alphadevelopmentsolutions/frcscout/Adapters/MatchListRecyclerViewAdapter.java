@@ -332,7 +332,7 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
                 @Override
                 public void onClick(View v)
                 {
-                    context.changeFragment(ChecklistFragment.newInstance(gson.toJson(team), gson.toJson(event), gson.toJson(matches.get(viewHolder.getAdapterPosition()))), true);
+                    context.changeFragment(ChecklistFragment.newInstance(gson.toJson(team), gson.toJson(matches.get(viewHolder.getAdapterPosition()))), true);
                 }
             });
         }

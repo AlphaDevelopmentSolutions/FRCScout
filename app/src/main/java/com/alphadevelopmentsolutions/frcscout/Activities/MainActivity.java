@@ -124,6 +124,10 @@ public class MainActivity extends AppCompatActivity implements
 
     private NavigationView navigationView;
 
+    private Toolbar toolbar;
+
+    private DrawerLayout drawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -142,10 +146,10 @@ public class MainActivity extends AppCompatActivity implements
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -244,11 +248,11 @@ public class MainActivity extends AppCompatActivity implements
 
         if (id == R.id.nav_teams)
         {
-            changeFragment(new EventListFragment(), false);
+            changeFragment(TeamListFragment.newInstance(), false);
         }
         else if(id == R.id.nav_checklist)
         {
-            changeFragment(new ChecklistFragment(), false);
+            changeFragment(ChecklistFragment.newInstance("", ""), false);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -890,6 +894,25 @@ public class MainActivity extends AppCompatActivity implements
     {
         teamNumberTextView.setText(String.valueOf(getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1)));
         teamNameTextView.setText(getPreference(Constants.SharedPrefKeys.TEAM_NAME_KEY, "").toString());
+    }
+
+    /**
+     * Locks the drawer layout
+     */
+    public void lockDrawerLayout()
+    {
+        toolbar.setNavigationIcon(null);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    /**
+     * Unlocks the drawer layout
+     */
+    public void unlockDrawerLayout()
+    {
+        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_dehaze_white_24dp, null));
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+
     }
 
 

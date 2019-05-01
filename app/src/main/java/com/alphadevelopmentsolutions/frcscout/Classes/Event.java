@@ -50,9 +50,11 @@ public class Event
      * Used for loading
      * @param id to load
      */
-    Event(int id)
+    public Event(int id, Database database)
     {
         this.id = id;
+
+        load(database);
     }
 
     //region Getters

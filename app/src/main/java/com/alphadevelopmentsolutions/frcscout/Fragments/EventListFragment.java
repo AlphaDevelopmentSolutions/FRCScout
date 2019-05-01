@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.EventListRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 /**
@@ -79,6 +80,10 @@ public class EventListFragment extends MasterFragment
         View view = inflater.inflate(R.layout.fragment_event_list, container, false);
 
         context.getSupportActionBar().setTitle(R.string.events);
+        context.lockDrawerLayout();
+
+        //showing this view means the user has not selected an event, clear the shared pref
+        context.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1);
 
         eventListRecyclerView = view.findViewById(R.id.EventListRecyclerView);
 
@@ -117,6 +122,13 @@ public class EventListFragment extends MasterFragment
     {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onStop()
+    {
+        context.unlockDrawerLayout();
+        super.onStop();
     }
 
     /**

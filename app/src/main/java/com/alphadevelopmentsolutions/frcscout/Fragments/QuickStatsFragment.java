@@ -83,8 +83,7 @@ public class QuickStatsFragment extends MasterFragment
             {
                 if(teamId > 0)
                 {
-                    Team team = new Team(teamId);
-                    team.load(database);
+                    Team team = new Team(teamId, database);
 
                     Event event = new Gson().fromJson(eventJson, Event.class);
 

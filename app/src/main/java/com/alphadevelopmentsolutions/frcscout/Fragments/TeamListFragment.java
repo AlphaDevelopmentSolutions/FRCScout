@@ -34,10 +34,8 @@ public class TeamListFragment extends MasterFragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
 
     // TODO: Rename and change types of parameters
-    private String eventJson;
 
     private OnFragmentInteractionListener mListener;
 
@@ -50,15 +48,13 @@ public class TeamListFragment extends MasterFragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param eventJson JSON for event object
      * @return A new instance of fragment TeamListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TeamListFragment newInstance(String eventJson)
+    public static TeamListFragment newInstance()
     {
         TeamListFragment fragment = new TeamListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, eventJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,23 +63,16 @@ public class TeamListFragment extends MasterFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            eventJson = getArguments().getString(ARG_PARAM1);
-        }
 
-        loadingThread = new Thread(new Runnable()
+        loadTeamsThread = new Thread(new Runnable()
         {
             @Override
             public void run()
             {
-                //parse the event object
-                if(eventJson != null && !eventJson.equals(""))
-                    event = new Gson().fromJson(eventJson, Event.class);
+                joinLoadingThread();
 
                 //load all the event team lists from the database
                 ArrayList<EventTeamList> eventTeamList = database.getEventTeamLists(event);
-
 
                 //load all the teams at this specific event
                 teams = database.getTeamsAtEvent(eventTeamList);
@@ -91,7 +80,7 @@ public class TeamListFragment extends MasterFragment
             }
         });
 
-        loadingThread.start();
+        loadTeamsThread.start();
     }
 
     private RecyclerView teamsRecyclerView;
@@ -101,9 +90,7 @@ public class TeamListFragment extends MasterFragment
     private ArrayList<Team> teams;
     private ArrayList<Team> searchedTeams;
 
-    private Thread loadingThread;
-
-    private Event event;
+    private Thread loadTeamsThread;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -118,17 +105,19 @@ public class TeamListFragment extends MasterFragment
         teamsRecyclerView = view.findViewById(R.id.TeamsRecyclerView);
         teamSearchEditText = view.findViewById(R.id.TeamSearchEditText);
 
+        //join back up with the load teams thread
         try
         {
-            loadingThread.join();
-        } catch (InterruptedException e)
+            loadTeamsThread.join();
+        }
+        catch (InterruptedException e)
         {
             e.printStackTrace();
         }
 
         context.getSupportActionBar().setTitle(event.getName());
 
-        final TeamListRecyclerViewAdapter teamListRecyclerViewAdapter = new TeamListRecyclerViewAdapter(searchedTeams, eventJson, context);
+        final TeamListRecyclerViewAdapter teamListRecyclerViewAdapter = new TeamListRecyclerViewAdapter(searchedTeams, new Gson().toJson(event), context);
 
         teamsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         teamsRecyclerView.setAdapter(teamListRecyclerViewAdapter);
