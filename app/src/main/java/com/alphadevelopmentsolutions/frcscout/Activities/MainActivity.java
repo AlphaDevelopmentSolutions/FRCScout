@@ -37,6 +37,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Api.Server;
+import com.alphadevelopmentsolutions.frcscout.Classes.ChecklistItem;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.EventTeamList;
@@ -173,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements
         //android < marshmallow, permission not needed
         else
             loadView(savedInstanceState);
-
 
     }
 

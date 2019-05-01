@@ -122,5 +122,7 @@
     <string name="check_pneumatic_pressure_description">Ensure STORED TANK pressure exceeds 100 psi. If tank pressure is low, locate drive team member or pit leader to fill tanks.</string>
     <string name="inspect_mech_title">Inspect for Damage or Excessive Wear</string>
     <string name="inspect_mech_description">Ensure all mechanisms are able to function correctly and that they have not sustained major damage. If excessive wear or damage is identified, alert pit leader or drive team.</string>
-
+    <string name="current_status">Current Status -\u0020</string>
+    <string name="mark_incomplete">Mark Incomplete</string>
+    <string name="mark_complete">Mark Complete</string>
 </resources>

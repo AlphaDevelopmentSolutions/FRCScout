@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece;
+import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -2069,6 +2072,365 @@ public class Database
 
             //delete
             return db.delete(EventTeamList.TABLE_NAME, whereStatement, whereArgs) >= 1;
+        }
+
+        return false;
+    }
+    //endregion
+
+    //region Checklist Items Logic
+
+    /**
+     * Returns all columns inside the ChecklistItem table in string array format
+     * @return string array of all columns
+     */
+    private String[] getChecklistItemColumns()
+    {
+        return new String[]
+                {
+                        ChecklistItem.COLUMN_NAME_ID,
+
+                        ChecklistItem.COLUMN_NAME_TITLE,
+                        ChecklistItem.COLUMN_NAME_DESCRIPTION,
+                };
+    }
+
+
+    /**
+     * Takes in a cursor with info pulled from database and converts it into an object
+     * @param cursor info from database
+     * @return ChecklistItem converted data
+     */
+    private ChecklistItem getChecklistItemFromCursor(Cursor cursor)
+    {
+        int id = cursor.getInt(cursor.getColumnIndex(ChecklistItem.COLUMN_NAME_ID));
+
+        String title = cursor.getString(cursor.getColumnIndex(ChecklistItem.COLUMN_NAME_TITLE));
+        String description = cursor.getString(cursor.getColumnIndex(ChecklistItem.COLUMN_NAME_DESCRIPTION));
+
+        return new ChecklistItem(
+                id,
+
+                title,
+                description);
+    }
+
+    /**
+     * Gets the ChecklistItem data
+     * @return object based off given team ID
+     */
+    public ArrayList<ChecklistItem> getChecklistItems()
+    {
+        ArrayList<ChecklistItem> checklistItems = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns = getChecklistItemColumns();
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                ChecklistItem.TABLE_NAME,
+                columns,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while(cursor.moveToNext())
+            {
+                checklistItems.add(getChecklistItemFromCursor(cursor));
+            }
+
+            cursor.close();
+
+            return checklistItems;
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets a specific object from the database and returns it
+     * @param checklistItem with specified ID
+     * @return checklistItem based off given ID
+     */
+    public ChecklistItem getChecklistItem(ChecklistItem checklistItem)
+    {
+        //insert columns you are going to use here
+        String[] columns = getChecklistItemColumns();
+
+        //where statement
+        String whereStatement = ChecklistItem.COLUMN_NAME_ID + " = ?";
+        String[] whereArgs = {checklistItem.getId() + ""};
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                ChecklistItem.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            //move to the first result in the set
+            cursor.moveToFirst();
+
+            ChecklistItem databaseChecklistItem = getChecklistItemFromCursor(cursor);
+            cursor.close();
+
+            return databaseChecklistItem;
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Saves a specific object from the database and returns it
+     * @param checklistItem with specified ID
+     * @return id of the saved checklistItem
+     */
+    public long setChecklistItem(ChecklistItem checklistItem)
+    {
+        //set all the values
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ChecklistItem.COLUMN_NAME_TITLE, checklistItem.getTitle());
+        contentValues.put(ChecklistItem.COLUMN_NAME_DESCRIPTION, checklistItem.getDescription());
+
+        //robotMedia already exists in DB, update
+        if (checklistItem.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = ChecklistItem.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {checklistItem.getId() + ""};
+
+            //update
+            if(db.update(ChecklistItem.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return checklistItem.getId();
+            else
+                return -1;
+        }
+        //insert new robotMedia in db
+        else return db.insert(ChecklistItem.TABLE_NAME, null, contentValues);
+
+    }
+
+    /**
+     * Deletes a specific object from the database
+     * @param checklistItem with specified ID
+     * @return successful delete
+     */
+    public boolean deleteChecklistItem(ChecklistItem checklistItem)
+    {
+        if (checklistItem.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = ChecklistItem.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {checklistItem.getId() + ""};
+
+            //delete
+            return db.delete(ChecklistItem.TABLE_NAME, whereStatement, whereArgs) >= 1;
+        }
+
+        return false;
+    }
+    //endregion
+
+    //region Checklist Item Result Logic
+
+    /**
+     * Returns all columns inside the ChecklistItem table in string array format
+     * @return string array of all columns
+     */
+    private String[] getChecklistItemResultColumns()
+    {
+        return new String[]
+                {
+                        ChecklistItemResult.COLUMN_NAME_ID,
+                        ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID,
+                        ChecklistItemResult.COLUMN_NAME_MATCH_ID,
+
+                        ChecklistItemResult.COLUMN_NAME_STATUS,
+                        ChecklistItemResult.COLUMN_NAME_COMPLETED_BY,
+
+                        ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE,
+
+                        ChecklistItemResult.COLUMN_NAME_IS_DRAFT
+                };
+    }
+
+
+    /**
+     * Takes in a cursor with info pulled from database and converts it into an object
+     * @param cursor info from database
+     * @return ChecklistItemResult converted data
+     */
+    private ChecklistItemResult getChecklistItemResultFromCursor(Cursor cursor)
+    {
+        int id = cursor.getInt(cursor.getColumnIndex(ChecklistItemResult.COLUMN_NAME_ID));
+        int checklistItemId = cursor.getInt(cursor.getColumnIndex(ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID));
+        String matchId = cursor.getString(cursor.getColumnIndex(ChecklistItemResult.COLUMN_NAME_MATCH_ID));
+
+        String status = cursor.getString(cursor.getColumnIndex(ChecklistItemResult.COLUMN_NAME_STATUS));
+
+        String completedBy = cursor.getString(cursor.getColumnIndex(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY));
+
+        Date completedDate = new Date(cursor.getLong(cursor.getColumnIndex(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE)));
+
+        boolean isDraft = cursor.getInt(cursor.getColumnIndex(ChecklistItemResult.COLUMN_NAME_IS_DRAFT)) == 1;
+
+        return new ChecklistItemResult(
+                id,
+                checklistItemId,
+                matchId,
+
+                status,
+
+                completedBy,
+
+                completedDate,
+
+                isDraft);
+    }
+
+    /**
+     * Gets the ChecklistItemResult data
+     * @return object based off given team ID
+     */
+    public ArrayList<ChecklistItemResult> getChecklistItemResults(ChecklistItem checklistItem)
+    {
+        ArrayList<ChecklistItemResult> checklistItemResults = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns = getChecklistItemResultColumns();
+
+        //where statement
+        String whereStatement = ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID + " = ?";
+        String[] whereArgs = {checklistItem.getId() + ""};
+        String orderBy = ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE + " DESC";
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                ChecklistItemResult.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                orderBy);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while(cursor.moveToNext())
+            {
+                checklistItemResults.add(getChecklistItemResultFromCursor(cursor));
+            }
+
+            cursor.close();
+
+            return checklistItemResults;
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets a specific object from the database and returns it
+     * @param checklistItemResult with specified ID
+     * @return checklistItemResult based off given ID
+     */
+    public ChecklistItemResult getChecklistItemResult(ChecklistItemResult checklistItemResult)
+    {
+        //insert columns you are going to use here
+        String[] columns = getChecklistItemResultColumns();
+
+        //where statement
+        String whereStatement = ChecklistItemResult.COLUMN_NAME_ID + " = ?";
+        String[] whereArgs = {checklistItemResult.getId() + ""};
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                ChecklistItemResult.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            //move to the first result in the set
+            cursor.moveToFirst();
+
+            ChecklistItemResult databaseChecklistItemResult = getChecklistItemResultFromCursor(cursor);
+            cursor.close();
+
+            return databaseChecklistItemResult;
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Saves a specific object from the database and returns it
+     * @param checklistItemResult with specified ID
+     * @return id of the saved checklistItemResult
+     */
+    public long setChecklistItemResult(ChecklistItemResult checklistItemResult)
+    {
+        //set all the values
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID, String.valueOf(checklistItemResult.getChecklistItemId()));
+        contentValues.put(ChecklistItemResult.COLUMN_NAME_MATCH_ID, checklistItemResult.getMatchId());
+        contentValues.put(ChecklistItemResult.COLUMN_NAME_STATUS, checklistItemResult.getStatus());
+        contentValues.put(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY, checklistItemResult.getCompletedBy());
+        contentValues.put(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE, String.valueOf(checklistItemResult.getCompletedDate().getTime()));
+        contentValues.put(ChecklistItemResult.COLUMN_NAME_IS_DRAFT, checklistItemResult.isDraft() ? 1 : 0);
+
+        //robotMedia already exists in DB, update
+        if (checklistItemResult.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = ChecklistItemResult.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {checklistItemResult.getId() + ""};
+
+            //update
+            if(db.update(ChecklistItemResult.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return checklistItemResult.getId();
+            else
+                return -1;
+        }
+        //insert new robotMedia in db
+        else return db.insert(ChecklistItemResult.TABLE_NAME, null, contentValues);
+
+    }
+
+    /**
+     * Deletes a specific object from the database
+     * @param checklistItemResult with specified ID
+     * @return successful delete
+     */
+    public boolean deleteChecklistItemResult(ChecklistItemResult checklistItemResult)
+    {
+        if (checklistItemResult.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = ChecklistItemResult.COLUMN_NAME_ID + " = ?";
+            String whereArgs[] = {checklistItemResult.getId() + ""};
+
+            //delete
+            return db.delete(ChecklistItemResult.TABLE_NAME, whereStatement, whereArgs) >= 1;
         }
 
         return false;

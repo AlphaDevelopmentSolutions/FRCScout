@@ -4,11 +4,20 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.alphadevelopmentsolutions.frcscout.Adapters.ChecklistItemListRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Adapters.EventListRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Adapters.MatchListRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Classes.Event;
+import com.alphadevelopmentsolutions.frcscout.Classes.Match;
+import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
+import com.google.gson.Gson;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,10 +33,12 @@ public class ChecklistFragment extends MasterFragment
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM3 = "param3";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String teamJson;
+    private String eventJson;
+    private String matchJson;
 
     private OnFragmentInteractionListener mListener;
 
@@ -40,17 +51,19 @@ public class ChecklistFragment extends MasterFragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param teamJson
+     * @param eventJson
+     * @param matchJson
      * @return A new instance of fragment ChecklistFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ChecklistFragment newInstance(String param1, String param2)
+    public static ChecklistFragment newInstance(String teamJson, String eventJson, String matchJson)
     {
         ChecklistFragment fragment = new ChecklistFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM1, teamJson);
+        args.putString(ARG_PARAM2, eventJson);
+        args.putString(ARG_PARAM3, matchJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,17 +74,105 @@ public class ChecklistFragment extends MasterFragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            teamJson = getArguments().getString(ARG_PARAM1);
+            eventJson = getArguments().getString(ARG_PARAM2);
+            matchJson = getArguments().getString(ARG_PARAM3);
         }
+
+        loadingThread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                gson = new Gson();
+
+                //load the team from json
+                if(teamJson != null && !teamJson.equals(""))
+                    team = gson.fromJson(teamJson, Team.class);
+
+                //load the event from json
+                if(eventJson != null && !eventJson.equals(""))
+                    event = gson.fromJson(eventJson, Event.class);
+
+                //load the match from json
+                if(matchJson != null && !matchJson.equals(""))
+                    match = gson.fromJson(matchJson, Match.class);
+            }
+        });
+
+        loadingThread.start();
+
     }
+
+    private Thread loadingThread;
+
+    private Gson gson;
+
+    private Event event;
+
+    private Match match;
+
+    private Team team;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_checklist, container, false);
+        View view;
+
+        RecyclerView recyclerView;
+
+        //join back up with the loading thread
+        try
+        {
+            loadingThread.join();
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
+        //no event selected, show event list
+        if(event == null)
+        {
+            view = inflater.inflate(R.layout.fragment_event_list, container, false);
+
+            recyclerView = view.findViewById(R.id.EventListRecyclerView);
+
+            EventListRecyclerViewAdapter eventListRecyclerViewAdapter = new EventListRecyclerViewAdapter(database.getEvents(), context, (this).getClass());
+            recyclerView.setAdapter(eventListRecyclerViewAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        }
+
+        //no match selected, show match list
+        else if (match == null)
+        {
+            view = inflater.inflate(R.layout.fragment_match_list, container, false);
+
+            recyclerView = view.findViewById(R.id.MatchListRecyclerView);
+
+            MatchListRecyclerViewAdapter matchListRecyclerViewAdapter = new MatchListRecyclerViewAdapter(event, team, database.getMatches(team, event), context, (this).getClass());
+            recyclerView.setAdapter(matchListRecyclerViewAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        }
+
+        //match and event selected, show the checklist
+        else
+        {
+            view = inflater.inflate(R.layout.fragment_checklist, container, false);
+
+            recyclerView = view.findViewById(R.id.ChecklistItemsRecyclerView);
+
+            ChecklistItemListRecyclerViewAdapter checklistItemListRecyclerViewAdapter = new ChecklistItemListRecyclerViewAdapter(event, match, team, database.getChecklistItems(), context);
+            recyclerView.setAdapter(checklistItemListRecyclerViewAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        }
+
+
+
+
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

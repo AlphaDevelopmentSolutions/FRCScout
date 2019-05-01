@@ -10,8 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alphadevelopmentsolutions.frcscout.Adapters.MatchesRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Adapters.MatchListRecyclerViewAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
+import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
@@ -92,7 +93,7 @@ public class MatchListFragment extends MasterFragment
 
         matchListRecyclerView = view.findViewById(R.id.MatchListRecyclerView);
 
-        MatchesRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new MatchesRecyclerViewAdapter(event, team, database.getMatches(team, event), context);
+        MatchListRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new MatchListRecyclerViewAdapter(event, team, database.getMatches(team, event), context, ScoutCard.class);
         matchListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         matchListRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
 

@@ -1,4 +1,4 @@
-package com.alphadevelopmentsolutions.frcscout.Classes;
+package com.alphadevelopmentsolutions.frcscout.Enums;
 
 /**
  * Colors for available alliances during the matches

@@ -82,7 +82,7 @@ public class EventListFragment extends MasterFragment
 
         eventListRecyclerView = view.findViewById(R.id.EventListRecyclerView);
 
-        EventListRecyclerViewAdapter eventListRecyclerViewAdapter = new EventListRecyclerViewAdapter(database.getEvents(), context);
+        EventListRecyclerViewAdapter eventListRecyclerViewAdapter = new EventListRecyclerViewAdapter(database.getEvents(), context, TeamListFragment.class);
         eventListRecyclerView.setAdapter(eventListRecyclerViewAdapter);
         eventListRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 

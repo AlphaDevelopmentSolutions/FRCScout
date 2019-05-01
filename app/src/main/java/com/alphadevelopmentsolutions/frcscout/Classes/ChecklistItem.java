@@ -1,31 +1,41 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
-public class User
+
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Status;
+
+import java.util.ArrayList;
+import java.util.Date;
+
+public class ChecklistItem
 {
-    public static final String TABLE_NAME = "users";
+
+    public static final String TABLE_NAME = "checklist_items";
     public static final String COLUMN_NAME_ID = "Id";
-    public static final String COLUMN_NAME_FIRST_NAME = "FirstName";
-    public static final String COLUMN_NAME_LAST_NAME = "LastName";
+    public static final String COLUMN_NAME_TITLE = "Title";
+    public static final String COLUMN_NAME_DESCRIPTION = "Description";
 
     private int id;
-    private String firstName;
-    private String lastName;
 
-    public User(
+    private String title;
+    private String description;
+
+    public ChecklistItem(
             int id,
-            String firstName,
-            String lastName)
+
+            String title,
+            String description)
     {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+
+        this.title = title;
+        this.description = description;
     }
 
     /**
      * Used for loading
      * @param id to load
      */
-    User(int id)
+    ChecklistItem(int id)
     {
         this.id = id;
     }
@@ -37,20 +47,25 @@ public class User
         return id;
     }
 
-
-    public String getFirstName()
+    public String getTitle()
     {
-        return firstName;
+        return title;
     }
 
-    public String getLastName()
+    public String getDescription()
     {
-        return lastName;
+        return description;
     }
 
-    public String getName()
+    /**
+     * Gets the checklist item results from the database, sorted from newest to oldest
+     * @param database used to load object
+     * @return arraylist of results
+     */
+    public ArrayList<ChecklistItemResult> getResults(Database database)
     {
-        return getFirstName() + " " + getLastName();
+        //get results from database
+        return database.getChecklistItemResults(this);
     }
 
     //endregion
@@ -62,16 +77,15 @@ public class User
         this.id = id;
     }
 
-    public void setFirstName(String firstName)
+    public void setTitle(String title)
     {
-        this.firstName = firstName;
+        this.title = title;
     }
 
-    public void setLastName(String lastName)
+    public void setDescription(String description)
     {
-        this.lastName = lastName;
+        this.description = description;
     }
-
 
     //endregion
 
@@ -89,13 +103,12 @@ public class User
 
         if(database.isOpen())
         {
-            User user = database.getUser(this);
+            ChecklistItem checklistItem = database.getChecklistItem(this);
 
-
-            if (user != null)
+            if (checklistItem != null)
             {
-                setFirstName(user.getFirstName());
-                setLastName(user.getLastName());
+                setTitle(checklistItem.getTitle());
+                setDescription(checklistItem.getDescription());
                 return true;
             }
         }
@@ -106,7 +119,7 @@ public class User
     /**
      * Saves the object into the database
      * @param database used for interacting with the SQLITE db
-     * @return int id of the saved ScoutCard
+     * @return int id of the saved object
      */
     public int save(Database database)
     {
@@ -117,7 +130,7 @@ public class User
             database.open();
 
         if(database.isOpen())
-            id = (int) database.setUser(this);
+            id = (int) database.setChecklistItem(this);
 
         //set the id if the save was successful
         if(id > 0)
@@ -127,7 +140,7 @@ public class User
     }
 
     /**
-     * Deletes the ScoutCard from the database
+     * Deletes the object from the database
      * @param database used for interacting with the SQLITE db
      * @return boolean if successful
      */
@@ -140,8 +153,7 @@ public class User
 
         if(database.isOpen())
         {
-            successful = database.deleteUser(this);
-
+            successful = database.deleteChecklistItem(this);
         }
 
         return successful;

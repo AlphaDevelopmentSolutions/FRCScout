@@ -9,10 +9,14 @@ import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
+import com.alphadevelopmentsolutions.frcscout.Classes.Team;
+import com.alphadevelopmentsolutions.frcscout.Fragments.ChecklistFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -25,10 +29,17 @@ public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventList
 
     private SimpleDateFormat simpleDateFormat;
 
-    public EventListRecyclerViewAdapter(ArrayList<Event> eventList, MainActivity context)
+    private Type fragmentOnClick;
+
+    private Gson gson;
+
+    public EventListRecyclerViewAdapter(ArrayList<Event> eventList, MainActivity context, Type fragmentOnClick)
     {
         this.context = context;
         this.eventList = eventList;
+        this.fragmentOnClick = fragmentOnClick;
+
+        this.gson = new Gson();
 
         simpleDateFormat = new SimpleDateFormat("MMM d, yyyy");
     }
@@ -77,7 +88,16 @@ public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventList
             @Override
             public void onClick(View v)
             {
-                context.changeFragment(TeamListFragment.newInstance(new Gson().toJson(eventList.get(viewHolder.getAdapterPosition()))), true);
+                if(fragmentOnClick.equals(TeamListFragment.class))
+                    context.changeFragment(TeamListFragment.newInstance(gson.toJson(eventList.get(viewHolder.getAdapterPosition()))), true);
+
+                else if(fragmentOnClick.equals(ChecklistFragment.class))
+                {
+                    Team team = new Team((int) context.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1));
+                    team.load(context.getDatabase());
+
+                    context.changeFragment(ChecklistFragment.newInstance(gson.toJson(team), gson.toJson(eventList.get(viewHolder.getAdapterPosition())), null), true);
+                }
             }
         });
     }

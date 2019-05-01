@@ -502,11 +502,13 @@ public class Team
             database.open();
 
         if(database.isOpen())
-        {
             id = (int) database.setTeam(this);
-        }
 
-        return id;
+        //set the id if the save was successful
+        if(id > 0)
+            setId(id);
+
+        return getId();
     }
 
     /**
