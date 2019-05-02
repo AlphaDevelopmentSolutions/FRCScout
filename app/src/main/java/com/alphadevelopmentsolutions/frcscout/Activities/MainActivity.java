@@ -98,32 +98,24 @@ public class MainActivity extends AppCompatActivity implements
         SplashFragment.OnFragmentInteractionListener,
         ChecklistFragment.OnFragmentInteractionListener
 {
+    private MainActivity context;
 
     private Database database;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor sharedPreferencesEditor;
 
     private FrameLayout mainFrame;
-
-    private MainActivity context;
+    private Toolbar toolbar;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
+    private AppBarLayout appBarLayout;
+    private TextView teamNumberTextView;
+    private TextView teamNameTextView;
 
     private Thread updateThread;
 
     private final int ACTION_BAR_ELEVATION = 11;
-    
     private int progressDialogProgess;
-
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor sharedPreferencesEditor;
-
-    private AppBarLayout appBarLayout;
-
-    private TextView teamNumberTextView;
-    private TextView teamNameTextView;
-
-    private NavigationView navigationView;
-
-    private Toolbar toolbar;
-
-    private DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -195,188 +187,103 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    //region Data Management Methods
+
     /**
-     * All view loading logic is stored here
-     * used for when the activity initially starts up
-     * @param savedInstanceState
+     * Returns the active database
+     * @return database instance
      */
-    private void loadView(Bundle savedInstanceState)
+    public Database getDatabase()
     {
-        //if not previous saved state, eg not rotation
-        if (savedInstanceState == null)
-        {
+        if(database == null)
+            database = new Database(this);
 
-            //default to the splash frag until changed
-            changeFragment(new SplashFragment(), false);
+        if(!database.isOpen())
+            database.open();
 
-            navigationView.setCheckedItem(R.id.nav_teams);
-
-            //validate the app config to ensure all properties are filled
-            if (validateConfig())
-            {
-                //check any teams are on device and if the device is online
-                //if no teams, update data
-                if (getDatabase().getTeams().size() == 0 && isOnline())
-                    downloadApplicationData(false);
-
-                //join back up with the update thread if it is not null
-                if (updateThread != null)
-                {
-                    try
-                    {
-                        updateThread.join();
-                    } catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-
-                //event previously selected, switch to team list
-                if((Integer) getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) > 0)
-                    changeFragment(TeamListFragment.newInstance(), false);
-
-                else
-                    //change the frag to the eventlist
-                    changeFragment(new EventListFragment(), false);
-            } else
-            {
-                changeFragment(new ConfigFragment(), false);
-            }
-        }
+        return database;
     }
 
-    @Override
-    public void onBackPressed()
+
+    /**
+     * Sets or adds a preference into the shared preferences
+     * @param key sharedpref key
+     * @param value sharedpref value
+     */
+    public void setPreference(String key, Object value)
     {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START))
-        {
-            drawer.closeDrawer(GravityCompat.START);
-        } else
-        {
-            super.onBackPressed();
-        }
+        sharedPreferencesEditor = sharedPreferences.edit();
+
+        if(value instanceof String)
+            sharedPreferencesEditor.putString(key, (String) value);
+
+        else if(value instanceof Integer)
+            sharedPreferencesEditor.putInt(key, (Integer) value);
+
+        else if(value instanceof Boolean)
+            sharedPreferencesEditor.putBoolean(key, (Boolean) value);
+
+        else if(value instanceof Long)
+            sharedPreferencesEditor.putLong(key, (Long) value);
+
+        else if(value instanceof Float)
+            sharedPreferencesEditor.putFloat(key, (Float) value);
+
+        sharedPreferencesEditor.apply();
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item)
+    /**
+     * Sets or adds a preference into the shared preferences
+     * @param key sharedpref key
+     * @param defaultValue sharedpref defaultVal
+     */
+    public Object getPreference(String key, Object defaultValue)
     {
-        int id = item.getItemId();
+        if(sharedPreferences == null)
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (id == R.id.nav_teams)
-        {
-            changeFragment(TeamListFragment.newInstance(), false);
-        }
-        else if(id == R.id.nav_checklist)
-        {
-            changeFragment(ChecklistFragment.newInstance("", ""), false);
-        }
+        if(defaultValue instanceof String)
+            return sharedPreferences.getString(key, (String) defaultValue);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        else if(defaultValue instanceof Integer)
+            return sharedPreferences.getInt(key, (Integer) defaultValue);
+
+        else if(defaultValue instanceof Boolean)
+            return sharedPreferences.getBoolean(key, (Boolean) defaultValue);
+
+        else if(defaultValue instanceof Long)
+            return sharedPreferences.getLong(key, (Long) defaultValue);
+
+        else if(defaultValue instanceof Float)
+            return sharedPreferences.getFloat(key, (Float) defaultValue);
+
+        else return null;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    /**
+     * Clears all api configs from the phone
+     */
+    public void clearApiConfig()
     {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 5885);
-            }
-            else
-            {
-                Intent intent = getIntent();
-                finish();
-                startActivity(intent);
-            }
-        }
+        setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "");
+        setPreference(Constants.SharedPrefKeys.API_URL_KEY, "");
+        setPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "");
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    /**
+     * Check all the shared pref settings to validate the app is setup with the required info
+     * @return boolean if config is valid
+     */
+    private boolean validateConfig()
     {
-        super.onActivityResult(requestCode, resultCode, data);
+        return !getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").equals("") &&
+                !getPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "").equals("") &&
+                !getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").equals("");
     }
 
-    public void dropActionBar()
-    {
-        appBarLayout.setElevation(0);
-    }
+    //endregion
 
-    public void elevateActionBar()
-    {
-        appBarLayout.setElevation(ACTION_BAR_ELEVATION);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId()) {
-            case R.id.UploadDataItem:
-                if(isOnline())
-                {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle(R.string.upload_scout_cards)
-                            .setMessage(R.string.upload_scout_cards_warning)
-                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    uploadApplicationData();
-
-                                }
-                            })
-                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-                }
-                else
-                {
-                    showSnackbar(getString(R.string.no_internet));
-                }
-
-                return true;
-
-            case R.id.RefreshDataItem:
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle(R.string.download_media)
-                        .setMessage(R.string.download_media_desc)
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                downloadApplicationData(true);
-                            }
-                        })
-                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                downloadApplicationData(false);
-
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-
-                return true;
-        }
-
-        return false;
-    }
+    //region Internet Methods
 
     /**
      * Downloads all app data from the server
@@ -400,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements
                 {
 
                     progressDialogProgess = 10;
-                    
+
                     context.runOnUiThread(new Runnable()
                     {
                         @Override
@@ -410,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements
                             progressDialog.setProgress(progressDialogProgess);
                         }
                     });
-                    
+
 
                     //update users
                     Server.GetUsers getUsers = new Server.GetUsers(context);
@@ -763,6 +670,7 @@ public class MainActivity extends AppCompatActivity implements
         uploadThread.start();
     }
 
+
     private boolean isOnline()
     {
 
@@ -773,25 +681,186 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    //endregion
+
+    //region Overrides
+
+    @Override
+    public void onBackPressed()
+    {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START))
+        {
+            drawer.closeDrawer(GravityCompat.START);
+        } else
+        {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();
+
+        if (id == R.id.nav_teams)
+        {
+            changeFragment(TeamListFragment.newInstance(), false);
+        }
+        else if(id == R.id.nav_checklist)
+        {
+            changeFragment(ChecklistFragment.newInstance("", ""), false);
+        }
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 5885);
+            }
+            else
+            {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId()) {
+            case R.id.UploadDataItem:
+                if(isOnline())
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle(R.string.upload_scout_cards)
+                            .setMessage(R.string.upload_scout_cards_warning)
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    uploadApplicationData();
+
+                                }
+                            })
+                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+                else
+                {
+                    showSnackbar(getString(R.string.no_internet));
+                }
+
+                return true;
+
+            case R.id.RefreshDataItem:
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(R.string.download_media)
+                        .setMessage(R.string.download_media_desc)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                downloadApplicationData(true);
+                            }
+                        })
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                downloadApplicationData(false);
+
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+                return true;
+        }
+
+        return false;
+    }
+
     @Override
     public void onFragmentInteraction(Uri uri)
     {
 
     }
 
+    //endregion
+
+    //region Layout Methods
+
     /**
-     * Returns the active database
-     * @return database instance
+     * Sets the title of the nav bar
+     * @param title to set the nav bar title to
      */
-    public Database getDatabase()
+    public void setTitle(String title)
     {
-        if(database == null)
-            database = new Database(this);
+        getSupportActionBar().setTitle(title);
+    }
 
-        if(!database.isOpen())
-            database.open();
+    /**
+     * Sets the title of the nav bar
+     * @param titleId to set the nav bar title to
+     */
+    public void setTitle(int titleId)
+    {
+        getSupportActionBar().setTitle(titleId);
+    }
 
-        return database;
+    /**
+     * Updates the nav bar text for team name and number
+     */
+    public void updateNavText()
+    {
+        teamNumberTextView.setText(String.valueOf(getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1)));
+        teamNameTextView.setText(getPreference(Constants.SharedPrefKeys.TEAM_NAME_KEY, "").toString());
+    }
+
+    /**
+     * Locks the drawer layout
+     */
+    public void lockDrawerLayout()
+    {
+        toolbar.setNavigationIcon(null);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    /**
+     * Unlocks the drawer layout
+     */
+    public void unlockDrawerLayout()
+    {
+        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_dehaze_white_24dp, null));
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+
     }
 
     /**
@@ -833,126 +902,71 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Sets or adds a preference into the shared preferences
-     * @param key sharedpref key
-     * @param value sharedpref value
+     * All view loading logic is stored here
+     * used for when the activity initially starts up
+     * @param savedInstanceState
      */
-    public void setPreference(String key, Object value)
+    private void loadView(Bundle savedInstanceState)
     {
-        sharedPreferencesEditor = sharedPreferences.edit();
+        //if not previous saved state, eg not rotation
+        if (savedInstanceState == null)
+        {
 
-        if(value instanceof String)
-            sharedPreferencesEditor.putString(key, (String) value);
+            //default to the splash frag until changed
+            changeFragment(new SplashFragment(), false);
 
-        else if(value instanceof Integer)
-            sharedPreferencesEditor.putInt(key, (Integer) value);
+            navigationView.setCheckedItem(R.id.nav_teams);
 
-        else if(value instanceof Boolean)
-            sharedPreferencesEditor.putBoolean(key, (Boolean) value);
+            //validate the app config to ensure all properties are filled
+            if (validateConfig())
+            {
+                //check any teams are on device and if the device is online
+                //if no teams, update data
+                if (getDatabase().getTeams().size() == 0 && isOnline())
+                    downloadApplicationData(false);
 
-        else if(value instanceof Long)
-            sharedPreferencesEditor.putLong(key, (Long) value);
+                //join back up with the update thread if it is not null
+                if (updateThread != null)
+                {
+                    try
+                    {
+                        updateThread.join();
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
 
-        else if(value instanceof Float)
-            sharedPreferencesEditor.putFloat(key, (Float) value);
+                //event previously selected, switch to team list
+                if((Integer) getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) > 0)
+                    changeFragment(TeamListFragment.newInstance(), false);
 
-        sharedPreferencesEditor.apply();
+                else
+                    //change the frag to the eventlist
+                    changeFragment(new EventListFragment(), false);
+            } else
+            {
+                changeFragment(new ConfigFragment(), false);
+            }
+        }
     }
 
     /**
-     * Sets or adds a preference into the shared preferences
-     * @param key sharedpref key
-     * @param defaultValue sharedpref defaultVal
+     * Drops the elevation of the actionbar so that specific pages don't have a shadow
      */
-    public Object getPreference(String key, Object defaultValue)
+    public void dropActionBar()
     {
-        if(sharedPreferences == null)
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        if(defaultValue instanceof String)
-            return sharedPreferences.getString(key, (String) defaultValue);
-
-        else if(defaultValue instanceof Integer)
-            return sharedPreferences.getInt(key, (Integer) defaultValue);
-
-        else if(defaultValue instanceof Boolean)
-            return sharedPreferences.getBoolean(key, (Boolean) defaultValue);
-
-        else if(defaultValue instanceof Long)
-            return sharedPreferences.getLong(key, (Long) defaultValue);
-
-        else if(defaultValue instanceof Float)
-            return sharedPreferences.getFloat(key, (Float) defaultValue);
-
-        else return null;
+        appBarLayout.setElevation(0);
     }
 
     /**
-     * Clears all api configs from the phone
+     * Elevates the action bar after dropping to preserve the shadow
      */
-    public void clearApiConfig()
+    public void elevateActionBar()
     {
-        setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "");
-        setPreference(Constants.SharedPrefKeys.API_URL_KEY, "");
-        setPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "");
+        appBarLayout.setElevation(ACTION_BAR_ELEVATION);
     }
 
-    /**
-     * Check all the shared pref settings to validate the app is setup with the required info
-     * @return boolean if config is valid
-     */
-    private boolean validateConfig()
-    {
-        return !getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").equals("") &&
-                !getPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "").equals("") &&
-                !getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").equals("");
-    }
-
-    /**
-     * Updates the nav bar text for team name and number
-     */
-    public void updateNavText()
-    {
-        teamNumberTextView.setText(String.valueOf(getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1)));
-        teamNameTextView.setText(getPreference(Constants.SharedPrefKeys.TEAM_NAME_KEY, "").toString());
-    }
-
-    /**
-     * Locks the drawer layout
-     */
-    public void lockDrawerLayout()
-    {
-        toolbar.setNavigationIcon(null);
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-    }
-
-    /**
-     * Unlocks the drawer layout
-     */
-    public void unlockDrawerLayout()
-    {
-        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_dehaze_white_24dp, null));
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-
-    }
-
-    /**
-     * Sets the title of the nav bar
-     * @param title to set the nav bar title to
-     */
-    public void setTitle(String title)
-    {
-        getSupportActionBar().setTitle(title);
-    }
-
-    /**
-     * Sets the title of the nav bar
-     * @param titleId to set the nav bar title to
-     */
-    public void setTitle(int titleId)
-    {
-        getSupportActionBar().setTitle(titleId);
-    }
-
+    //endregion
 
 }
