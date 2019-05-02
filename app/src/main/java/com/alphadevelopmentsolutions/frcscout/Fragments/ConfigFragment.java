@@ -106,11 +106,8 @@ public class ConfigFragment extends MasterFragment
                     @Override
                     public void run()
                     {
-                        //validate connection to server
-                        Server.Hello hello = new Server.Hello(context);
-
-                        //valid connection
-                        if(hello.execute())
+                        //validate connection
+                        if(context.isOnline())
                         {
                             //gather server configs
                             Server.GetServerConfig getServerConfig = new Server.GetServerConfig(context);

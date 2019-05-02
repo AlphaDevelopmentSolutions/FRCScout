@@ -671,14 +671,15 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    private boolean isOnline()
+    /**
+     * Attempts to ping the server with a hello request to verify connection state
+     * @return boolean true if connection valid
+     */
+    public boolean isOnline()
     {
+        Server.Hello hello = new Server.Hello(context);
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-
+        return hello.execute();
     }
 
     //endregion
