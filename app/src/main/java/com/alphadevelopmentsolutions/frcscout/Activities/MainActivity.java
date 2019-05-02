@@ -132,34 +132,38 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //open the database as soon as the app starts
-        database = new Database(this);
-        database.open();
-
+        //assign ass base layout vars
         mainFrame = findViewById(R.id.MainFrame);
         appBarLayout = findViewById(R.id.AppBarLayout);
-
-        context = this;
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
         toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
 
+        Button changeEventButton = findViewById(R.id.ChangeEventButton);
         View navHeader = navigationView.getHeaderView(0);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         teamNumberTextView = navHeader.findViewById(R.id.TeamNumberTextView);
         teamNameTextView = navHeader.findViewById(R.id.TeamNameTextView);
 
+        //set context
+        context = this;
+
+        //open the database as soon as the app starts
+        database = new Database(context);
+        database.open();
+
+        //set the action bar
+        setSupportActionBar(toolbar);
+
+        //add the listener for the drawer
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        //set the item selected listener
+        navigationView.setNavigationItemSelectedListener(this);
+
         //change event button logic
-        Button changeEventButton = findViewById(R.id.ChangeEventButton);
         changeEventButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -862,6 +866,9 @@ public class MainActivity extends AppCompatActivity implements
      */
     public Object getPreference(String key, Object defaultValue)
     {
+        if(sharedPreferences == null)
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         if(defaultValue instanceof String)
             return sharedPreferences.getString(key, (String) defaultValue);
 
