@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
@@ -21,9 +22,9 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ChecklistFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
-import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -135,6 +136,80 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
         viewHolder.redAllianceTeamTwoIdTextView.setText(String.valueOf(match.getRedAllianceTeamTwoId()));
         viewHolder.redAllianceTeamThreeIdTextView.setText(String.valueOf(match.getRedAllianceTeamThreeId()));
 
+        //set the click listeners for each team on the match
+        //clicking their number will bring you to their team page
+        if(team == null || team.getId() != Integer.parseInt(viewHolder.blueAllianceTeamOneIdTextView.getText().toString()))
+        {
+            ((TableRow) viewHolder.blueAllianceTeamOneIdTextView.getParent()).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    context.changeFragment(TeamFragment.newInstance(new Team(Integer.valueOf(viewHolder.blueAllianceTeamOneIdTextView.getText().toString()), context.getDatabase())), true);
+                }
+            });
+        }
+
+        if(team == null || team.getId() != Integer.parseInt(viewHolder.blueAllianceTeamTwoIdTextView.getText().toString()))
+        {
+            ((TableRow) viewHolder.blueAllianceTeamTwoIdTextView.getParent()).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    context.changeFragment(TeamFragment.newInstance(new Team(Integer.valueOf(viewHolder.blueAllianceTeamTwoIdTextView.getText().toString()), context.getDatabase())), true);
+                }
+            });
+        }
+
+        if(team == null || team.getId() != Integer.parseInt(viewHolder.blueAllianceTeamThreeIdTextView.getText().toString()))
+        {
+            ((TableRow) viewHolder.blueAllianceTeamThreeIdTextView.getParent()).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    context.changeFragment(TeamFragment.newInstance(new Team(Integer.valueOf(viewHolder.blueAllianceTeamThreeIdTextView.getText().toString()), context.getDatabase())), true);
+                }
+            });
+        }
+
+        if(team == null || team.getId() != Integer.parseInt(viewHolder.redAllianceTeamOneIdTextView.getText().toString()))
+        {
+            ((TableRow) viewHolder.redAllianceTeamOneIdTextView.getParent()).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    context.changeFragment(TeamFragment.newInstance(new Team(Integer.valueOf(viewHolder.redAllianceTeamOneIdTextView.getText().toString()), context.getDatabase())), true);
+                }
+            });
+        }
+
+        if(team == null || team.getId() != Integer.parseInt(viewHolder.redAllianceTeamTwoIdTextView.getText().toString()))
+        {
+            ((TableRow) viewHolder.redAllianceTeamTwoIdTextView.getParent()).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    context.changeFragment(TeamFragment.newInstance(new Team(Integer.valueOf(viewHolder.redAllianceTeamTwoIdTextView.getText().toString()), context.getDatabase())), true);
+                }
+            });
+        }
+
+        if(team == null || team.getId() != Integer.parseInt(viewHolder.redAllianceTeamThreeIdTextView.getText().toString()))
+        {
+            ((TableRow) viewHolder.redAllianceTeamThreeIdTextView.getParent()).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    context.changeFragment(TeamFragment.newInstance(new Team(Integer.valueOf(viewHolder.redAllianceTeamThreeIdTextView.getText().toString()), context.getDatabase())), true);
+                }
+            });
+        }
+
         //set score
         viewHolder.blueAllianceScoreTextView.setText(String.valueOf(match.getBlueAllianceScore()));
         viewHolder.redAllianceScoreTextView.setText(String.valueOf(match.getRedAllianceScore()));
@@ -145,6 +220,7 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
         //set the bold text for the winning team
         Match.Status matchStatus = match.getMatchStatus();
 
+        //team specified, style according to specified team
         if(team != null)
         {
             //add the underline when viewing matches for a specific team
@@ -207,7 +283,7 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
         }
 
 
-        //blue won
+        //Style for blue winning
         if(matchStatus == Match.Status.BLUE)
         {
             viewHolder.blueAllianceTeamOneIdTextView.setTypeface(null, Typeface.BOLD);
@@ -220,7 +296,7 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
             viewHolder.redAllianceTeamThreeIdTextView.setTypeface(null, Typeface.NORMAL);
             viewHolder.redAllianceScoreTextView.setTypeface(null, Typeface.NORMAL);
         }
-        //red won
+        //Style for red winning
         else if(matchStatus == Match.Status.RED)
         {
             viewHolder.blueAllianceTeamOneIdTextView.setTypeface(null, Typeface.NORMAL);
@@ -233,7 +309,7 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
             viewHolder.redAllianceTeamThreeIdTextView.setTypeface(null, Typeface.BOLD);
             viewHolder.redAllianceScoreTextView.setTypeface(null, Typeface.BOLD);
         }
-        //tie game
+        //Style for tie
         else if(matchStatus == Match.Status.TIE)
         {
             viewHolder.blueAllianceTeamOneIdTextView.setTypeface(null, Typeface.NORMAL);

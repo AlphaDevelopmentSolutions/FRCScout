@@ -9,14 +9,10 @@ import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
-import com.alphadevelopmentsolutions.frcscout.Fragments.ChecklistFragment;
-import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.MatchListFragment;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
-import com.google.gson.Gson;
 
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -29,13 +25,10 @@ public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventList
 
     private SimpleDateFormat simpleDateFormat;
 
-    private Type fragmentOnClick;
-
-    public EventListRecyclerViewAdapter(@NonNull ArrayList<Event> eventList, @NonNull MainActivity context, @NonNull Type fragmentOnClick)
+    public EventListRecyclerViewAdapter(@NonNull ArrayList<Event> eventList, @NonNull MainActivity context)
     {
         this.context = context;
         this.eventList = eventList;
-        this.fragmentOnClick = fragmentOnClick;
 
         simpleDateFormat = new SimpleDateFormat("MMM d, yyyy");
     }
@@ -87,16 +80,7 @@ public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventList
 
                 //store the selected event in the shared pref
                 context.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, eventList.get(viewHolder.getAdapterPosition()).getId());
-
-                if(fragmentOnClick.equals(TeamListFragment.class))
-                    context.changeFragment(TeamListFragment.newInstance(null, null), false);
-
-                else if(fragmentOnClick.equals(ChecklistFragment.class))
-                {
-                    Team team = new Team((int) context.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1), context.getDatabase());
-
-                    context.changeFragment(ChecklistFragment.newInstance(team, null), false);
-                }
+                context.changeFragment(MatchListFragment.newInstance(null), false);
             }
         });
     }
