@@ -10,7 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.UUID;
 
-public class RobotMedia
+public class RobotMedia extends Table
 {
 
     public static final String TABLE_NAME = "robot_media";
@@ -221,6 +221,16 @@ public class RobotMedia
         }
 
         return successful;
+    }
+
+    /**
+     * Clears all data from the classes table
+     * @param database used to clear table
+     * @param clearDrafts boolean if you want to include drafts in the clear
+     */
+    public static void clearTable(Database database, boolean clearDrafts)
+    {
+        database.clearTable(TABLE_NAME, clearDrafts);
     }
 
     //endregion

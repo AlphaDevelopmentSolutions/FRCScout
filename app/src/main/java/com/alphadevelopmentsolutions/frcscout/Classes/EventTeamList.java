@@ -1,6 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
-public class EventTeamList
+public class EventTeamList extends Table
 {
 
     public static final String TABLE_NAME = "event_team_list";
@@ -147,6 +147,15 @@ public class EventTeamList
         }
 
         return successful;
+    }
+
+    /**
+     * Clears all data from the classes table
+     * @param database used to clear table
+     */
+    public static void clearTable(Database database)
+    {
+        database.clearTable(TABLE_NAME);
     }
 
     //endregion

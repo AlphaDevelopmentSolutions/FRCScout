@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Team
+public class Team extends Table
 {
 
     public static final String TABLE_NAME = "teams";
@@ -568,6 +568,15 @@ public class Team
         }
 
         return successful;
+    }
+
+    /**
+     * Clears all data from the classes table
+     * @param database used to clear table
+     */
+    public static void clearTable(Database database)
+    {
+        database.clearTable(TABLE_NAME);
     }
 
     //endregion

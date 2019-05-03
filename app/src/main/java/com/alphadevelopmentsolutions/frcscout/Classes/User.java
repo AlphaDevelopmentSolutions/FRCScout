@@ -1,6 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
-public class User
+public class User extends Table
 {
     public static final String TABLE_NAME = "users";
     public static final String COLUMN_NAME_ID = "Id";
@@ -151,6 +151,15 @@ public class User
         }
 
         return successful;
+    }
+
+    /**
+     * Clears all data from the classes table
+     * @param database used to clear table
+     */
+    public static void clearTable(Database database)
+    {
+        database.clearTable(TABLE_NAME);
     }
 
     //endregion

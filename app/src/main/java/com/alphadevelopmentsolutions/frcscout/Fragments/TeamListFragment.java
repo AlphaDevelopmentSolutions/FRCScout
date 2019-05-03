@@ -24,7 +24,6 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor;
 import com.alphadevelopmentsolutions.frcscout.R;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 

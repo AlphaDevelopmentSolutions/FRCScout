@@ -7,7 +7,7 @@ import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Match
+public class Match extends Table
 {
 
     public static final String TABLE_NAME = "matches";
@@ -471,6 +471,15 @@ public class Match
         }
 
         return successful;
+    }
+
+    /**
+     * Clears all data from the classes table
+     * @param database used to clear table
+     */
+    public static void clearTable(Database database)
+    {
+        database.clearTable(TABLE_NAME);
     }
 
     //endregion

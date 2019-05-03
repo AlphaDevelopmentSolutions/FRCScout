@@ -114,6 +114,10 @@ public class MainActivity extends AppCompatActivity implements
     private final int ACTION_BAR_ELEVATION = 11;
     private int progressDialogProgess;
 
+    private boolean isOnline;
+
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -291,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements
         //update all app data
         if(isOnline())
         {
-            final ProgressDialog progressDialog = new ProgressDialog(this, R.style.CustomProgressDialog);
+            progressDialog = new ProgressDialog(this, R.style.CustomProgressDialog);
             progressDialog.setTitle("Downloading data...");
             progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             progressDialog.setMax(100);
@@ -321,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     if (getUsers.execute())
                     {
-                        getDatabase().clearUsers();
+                        User.clearTable(getDatabase());
                         for (User user : getUsers.getUsers())
                         {
                             user.save(getDatabase());
@@ -345,19 +349,19 @@ public class MainActivity extends AppCompatActivity implements
                     Server.GetEvents getEvents = new Server.GetEvents(context);
                     if (getEvents.execute())
                     {
-                        getDatabase().clearEvents();
+                        Event.clearTable(getDatabase());
                         for (Event event : getEvents.getEvents())
                             event.save(getDatabase());
                     }
 
                     //clear the saved data
-                    getDatabase().clearEventTeamList();
-                    getDatabase().clearTeams();
-                    getDatabase().clearScoutCards(false);
-                    getDatabase().clearPitCards(false);
-                    getDatabase().clearMatches();
-                    getDatabase().clearChecklistItems();
-                    getDatabase().clearChecklistItemResults(false);
+                    EventTeamList.clearTable(getDatabase());
+                    Team.clearTable(getDatabase());
+                    ScoutCard.clearTable(getDatabase(), false);
+                    PitCard.clearTable(getDatabase(), false);
+                    Match.clearTable(getDatabase());
+                    ChecklistItem.clearTable(getDatabase());
+                    ChecklistItemResult.clearTable(getDatabase(), false);
 
                     progressDialogProgess = 20;
                     context.runOnUiThread(new Runnable()
@@ -515,7 +519,7 @@ public class MainActivity extends AppCompatActivity implements
                             for (File child : mediaFolder.listFiles())
                                 child.delete();
 
-                        getDatabase().clearRobotMedia(false);
+                        RobotMedia.clearTable(getDatabase(), false);
                         Server.GetRobotMedia getRobotMedia;
 
                         for (final Team team : getDatabase().getTeams(null))
@@ -572,7 +576,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     private void uploadApplicationData()
     {
-        final ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog = new ProgressDialog(context);
 
         final ArrayList<Team> teams = getDatabase().getTeams(null);
         final int totalTeams = teams.size();
@@ -674,9 +678,32 @@ public class MainActivity extends AppCompatActivity implements
      */
     public boolean isOnline()
     {
-        Server.Hello hello = new Server.Hello(context);
+        isOnline = false;
 
-        return hello.execute();
+        Thread isOnlineThread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Server.Hello hello = new Server.Hello(context);
+
+                if(hello.execute())
+                    isOnline = true;
+            }
+        });
+
+        isOnlineThread.start();
+
+        try
+        {
+            isOnlineThread.join();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
+        return isOnline;
     }
 
     //endregion

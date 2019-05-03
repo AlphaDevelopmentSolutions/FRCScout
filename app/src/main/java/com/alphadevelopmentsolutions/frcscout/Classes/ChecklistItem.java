@@ -2,7 +2,7 @@ package com.alphadevelopmentsolutions.frcscout.Classes;
 
 import java.util.ArrayList;
 
-public class ChecklistItem
+public class ChecklistItem extends Table
 {
 
     public static final String TABLE_NAME = "checklist_items";
@@ -31,6 +31,7 @@ public class ChecklistItem
             String title,
             String description)
     {
+        super();
         this.id = id;
         this.serverId = serverId;
 
@@ -175,6 +176,15 @@ public class ChecklistItem
         }
 
         return successful;
+    }
+
+    /**
+     * Clears all data from the classes table
+     * @param database used to clear table
+     */
+    public static void clearTable(Database database)
+    {
+        database.clearTable(TABLE_NAME);
     }
 
     //endregion

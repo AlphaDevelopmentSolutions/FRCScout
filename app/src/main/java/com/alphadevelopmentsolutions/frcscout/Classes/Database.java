@@ -77,122 +77,24 @@ public class Database
 
     }
 
-    public void clear()
+    /**
+     * Clears a selected table
+     * @param tableName table name
+     * @param clearDrafts boolean to clear drafts in table
+     */
+    public void clearTable(String tableName, boolean clearDrafts)
     {
-        ArrayList<String> tableNames = new ArrayList<>();
-
-        tableNames.add(Event.TABLE_NAME);
-        tableNames.add(Team.TABLE_NAME);
-        tableNames.add(Robot.TABLE_NAME);
-        tableNames.add(Match.TABLE_NAME);
-        tableNames.add(User.TABLE_NAME);
-        tableNames.add(RobotMedia.TABLE_NAME);
-
-        for(String tableName : tableNames)
-            db.execSQL("DELETE FROM " + tableName);
+        db.execSQL(String.format("DELETE FROM %s%s", tableName, (clearDrafts) ? "" : " WHERE IsDraft = 0"));
     }
 
-    public void clearEvents()
+    /**
+     * Clears a selected table
+     * @param tableName table name
+     */
+    public void clearTable(String tableName)
     {
-        ArrayList<String> tableNames = new ArrayList<>();
-
-        tableNames.add(Event.TABLE_NAME);
-
-        for(String tableName : tableNames)
-            db.execSQL("DELETE FROM " + tableName);
+        db.execSQL(String.format("DELETE FROM %s", tableName));
     }
-
-    public void clearUsers()
-    {
-        ArrayList<String> tableNames = new ArrayList<>();
-
-        tableNames.add(User.TABLE_NAME);
-
-        for(String tableName : tableNames)
-            db.execSQL("DELETE FROM " + tableName);
-    }
-
-    public void clearScoutCards(boolean clearDrafts)
-    {
-        ArrayList<String> tableNames = new ArrayList<>();
-
-        tableNames.add(ScoutCard.TABLE_NAME);
-
-        for(String tableName : tableNames)
-            db.execSQL("DELETE FROM " + tableName + ((clearDrafts) ? "" : " WHERE IsDraft = 0"));
-    }
-
-    public void clearTeams()
-    {
-        ArrayList<String> tableNames = new ArrayList<>();
-
-        tableNames.add(Team.TABLE_NAME);
-
-        for(String tableName : tableNames)
-            db.execSQL("DELETE FROM " + tableName);
-    }
-
-    public void clearPitCards(boolean clearDrafts)
-    {
-        ArrayList<String> tableNames = new ArrayList<>();
-
-        tableNames.add(PitCard.TABLE_NAME);
-
-        for(String tableName : tableNames)
-            db.execSQL("DELETE FROM " + tableName + ((clearDrafts) ? "" : " WHERE IsDraft = 0"));
-    }
-
-    public void clearChecklistItems()
-    {
-        ArrayList<String> tableNames = new ArrayList<>();
-
-        tableNames.add(ChecklistItem.TABLE_NAME);
-
-        for(String tableName : tableNames)
-            db.execSQL("DELETE FROM " + tableName);
-    }
-
-    public void clearChecklistItemResults(boolean clearDrafts)
-    {
-        ArrayList<String> tableNames = new ArrayList<>();
-
-        tableNames.add(ChecklistItemResult.TABLE_NAME);
-
-        for(String tableName : tableNames)
-            db.execSQL("DELETE FROM " + tableName + ((clearDrafts) ? "" : " WHERE IsDraft = 0"));
-    }
-
-    public void clearEventTeamList()
-    {
-        ArrayList<String> tableNames = new ArrayList<>();
-
-        tableNames.add(EventTeamList.TABLE_NAME);
-
-        for(String tableName : tableNames)
-            db.execSQL("DELETE FROM " + tableName);
-    }
-
-    public void clearMatches()
-    {
-        ArrayList<String> tableNames = new ArrayList<>();
-
-        tableNames.add(Match.TABLE_NAME);
-
-        for(String tableName : tableNames)
-            db.execSQL("DELETE FROM " + tableName);
-    }
-
-    public void clearRobotMedia(boolean clearDrafts)
-    {
-        ArrayList<String> tableNames = new ArrayList<>();
-
-        tableNames.add(RobotMedia.TABLE_NAME);
-
-        for(String tableName : tableNames)
-            db.execSQL("DELETE FROM " + tableName + ((clearDrafts) ? "" : " WHERE IsDraft = 0"));
-    }
-
-
 
     //region Event Logic
 

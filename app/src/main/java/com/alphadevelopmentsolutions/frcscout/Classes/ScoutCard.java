@@ -6,7 +6,7 @@ import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ScoutCard
+public class ScoutCard extends Table
 {
 
     public static final String TABLE_NAME = "scout_cards";
@@ -628,6 +628,16 @@ public class ScoutCard
         }
 
         return successful;
+    }
+
+    /**
+     * Clears all data from the classes table
+     * @param database used to clear table
+     * @param clearDrafts boolean if you want to include drafts in the clear
+     */
+    public static void clearTable(Database database, boolean clearDrafts)
+    {
+        database.clearTable(TABLE_NAME, clearDrafts);
     }
 
     //endregion
