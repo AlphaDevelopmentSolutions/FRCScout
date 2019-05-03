@@ -93,7 +93,7 @@ public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventList
                 context.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, eventList.get(viewHolder.getAdapterPosition()).getId());
 
                 if(fragmentOnClick.equals(TeamListFragment.class))
-                    context.changeFragment(TeamListFragment.newInstance(), false);
+                    context.changeFragment(TeamListFragment.newInstance(null, null), false);
 
                 else if(fragmentOnClick.equals(ChecklistFragment.class))
                 {

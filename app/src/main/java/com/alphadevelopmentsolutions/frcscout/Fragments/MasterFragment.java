@@ -65,9 +65,6 @@ public class MasterFragment extends Fragment
                 //load the team from json, if available
                 if(teamJson != null && !teamJson.equals(""))
                     team = gson.fromJson(teamJson, Team.class);
-                //no team provided, default to current app team
-                else
-                    team = new Team((Integer) context.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1), database);
 
                 //load the match from json, if available
                 if(matchJson != null && !matchJson.equals(""))

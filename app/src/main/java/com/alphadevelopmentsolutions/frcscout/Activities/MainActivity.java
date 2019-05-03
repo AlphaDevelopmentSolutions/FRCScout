@@ -3,13 +3,10 @@ package com.alphadevelopmentsolutions.frcscout.Activities;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -131,6 +128,9 @@ public class MainActivity extends AppCompatActivity implements
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
 
+        //set the action bar
+        setSupportActionBar(toolbar);
+
         Button changeEventButton = findViewById(R.id.ChangeEventButton);
         View navHeader = navigationView.getHeaderView(0);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -144,9 +144,6 @@ public class MainActivity extends AppCompatActivity implements
         //open the database as soon as the app starts
         database = new Database(context);
         database.open();
-
-        //set the action bar
-        setSupportActionBar(toolbar);
 
         //add the listener for the drawer
         drawer.addDrawerListener(toggle);
@@ -521,7 +518,7 @@ public class MainActivity extends AppCompatActivity implements
                         getDatabase().clearRobotMedia(false);
                         Server.GetRobotMedia getRobotMedia;
 
-                        for (final Team team : getDatabase().getTeams())
+                        for (final Team team : getDatabase().getTeams(null))
                         {
                             context.runOnUiThread(new Runnable()
                             {
@@ -577,7 +574,7 @@ public class MainActivity extends AppCompatActivity implements
     {
         final ProgressDialog progressDialog = new ProgressDialog(context);
 
-        final ArrayList<Team> teams = getDatabase().getTeams();
+        final ArrayList<Team> teams = getDatabase().getTeams(null);
         final int totalTeams = teams.size();
 
         progressDialog.setMax(totalTeams);
@@ -599,7 +596,7 @@ public class MainActivity extends AppCompatActivity implements
                     //upload team specific data
                     for (Team team : teams)
                     {
-                        for (ScoutCard scoutCard : getDatabase().getScoutCards(team, event,true))
+                        for (ScoutCard scoutCard : getDatabase().getScoutCards(event, null, team,true))
                         {
                             Server.SubmitScoutCard submitScoutCard = new Server.SubmitScoutCard(context, scoutCard);
                             if (submitScoutCard.execute())
@@ -704,13 +701,19 @@ public class MainActivity extends AppCompatActivity implements
     {
         int id = item.getItemId();
 
-        if (id == R.id.nav_teams)
+        switch(id)
         {
-            changeFragment(TeamListFragment.newInstance(), false);
-        }
-        else if(id == R.id.nav_checklist)
-        {
-            changeFragment(ChecklistFragment.newInstance("", ""), false);
+            case R.id.nav_matches:
+                changeFragment(MatchListFragment.newInstance(null), false);
+                break;
+
+            case R.id.nav_teams:
+                changeFragment(TeamListFragment.newInstance(null, null), false);
+                break;
+
+            case R.id.nav_checklist:
+                changeFragment(ChecklistFragment.newInstance("", ""), false);
+                break;
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -916,14 +919,12 @@ public class MainActivity extends AppCompatActivity implements
             //default to the splash frag until changed
             changeFragment(new SplashFragment(), false);
 
-            navigationView.setCheckedItem(R.id.nav_teams);
-
             //validate the app config to ensure all properties are filled
             if (validateConfig())
             {
                 //check any teams are on device and if the device is online
                 //if no teams, update data
-                if (getDatabase().getTeams().size() == 0 && isOnline())
+                if (getDatabase().getTeams(null).size() == 0 && isOnline())
                     downloadApplicationData(false);
 
                 //join back up with the update thread if it is not null
@@ -940,7 +941,10 @@ public class MainActivity extends AppCompatActivity implements
 
                 //event previously selected, switch to team list
                 if((Integer) getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) > 0)
-                    changeFragment(TeamListFragment.newInstance(), false);
+                {
+                    navigationView.setCheckedItem(R.id.nav_matches);
+                    changeFragment(MatchListFragment.newInstance(null), false);
+                }
 
                 else
                     //change the frag to the eventlist

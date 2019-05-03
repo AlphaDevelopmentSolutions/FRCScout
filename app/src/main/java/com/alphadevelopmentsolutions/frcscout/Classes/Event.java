@@ -1,5 +1,8 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import android.support.annotation.Nullable;
+
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Event
@@ -97,6 +100,33 @@ public class Event
     public Date getEndDate()
     {
         return endDate;
+    }
+
+    /**
+     * Gets matches from a specific event
+     * @param database used to get matches
+     * @param team if not null, only gets matches for specified team
+     * @return arraylist of matches
+     */
+    public ArrayList<Match> getMatches(Database database, @Nullable Team team)
+    {
+        return database.getMatches(this, team);
+    }
+
+    /**
+     * Gets teams from a specific event
+     * @param database used to get matches
+     * @return arraylist of teams
+     */
+    public ArrayList<Team> getTeams(Database database)
+    {
+        return database.getTeams(this);
+    }
+
+    @Override
+    public String toString()
+    {
+        return getName();
     }
 
     //endregion

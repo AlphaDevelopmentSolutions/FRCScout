@@ -2,6 +2,7 @@ package com.alphadevelopmentsolutions.frcscout.Classes;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.Nullable;
 
 import com.alphadevelopmentsolutions.frcscout.Interfaces.StatsKeys;
 
@@ -221,7 +222,7 @@ public class Team
 
 
         //get all scout cards from the database
-        ArrayList<ScoutCard> scoutCards = database.getScoutCards(this, event,false);
+        ArrayList<ScoutCard> scoutCards = getScoutCards(event, null, false, database);
 
         //store iterations for avg
         int i = 0;
@@ -394,6 +395,17 @@ public class Team
         stats.put(StatsKeys.MAX, maxStats);
 
         return stats;
+    }
+
+    /**
+     * Gets all scout cards associated with the team
+     * @param database used for loading cards
+     * @param onlyDrafts boolean if you only want drafts
+     * @return arraylist of scout cards
+     */
+    public ArrayList<ScoutCard> getScoutCards(@Nullable Event event, @Nullable Match match, boolean onlyDrafts, Database database)
+    {
+        return database.getScoutCards(event, match, this, onlyDrafts);
     }
 
     //endregion

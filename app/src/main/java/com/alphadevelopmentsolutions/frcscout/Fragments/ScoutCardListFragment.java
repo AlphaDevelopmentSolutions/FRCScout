@@ -11,10 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.ScoutCardsRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Classes.Event;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
-import com.google.gson.Gson;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,7 +70,7 @@ public class ScoutCardListFragment extends MasterFragment
 
         joinLoadingThread();
 
-        ScoutCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new ScoutCardsRecyclerViewAdapter(team, gson.toJson(event), database.getScoutCards(team, event, false), context);
+        ScoutCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new ScoutCardsRecyclerViewAdapter(team, gson.toJson(event), team.getScoutCards(event, null, false, database), context);
         scoutCardListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         scoutCardListRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
 

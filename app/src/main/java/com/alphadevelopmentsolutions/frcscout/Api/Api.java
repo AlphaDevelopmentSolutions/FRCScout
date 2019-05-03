@@ -1,7 +1,5 @@
 package com.alphadevelopmentsolutions.frcscout.Api;
 
-import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;

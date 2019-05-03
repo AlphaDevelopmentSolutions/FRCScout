@@ -81,7 +81,7 @@ public class ChecklistFragment extends MasterFragment
 
             recyclerView = view.findViewById(R.id.MatchListRecyclerView);
 
-            MatchListRecyclerViewAdapter matchListRecyclerViewAdapter = new MatchListRecyclerViewAdapter(event, team, database.getMatches(team, event), context, (this).getClass());
+            MatchListRecyclerViewAdapter matchListRecyclerViewAdapter = new MatchListRecyclerViewAdapter(event, team, context, (this).getClass());
             recyclerView.setAdapter(matchListRecyclerViewAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
 

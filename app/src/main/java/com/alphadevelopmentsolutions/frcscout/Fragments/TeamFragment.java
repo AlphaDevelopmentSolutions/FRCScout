@@ -11,14 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.alphadevelopmentsolutions.frcscout.Adapters.TeamViewPagerAdapter;
-import com.alphadevelopmentsolutions.frcscout.Classes.Event;
+import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeIcon;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -170,7 +167,7 @@ public class TeamFragment extends MasterFragment
         teamNumberNameTextView.setText(team.getId() + " - " + team.getName());
         teamLocationTextView.setText(team.getCity() + ", " + team.getStateProvince() + ", " + team.getCountry());
 
-        TeamViewPagerAdapter teamViewPagerAdapter = new TeamViewPagerAdapter(getChildFragmentManager());
+        FragmentViewPagerAdapter teamViewPagerAdapter = new FragmentViewPagerAdapter(getChildFragmentManager());
 
         teamViewPagerAdapter.addFragment(MatchListFragment.newInstance(teamJson), getString(R.string.scout_cards));
         teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(teamJson), getString(R.string.pit_cards));

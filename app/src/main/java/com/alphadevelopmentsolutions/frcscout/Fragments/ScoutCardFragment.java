@@ -3,6 +3,8 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -11,8 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alphadevelopmentsolutions.frcscout.Adapters.ScoutCardViewPagerAdapter;
-import com.alphadevelopmentsolutions.frcscout.Classes.Match;
+import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor;
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece;
@@ -33,13 +34,9 @@ import java.util.Date;
 public class ScoutCardFragment extends MasterFragment
 {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "MatchJson";
-    private static final String ARG_PARAM2 = "ScoutCardJson";
-    private static final String ARG_PARAM4 = "TeamId";
+    private static final String ARG_SCOUT_CARD_JSON = "ScoutCardJson";
 
-    private String matchJson;
     private String scoutCardJson;
-    private int teamId;
 
     private OnFragmentInteractionListener mListener;
 
@@ -54,17 +51,17 @@ public class ScoutCardFragment extends MasterFragment
      *
      * @param matchJson match json
      * @param scoutCardJson scout card json
-     * @param teamId teamId
+     * @param teamJson
      * @return A new instance of fragment ScoutCardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ScoutCardFragment newInstance(String matchJson, String scoutCardJson, int teamId)
+    public static ScoutCardFragment newInstance(@NonNull String matchJson, @Nullable String scoutCardJson, @NonNull String teamJson)
     {
         ScoutCardFragment fragment = new ScoutCardFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, matchJson);
-        args.putString(ARG_PARAM2, scoutCardJson);
-        args.putInt(ARG_PARAM4, teamId);
+        args.putString(ARG_MATCH_JSON, matchJson);
+        args.putString(ARG_SCOUT_CARD_JSON, scoutCardJson);
+        args.putString(ARG_TEAM_JSON, teamJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,9 +73,7 @@ public class ScoutCardFragment extends MasterFragment
 
         if (getArguments() != null)
         {
-            matchJson = getArguments().getString(ARG_PARAM1);
-            scoutCardJson = getArguments().getString(ARG_PARAM2);
-            teamId = getArguments().getInt(ARG_PARAM4);
+            scoutCardJson = getArguments().getString(ARG_SCOUT_CARD_JSON);
         }
 
         //start the creation of fragments on a new thread
@@ -87,13 +82,11 @@ public class ScoutCardFragment extends MasterFragment
             @Override
             public void run()
             {
+                joinLoadingThread();
                 if(scoutCardJson != null && !scoutCardJson.equals(""))
                     scoutCard = new Gson().fromJson(scoutCardJson, ScoutCard.class);
 
-                if(matchJson != null && !matchJson.equals(""))
-                    match = new Gson().fromJson(matchJson, Match.class);
-
-                scoutCardPreGameFragment = ScoutCardPreGameFragment.newInstance(scoutCardJson, teamId);
+                scoutCardPreGameFragment = ScoutCardPreGameFragment.newInstance(scoutCardJson, team.getId());
                 scoutCardAutoFragment = ScoutCardAutoFragment.newInstance(scoutCardJson);
                 scoutCardTeleopFragment = ScoutCardTeleopFragment.newInstance(scoutCardJson);
                 scoutCardEndGameFragment = ScoutCardEndGameFragment.newInstance(scoutCardJson);
@@ -105,7 +98,6 @@ public class ScoutCardFragment extends MasterFragment
     }
     
     private ScoutCard scoutCard;
-    private Match match;
 
     private TabLayout scoutCardTabLayout;
     private ViewPager scoutCardViewPager;
@@ -135,7 +127,7 @@ public class ScoutCardFragment extends MasterFragment
 
         scoutCardSaveFloatingActionButton = view.findViewById(R.id.ScoutCardSaveFloatingActionButton);
 
-        final ScoutCardViewPagerAdapter scoutCardViewPagerAdapter = new ScoutCardViewPagerAdapter(getChildFragmentManager());
+        final FragmentViewPagerAdapter scoutCardViewPagerAdapter = new FragmentViewPagerAdapter(getChildFragmentManager());
 
         //join back with the frag creation thread
         try
@@ -153,7 +145,7 @@ public class ScoutCardFragment extends MasterFragment
         scoutCardViewPagerAdapter.addFragment(scoutCardPostGameFragment, getString(R.string.post_game));
 
         //update the title of the page to display the match
-        context.getSupportActionBar().setTitle(match.getMatchType().toString(match));
+        context.setTitle(match.getMatchType().toString(match));
 
 
         scoutCardViewPager.setAdapter(scoutCardViewPagerAdapter);
@@ -179,7 +171,7 @@ public class ScoutCardFragment extends MasterFragment
                         //pre game info
                         int teamNumber = scoutCardPreGameFragment.getTeamId();
                         String eventId = (scoutCard == null) ? event.getBlueAllianceId() : scoutCard.getEventId();
-                        AllianceColor allianceColor = match.getTeamAllianceColor(teamId);
+                        AllianceColor allianceColor = match.getTeamAllianceColor(team);
                         String completedBy = scoutCardPreGameFragment.getScouterName();
 
                         int preGameStartingLevel = scoutCardPreGameFragment.getStartingLevel();
@@ -272,7 +264,7 @@ public class ScoutCardFragment extends MasterFragment
                             ScoutCard scoutCard = new ScoutCard(
                                     -1,
                                     match.getKey(),
-                                    teamId,
+                                    team.getId(),
                                     eventId,
                                     allianceColor.name(),
                                     completedBy,

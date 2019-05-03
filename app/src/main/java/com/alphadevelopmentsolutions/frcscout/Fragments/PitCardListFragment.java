@@ -11,10 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.PitCardsRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Classes.Event;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
-import com.google.gson.Gson;
 
 /**
  * A simple {@link Fragment} subclass.

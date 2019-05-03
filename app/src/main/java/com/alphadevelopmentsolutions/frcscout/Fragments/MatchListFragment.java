@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,11 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.MatchListRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Classes.Event;
-import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
-import com.google.gson.Gson;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,7 +39,7 @@ public class MatchListFragment extends MasterFragment
      * @return A new instance of fragment ScoutCardListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MatchListFragment newInstance(String teamJson)
+    public static MatchListFragment newInstance(@Nullable String teamJson)
     {
         MatchListFragment fragment = new MatchListFragment();
         Bundle args = new Bundle();
@@ -55,10 +52,6 @@ public class MatchListFragment extends MasterFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            teamJson = getArguments().getString(ARG_TEAM_JSON);
-        }
     }
 
     private RecyclerView matchListRecyclerView;
@@ -74,7 +67,10 @@ public class MatchListFragment extends MasterFragment
 
         joinLoadingThread();
 
-        MatchListRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new MatchListRecyclerViewAdapter(event, team, database.getMatches(team, event), context, ScoutCard.class);
+        if(team == null)
+            context.setTitle(event.toString());
+
+        MatchListRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new MatchListRecyclerViewAdapter(event, team, context, (team == null) ? TeamListFragment.class : ScoutCardFragment.class);
         matchListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         matchListRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
 

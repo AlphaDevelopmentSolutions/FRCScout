@@ -7,13 +7,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
 
-public class ScoutCardViewPagerAdapter extends FragmentPagerAdapter
+public class FragmentViewPagerAdapter extends FragmentPagerAdapter
 {
 
     private ArrayList<Fragment> fragmentList;
     private ArrayList<String> titleList;
 
-    public ScoutCardViewPagerAdapter(FragmentManager fragmentManager)
+    public FragmentViewPagerAdapter(FragmentManager fragmentManager)
     {
         super(fragmentManager);
 

@@ -1,5 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import android.support.annotation.Nullable;
+
 import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor;
 
 import java.util.ArrayList;
@@ -250,26 +252,33 @@ public class Match
 
     /**
      * Finds the alliance color of the teamnumber sent in the param
-     * @param teamNumber to find
+     * @param team to find
      * @return AllianceColor color of the alliance
      */
-    public AllianceColor getTeamAllianceColor(int teamNumber)
+    public AllianceColor getTeamAllianceColor(Team team)
     {
-        if(blueAllianceTeamOneId == teamNumber ||
-            blueAllianceTeamTwoId == teamNumber ||
-            blueAllianceTeamThreeId == teamNumber) return AllianceColor.BLUE;
+        if(blueAllianceTeamOneId == team.getId() ||
+            blueAllianceTeamTwoId == team.getId() ||
+            blueAllianceTeamThreeId == team.getId()) return AllianceColor.BLUE;
 
-        else if(redAllianceTeamOneId == teamNumber ||
-                redAllianceTeamTwoId == teamNumber ||
-                redAllianceTeamThreeId == teamNumber) return AllianceColor.RED;
+        else if(redAllianceTeamOneId == team.getId() ||
+                redAllianceTeamTwoId == team.getId() ||
+                redAllianceTeamThreeId == team.getId()) return AllianceColor.RED;
 
         //default to blue
-        return AllianceColor.BLUE;
+        return AllianceColor.NONE;
     }
 
-    public ArrayList<ScoutCard> getScoutCards(Database database, Event event)
+    /**
+     * Gets all scout cards associated with the match
+     * @param team id for teams cards you want to load
+     * @param onlyDrafts boolean if you only want drafts
+     * @param database used for loading cards
+     * @return arraylist of scout cards
+     */
+    public ArrayList<ScoutCard> getScoutCards(@Nullable Team team, boolean onlyDrafts, Database database)
     {
-        return database.getScoutCards(this, event,false);
+        return database.getScoutCards(null, this, team, onlyDrafts);
     }
 
     /**
