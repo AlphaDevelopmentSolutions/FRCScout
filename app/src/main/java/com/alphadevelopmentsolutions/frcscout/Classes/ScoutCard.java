@@ -369,6 +369,12 @@ public class ScoutCard extends Table
         return simpleDateFormat.format(completedDate);
     }
 
+    @Override
+    public String toString()
+    {
+        return "Team " + getTeamId() + " - Scout Card";
+    }
+
     //endregion
 
     //region Setters

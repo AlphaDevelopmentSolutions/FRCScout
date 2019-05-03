@@ -81,6 +81,12 @@ public class ChecklistItem extends Table
         return database.getChecklistItemResults(this, onlyDrafts);
     }
 
+    @Override
+    public String toString()
+    {
+        return getTitle();
+    }
+
     //endregion
 
     //region Setters

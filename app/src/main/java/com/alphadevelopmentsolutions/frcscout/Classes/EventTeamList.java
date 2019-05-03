@@ -54,6 +54,12 @@ public class EventTeamList extends Table
         return eventId;
     }
 
+    @Override
+    public String toString()
+    {
+        return "";
+    }
+
 
     //endregion
 

@@ -117,6 +117,12 @@ public class ChecklistItemResult extends Table
         return simpleDateFormat.format(getCompletedDate());
     }
 
+    @Override
+    public String toString()
+    {
+        return "";
+    }
+
     //endregion
 
     //region Setters

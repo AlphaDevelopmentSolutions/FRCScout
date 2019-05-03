@@ -10,6 +10,7 @@ public abstract class Table
     abstract public boolean load(Database database);
     abstract public int save(Database database);
     abstract public boolean delete(Database database);
+    abstract public String toString();
 
     protected Table()
     {

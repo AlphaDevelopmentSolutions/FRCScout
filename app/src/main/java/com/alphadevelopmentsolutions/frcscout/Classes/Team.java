@@ -423,6 +423,12 @@ public class Team extends Table
         return database.getScoutCards(event, match, this, onlyDrafts);
     }
 
+    @Override
+    public String toString()
+    {
+        return getId() + " - " + getName();
+    }
+
     //endregion
 
     //region Setters

@@ -225,6 +225,12 @@ public class PitCard extends Table
         return isDraft;
     }
 
+    @Override
+    public String toString()
+    {
+        return "Team " + getTeamId() + " - Pit Card";
+    }
+
     //endregion
 
     //region Setters

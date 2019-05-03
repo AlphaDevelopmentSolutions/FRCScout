@@ -53,6 +53,12 @@ public class Robot extends Table
         return teamNumber;
     }
 
+    @Override
+    public String toString()
+    {
+        return getName();
+    }
+
     //endregion
 
     //region Setters

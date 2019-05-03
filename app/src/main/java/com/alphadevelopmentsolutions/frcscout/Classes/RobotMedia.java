@@ -148,6 +148,12 @@ public class RobotMedia extends Table
         isDraft = draft;
     }
 
+    @Override
+    public String toString()
+    {
+        return "Team " + getTeamId() + " - Robot Media";
+    }
+
     //endregion
 
     //region Load, Save & Delete
