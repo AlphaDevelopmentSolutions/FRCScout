@@ -7,6 +7,12 @@ public class Robot
     public static final String COLUMN_NAME_NAME = "Name";
     public static final String COLUMN_NAME_TEAM_NUMBER = "TeamId";
 
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME +" (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_NAME + " TEXT," +
+                    COLUMN_NAME_TEAM_NUMBER + " INTEGER)";
+
     private int id;
     private String name;
     private int teamNumber;

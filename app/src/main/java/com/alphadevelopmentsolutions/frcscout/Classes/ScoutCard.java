@@ -47,6 +47,45 @@ public class ScoutCard
     public static final String COLUMN_NAME_COMPLETED_DATE = "CompletedDate";
     public static final String COLUMN_NAME_IS_DRAFT = "IsDraft";
 
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME +" (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_MATCH_ID + " TEXT," +
+                    COLUMN_NAME_TEAM_ID + " INTEGER," +
+                    COLUMN_NAME_EVENT_ID + " TEXT," +
+                    COLUMN_NAME_ALLIANCE_COLOR + " TEXT," +
+                    COLUMN_NAME_COMPLETED_BY + " TEXT," +
+
+                    COLUMN_NAME_PRE_GAME_STARTING_LEVEL + " INTEGER," +
+                    COLUMN_NAME_PRE_GAME_STARTING_POSITION + " TEXT," +
+                    COLUMN_NAME_PRE_GAME_STARTING_PIECE + " TEXT," +
+
+                    COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT + " INTEGER," +
+                    COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_PICKED_UP + " INTEGER," +
+                    COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS + " INTEGER," +
+                    COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED + " INTEGER," +
+                    COLUMN_NAME_AUTONOMOUS_CARGO_PICKED_UP + " INTEGER," +
+                    COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS + " INTEGER," +
+                    COLUMN_NAME_AUTONOMOUS_CARGO_STORED + " INTEGER," +
+
+                    COLUMN_NAME_TELEOP_HATCH_PANELS_PICKED_UP + " INTEGER," +
+                    COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS + " INTEGER," +
+                    COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED + " INTEGER," +
+                    COLUMN_NAME_TELEOP_CARGO_PICKED_UP + " INTEGER," +
+                    COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS + " INTEGER," +
+                    COLUMN_NAME_TELEOP_CARGO_STORED + " INTEGER," +
+
+                    COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT + " INTEGER," +
+                    COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS + " INTEGER," +
+
+                    COLUMN_NAME_DEFENSE_RATING + " INTEGER," +
+                    COLUMN_NAME_OFFENSE_RATING + " INTEGER," +
+                    COLUMN_NAME_DRIVE_RATING + " INTEGER," +
+                    COLUMN_NAME_NOTES + " TEXT," +
+
+                    COLUMN_NAME_COMPLETED_DATE + " INTEGER," +
+                    COLUMN_NAME_IS_DRAFT + " INTEGER)";
+
     private int id;
     private String matchId;
     private int teamId;

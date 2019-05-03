@@ -14,6 +14,16 @@ public class ChecklistItemResult
     public static final String COLUMN_NAME_COMPLETED_DATE = "CompletedDate";
     public static final String COLUMN_NAME_IS_DRAFT = "IsDraft";
 
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME +" (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_CHECKLIST_ITEM_ID + " INTEGER," +
+                    COLUMN_NAME_MATCH_ID + " TEXT," +
+                    COLUMN_NAME_STATUS + " TEXT," +
+                    COLUMN_NAME_COMPLETED_BY + " TEXT," +
+                    COLUMN_NAME_COMPLETED_DATE + " INTEGER," +
+                    COLUMN_NAME_IS_DRAFT + " INTEGER)";
+
     private int id;
     private int checklistItemId;
     private String matchId;

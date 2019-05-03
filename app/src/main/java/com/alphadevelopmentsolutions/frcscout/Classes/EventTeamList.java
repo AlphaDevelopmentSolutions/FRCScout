@@ -8,6 +8,12 @@ public class EventTeamList
     public static final String COLUMN_NAME_TEAM_ID = "TeamId";
     public static final String COLUMN_NAME_EVENT_ID = "EventId";
 
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME + " (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_TEAM_ID + " INTEGER," +
+                    COLUMN_NAME_EVENT_ID + " TEXT)";
+
     private int id;
     private int teamId;
     private String eventId;

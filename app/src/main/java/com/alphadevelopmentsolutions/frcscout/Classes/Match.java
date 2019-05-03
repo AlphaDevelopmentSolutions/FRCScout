@@ -27,6 +27,24 @@ public class Match
     public static final String COLUMN_NAME_BLUE_ALLIANCE_SCORE = "BlueAllianceScore";
     public static final String COLUMN_NAME_RED_ALLIANCE_SCORE = "RedAllianceScore";
 
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME +" (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_DATE + " INTEGER," +
+                    COLUMN_NAME_EVENT_ID + " TEXT," +
+                    "\"" + COLUMN_NAME_KEY + "\" TEXT," +
+                    COLUMN_NAME_MATCH_TYPE + " TEXT," +
+                    COLUMN_NAME_SET_NUMBER + " INTEGER," +
+                    COLUMN_NAME_MATCH_NUMBER + " INTEGER," +
+                    COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID + " INTEGER," +
+                    COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID + " INTEGER," +
+                    COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID + " INTEGER," +
+                    COLUMN_NAME_BLUE_ALLIANCE_SCORE + " INTEGER," +
+                    COLUMN_NAME_RED_ALLIANCE_SCORE + " INTEGER," +
+                    COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID + " INTEGER," +
+                    COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID + " INTEGER," +
+                    COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID + " INTEGER)";
+
     /**
      * This references the types defined by the blue alliance API
      * When assigning a type, use the TypeReference interface for a more

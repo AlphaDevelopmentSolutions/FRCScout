@@ -28,6 +28,21 @@ public class Team
     public static final String COLUMN_NAME_WEBSITE_URL = "WebsiteURL";
     public static final String COLUMN_NAME_IMAGE_FILE_URI = "ImageFileURI";
 
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME + " (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_NAME + " TEXT," +
+                    COLUMN_NAME_CITY + " TEXT," +
+                    COLUMN_NAME_STATEPROVINCE + " TEXT," +
+                    COLUMN_NAME_COUNTRY + " TEXT," +
+                    COLUMN_NAME_ROOKIE_YEAR + " INTEGER," +
+                    COLUMN_NAME_FACEBOOK_URL + " TEXT," +
+                    COLUMN_NAME_TWITTER_URL + " TEXT," +
+                    COLUMN_NAME_INSTAGRAM_URL + " TEXT," +
+                    COLUMN_NAME_YOUTUBE_URL + " TEXT," +
+                    COLUMN_NAME_WEBSITE_URL + " TEXT," +
+                    COLUMN_NAME_IMAGE_FILE_URI + " TEXT)";
+
     private int id;
     private String name;
     private String city;

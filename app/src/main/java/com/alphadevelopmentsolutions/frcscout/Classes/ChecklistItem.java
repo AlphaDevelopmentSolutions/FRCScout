@@ -11,6 +11,13 @@ public class ChecklistItem
     public static final String COLUMN_NAME_TITLE = "Title";
     public static final String COLUMN_NAME_DESCRIPTION = "Description";
 
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME +" (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_SERVER_ID + " INTEGER," +
+                    COLUMN_NAME_TITLE + " TEXT," +
+                    COLUMN_NAME_DESCRIPTION + " TEXT)";
+
     private int id;
     private int serverId;
 

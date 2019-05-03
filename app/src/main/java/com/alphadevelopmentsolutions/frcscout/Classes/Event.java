@@ -18,6 +18,17 @@ public class Event
     public static final String COLUMN_NAME_START_DATE = "StartDate";
     public static final String COLUMN_NAME_END_DATE = "EndDate";
 
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME + " (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_BLUE_ALLIANCE_ID + " TEXT," +
+                    COLUMN_NAME_NAME + " TEXT," +
+                    COLUMN_NAME_CITY + " TEXT," +
+                    COLUMN_NAME_STATEPROVINCE + " TEXT," +
+                    COLUMN_NAME_COUNTRY + " TEXT," +
+                    COLUMN_NAME_START_DATE + " INTEGER," +
+                    COLUMN_NAME_END_DATE + " INTEGER)";
+
     private int id;
 
     private String blueAllianceId;

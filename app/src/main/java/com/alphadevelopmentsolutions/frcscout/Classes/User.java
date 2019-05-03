@@ -7,6 +7,12 @@ public class User
     public static final String COLUMN_NAME_FIRST_NAME = "FirstName";
     public static final String COLUMN_NAME_LAST_NAME = "LastName";
 
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME +" (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_FIRST_NAME + " TEXT," +
+                    COLUMN_NAME_LAST_NAME + " TEXT)";
+
     private int id;
     private String firstName;
     private String lastName;

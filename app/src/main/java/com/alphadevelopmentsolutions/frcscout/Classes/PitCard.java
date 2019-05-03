@@ -28,6 +28,32 @@ public class PitCard
     public static final String COLUMN_NAME_COMPLETED_BY = "CompletedBy";
     public static final String COLUMN_NAME_IS_DRAFT = "IsDraft";
 
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME +" (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_TEAM_ID + " TEXT," +
+                    COLUMN_NAME_EVENT_ID + " TEXT," +
+
+                    COLUMN_NAME_DRIVE_STYLE + " TEXT," +
+                    COLUMN_NAME_ROBOT_WEIGHT + " TEXT," +
+                    COLUMN_NAME_ROBOT_LENGTH + " TEXT," +
+                    COLUMN_NAME_ROBOT_WIDTH + " TEXT," +
+                    COLUMN_NAME_ROBOT_HEIGHT + " TEXT," +
+
+                    COLUMN_NAME_AUTO_EXIT_HABITAT + " TEXT," +
+                    COLUMN_NAME_AUTO_HATCH + " TEXT," +
+                    COLUMN_NAME_AUTO_CARGO + " TEXT," +
+
+                    COLUMN_NAME_TELEOP_HATCH + " TEXT," +
+                    COLUMN_NAME_TELEOP_CARGO + " TEXT," +
+
+                    COLUMN_NAME_RETURN_TO_HABITAT + " TEXT," +
+
+                    COLUMN_NAME_NOTES + " TEXT," +
+
+                    COLUMN_NAME_COMPLETED_BY + " TEXT," +
+                    COLUMN_NAME_IS_DRAFT + " INTEGER)";
+
 
     private int id;
     private int teamId;
