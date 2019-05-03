@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeIcon;
+import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -43,14 +45,14 @@ public class TeamFragment extends MasterFragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param teamJson json of team
+     * @param team
      * @return A new instance of fragment TeamFragment.
      */
-    public static TeamFragment newInstance(String teamJson)
+    public static TeamFragment newInstance(@NonNull Team team)
     {
         TeamFragment fragment = new TeamFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_TEAM_JSON, teamJson);
+        args.putString(ARG_TEAM_JSON, toJson(team));
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,10 +61,6 @@ public class TeamFragment extends MasterFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            teamJson = getArguments().getString(ARG_TEAM_JSON);
-        }
     }
 
     private TabLayout teamTabLayout;
@@ -119,7 +117,7 @@ public class TeamFragment extends MasterFragment
             @Override
             public void onClick(View v)
             {
-                context.changeFragment(PitCardFragment.newInstance(null, gson.toJson(event), team.getId()), true);
+                context.changeFragment(PitCardFragment.newInstance(null, team), true);
             }
         });
 
@@ -128,7 +126,7 @@ public class TeamFragment extends MasterFragment
             @Override
             public void onClick(View v)
             {
-                context.changeFragment(RobotMediaFragment.newInstance(null, team.getId()), true);
+                context.changeFragment(RobotMediaFragment.newInstance(null, team), true);
             }
         });
 
@@ -169,10 +167,10 @@ public class TeamFragment extends MasterFragment
 
         FragmentViewPagerAdapter teamViewPagerAdapter = new FragmentViewPagerAdapter(getChildFragmentManager());
 
-        teamViewPagerAdapter.addFragment(MatchListFragment.newInstance(teamJson), getString(R.string.scout_cards));
-        teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(teamJson), getString(R.string.pit_cards));
-        teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(teamJson), getString(R.string.robot_images));
-        teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(teamJson), getString(R.string.quick_stats));
+        teamViewPagerAdapter.addFragment(MatchListFragment.newInstance(team), getString(R.string.scout_cards));
+        teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(team), getString(R.string.pit_cards));
+        teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(team), getString(R.string.robot_images));
+        teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(team), getString(R.string.quick_stats));
 
         teamViewPager.setAdapter(teamViewPagerAdapter);
         teamViewPager.setOffscreenPageLimit(5);

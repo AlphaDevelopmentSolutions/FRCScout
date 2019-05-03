@@ -104,7 +104,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
                 @Override
                 public void onClick(View v)
                 {
-                    context.changeFragment(TeamFragment.newInstance(gson.toJson(teamList.get(viewHolder.getAdapterPosition()))), true);
+                    context.changeFragment(TeamFragment.newInstance(teamList.get(viewHolder.getAdapterPosition())), true);
                 }
             });
         }
@@ -124,7 +124,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
                     @Override
                     public void onClick(View v)
                     {
-                        context.changeFragment(ScoutCardFragment.newInstance(gson.toJson(match), gson.toJson(scoutCards.get(scoutCards.size() - 1)), gson.toJson(teamList.get(viewHolder.getAdapterPosition()))), true);
+                        context.changeFragment(ScoutCardFragment.newInstance(match, scoutCards.get(scoutCards.size() - 1), teamList.get(viewHolder.getAdapterPosition())), true);
                     }
                 });
             }
@@ -139,7 +139,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
                     @Override
                     public void onClick(View v)
                     {
-                        context.changeFragment(ScoutCardFragment.newInstance(gson.toJson(match), null, gson.toJson(teamList.get(viewHolder.getAdapterPosition()))), true);
+                        context.changeFragment(ScoutCardFragment.newInstance(match, null, teamList.get(viewHolder.getAdapterPosition())), true);
                     }
                 });
             }
@@ -150,7 +150,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
                 @Override
                 public void onClick(View v)
                 {
-                    context.changeFragment(TeamFragment.newInstance(gson.toJson(teamList.get(viewHolder.getAdapterPosition()))), true);
+                    context.changeFragment(TeamFragment.newInstance(teamList.get(viewHolder.getAdapterPosition())), true);
                 }
             });
 

@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,12 +24,6 @@ import com.google.gson.Gson;
  * create an instance of this fragment.
  */
 public class ScoutCardAutoFragment extends MasterFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-
-    // TODO: Rename and change types of parameters
-    private String scoutCardJson;
 
     private OnFragmentInteractionListener mListener;
 
@@ -40,13 +35,13 @@ public class ScoutCardAutoFragment extends MasterFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param scoutCardJson scout card json
+     * @param scoutCard
      * @return A new instance of fragment ScoutCardAutoFragment.
      */
-    public static ScoutCardAutoFragment newInstance(String scoutCardJson) {
+    public static ScoutCardAutoFragment newInstance(@Nullable ScoutCard scoutCard) {
         ScoutCardAutoFragment fragment = new ScoutCardAutoFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, scoutCardJson);
+        args.putString(ARG_PARAM_SCOUT_CARD_JSON, toJson(scoutCard));
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,16 +49,7 @@ public class ScoutCardAutoFragment extends MasterFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            scoutCardJson = getArguments().getString(ARG_PARAM1);
-        }
-
-        //load the passed scout card
-        if(scoutCardJson != null && !scoutCardJson.equals(""))
-            scoutCard = new Gson().fromJson(scoutCardJson, ScoutCard.class);
     }
-
-    private ScoutCard scoutCard;
 
     //Exit Habitat
     private TextView autonomousExitHabitatTextView;
@@ -107,6 +93,8 @@ public class ScoutCardAutoFragment extends MasterFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_scout_card_auto, container, false);
+
+        joinLoadingThread();
 
         //Exit Habitat
         autonomousExitHabitatTextView = view.findViewById(R.id.AutonomousExitHabitatTextView);

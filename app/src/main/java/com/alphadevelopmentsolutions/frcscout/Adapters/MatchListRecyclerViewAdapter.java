@@ -299,7 +299,7 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
                     public void onClick(View v)
                     {
                         //add new card
-                        context.changeFragment(ScoutCardFragment.newInstance(gson.toJson(match), null, gson.toJson(team)), true);
+                        context.changeFragment(ScoutCardFragment.newInstance(match, null, team), true);
                     }
                 });
             }
@@ -317,7 +317,7 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
                     public void onClick(View v)
                     {
                         //show match
-                        context.changeFragment(ScoutCardFragment.newInstance(gson.toJson(match), gson.toJson(finalScoutCard), gson.toJson(team)), true);
+                        context.changeFragment(ScoutCardFragment.newInstance(match, finalScoutCard, team), true);
                     }
                 });
             }
@@ -333,7 +333,7 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
                 @Override
                 public void onClick(View v)
                 {
-                    context.changeFragment(ChecklistFragment.newInstance(gson.toJson(team), gson.toJson(matches.get(viewHolder.getAdapterPosition()))), true);
+                    context.changeFragment(ChecklistFragment.newInstance(team, matches.get(viewHolder.getAdapterPosition())), true);
                 }
             });
         }
@@ -348,7 +348,7 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
                 @Override
                 public void onClick(View v)
                 {
-                    context.changeFragment(TeamListFragment.newInstance(gson.toJson(matches.get(viewHolder.getAdapterPosition())), null), true);
+                    context.changeFragment(TeamListFragment.newInstance(matches.get(viewHolder.getAdapterPosition()), null), true);
                 }
             });
         }

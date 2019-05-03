@@ -99,7 +99,7 @@ public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventList
                 {
                     Team team = new Team((int) context.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1), context.getDatabase());
 
-                    context.changeFragment(ChecklistFragment.newInstance(gson.toJson(team), null), false);
+                    context.changeFragment(ChecklistFragment.newInstance(team, null), false);
                 }
             }
         });

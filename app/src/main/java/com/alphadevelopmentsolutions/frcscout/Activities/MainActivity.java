@@ -712,7 +712,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             case R.id.nav_checklist:
-                changeFragment(ChecklistFragment.newInstance("", ""), false);
+                changeFragment(ChecklistFragment.newInstance(new Team((Integer) context.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1), database), null), false);
                 break;
         }
 

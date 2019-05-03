@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.Adapters.TeamListRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor;
 import com.alphadevelopmentsolutions.frcscout.R;
@@ -55,11 +56,11 @@ public class TeamListFragment extends MasterFragment
      * @return A new instance of fragment TeamListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TeamListFragment newInstance(@Nullable String matchJson, @Nullable AllianceColor allianceColor)
+    public static TeamListFragment newInstance(@Nullable Match match, @Nullable AllianceColor allianceColor)
     {
         TeamListFragment fragment = new TeamListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_MATCH_JSON, matchJson);
+        args.putString(ARG_MATCH_JSON, toJson(match));
         args.putString(ARG_ALLIANCE_COLOR, (allianceColor == null) ? AllianceColor.NONE.name() : allianceColor.name());
         fragment.setArguments(args);
         return fragment;
@@ -239,8 +240,8 @@ public class TeamListFragment extends MasterFragment
 
             FragmentViewPagerAdapter viewPagerAdapter = new FragmentViewPagerAdapter(getChildFragmentManager());
 
-            viewPagerAdapter.addFragment(TeamListFragment.newInstance(gson.toJson(match), AllianceColor.BLUE), getString(R.string.blue_alliance));
-            viewPagerAdapter.addFragment(TeamListFragment.newInstance(gson.toJson(match), AllianceColor.RED), getString(R.string.red_alliance));
+            viewPagerAdapter.addFragment(TeamListFragment.newInstance(match, AllianceColor.BLUE), getString(R.string.blue_alliance));
+            viewPagerAdapter.addFragment(TeamListFragment.newInstance(match, AllianceColor.RED), getString(R.string.red_alliance));
 
             allianceViewPager.setAdapter(viewPagerAdapter);
             allianceTabLayout.setupWithViewPager(allianceViewPager);

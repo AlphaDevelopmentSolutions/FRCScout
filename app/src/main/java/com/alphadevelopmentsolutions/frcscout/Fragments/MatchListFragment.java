@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.MatchListRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 /**
@@ -35,15 +36,15 @@ public class MatchListFragment extends MasterFragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param teamJson json of the team.
+     * @param team
      * @return A new instance of fragment ScoutCardListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MatchListFragment newInstance(@Nullable String teamJson)
+    public static MatchListFragment newInstance(@Nullable Team team)
     {
         MatchListFragment fragment = new MatchListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_TEAM_JSON, teamJson);
+        args.putString(ARG_TEAM_JSON, toJson(team));
         fragment.setArguments(args);
         return fragment;
     }

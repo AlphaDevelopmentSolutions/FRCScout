@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
+import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
@@ -35,12 +38,10 @@ public class RobotMediaFragment extends MasterFragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_ROBOT_MEDIA = "robot_media_json";
 
     // TODO: Rename and change types of parameters
     private String robotMediaJson;
-    private int teamId;
 
     private OnFragmentInteractionListener mListener;
 
@@ -53,17 +54,17 @@ public class RobotMediaFragment extends MasterFragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param robotMediaJson JSON for the robot media object
-     * @param teamId Id of the teams robot.
+     * @param robotMedia
+     * @param team
      * @return A new instance of fragment RobotMediaFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RobotMediaFragment newInstance(String robotMediaJson, int teamId)
+    public static RobotMediaFragment newInstance(@Nullable RobotMedia robotMedia, @NonNull Team team)
     {
         RobotMediaFragment fragment = new RobotMediaFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, robotMediaJson);
-        args.putInt(ARG_PARAM2, teamId);
+        args.putString(ARG_ROBOT_MEDIA, toJson(robotMedia));
+        args.putString(ARG_TEAM_JSON, toJson(team));
         fragment.setArguments(args);
         return fragment;
     }
@@ -74,8 +75,7 @@ public class RobotMediaFragment extends MasterFragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            robotMediaJson = getArguments().getString(ARG_PARAM1);
-            teamId = getArguments().getInt(ARG_PARAM2);
+            robotMediaJson = getArguments().getString(ARG_ROBOT_MEDIA);
         }
 
         if(robotMediaJson != null && !robotMediaJson.equals(""))
@@ -134,9 +134,10 @@ public class RobotMediaFragment extends MasterFragment
 //                            FileOutputStream fileOutputStream = new FileOutputStream(mediaFile);
 //                            robotThumbBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream); //write data to file
 
+                    joinLoadingThread();
                             robotMedia = new RobotMedia(
                                     -1,
-                                    teamId,
+                                    team.getId(),
                                     mediaFile.getAbsolutePath(),
                                     true);
 
