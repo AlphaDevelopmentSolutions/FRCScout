@@ -33,15 +33,12 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
 
     private Match match;
 
-    private Gson gson;
 
     public TeamListRecyclerViewAdapter(@Nullable Match match, @NonNull ArrayList<Team> teamList, @NonNull MainActivity context)
     {
         this.context = context;
         this.teamList = teamList;
         this.match = match;
-
-        this.gson = new Gson();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder
@@ -81,7 +78,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
         //Set the content on the card
         viewHolder.teamNameTextView.setText(team.getName());
         viewHolder.teamNumberTextView.setText(String.valueOf(team.getId()));
-        viewHolder.teamLocationTextView.setText(team.getCity() + ", " + team.getStateProvince() + ", " + team.getCountry());
+        viewHolder.teamLocationTextView.setText(String.format("%s, %s, %s", team.getCity(), team.getStateProvince(), team.getCountry()));
 
         //load the photo if the file exists
         if(!team.getImageFileURI().equals(""))

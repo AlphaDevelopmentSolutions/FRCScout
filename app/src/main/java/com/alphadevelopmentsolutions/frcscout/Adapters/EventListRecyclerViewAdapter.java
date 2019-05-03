@@ -31,15 +31,11 @@ public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventList
 
     private Type fragmentOnClick;
 
-    private Gson gson;
-
-    public EventListRecyclerViewAdapter(ArrayList<Event> eventList, MainActivity context, Type fragmentOnClick)
+    public EventListRecyclerViewAdapter(@NonNull ArrayList<Event> eventList, @NonNull MainActivity context, @NonNull Type fragmentOnClick)
     {
         this.context = context;
         this.eventList = eventList;
         this.fragmentOnClick = fragmentOnClick;
-
-        this.gson = new Gson();
 
         simpleDateFormat = new SimpleDateFormat("MMM d, yyyy");
     }
@@ -79,8 +75,8 @@ public class EventListRecyclerViewAdapter extends RecyclerView.Adapter<EventList
         
         //Set the content on the card
         viewHolder.eventTitleTextView.setText(event.getName());
-        viewHolder.eventLocationTextView.setText(event.getCity() + ", " + event.getStateProvince() + ", " + event.getCountry());
-        viewHolder.eventDateTextView.setText(simpleDateFormat.format(event.getStartDate().getTime()) + " - " + simpleDateFormat.format(event.getEndDate().getTime())); //TODO: Format date
+        viewHolder.eventLocationTextView.setText(String.format("%s, %s, %s", event.getCity(), event.getStateProvince(), event.getCountry()));
+        viewHolder.eventDateTextView.setText(String.format("%s - %s", simpleDateFormat.format(event.getStartDate().getTime()), simpleDateFormat.format(event.getEndDate().getTime())));
 
         //Sends you to the teamlist fragment
         viewHolder.viewEventButton.setOnClickListener(new View.OnClickListener()

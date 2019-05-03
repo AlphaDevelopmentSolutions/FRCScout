@@ -2,6 +2,7 @@ package com.alphadevelopmentsolutions.frcscout.Adapters;
 
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -35,26 +36,19 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
 
     private MainActivity context;
 
-    private Event event;
-
     private Team team;
-
-    private Gson gson;
 
     private HashMap<Match, ArrayList<ScoutCard>> scoutCards;
 
     private Type fragmentOnClick;
 
-    public MatchListRecyclerViewAdapter(Event event, Team team, MainActivity context, Type fragmentOnClick)
+    public MatchListRecyclerViewAdapter(@NonNull Event event, @Nullable Team team, @NonNull MainActivity context, @NonNull Type fragmentOnClick)
     {
         this.context = context;
-        this.event = event;
         this.team = team;
         this.fragmentOnClick = fragmentOnClick;
 
         this.matches = event.getMatches(context.getDatabase(), team);
-
-        gson = new Gson();
 
         scoutCards = new HashMap<>();
 

@@ -28,20 +28,11 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
 
     private MainActivity context;
 
-    private String eventJson;
-
-    public ScoutCardsRecyclerViewAdapter(ArrayList<Match> matchList, MainActivity context)
-    {
-        this.context = context;
-    }
-
-    public ScoutCardsRecyclerViewAdapter(Team team, String eventJson, ArrayList<ScoutCard> scoutCards, MainActivity context)
+    public ScoutCardsRecyclerViewAdapter(@NonNull Team team, @NonNull ArrayList<ScoutCard> scoutCards, @NonNull MainActivity context)
     {
         this.team = team;
         this.scoutCards = scoutCards;
         this.context = context;
-        this.eventJson = eventJson;
-
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder

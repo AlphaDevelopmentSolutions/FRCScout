@@ -28,35 +28,23 @@ public class ChecklistItemListRecyclerViewAdapter extends RecyclerView.Adapter<C
 {
 
     private ArrayList<ChecklistItem> checklistItems;
-    private ArrayList<User> users;
 
     private ArrayAdapter<String> userNamesAdapter;
 
     private MainActivity context;
 
-    private Event event;
-
-    private Team team;
-
     private Match match;
 
-    private Gson gson;
-
-
-    public ChecklistItemListRecyclerViewAdapter(Event event, Match match, Team team, ArrayList<ChecklistItem> checklistItems, ArrayList<User> users, MainActivity context)
+    public ChecklistItemListRecyclerViewAdapter(@NonNull Match match, @NonNull ArrayList<ChecklistItem> checklistItems, @NonNull MainActivity context)
     {
         this.checklistItems = checklistItems;
-        this.users = users;
         this.context = context;
-        this.event = event;
-        this.team = team;
         this.match = match;
 
-        gson = new Gson();
 
         ArrayList<String> userNames = new ArrayList<>();
 
-        for(User user : users)
+        for(User user : context.getDatabase().getUsers())
         {
             userNames.add(user.toString());
         }

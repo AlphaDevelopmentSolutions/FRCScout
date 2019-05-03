@@ -1,5 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,7 +14,7 @@ public class FragmentViewPagerAdapter extends FragmentPagerAdapter
     private ArrayList<Fragment> fragmentList;
     private ArrayList<String> titleList;
 
-    public FragmentViewPagerAdapter(FragmentManager fragmentManager)
+    public FragmentViewPagerAdapter(@NonNull FragmentManager fragmentManager)
     {
         super(fragmentManager);
 
@@ -26,7 +27,7 @@ public class FragmentViewPagerAdapter extends FragmentPagerAdapter
      * @param fragment to add
      * @param title of the fragment
      */
-    public void addFragment(Fragment fragment, String title)
+    public void addFragment(@NonNull Fragment fragment, @NonNull String title)
     {
         fragmentList.add(fragment);
         titleList.add(title);
