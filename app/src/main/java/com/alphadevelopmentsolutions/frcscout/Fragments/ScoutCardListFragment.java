@@ -68,7 +68,7 @@ public class ScoutCardListFragment extends MasterFragment
 
         joinLoadingThread();
 
-        ScoutCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new ScoutCardsRecyclerViewAdapter(team, team.getScoutCards(event, null, false, database), context);
+        ScoutCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new ScoutCardsRecyclerViewAdapter(team, team.getScoutCards(event, null, null, false, database), context);
         scoutCardListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         scoutCardListRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
 

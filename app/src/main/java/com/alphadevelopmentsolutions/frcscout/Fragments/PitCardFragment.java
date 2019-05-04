@@ -229,7 +229,8 @@ public class PitCardFragment extends MasterFragment
 
         ArrayList<String> scouterNames = new ArrayList<>();
 
-        for(User user : database.getUsers())
+        //get all users
+        for(User user : User.getUsers(null, database))
             scouterNames.add(user.toString());
 
         ArrayAdapter<String> scouterNameAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, scouterNames);

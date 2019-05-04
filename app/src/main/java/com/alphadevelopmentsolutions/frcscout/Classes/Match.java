@@ -1,5 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor;
@@ -289,14 +290,28 @@ public class Match extends Table
 
     /**
      * Gets all scout cards associated with the match
-     * @param team id for teams cards you want to load
+     * @param event if specified, filters scout cards by event id
+     * @param team if specified, filters scout cards by team id
+     * @param scoutCard if specified, filters scout cards by scoutcard id
      * @param onlyDrafts boolean if you only want drafts
      * @param database used for loading cards
      * @return arraylist of scout cards
      */
-    public ArrayList<ScoutCard> getScoutCards(@Nullable Team team, boolean onlyDrafts, Database database)
+    public ArrayList<ScoutCard> getScoutCards(@Nullable Event event, @Nullable Team team, @Nullable ScoutCard scoutCard, boolean onlyDrafts, @NonNull Database database)
     {
-        return database.getScoutCards(null, this, team, onlyDrafts);
+        return ScoutCard.getScoutCards(event, this, team, scoutCard, onlyDrafts, database);
+    }
+
+    /**
+     * Gets all teams associated with the match
+     * @param event if specified, filters teams by event id
+     * @param team if specified, filters teams by team id
+     * @param database used for loading cards
+     * @return arraylist of scout cards
+     */
+    public ArrayList<Team> getTeams(@Nullable Event event, @Nullable Team team, Database database)
+    {
+        return Team.getTeams(event, this, team, database);
     }
 
     /**
@@ -403,7 +418,8 @@ public class Match extends Table
 
         if(database.isOpen())
         {
-            Match match = database.getMatch(this);
+            ArrayList<Match> matches = getMatches(null, this, null, database);
+            Match match = (matches.size() > 0 ) ? matches.get(0) : null;
 
             if (match != null)
             {
@@ -480,6 +496,18 @@ public class Match extends Table
     public static void clearTable(Database database)
     {
         database.clearTable(TABLE_NAME);
+    }
+
+    /**
+     * Returns arraylist of teams with specified filters from database
+     * @param event if specified, filters teams by event id
+     * @param team if specified, filters teams by team id
+     * @param database used to load teams
+     * @return arraylist of teams
+     */
+    public static ArrayList<Match> getMatches(@Nullable Event event, @Nullable Match match, @Nullable Team team, @NonNull Database database)
+    {
+        return database.getMatches(event, match, team);
     }
 
     //endregion

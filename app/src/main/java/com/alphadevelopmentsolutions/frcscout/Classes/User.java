@@ -1,5 +1,10 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.util.ArrayList;
+
 public class User extends Table
 {
     public static final String TABLE_NAME = "users";
@@ -95,8 +100,8 @@ public class User extends Table
 
         if(database.isOpen())
         {
-            User user = database.getUser(this);
-
+            ArrayList<User> users = getUsers(this, database);
+            User user = (users.size() > 0 ) ? users.get(0) : null;
 
             if (user != null)
             {
@@ -160,6 +165,17 @@ public class User extends Table
     public static void clearTable(Database database)
     {
         database.clearTable(TABLE_NAME);
+    }
+
+    /**
+     * Returns arraylist of users with specified filters from database
+     * @param user if specified, filters users by user id
+     * @param database used to load users
+     * @return arraylist of users
+     */
+    public static ArrayList<User> getUsers(@Nullable User user, @NonNull Database database)
+    {
+        return database.getUsers(user);
     }
 
     //endregion

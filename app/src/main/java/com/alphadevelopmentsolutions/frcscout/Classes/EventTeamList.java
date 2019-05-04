@@ -1,5 +1,10 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.util.ArrayList;
+
 public class EventTeamList extends Table
 {
 
@@ -97,8 +102,8 @@ public class EventTeamList extends Table
 
         if(database.isOpen())
         {
-            EventTeamList eventTeamList = database.getEventTeamList(this);
-
+            ArrayList<EventTeamList> eventTeamLists = getEventTeamList(this, null, database);
+            EventTeamList eventTeamList = (eventTeamLists.size() > 0 ) ? eventTeamLists.get(0) : null;
 
             if (eventTeamList != null)
             {
@@ -162,6 +167,18 @@ public class EventTeamList extends Table
     public static void clearTable(Database database)
     {
         database.clearTable(TABLE_NAME);
+    }
+
+    /**
+     * Returns arraylist of event team list with specified filters from database
+     * @param eventTeamList if specified, filters event team list by eventTeamList id
+     * @param event if specified, filters event team list by event id
+     * @param database used to load event team list
+     * @return arraylist of event team list
+     */
+    public static ArrayList<EventTeamList> getEventTeamList(@Nullable EventTeamList eventTeamList, @Nullable Event event, @NonNull Database database)
+    {
+        return database.getEventTeamLists(eventTeamList, event);
     }
 
     //endregion

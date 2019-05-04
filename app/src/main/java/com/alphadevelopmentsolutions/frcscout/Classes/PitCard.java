@@ -1,5 +1,10 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.util.ArrayList;
+
 public class PitCard extends Table
 {
 
@@ -336,8 +341,8 @@ public class PitCard extends Table
 
         if(database.isOpen())
         {
-            PitCard pitCard = database.getPitCard(this);
-
+            ArrayList<PitCard> pitCards = getPitCards(null, null, this, false, database);
+            PitCard pitCard = (pitCards.size() > 0 ) ? pitCards.get(0) : null;
 
             if (pitCard != null)
             {
@@ -422,6 +427,20 @@ public class PitCard extends Table
     public static void clearTable(Database database, boolean clearDrafts)
     {
         database.clearTable(TABLE_NAME, clearDrafts);
+    }
+
+    /**
+     * Returns arraylist of pit cards with specified filters from database
+     * @param event if specified, filters pit cards by event id
+     * @param team if specified, filters pit cards by team id
+     * @param pitCard if specified, filters pit cards by pitCard id
+     * @param onlyDrafts if true, filters pit cards by draft
+     * @param database used to load pit cards
+     * @return arraylist of teams
+     */
+    public static ArrayList<PitCard> getPitCards(@Nullable Event event, @Nullable Team team, @Nullable PitCard pitCard, boolean onlyDrafts, @NonNull Database database)
+    {
+        return database.getPitCards(event, team, pitCard, onlyDrafts);
     }
 
     //endregion

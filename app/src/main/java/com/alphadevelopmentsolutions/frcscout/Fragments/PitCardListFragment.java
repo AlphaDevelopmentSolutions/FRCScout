@@ -68,7 +68,7 @@ public class PitCardListFragment extends MasterFragment
 
         joinLoadingThread();
 
-        PitCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new PitCardsRecyclerViewAdapter(team, database.getPitCards(team, event,false), context);
+        PitCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new PitCardsRecyclerViewAdapter(team, team.getPitCards(event, null,false, database), context);
         pitCardListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         pitCardListRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
 

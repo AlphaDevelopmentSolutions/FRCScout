@@ -1,6 +1,10 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class ChecklistItemResult extends Table
@@ -178,7 +182,8 @@ public class ChecklistItemResult extends Table
 
         if(database.isOpen())
         {
-            ChecklistItemResult checklistItemResult = database.getChecklistItemResult(this);
+            ArrayList<ChecklistItemResult> checklistItemResults = getChecklistItemResults(null,this, false, database);
+            ChecklistItemResult checklistItemResult = (checklistItemResults.size() > 0 ) ? checklistItemResults.get(0) : null;
 
             if (checklistItemResult != null)
             {
@@ -246,6 +251,19 @@ public class ChecklistItemResult extends Table
     public static void clearTable(Database database, boolean clearDrafts)
     {
         database.clearTable(TABLE_NAME, clearDrafts);
+    }
+
+    /**
+     * Returns arraylist of checklist items with specified filters from database
+     * @param checklistItem if specified, filters checklist items by checklistItem id
+     * @param checklistItemResult if specified, filters checklist items by checklistItemResult id
+     * @param onlyDrafts if true, filters checklist items by draft
+     * @param database used to load checklist items
+     * @return arraylist of checklist items
+     */
+    public static ArrayList<ChecklistItemResult> getChecklistItemResults(@Nullable ChecklistItem checklistItem, @Nullable ChecklistItemResult checklistItemResult, boolean onlyDrafts, @NonNull Database database)
+    {
+        return database.getChecklistItemResults(checklistItem, checklistItemResult, onlyDrafts);
     }
 
     //endregion

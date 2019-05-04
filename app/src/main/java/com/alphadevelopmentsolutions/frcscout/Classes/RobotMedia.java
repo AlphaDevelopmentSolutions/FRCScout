@@ -2,12 +2,15 @@ package com.alphadevelopmentsolutions.frcscout.Classes;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Base64;
 
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class RobotMedia extends Table
@@ -170,8 +173,8 @@ public class RobotMedia extends Table
 
         if(database.isOpen())
         {
-            RobotMedia robotMedia = database.getRobotMedia(this);
-
+            ArrayList<RobotMedia> robotMediaArrayList = getRobotMedia(this, null, false, database);
+            RobotMedia robotMedia = (robotMediaArrayList.size() > 0 ) ? robotMediaArrayList.get(0) : null;
 
             if (robotMedia != null)
             {
@@ -237,6 +240,19 @@ public class RobotMedia extends Table
     public static void clearTable(Database database, boolean clearDrafts)
     {
         database.clearTable(TABLE_NAME, clearDrafts);
+    }
+
+    /**
+     * Returns arraylist of robot media with specified filters from database
+     * @param robotMedia if specified, filters robot media by robotmedia id
+     * @param team if specified, filters robot media by team id
+     * @param onlyDrafts if true, filters robot media by draft
+     * @param database used to load robot media
+     * @return arraylist of robot media
+     */
+    public static ArrayList<RobotMedia> getRobotMedia(@Nullable RobotMedia robotMedia, @Nullable Team team, boolean onlyDrafts, @NonNull Database database)
+    {
+        return database.getRobotMedia(robotMedia, team, onlyDrafts);
     }
 
     //endregion

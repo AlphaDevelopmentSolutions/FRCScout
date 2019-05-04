@@ -109,7 +109,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
         //find the most recent scout card if any, and send to the scout card page
         else
         {
-            final ArrayList<ScoutCard> scoutCards = team.getScoutCards(null, match, false, context.getDatabase());
+            final ArrayList<ScoutCard> scoutCards = team.getScoutCards(null, match, null, false, context.getDatabase());
 
             //scout card found, show that one
             if(scoutCards.size() > 0)

@@ -1,9 +1,13 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class ScoutCard extends Table
@@ -546,8 +550,8 @@ public class ScoutCard extends Table
 
         if(database.isOpen())
         {
-            ScoutCard scoutCard = database.getScoutCard(this);
-
+            ArrayList<ScoutCard> scoutCards = getScoutCards(null, null, null, this, false, database);
+            ScoutCard scoutCard = (scoutCards.size() > 0 ) ? scoutCards.get(0) : null;
 
             if (scoutCard != null)
             {
@@ -644,6 +648,21 @@ public class ScoutCard extends Table
     public static void clearTable(Database database, boolean clearDrafts)
     {
         database.clearTable(TABLE_NAME, clearDrafts);
+    }
+
+    /**
+     * Returns arraylist of scout cards with specified filters from database
+     * @param event if specified, filters scout cards by event id
+     * @param match if specified, filters scout cards by match id
+     * @param team if specified, filters scout cards by team id
+     * @param scoutCard if specified, filters scout cards by scout card id
+     * @param onlyDrafts if true, filters scout cards by draft
+     * @param database used to load scout cards
+     * @return arraylist of scout cards
+     */
+    public static ArrayList<ScoutCard> getScoutCards(@Nullable Event event, @Nullable Match match, @Nullable Team team, @Nullable ScoutCard scoutCard, boolean onlyDrafts, @NonNull Database database)
+    {
+        return database.getScoutCards(event, match, team, scoutCard, onlyDrafts);
     }
 
     //endregion

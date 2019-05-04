@@ -1,5 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -115,24 +116,39 @@ public class Event extends Table
 
     /**
      * Gets matches from a specific event
+     * @param match if specified, filters matches by match id
+     * @param team if specified, filters matches by team id
      * @param database used to get matches
-     * @param team if not null, only gets matches for specified team
      * @return arraylist of matches
      */
-    public ArrayList<Match> getMatches(Database database, @Nullable Team team)
+    public ArrayList<Match> getMatches(@Nullable Match match, @Nullable Team team, @NonNull Database database)
     {
-        return database.getMatches(this, team);
+        return Match.getMatches(this, match, team, database);
     }
 
     /**
      * Gets teams from a specific event
-     * @param database used to get matches
+     * @param match if specified, filters matches by match id
+     * @param team if specified, filters teams by team id
+     * @param database used to get teams
      * @return arraylist of teams
      */
-    public ArrayList<Team> getTeams(Database database)
+    public ArrayList<Team> getTeams(@Nullable Match match, @Nullable Team team, @NonNull Database database)
     {
-        return database.getTeams(this);
+        return Team.getTeams(this, match, team, database);
     }
+
+    /**
+     * Gets event team list from a specific event
+     * @param eventTeamList if specified, filters event team list by eventteamlist id
+     * @param database used to get event team list
+     * @return arraylist of teams
+     */
+    public ArrayList<EventTeamList> getEventTeamList(@Nullable EventTeamList eventTeamList, Database database)
+    {
+        return EventTeamList.getEventTeamList(eventTeamList, this, database);
+    }
+
 
     @Override
     public String toString()
@@ -200,7 +216,8 @@ public class Event extends Table
 
         if(database.isOpen())
         {
-            Event event = database.getEvent(this);
+            ArrayList<Event> events = getEvents(this, database);
+            Event event = (events.size() > 0 ) ? events.get(0) : null;
 
             if (event != null)
             {
@@ -268,6 +285,17 @@ public class Event extends Table
     public static void clearTable(Database database)
     {
         database.clearTable(TABLE_NAME);
+    }
+
+    /**
+     * Returns arraylist of events with specified filters from database
+     * @param event if specified, filters events by event id
+     * @param database used to load events
+     * @return arraylist of events
+     */
+    public static ArrayList<Event> getEvents(@Nullable Event event, Database database)
+    {
+        return database.getEvents(event);
     }
 
     //endregion

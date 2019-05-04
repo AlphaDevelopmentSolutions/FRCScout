@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.RobotMediaListRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
 
@@ -69,7 +70,7 @@ public class RobotMediaListFragment extends MasterFragment
 
                 joinLoadingThread();
 
-                final RobotMediaListRecyclerViewAdapter robotMediaListRecyclerViewAdapter = new RobotMediaListRecyclerViewAdapter(team, database.getRobotMedia(team, false), context);
+                final RobotMediaListRecyclerViewAdapter robotMediaListRecyclerViewAdapter = new RobotMediaListRecyclerViewAdapter(team, team.getRobotMedia(null, false, database), context);
 
                 context.runOnUiThread(new Runnable() {
                     @Override

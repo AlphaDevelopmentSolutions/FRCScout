@@ -49,7 +49,8 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
         this.team = team;
         this.fragmentOnClick = fragmentOnClick;
 
-        this.matches = event.getMatches(context.getDatabase(), team);
+        //get all matches for a specific team (if specified), at the specified event
+        this.matches = event.getMatches(null, team, context.getDatabase());
 
         scoutCards = new HashMap<>();
 
@@ -59,7 +60,7 @@ public class MatchListRecyclerViewAdapter extends RecyclerView.Adapter<MatchList
             //load all the scout cards for a match
             for (Match match : matches)
                 //get the scout card from the match
-                scoutCards.put(match, match.getScoutCards(team, false, context.getDatabase()));
+                scoutCards.put(match, match.getScoutCards(event, team, null,false, context.getDatabase()));
         }
     }
 

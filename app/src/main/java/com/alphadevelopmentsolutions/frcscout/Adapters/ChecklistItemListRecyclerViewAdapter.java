@@ -44,7 +44,8 @@ public class ChecklistItemListRecyclerViewAdapter extends RecyclerView.Adapter<C
 
         ArrayList<String> userNames = new ArrayList<>();
 
-        for(User user : context.getDatabase().getUsers())
+        //get all users
+        for(User user : User.getUsers(null, context.getDatabase()))
         {
             userNames.add(user.toString());
         }
@@ -103,7 +104,7 @@ public class ChecklistItemListRecyclerViewAdapter extends RecyclerView.Adapter<C
         ChecklistItemResult checklistItemResult = null;
 
         //filter by match id
-        for(ChecklistItemResult storedChecklistItemResult : checklistItem.getResults(context.getDatabase(), false))
+        for(ChecklistItemResult storedChecklistItemResult : checklistItem.getResults(null, false, context.getDatabase()))
         {
             if(storedChecklistItemResult.getMatchId().equals(match.getKey()))
             {

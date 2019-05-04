@@ -391,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     final int remainingPercent = (downloadMedia) ? 90 : 100 - progressDialogProgess; //max amount of percentage we have before we can't add anymore to the progress dialog
 
-                    final ArrayList<Event> events = getDatabase().getEvents();
+                    final ArrayList<Event> events = Event.getEvents(null, getDatabase());
 
                     //iterate through each event and get its data
                     for (int i = 0; i < events.size(); i++)
@@ -522,7 +522,7 @@ public class MainActivity extends AppCompatActivity implements
                         RobotMedia.clearTable(getDatabase(), false);
                         Server.GetRobotMedia getRobotMedia;
 
-                        for (final Team team : getDatabase().getTeams(null))
+                        for (final Team team : Team.getTeams(null, null, null, getDatabase()))
                         {
                             context.runOnUiThread(new Runnable()
                             {
@@ -578,7 +578,7 @@ public class MainActivity extends AppCompatActivity implements
     {
         progressDialog = new ProgressDialog(context);
 
-        final ArrayList<Team> teams = getDatabase().getTeams(null);
+        final ArrayList<Team> teams = Team.getTeams(null, null, null, getDatabase());
         final int totalTeams = teams.size();
 
         progressDialog.setMax(totalTeams);
@@ -594,13 +594,13 @@ public class MainActivity extends AppCompatActivity implements
 
                 boolean success = true;
 
-                for(Event event : getDatabase().getEvents())
+                for(Event event : Event.getEvents(null, getDatabase()))
                 {
 
                     //upload team specific data
                     for (Team team : teams)
                     {
-                        for (ScoutCard scoutCard : getDatabase().getScoutCards(event, null, team,true))
+                        for (ScoutCard scoutCard : ScoutCard.getScoutCards(event, null, team, null,true, getDatabase()))
                         {
                             Server.SubmitScoutCard submitScoutCard = new Server.SubmitScoutCard(context, scoutCard);
                             if (submitScoutCard.execute())
@@ -611,7 +611,7 @@ public class MainActivity extends AppCompatActivity implements
                                 success = false;
                         }
 
-                        for (PitCard pitCard : getDatabase().getPitCards(team, event, true))
+                        for (PitCard pitCard : PitCard.getPitCards(event, team, null, true, getDatabase()))
                         {
                             Server.SubmitPitCard submitScoutCard = new Server.SubmitPitCard(context, pitCard);
                             if (submitScoutCard.execute())
@@ -622,7 +622,7 @@ public class MainActivity extends AppCompatActivity implements
                                 success = false;
                         }
 
-                        for (RobotMedia robotMedia : getDatabase().getRobotMedia(team, true))
+                        for (RobotMedia robotMedia : RobotMedia.getRobotMedia(null, team, true, getDatabase()))
                         {
                             Server.SubmitRobotMedia submitRobotMedia = new Server.SubmitRobotMedia(context, robotMedia);
                             if (submitRobotMedia.execute())
@@ -635,9 +635,9 @@ public class MainActivity extends AppCompatActivity implements
                     }
 
                     //Checklist item results
-                    for(ChecklistItem checklistItem : getDatabase().getChecklistItems())
+                    for(ChecklistItem checklistItem : ChecklistItem.getChecklistItems(null, getDatabase()))
                     {
-                        for(ChecklistItemResult checklistItemResult : checklistItem.getResults(getDatabase(), true))
+                        for(ChecklistItemResult checklistItemResult : checklistItem.getResults(null,true, getDatabase()))
                         {
                             Server.SubmitChecklistItemResult submitChecklistItemResult = new Server.SubmitChecklistItemResult(context, checklistItemResult);
                             if(submitChecklistItemResult.execute())
@@ -951,7 +951,7 @@ public class MainActivity extends AppCompatActivity implements
             {
                 //check any teams are on device and if the device is online
                 //if no teams, update data
-                if (getDatabase().getTeams(null).size() == 0 && isOnline())
+                if (Team.getTeams(null, null, null, getDatabase()).size() == 0 && isOnline())
                     downloadApplicationData(false);
 
                 //join back up with the update thread if it is not null

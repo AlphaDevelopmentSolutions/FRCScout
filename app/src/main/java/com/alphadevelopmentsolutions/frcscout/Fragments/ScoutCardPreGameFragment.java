@@ -75,7 +75,8 @@ public class ScoutCardPreGameFragment extends MasterFragment {
                 //populate the scouter name auto complete textview
                 scouterNames = new ArrayList<>();
 
-                for(User user : database.getUsers())
+                //get all users
+                for(User user : User.getUsers(null, database))
                     scouterNames.add(user.toString());
 
                 scouterNameAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, scouterNames);

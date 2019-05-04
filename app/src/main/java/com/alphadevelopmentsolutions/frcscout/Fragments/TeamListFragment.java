@@ -87,7 +87,8 @@ public class TeamListFragment extends MasterFragment
                 if(match != null && allianceColorString != null && !allianceColorString.equals(""))
                     allianceColor = AllianceColor.getColorFromString(allianceColorString);
 
-                teams = event.getTeams(database);
+                //get all teams at event
+                teams = event.getTeams(null, null, database);
 
                 //if a match and alliance color was specified,
                 //remove any teams that are not in that match or alliance color

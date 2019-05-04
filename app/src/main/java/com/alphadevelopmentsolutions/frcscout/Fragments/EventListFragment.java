@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.EventListRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 
@@ -87,7 +88,7 @@ public class EventListFragment extends MasterFragment
 
         eventListRecyclerView = view.findViewById(R.id.EventListRecyclerView);
 
-        EventListRecyclerViewAdapter eventListRecyclerViewAdapter = new EventListRecyclerViewAdapter(database.getEvents(), context);
+        EventListRecyclerViewAdapter eventListRecyclerViewAdapter = new EventListRecyclerViewAdapter(Event.getEvents(null, database), context);
         eventListRecyclerView.setAdapter(eventListRecyclerViewAdapter);
         eventListRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 

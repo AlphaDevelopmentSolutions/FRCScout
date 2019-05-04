@@ -2,6 +2,7 @@ package com.alphadevelopmentsolutions.frcscout.Classes;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.alphadevelopmentsolutions.frcscout.Interfaces.StatsKeys;
@@ -237,7 +238,7 @@ public class Team extends Table
 
 
         //get all scout cards from the database
-        ArrayList<ScoutCard> scoutCards = getScoutCards(event, null, false, database);
+        ArrayList<ScoutCard> scoutCards = getScoutCards(event, null, null, false, database);
 
         //store iterations for avg
         int i = 0;
@@ -414,13 +415,41 @@ public class Team extends Table
 
     /**
      * Gets all scout cards associated with the team
+     * @param event if specified, filters scout cards by event id
+     * @param match if specified, filters scout cards by match id
+     * @param scoutCard if specified, filters scout cards by scoutcard id
      * @param database used for loading cards
      * @param onlyDrafts boolean if you only want drafts
      * @return arraylist of scout cards
      */
-    public ArrayList<ScoutCard> getScoutCards(@Nullable Event event, @Nullable Match match, boolean onlyDrafts, Database database)
+    public ArrayList<ScoutCard> getScoutCards(@Nullable Event event, @Nullable Match match, @Nullable ScoutCard scoutCard, boolean onlyDrafts, @NonNull Database database)
     {
-        return database.getScoutCards(event, match, this, onlyDrafts);
+        return ScoutCard.getScoutCards(event, match, this, scoutCard, onlyDrafts, database);
+    }
+
+    /**
+     * Gets all scout cards associated with the team
+     * @param event if specified, filters pit cards by event id
+     * @param pitCard if specified, filters pit cards by pitcard id
+     * @param database used for loading cards
+     * @param onlyDrafts boolean if you only want drafts
+     * @return arraylist of scout cards
+     */
+    public ArrayList<PitCard> getPitCards(@Nullable Event event, @Nullable PitCard pitCard, boolean onlyDrafts, @NonNull Database database)
+    {
+        return PitCard.getPitCards(event, this, pitCard, onlyDrafts, database);
+    }
+
+    /**
+     * Gets all scout cards associated with the team
+     * @param robotMedia if specified, filters robot media by robot media id
+     * @param database used for loading cards
+     * @param onlyDrafts boolean if you only want drafts
+     * @return arraylist of scout cards
+     */
+    public ArrayList<RobotMedia> getRobotMedia(@Nullable RobotMedia robotMedia, boolean onlyDrafts, @NonNull Database database)
+    {
+        return RobotMedia.getRobotMedia(robotMedia, this, onlyDrafts, database);
     }
 
     @Override
@@ -509,8 +538,8 @@ public class Team extends Table
 
         if(database.isOpen())
         {
-            Team team = database.getTeam(this);
-
+            ArrayList<Team> teams = getTeams(null, null, this, database);
+            Team team = (teams.size() > 0 ) ? teams.get(0) : null;
 
             if (team != null)
             {
@@ -583,6 +612,19 @@ public class Team extends Table
     public static void clearTable(Database database)
     {
         database.clearTable(TABLE_NAME);
+    }
+
+    /**
+     * Returns arraylist of teams with specified filters from database
+     * @param event if specified, filters teams by event id
+     * @param match if specified, filters teams by match id
+     * @param team if specified, filters teams by team id
+     * @param database used to load teams
+     * @return arraylist of teams
+     */
+    public static ArrayList<Team> getTeams(@Nullable Event event, @Nullable Match match, @Nullable Team team, @NonNull Database database)
+    {
+        return database.getTeams(event, match, team);
     }
 
     //endregion
