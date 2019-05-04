@@ -18,7 +18,6 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -44,7 +43,6 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
     static class ViewHolder extends RecyclerView.ViewHolder
     {
         TextView teamNameTextView;
-        TextView teamNumberTextView;
         TextView teamLocationTextView;
         ImageView teamLogoImageView;
         Button viewTeamButton;
@@ -54,7 +52,6 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
             super(view);
 
             teamNameTextView = view.findViewById(R.id.TeamNameTextView);
-            teamNumberTextView = view.findViewById(R.id.TeamNumberTextView);
             teamLocationTextView = view.findViewById(R.id.TeamLocationTextView);
             teamLogoImageView = view.findViewById(R.id.TeamLogoImageView);
             viewTeamButton = view.findViewById(R.id.ViewTeamButton);
@@ -76,8 +73,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
     {
         final Team team = teamList.get(viewHolder.getAdapterPosition());
         //Set the content on the card
-        viewHolder.teamNameTextView.setText(team.getName());
-        viewHolder.teamNumberTextView.setText(String.valueOf(team.getId()));
+        viewHolder.teamNameTextView.setText(team.toString());
         viewHolder.teamLocationTextView.setText(String.format("%s, %s, %s", team.getCity(), team.getStateProvince(), team.getCountry()));
 
         //load the photo if the file exists
