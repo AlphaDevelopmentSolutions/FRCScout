@@ -15,6 +15,7 @@ import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -902,28 +903,34 @@ public abstract class Server extends Api
                 //iterate through, create a new object and add it to the arraylist
                 for (int i = 0; i < response.getJSONArray(API_FIELD_NAME_RESPONSE).length(); i++)
                 {
-                    JSONObject checklistItemResultObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
+                    JSONArray checklistItemResultArray = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONArray(i);
 
-                    int checklistItemId = checklistItemResultObject.getInt(ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID);
+                    for(int j = 0; j < checklistItemResultArray.length(); j++)
+                    {
 
-                    String matchId = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_MATCH_ID);
-                    String status = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_STATUS);
-                    String completedBy = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY);
+                        JSONObject checklistItemResultObject = checklistItemResultArray.getJSONObject(j);
 
-                    Date completedDate = simpleDateFormat.parse(checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE));
+                        int checklistItemId = checklistItemResultObject.getInt(ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID);
 
-                    checklistItemResults.add(
-                            new ChecklistItemResult(
-                                    -1,
-                                    checklistItemId,
-                                    matchId,
+                        String matchId = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_MATCH_ID);
+                        String status = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_STATUS);
+                        String completedBy = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY);
 
-                                    status,
-                                    completedBy,
+                        Date completedDate = simpleDateFormat.parse(checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE));
 
-                                    completedDate,
-                                    false
-                                    ));
+                        checklistItemResults.add(
+                                new ChecklistItemResult(
+                                        -1,
+                                        checklistItemId,
+                                        matchId,
+
+                                        status,
+                                        completedBy,
+
+                                        completedDate,
+                                        false
+                                ));
+                    }
                 }
 
                 return true;
