@@ -3,6 +3,8 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.widget.EditText;
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
@@ -31,15 +34,6 @@ import java.util.ArrayList;
  */
 public class PitCardFragment extends MasterFragment
 {
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "PitCardId";
-    private static final String ARG_PARAM2 = "EventJson";
-    private static final String ARG_PARAM3 = "TeamId";
-
-    private String pitCardJson;
-    private String eventJson;
-    private int teamId;
-
     private OnFragmentInteractionListener mListener;
 
     public PitCardFragment()
@@ -51,19 +45,17 @@ public class PitCardFragment extends MasterFragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param pitCardJson pit card json.
-     * @param eventJson event json.
-     * @param teamId Parameter 2.
+     * @param pitCard
+     * @param team
      * @return A new instance of fragment PitCardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PitCardFragment newInstance(String pitCardJson, String eventJson, int teamId)
+    public static PitCardFragment newInstance(@Nullable PitCard pitCard, @NonNull Team team)
     {
         PitCardFragment fragment = new PitCardFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, pitCardJson);
-        args.putString(ARG_PARAM2, eventJson);
-        args.putInt(ARG_PARAM3, teamId);
+        args.putString(ARG_PARAM_PIT_CARD_JSON, toJson(pitCard));
+        args.putString(ARG_TEAM_JSON, toJson(team));
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,18 +64,6 @@ public class PitCardFragment extends MasterFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            pitCardJson = getArguments().getString(ARG_PARAM1);
-            eventJson = getArguments().getString(ARG_PARAM2);
-            teamId = getArguments().getInt(ARG_PARAM3);
-        }
-
-        if(pitCardJson != null && !pitCardJson.equals(""))
-            pitCard = new Gson().fromJson(pitCardJson, PitCard.class);
-
-        if(eventJson != null && !eventJson.equals(""))
-            event = new Gson().fromJson(eventJson, Event.class);
     }
     
     private AutoCompleteTextView teamNumberAutoCompleteTextView;
@@ -107,9 +87,6 @@ public class PitCardFragment extends MasterFragment
     private EditText notesEditText;
     
     private Button saveButton;
-
-    private PitCard pitCard;
-    private Event event;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -142,6 +119,8 @@ public class PitCardFragment extends MasterFragment
         notesEditText = view.findViewById(R.id.NotesEditText);
 
         saveButton = view.findViewById(R.id.SaveButton);
+
+        joinLoadingThread();
         
         saveButton.setOnClickListener(new View.OnClickListener()
         {
@@ -243,14 +222,15 @@ public class PitCardFragment extends MasterFragment
         });
 
 
-        teamNumberAutoCompleteTextView.setText(String.valueOf(teamId));
+        teamNumberAutoCompleteTextView.setText(String.valueOf(team.getId()));
         teamNumberAutoCompleteTextView.setFocusable(false);
         teamNumberAutoCompleteTextView.setInputType(InputType.TYPE_NULL);
 
 
         ArrayList<String> scouterNames = new ArrayList<>();
 
-        for(User user : database.getUsers())
+        //get all users
+        for(User user : User.getUsers(null, database))
             scouterNames.add(user.toString());
 
         ArrayAdapter<String> scouterNameAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, scouterNames);

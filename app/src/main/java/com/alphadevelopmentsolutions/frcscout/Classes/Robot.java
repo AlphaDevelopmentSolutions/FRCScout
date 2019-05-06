@@ -1,11 +1,17 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
-public class Robot
+public class Robot extends Table
 {
     public static final String TABLE_NAME = "robots";
     public static final String COLUMN_NAME_ID = "Id";
     public static final String COLUMN_NAME_NAME = "Name";
     public static final String COLUMN_NAME_TEAM_NUMBER = "TeamId";
+
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME +" (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_NAME + " TEXT," +
+                    COLUMN_NAME_TEAM_NUMBER + " INTEGER)";
 
     private int id;
     private String name;
@@ -45,6 +51,12 @@ public class Robot
     public int getTeamNumber()
     {
         return teamNumber;
+    }
+
+    @Override
+    public String toString()
+    {
+        return getName();
     }
 
     //endregion
@@ -138,6 +150,15 @@ public class Robot
         }
 
         return successful;
+    }
+
+    /**
+     * Clears all data from the classes table
+     * @param database used to clear table
+     */
+    public static void clearTable(Database database)
+    {
+        database.clearTable(TABLE_NAME);
     }
 
     //endregion

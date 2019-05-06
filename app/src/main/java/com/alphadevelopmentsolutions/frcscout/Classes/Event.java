@@ -1,8 +1,12 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.util.ArrayList;
 import java.util.Date;
 
-public class Event
+public class Event extends Table
 {
 
     public static final String TABLE_NAME = "events";
@@ -14,6 +18,17 @@ public class Event
     public static final String COLUMN_NAME_COUNTRY = "Country";
     public static final String COLUMN_NAME_START_DATE = "StartDate";
     public static final String COLUMN_NAME_END_DATE = "EndDate";
+
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME + " (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_BLUE_ALLIANCE_ID + " TEXT," +
+                    COLUMN_NAME_NAME + " TEXT," +
+                    COLUMN_NAME_CITY + " TEXT," +
+                    COLUMN_NAME_STATEPROVINCE + " TEXT," +
+                    COLUMN_NAME_COUNTRY + " TEXT," +
+                    COLUMN_NAME_START_DATE + " INTEGER," +
+                    COLUMN_NAME_END_DATE + " INTEGER)";
 
     private int id;
 
@@ -99,6 +114,48 @@ public class Event
         return endDate;
     }
 
+    /**
+     * Gets matches from a specific event
+     * @param match if specified, filters matches by match id
+     * @param team if specified, filters matches by team id
+     * @param database used to get matches
+     * @return arraylist of matches
+     */
+    public ArrayList<Match> getMatches(@Nullable Match match, @Nullable Team team, @NonNull Database database)
+    {
+        return Match.getMatches(this, match, team, database);
+    }
+
+    /**
+     * Gets teams from a specific event
+     * @param match if specified, filters matches by match id
+     * @param team if specified, filters teams by team id
+     * @param database used to get teams
+     * @return arraylist of teams
+     */
+    public ArrayList<Team> getTeams(@Nullable Match match, @Nullable Team team, @NonNull Database database)
+    {
+        return Team.getTeams(this, match, team, database);
+    }
+
+    /**
+     * Gets event team list from a specific event
+     * @param eventTeamList if specified, filters event team list by eventteamlist id
+     * @param database used to get event team list
+     * @return arraylist of teams
+     */
+    public ArrayList<EventTeamList> getEventTeamList(@Nullable EventTeamList eventTeamList, Database database)
+    {
+        return EventTeamList.getEventTeamList(eventTeamList, this, database);
+    }
+
+
+    @Override
+    public String toString()
+    {
+        return getName();
+    }
+
     //endregion
 
     //region Setters
@@ -159,7 +216,8 @@ public class Event
 
         if(database.isOpen())
         {
-            Event event = database.getEvent(this);
+            ArrayList<Event> events = getEvents(this, database);
+            Event event = (events.size() > 0 ) ? events.get(0) : null;
 
             if (event != null)
             {
@@ -218,6 +276,26 @@ public class Event
         }
 
         return successful;
+    }
+
+    /**
+     * Clears all data from the classes table
+     * @param database used to clear table
+     */
+    public static void clearTable(Database database)
+    {
+        database.clearTable(TABLE_NAME);
+    }
+
+    /**
+     * Returns arraylist of events with specified filters from database
+     * @param event if specified, filters events by event id
+     * @param database used to load events
+     * @return arraylist of events
+     */
+    public static ArrayList<Event> getEvents(@Nullable Event event, Database database)
+    {
+        return database.getEvents(event);
     }
 
     //endregion

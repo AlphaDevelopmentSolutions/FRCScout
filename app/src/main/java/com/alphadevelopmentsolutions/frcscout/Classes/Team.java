@@ -2,6 +2,8 @@ package com.alphadevelopmentsolutions.frcscout.Classes;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.alphadevelopmentsolutions.frcscout.Interfaces.StatsKeys;
 
@@ -10,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Team
+public class Team extends Table
 {
 
     public static final String TABLE_NAME = "teams";
@@ -26,6 +28,21 @@ public class Team
     public static final String COLUMN_NAME_YOUTUBE_URL = "YoutubeURL";
     public static final String COLUMN_NAME_WEBSITE_URL = "WebsiteURL";
     public static final String COLUMN_NAME_IMAGE_FILE_URI = "ImageFileURI";
+
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME + " (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_NAME + " TEXT," +
+                    COLUMN_NAME_CITY + " TEXT," +
+                    COLUMN_NAME_STATEPROVINCE + " TEXT," +
+                    COLUMN_NAME_COUNTRY + " TEXT," +
+                    COLUMN_NAME_ROOKIE_YEAR + " INTEGER," +
+                    COLUMN_NAME_FACEBOOK_URL + " TEXT," +
+                    COLUMN_NAME_TWITTER_URL + " TEXT," +
+                    COLUMN_NAME_INSTAGRAM_URL + " TEXT," +
+                    COLUMN_NAME_YOUTUBE_URL + " TEXT," +
+                    COLUMN_NAME_WEBSITE_URL + " TEXT," +
+                    COLUMN_NAME_IMAGE_FILE_URI + " TEXT)";
 
     private int id;
     private String name;
@@ -221,7 +238,7 @@ public class Team
 
 
         //get all scout cards from the database
-        ArrayList<ScoutCard> scoutCards = database.getScoutCards(this, event,false);
+        ArrayList<ScoutCard> scoutCards = getScoutCards(event, null, null, false, database);
 
         //store iterations for avg
         int i = 0;
@@ -396,6 +413,51 @@ public class Team
         return stats;
     }
 
+    /**
+     * Gets all scout cards associated with the team
+     * @param event if specified, filters scout cards by event id
+     * @param match if specified, filters scout cards by match id
+     * @param scoutCard if specified, filters scout cards by scoutcard id
+     * @param database used for loading cards
+     * @param onlyDrafts boolean if you only want drafts
+     * @return arraylist of scout cards
+     */
+    public ArrayList<ScoutCard> getScoutCards(@Nullable Event event, @Nullable Match match, @Nullable ScoutCard scoutCard, boolean onlyDrafts, @NonNull Database database)
+    {
+        return ScoutCard.getScoutCards(event, match, this, scoutCard, onlyDrafts, database);
+    }
+
+    /**
+     * Gets all scout cards associated with the team
+     * @param event if specified, filters pit cards by event id
+     * @param pitCard if specified, filters pit cards by pitcard id
+     * @param database used for loading cards
+     * @param onlyDrafts boolean if you only want drafts
+     * @return arraylist of scout cards
+     */
+    public ArrayList<PitCard> getPitCards(@Nullable Event event, @Nullable PitCard pitCard, boolean onlyDrafts, @NonNull Database database)
+    {
+        return PitCard.getPitCards(event, this, pitCard, onlyDrafts, database);
+    }
+
+    /**
+     * Gets all scout cards associated with the team
+     * @param robotMedia if specified, filters robot media by robot media id
+     * @param database used for loading cards
+     * @param onlyDrafts boolean if you only want drafts
+     * @return arraylist of scout cards
+     */
+    public ArrayList<RobotMedia> getRobotMedia(@Nullable RobotMedia robotMedia, boolean onlyDrafts, @NonNull Database database)
+    {
+        return RobotMedia.getRobotMedia(robotMedia, this, onlyDrafts, database);
+    }
+
+    @Override
+    public String toString()
+    {
+        return getId() + " - " + getName();
+    }
+
     //endregion
 
     //region Setters
@@ -476,8 +538,8 @@ public class Team
 
         if(database.isOpen())
         {
-            Team team = database.getTeam(this);
-
+            ArrayList<Team> teams = getTeams(null, null, this, database);
+            Team team = (teams.size() > 0 ) ? teams.get(0) : null;
 
             if (team != null)
             {
@@ -541,6 +603,28 @@ public class Team
         }
 
         return successful;
+    }
+
+    /**
+     * Clears all data from the classes table
+     * @param database used to clear table
+     */
+    public static void clearTable(Database database)
+    {
+        database.clearTable(TABLE_NAME);
+    }
+
+    /**
+     * Returns arraylist of teams with specified filters from database
+     * @param event if specified, filters teams by event id
+     * @param match if specified, filters teams by match id
+     * @param team if specified, filters teams by team id
+     * @param database used to load teams
+     * @return arraylist of teams
+     */
+    public static ArrayList<Team> getTeams(@Nullable Event event, @Nullable Match match, @Nullable Team team, @NonNull Database database)
+    {
+        return database.getTeams(event, match, team);
     }
 
     //endregion

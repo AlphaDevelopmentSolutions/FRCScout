@@ -1,9 +1,13 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
-public class ChecklistItemResult
+public class ChecklistItemResult extends Table
 {
     public static final String TABLE_NAME = "checklist_item_results";
     public static final String COLUMN_NAME_ID = "Id";
@@ -13,6 +17,16 @@ public class ChecklistItemResult
     public static final String COLUMN_NAME_COMPLETED_BY = "CompletedBy";
     public static final String COLUMN_NAME_COMPLETED_DATE = "CompletedDate";
     public static final String COLUMN_NAME_IS_DRAFT = "IsDraft";
+
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME +" (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_CHECKLIST_ITEM_ID + " INTEGER," +
+                    COLUMN_NAME_MATCH_ID + " TEXT," +
+                    COLUMN_NAME_STATUS + " TEXT," +
+                    COLUMN_NAME_COMPLETED_BY + " TEXT," +
+                    COLUMN_NAME_COMPLETED_DATE + " INTEGER," +
+                    COLUMN_NAME_IS_DRAFT + " INTEGER)";
 
     private int id;
     private int checklistItemId;
@@ -107,6 +121,12 @@ public class ChecklistItemResult
         return simpleDateFormat.format(getCompletedDate());
     }
 
+    @Override
+    public String toString()
+    {
+        return "";
+    }
+
     //endregion
 
     //region Setters
@@ -162,7 +182,8 @@ public class ChecklistItemResult
 
         if(database.isOpen())
         {
-            ChecklistItemResult checklistItemResult = database.getChecklistItemResult(this);
+            ArrayList<ChecklistItemResult> checklistItemResults = getChecklistItemResults(null,this, false, database);
+            ChecklistItemResult checklistItemResult = (checklistItemResults.size() > 0 ) ? checklistItemResults.get(0) : null;
 
             if (checklistItemResult != null)
             {
@@ -220,6 +241,29 @@ public class ChecklistItemResult
         }
 
         return successful;
+    }
+
+    /**
+     * Clears all data from the classes table
+     * @param database used to clear table
+     * @param clearDrafts boolean if you want to include drafts in the clear
+     */
+    public static void clearTable(Database database, boolean clearDrafts)
+    {
+        database.clearTable(TABLE_NAME, clearDrafts);
+    }
+
+    /**
+     * Returns arraylist of checklist items with specified filters from database
+     * @param checklistItem if specified, filters checklist items by checklistItem id
+     * @param checklistItemResult if specified, filters checklist items by checklistItemResult id
+     * @param onlyDrafts if true, filters checklist items by draft
+     * @param database used to load checklist items
+     * @return arraylist of checklist items
+     */
+    public static ArrayList<ChecklistItemResult> getChecklistItemResults(@Nullable ChecklistItem checklistItem, @Nullable ChecklistItemResult checklistItemResult, boolean onlyDrafts, @NonNull Database database)
+    {
+        return database.getChecklistItemResults(checklistItem, checklistItemResult, onlyDrafts);
     }
 
     //endregion

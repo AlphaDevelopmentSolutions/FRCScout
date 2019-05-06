@@ -14,6 +14,9 @@ import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.ChecklistItemListRecyclerViewAdapter;
 import com.alphadevelopmentsolutions.frcscout.Adapters.MatchListRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Classes.ChecklistItem;
+import com.alphadevelopmentsolutions.frcscout.Classes.Match;
+import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 /**
@@ -42,17 +45,16 @@ public class ChecklistFragment extends MasterFragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param teamJson
-     * @param matchJson
+     * @param team
+     * @param match
      * @return A new instance of fragment ChecklistFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static ChecklistFragment newInstance(@NonNull String teamJson, @Nullable String matchJson)
+    public static ChecklistFragment newInstance(@NonNull Team team, @Nullable Match match)
     {
         ChecklistFragment fragment = new ChecklistFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_TEAM_JSON, teamJson);
-        args.putString(ARG_MATCH_JSON, matchJson);
+        args.putString(ARG_TEAM_JSON, toJson(team));
+        args.putString(ARG_MATCH_JSON, toJson(match));
         fragment.setArguments(args);
         return fragment;
     }
@@ -81,7 +83,7 @@ public class ChecklistFragment extends MasterFragment
 
             recyclerView = view.findViewById(R.id.MatchListRecyclerView);
 
-            MatchListRecyclerViewAdapter matchListRecyclerViewAdapter = new MatchListRecyclerViewAdapter(event, team, database.getMatches(team, event), context, (this).getClass());
+            MatchListRecyclerViewAdapter matchListRecyclerViewAdapter = new MatchListRecyclerViewAdapter(event, team, context, (this).getClass());
             recyclerView.setAdapter(matchListRecyclerViewAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
@@ -95,7 +97,7 @@ public class ChecklistFragment extends MasterFragment
 
             recyclerView = view.findViewById(R.id.ChecklistItemsRecyclerView);
 
-            ChecklistItemListRecyclerViewAdapter checklistItemListRecyclerViewAdapter = new ChecklistItemListRecyclerViewAdapter(event, match, team, database.getChecklistItems(), database.getUsers(), context);
+            ChecklistItemListRecyclerViewAdapter checklistItemListRecyclerViewAdapter = new ChecklistItemListRecyclerViewAdapter(match, ChecklistItem.getChecklistItems(null, database), context);
             recyclerView.setAdapter(checklistItemListRecyclerViewAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
 

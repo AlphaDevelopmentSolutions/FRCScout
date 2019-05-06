@@ -2,15 +2,18 @@ package com.alphadevelopmentsolutions.frcscout.Classes;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Base64;
 
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.UUID;
 
-public class RobotMedia
+public class RobotMedia extends Table
 {
 
     public static final String TABLE_NAME = "robot_media";
@@ -18,6 +21,13 @@ public class RobotMedia
     public static final String COLUMN_NAME_TEAM_ID = "TeamId";
     public static final String COLUMN_NAME_FILE_URI = "FileURI";
     public static final String COLUMN_NAME_IS_DRAFT = "IsDraft";
+
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME +" (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_TEAM_ID + " INTEGER," +
+                    COLUMN_NAME_FILE_URI + " TEXT," +
+                    COLUMN_NAME_IS_DRAFT + " INTEGER)";
 
     private int id;
     private int teamId;
@@ -141,6 +151,12 @@ public class RobotMedia
         isDraft = draft;
     }
 
+    @Override
+    public String toString()
+    {
+        return "Team " + getTeamId() + " - Robot Media";
+    }
+
     //endregion
 
     //region Load, Save & Delete
@@ -157,8 +173,8 @@ public class RobotMedia
 
         if(database.isOpen())
         {
-            RobotMedia robotMedia = database.getRobotMedia(this);
-
+            ArrayList<RobotMedia> robotMediaArrayList = getRobotMedia(this, null, false, database);
+            RobotMedia robotMedia = (robotMediaArrayList.size() > 0 ) ? robotMediaArrayList.get(0) : null;
 
             if (robotMedia != null)
             {
@@ -214,6 +230,29 @@ public class RobotMedia
         }
 
         return successful;
+    }
+
+    /**
+     * Clears all data from the classes table
+     * @param database used to clear table
+     * @param clearDrafts boolean if you want to include drafts in the clear
+     */
+    public static void clearTable(Database database, boolean clearDrafts)
+    {
+        database.clearTable(TABLE_NAME, clearDrafts);
+    }
+
+    /**
+     * Returns arraylist of robot media with specified filters from database
+     * @param robotMedia if specified, filters robot media by robotmedia id
+     * @param team if specified, filters robot media by team id
+     * @param onlyDrafts if true, filters robot media by draft
+     * @param database used to load robot media
+     * @return arraylist of robot media
+     */
+    public static ArrayList<RobotMedia> getRobotMedia(@Nullable RobotMedia robotMedia, @Nullable Team team, boolean onlyDrafts, @NonNull Database database)
+    {
+        return database.getRobotMedia(robotMedia, team, onlyDrafts);
     }
 
     //endregion

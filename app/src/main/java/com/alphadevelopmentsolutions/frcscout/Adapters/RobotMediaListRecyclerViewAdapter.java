@@ -25,7 +25,7 @@ public class RobotMediaListRecyclerViewAdapter extends RecyclerView.Adapter<Robo
 
     private MainActivity context;
 
-    public RobotMediaListRecyclerViewAdapter(Team team, ArrayList<RobotMedia> robotMedia, MainActivity context)
+    public RobotMediaListRecyclerViewAdapter(@NonNull Team team, @NonNull ArrayList<RobotMedia> robotMedia, @NonNull MainActivity context)
     {
         this.team = team;
         this.robotMedia = robotMedia;
@@ -66,7 +66,7 @@ public class RobotMediaListRecyclerViewAdapter extends RecyclerView.Adapter<Robo
             @Override
             public void onClick(View v)
             {
-                context.changeFragment(RobotMediaFragment.newInstance(new Gson().toJson(robotMedia.get(viewHolder.getAdapterPosition())), team.getId()), true);
+                context.changeFragment(RobotMediaFragment.newInstance(robotMedia.get(viewHolder.getAdapterPosition()), team), true);
             }
         });
     }
