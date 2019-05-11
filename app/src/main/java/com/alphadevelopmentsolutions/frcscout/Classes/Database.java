@@ -270,7 +270,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = Event.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {event.getId() + ""};
+            String[] whereArgs = {event.getId() + ""};
 
             //update
             return db.update(Event.TABLE_NAME, contentValues, whereStatement, whereArgs);
@@ -291,7 +291,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = Event.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {event.getId() + ""};
+            String[] whereArgs = {event.getId() + ""};
 
             //delete
             return db.delete(Event.TABLE_NAME, whereStatement, whereArgs) >= 1;
@@ -440,7 +440,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = Team.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {team.getId() + ""};
+            String[] whereArgs = {team.getId() + ""};
 
             //insert columns you are going to use here
             String[] columns =
@@ -487,7 +487,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = Team.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {team.getId() + ""};
+            String[] whereArgs = {team.getId() + ""};
 
             //delete
             return db.delete(Team.TABLE_NAME, whereStatement, whereArgs) >= 1;
@@ -564,7 +564,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = Robot.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {robot.getId() + ""};
+            String[] whereArgs = {robot.getId() + ""};
 
             //update
             return db.update(Robot.TABLE_NAME, contentValues, whereStatement, whereArgs);
@@ -586,7 +586,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = Robot.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {robot.getId() + ""};
+            String[] whereArgs = {robot.getId() + ""};
 
             //delete
             return db.delete(Robot.TABLE_NAME, whereStatement, whereArgs) >= 1;
@@ -750,7 +750,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = Match.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {match.getId() + ""};
+            String[] whereArgs = {match.getId() + ""};
 
             //update
             if(db.update(Match.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
@@ -775,7 +775,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = Match.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {match.getId() + ""};
+            String[] whereArgs = {match.getId() + ""};
 
             //delete
             return db.delete(Match.TABLE_NAME, whereStatement, whereArgs) >= 1;
@@ -998,7 +998,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = ScoutCard.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {scoutCard.getId() + ""};
+            String[] whereArgs = {scoutCard.getId() + ""};
 
             //update
             if(db.update(ScoutCard.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
@@ -1023,7 +1023,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = ScoutCard.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {scoutCard.getId() + ""};
+            String[] whereArgs = {scoutCard.getId() + ""};
 
             //delete
             return db.delete(ScoutCard.TABLE_NAME, whereStatement, whereArgs) >= 1;
@@ -1200,7 +1200,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = ScoutCard.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {pitCard.getId() + ""};
+            String[] whereArgs = {pitCard.getId() + ""};
 
             //update
             if(db.update(PitCard.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
@@ -1225,7 +1225,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = PitCard.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {pitCard.getId() + ""};
+            String[] whereArgs = {pitCard.getId() + ""};
 
             //delete
             return db.delete(PitCard.TABLE_NAME, whereStatement, whereArgs) >= 1;
@@ -1307,7 +1307,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = User.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {user.getId() + ""};
+            String[] whereArgs = {user.getId() + ""};
 
             //update
             if(db.update(User.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
@@ -1331,7 +1331,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = User.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {user.getId() + ""};
+            String[] whereArgs = {user.getId() + ""};
 
             //delete
             return db.delete(User.TABLE_NAME, whereStatement, whereArgs) >= 1;
@@ -1441,7 +1441,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = RobotMedia.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {robotMedia.getId() + ""};
+            String[] whereArgs = {robotMedia.getId() + ""};
 
             //update
             if(db.update(RobotMedia.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
@@ -1465,7 +1465,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = RobotMedia.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {robotMedia.getId() + ""};
+            String[] whereArgs = {robotMedia.getId() + ""};
 
             //delete
             return db.delete(RobotMedia.TABLE_NAME, whereStatement, whereArgs) >= 1;
@@ -1567,7 +1567,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = EventTeamList.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {eventTeamList.getId() + ""};
+            String[] whereArgs = {eventTeamList.getId() + ""};
 
             //update
             if(db.update(EventTeamList.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
@@ -1591,7 +1591,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = EventTeamList.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {eventTeamList.getId() + ""};
+            String[] whereArgs = {eventTeamList.getId() + ""};
 
             //delete
             return db.delete(EventTeamList.TABLE_NAME, whereStatement, whereArgs) >= 1;
@@ -1689,7 +1689,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = ChecklistItem.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {checklistItem.getId() + ""};
+            String[] whereArgs = {checklistItem.getId() + ""};
 
             //update
             if(db.update(ChecklistItem.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
@@ -1713,7 +1713,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = ChecklistItem.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {checklistItem.getId() + ""};
+            String[] whereArgs = {checklistItem.getId() + ""};
 
             //delete
             return db.delete(ChecklistItem.TABLE_NAME, whereStatement, whereArgs) >= 1;
@@ -1842,7 +1842,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = ChecklistItemResult.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {checklistItemResult.getId() + ""};
+            String[] whereArgs = {checklistItemResult.getId() + ""};
 
             //update
             if(db.update(ChecklistItemResult.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
@@ -1866,7 +1866,7 @@ public class Database
         {
             //create the where statement
             String whereStatement = ChecklistItemResult.COLUMN_NAME_ID + " = ?";
-            String whereArgs[] = {checklistItemResult.getId() + ""};
+            String[] whereArgs = {checklistItemResult.getId() + ""};
 
             //delete
             return db.delete(ChecklistItemResult.TABLE_NAME, whereStatement, whereArgs) >= 1;
