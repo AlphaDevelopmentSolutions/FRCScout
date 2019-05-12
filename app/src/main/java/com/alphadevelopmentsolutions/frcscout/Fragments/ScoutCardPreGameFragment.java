@@ -15,13 +15,12 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Spinner;
 
-import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
-import com.alphadevelopmentsolutions.frcscout.Classes.User;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User;
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.R;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 

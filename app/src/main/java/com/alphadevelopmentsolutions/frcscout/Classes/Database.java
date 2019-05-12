@@ -5,17 +5,26 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItem;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItemResult;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.EventTeamList;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.PitCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Robot;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Table;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Years;
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.Exceptions.UnauthorizedClassException;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -1469,6 +1478,129 @@ public class Database
 
             //delete
             return db.delete(RobotMedia.TABLE_NAME, whereStatement, whereArgs) >= 1;
+        }
+
+        return false;
+    }
+    //endregion
+
+    //region Years Logic
+
+    /**
+     * Takes in a cursor with info pulled from database and converts it into object
+     * @param cursor info from database
+     * @return years converted data
+     */
+    private Years getYearsFromCursor(Cursor cursor)
+    {
+        int id = cursor.getInt(cursor.getColumnIndex(Years.COLUMN_NAME_ID));
+        String name = cursor.getString(cursor.getColumnIndex(Years.COLUMN_NAME_NAME));
+        Date startDate = new Date(cursor.getLong(cursor.getColumnIndex(Years.COLUMN_NAME_START_DATE)));
+        Date endDate = new Date(cursor.getLong(cursor.getColumnIndex(Years.COLUMN_NAME_END_DATE)));
+        String fileUri = cursor.getString(cursor.getColumnIndex(Years.COLUMN_NAME_IMAGE_URI));
+
+        return new Years(
+                id,
+                name,
+                startDate,
+                endDate,
+                fileUri);
+    }
+
+    /**
+     * Gets all year assigned to a team
+     * @param year if specified, object filters by year id
+     * @return year based off given team ID
+     */
+    public ArrayList<Years> getYears(@Nullable Years year)
+    {
+        ArrayList<Years> yearList = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns = getColumns();
+
+        StringBuilder whereStatement = new StringBuilder();
+        ArrayList<String> whereArgs = new ArrayList<>();
+
+        if(year != null)
+        {
+            whereStatement.append(Years.COLUMN_NAME_ID).append(" = ?");
+            whereArgs.add(String.valueOf(year.getId()));
+        }
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                Years.TABLE_NAME,
+                columns,
+                whereStatement.toString(),
+                Arrays.copyOf(Objects.requireNonNull(whereArgs.toArray()), whereArgs.size(), String[].class),
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while(cursor.moveToNext())
+            {
+                yearList.add(getYearsFromCursor(cursor));
+            }
+
+            cursor.close();
+
+            return yearList;
+        }
+
+        return null;
+    }
+
+    /**
+     * Saves a specific year from the database and returns it
+     * @param year with specified ID
+     * @return id of the saved year
+     */
+    public long setYears(Years year)
+    {
+        //set all the values
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Years.COLUMN_NAME_NAME, year.getName());
+        contentValues.put(Years.COLUMN_NAME_START_DATE, year.getStartDate().getTime());
+        contentValues.put(Years.COLUMN_NAME_END_DATE, year.getEndDate().getTime());
+        contentValues.put(Years.COLUMN_NAME_IMAGE_URI, year.getImageUri());
+
+        //year already exists in DB, update
+        if (year.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = Years.COLUMN_NAME_ID + " = ?";
+            String[] whereArgs = {year.getId() + ""};
+
+            //update
+            if(db.update(Years.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return year.getId();
+            else
+                return -1;
+        }
+        //insert new year in db
+        else return db.insert(Years.TABLE_NAME, null, contentValues);
+
+    }
+
+    /**
+     * Deletes a specific year from the database
+     * @param year with specified ID
+     * @return successful delete
+     */
+    public boolean deleteYears(Years year)
+    {
+        if (year.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = Years.COLUMN_NAME_ID + " = ?";
+            String[] whereArgs = {year.getId() + ""};
+
+            //delete
+            return db.delete(Years.TABLE_NAME, whereStatement, whereArgs) >= 1;
         }
 
         return false;

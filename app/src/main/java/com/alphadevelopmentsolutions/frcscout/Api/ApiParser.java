@@ -1,6 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Api;
 
-import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
+import com.alphadevelopmentsolutions.frcscout.Classes.Image;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 
 import org.json.JSONException;
@@ -84,7 +84,7 @@ public class ApiParser
      * @return save File object
      * @throws IOException
      */
-    public File downloadImage(String fileUri) throws IOException
+    public File downloadImage(String fileUri, String directory) throws IOException
     {
         //create the url based on the app URL and specified file
         URL url = new URL(fileUri);
@@ -92,15 +92,20 @@ public class ApiParser
         //create a new connection to the server
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
+        File baseDir = new File(Constants.BASE_FILE_DIRECTORY);
+        if(!baseDir.isDirectory())
+            if(!baseDir.mkdir())
+                throw new IOException("Failed to make base file directory");
+
         //Create the folder
-        File mediaFolder = new File(Constants.MEDIA_DIRECTORY);
+        File mediaFolder = new File(directory);
         if(!mediaFolder.isDirectory())
             if(!mediaFolder.mkdir())
                 throw new IOException("Failed to make directory");
 
 
         //Create the file
-        File mediaFile = new File(RobotMedia.generateFileUri().getAbsolutePath());
+        File mediaFile = new File(Image.generateFileUri(directory).getAbsolutePath());
         if (!mediaFile.createNewFile())
             throw new IOException("Failed to create file");
 

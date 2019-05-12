@@ -1,10 +1,11 @@
-package com.alphadevelopmentsolutions.frcscout.Classes;
+package com.alphadevelopmentsolutions.frcscout.Classes.Tables;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.StatsKeys;
 
 import java.io.File;

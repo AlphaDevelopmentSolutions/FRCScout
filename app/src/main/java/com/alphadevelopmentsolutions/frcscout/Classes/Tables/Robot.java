@@ -1,42 +1,39 @@
-package com.alphadevelopmentsolutions.frcscout.Classes;
+package com.alphadevelopmentsolutions.frcscout.Classes.Tables;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 
-import java.util.ArrayList;
-
-public class User extends Table
+public class Robot extends Table
 {
-    public static final String TABLE_NAME = "users";
+    public static final String TABLE_NAME = "robots";
     public static final String COLUMN_NAME_ID = "Id";
-    public static final String COLUMN_NAME_FIRST_NAME = "FirstName";
-    public static final String COLUMN_NAME_LAST_NAME = "LastName";
+    public static final String COLUMN_NAME_NAME = "Name";
+    public static final String COLUMN_NAME_TEAM_NUMBER = "TeamId";
 
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME +" (" +
                     COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                    COLUMN_NAME_FIRST_NAME + " TEXT," +
-                    COLUMN_NAME_LAST_NAME + " TEXT)";
+                    COLUMN_NAME_NAME + " TEXT," +
+                    COLUMN_NAME_TEAM_NUMBER + " INTEGER)";
 
     private int id;
-    private String firstName;
-    private String lastName;
+    private String name;
+    private int teamNumber;
 
-    public User(
+    public Robot(
             int id,
-            String firstName,
-            String lastName)
+            String name,
+            int teamNumber)
     {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.name = name;
+        this.teamNumber = teamNumber;
     }
 
     /**
      * Used for loading
      * @param id to load
      */
-    User(int id)
+    Robot(int id)
     {
         this.id = id;
     }
@@ -48,20 +45,20 @@ public class User extends Table
         return id;
     }
 
-
-    public String getFirstName()
+    public String getName()
     {
-        return firstName;
+        return name;
     }
 
-    public String getLastName()
+    public int getTeamNumber()
     {
-        return lastName;
+        return teamNumber;
     }
 
+    @Override
     public String toString()
     {
-        return getFirstName() + " " + getLastName();
+        return getName();
     }
 
     //endregion
@@ -73,23 +70,22 @@ public class User extends Table
         this.id = id;
     }
 
-    public void setFirstName(String firstName)
+    public void setName(String name)
     {
-        this.firstName = firstName;
+        this.name = name;
     }
 
-    public void setLastName(String lastName)
+    public void setTeamNumber(int teamNumber)
     {
-        this.lastName = lastName;
+        this.teamNumber = teamNumber;
     }
-
 
     //endregion
 
     //region Load, Save & Delete
 
     /**
-     * Loads the object from the database and populates all values
+     * Loads the robot from the database and populates all values
      * @param database used for interacting with the SQLITE db
      * @return boolean if successful
      */
@@ -100,13 +96,13 @@ public class User extends Table
 
         if(database.isOpen())
         {
-            ArrayList<User> users = getUsers(this, database);
-            User user = (users.size() > 0 ) ? users.get(0) : null;
+            Robot robot = database.getRobot(this);
 
-            if (user != null)
+
+            if (robot != null)
             {
-                setFirstName(user.getFirstName());
-                setLastName(user.getLastName());
+                setName(robot.getName());
+                setTeamNumber(robot.getTeamNumber());
                 return true;
             }
         }
@@ -115,9 +111,9 @@ public class User extends Table
     }
 
     /**
-     * Saves the object into the database
+     * Saves the robot into the database
      * @param database used for interacting with the SQLITE db
-     * @return int id of the saved ScoutCard
+     * @return boolean if successful
      */
     public int save(Database database)
     {
@@ -128,7 +124,7 @@ public class User extends Table
             database.open();
 
         if(database.isOpen())
-            id = (int) database.setUser(this);
+            id = (int) database.setRobot(this);
 
         //set the id if the save was successful
         if(id > 0)
@@ -138,7 +134,7 @@ public class User extends Table
     }
 
     /**
-     * Deletes the ScoutCard from the database
+     * Deletes robot team from the database
      * @param database used for interacting with the SQLITE db
      * @return boolean if successful
      */
@@ -151,7 +147,7 @@ public class User extends Table
 
         if(database.isOpen())
         {
-            successful = database.deleteUser(this);
+            successful = database.deleteRobot(this);
 
         }
 
@@ -165,17 +161,6 @@ public class User extends Table
     public static void clearTable(Database database)
     {
         database.clearTable(TABLE_NAME);
-    }
-
-    /**
-     * Returns arraylist of users with specified filters from database
-     * @param user if specified, filters users by user id
-     * @param database used to load users
-     * @return arraylist of users
-     */
-    public static ArrayList<User> getUsers(@Nullable User user, @NonNull Database database)
-    {
-        return database.getUsers(user);
     }
 
     //endregion

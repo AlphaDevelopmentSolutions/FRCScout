@@ -1,4 +1,4 @@
-package com.alphadevelopmentsolutions.frcscout.Classes;
+package com.alphadevelopmentsolutions.frcscout.Classes.Tables;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -6,12 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Base64;
 
-import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
+import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class RobotMedia extends Table
 {
@@ -75,26 +74,6 @@ public class RobotMedia extends Table
     public boolean isDraft()
     {
         return isDraft;
-    }
-
-    /**
-     * Generates a unique file path for a new file
-     * @return file with UUID
-     */
-    public static File generateFileUri()
-    {
-        File mediaFolder = new File(Constants.MEDIA_DIRECTORY);
-
-        File mediaFile;
-
-        //keep generating UUID's until we found one that does not exist
-        //should only run once
-        do
-        {
-            mediaFile = new File(mediaFolder.getAbsolutePath() + "/" + UUID.randomUUID().toString() + ".jpeg");
-        }while (mediaFile.isFile());
-
-        return mediaFile;
     }
 
     /**

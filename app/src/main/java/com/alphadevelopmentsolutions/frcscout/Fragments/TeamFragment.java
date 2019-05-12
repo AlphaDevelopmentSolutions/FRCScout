@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeIcon;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -168,7 +168,7 @@ public class TeamFragment extends MasterFragment
         FragmentViewPagerAdapter teamViewPagerAdapter = new FragmentViewPagerAdapter(getChildFragmentManager());
 
         teamViewPagerAdapter.addFragment(MatchListFragment.newInstance(team), getString(R.string.scout_cards));
-        teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(team), getString(R.string.pit_cards));
+        teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(team), getString(R.string.robot_info));
         teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(team), getString(R.string.robot_images));
         teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(team), getString(R.string.quick_stats));
 

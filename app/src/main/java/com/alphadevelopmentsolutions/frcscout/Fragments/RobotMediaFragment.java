@@ -18,8 +18,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
+import com.alphadevelopmentsolutions.frcscout.Classes.Image;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
@@ -118,7 +119,7 @@ public class RobotMediaFragment extends MasterFragment
         //allow the user to save the new image
         else
         {
-            mediaFile = new File(RobotMedia.generateFileUri().getAbsolutePath()); //get file URI
+            mediaFile = new File(Image.generateFileUri(Constants.ROBOT_MEDIA_DIRECTORY).getAbsolutePath()); //get file URI
 
             //save the new image
             robotMediaSaveButton.setOnClickListener(new View.OnClickListener()

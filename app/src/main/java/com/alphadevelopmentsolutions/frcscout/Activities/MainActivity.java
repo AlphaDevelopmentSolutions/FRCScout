@@ -35,17 +35,18 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Api.Server;
-import com.alphadevelopmentsolutions.frcscout.Classes.ChecklistItem;
-import com.alphadevelopmentsolutions.frcscout.Classes.ChecklistItemResult;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
-import com.alphadevelopmentsolutions.frcscout.Classes.Event;
-import com.alphadevelopmentsolutions.frcscout.Classes.EventTeamList;
-import com.alphadevelopmentsolutions.frcscout.Classes.Match;
-import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
-import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
-import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
-import com.alphadevelopmentsolutions.frcscout.Classes.User;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItem;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItemResult;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.EventTeamList;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.PitCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Years;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ChecklistFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ConfigFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment;
@@ -307,7 +308,9 @@ public class MainActivity extends AppCompatActivity implements
                 public void run()
                 {
 
-                    progressDialogProgess = 10;
+                    File mediaFolder;
+
+                    progressDialogProgess = 0;
 
                     context.runOnUiThread(new Runnable()
                     {
@@ -332,6 +335,44 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     }
 
+                    progressDialogProgess = 5;
+
+                    context.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            progressDialog.setTitle("Downloading years...");
+                            progressDialog.setProgress(progressDialogProgess);
+                        }
+                    });
+
+
+                    //Get the folder and purge all files
+                    mediaFolder = new File(Constants.YEAR_MEDIA_DIRECTORY);
+                    if (mediaFolder.isDirectory())
+                        for (File child : mediaFolder.listFiles())
+                            child.delete();
+
+                    //update years
+                    Server.GetYears getYears = new Server.GetYears(context);
+                    if (getYears.execute())
+                    {
+                        Years.clearTable(getDatabase());
+                        for (Years year : getYears.getYears())
+                            year.save(getDatabase());
+                    }
+
+
+                    //update events
+                    Server.GetEvents getEvents = new Server.GetEvents(context);
+                    if (getEvents.execute())
+                    {
+                        Event.clearTable(getDatabase());
+                        for (Event event : getEvents.getEvents())
+                            event.save(getDatabase());
+                    }
+
                     progressDialogProgess = 10;
 
                     context.runOnUiThread(new Runnable()
@@ -343,16 +384,6 @@ public class MainActivity extends AppCompatActivity implements
                             progressDialog.setProgress(progressDialogProgess);
                         }
                     });
-
-
-                    //update events
-                    Server.GetEvents getEvents = new Server.GetEvents(context);
-                    if (getEvents.execute())
-                    {
-                        Event.clearTable(getDatabase());
-                        for (Event event : getEvents.getEvents())
-                            event.save(getDatabase());
-                    }
 
                     //clear the saved data
                     EventTeamList.clearTable(getDatabase());
@@ -514,7 +545,7 @@ public class MainActivity extends AppCompatActivity implements
                         });
 
                         //Get the folder and purge all files
-                        File mediaFolder = new File(Constants.MEDIA_DIRECTORY);
+                        mediaFolder = new File(Constants.ROBOT_MEDIA_DIRECTORY);
                         if (mediaFolder.isDirectory())
                             for (File child : mediaFolder.listFiles())
                                 child.delete();

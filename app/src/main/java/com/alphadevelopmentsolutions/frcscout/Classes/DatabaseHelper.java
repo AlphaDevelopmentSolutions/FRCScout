@@ -4,10 +4,23 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItem;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItemResult;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.EventTeamList;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.PitCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Robot;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Years;
+
 public class DatabaseHelper extends SQLiteOpenHelper
 {
 
-    private static final int DB_VERSION = 10;
+    private static final int DB_VERSION = 11;
     private static final String DB_NAME = "FRCScout.db";
 
 
@@ -19,6 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase db)
     {
+        db.execSQL(Years.CREATE_TABLE);
         db.execSQL(Event.CREATE_TABLE);
         db.execSQL(EventTeamList.CREATE_TABLE);
         db.execSQL(Match.CREATE_TABLE);
@@ -40,6 +54,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion)
     {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + EventTeamList.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Years.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Event.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Match.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Team.TABLE_NAME);

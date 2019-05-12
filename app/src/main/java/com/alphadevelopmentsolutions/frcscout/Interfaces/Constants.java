@@ -4,7 +4,9 @@ import android.os.Environment;
 
 public interface Constants
 {
-    String MEDIA_DIRECTORY = Environment.getExternalStorageDirectory() + "/robot-media/";
+    String BASE_FILE_DIRECTORY = Environment.getExternalStorageDirectory() + "/frcscout/";
+    String ROBOT_MEDIA_DIRECTORY = BASE_FILE_DIRECTORY + "robot-media/";
+    String YEAR_MEDIA_DIRECTORY = BASE_FILE_DIRECTORY + "year-media/";
 
     int ROBOT_MEDIA_REQUEST_CODE = 5885;
 

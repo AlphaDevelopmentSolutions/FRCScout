@@ -1,7 +1,9 @@
-package com.alphadevelopmentsolutions.frcscout.Classes;
+package com.alphadevelopmentsolutions.frcscout.Classes.Tables;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 
 import java.util.ArrayList;
 import java.util.Date;

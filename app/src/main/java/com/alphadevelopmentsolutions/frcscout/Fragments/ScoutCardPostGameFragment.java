@@ -12,9 +12,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RatingBar;
 
-import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.R;
-import com.google.gson.Gson;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -123,4 +123,5 @@
     <string name="blue_alliance">Blue Alliance</string>
     <string name="red_alliance">Red Alliance</string>
     <string name="view_scout_card">View Scout Card</string>
+    <string name="robot_info">Robot Info</string>
 </resources>

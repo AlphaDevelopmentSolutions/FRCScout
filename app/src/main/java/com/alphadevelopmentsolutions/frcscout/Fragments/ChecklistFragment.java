@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.ChecklistItemListRecyclerViewAdapter;
 import com.alphadevelopmentsolutions.frcscout.Adapters.MatchListRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Classes.ChecklistItem;
-import com.alphadevelopmentsolutions.frcscout.Classes.Match;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItem;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 /**

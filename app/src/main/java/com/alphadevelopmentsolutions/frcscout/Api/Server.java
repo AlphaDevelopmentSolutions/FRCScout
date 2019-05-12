@@ -1,15 +1,16 @@
 package com.alphadevelopmentsolutions.frcscout.Api;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Classes.ChecklistItem;
-import com.alphadevelopmentsolutions.frcscout.Classes.ChecklistItemResult;
-import com.alphadevelopmentsolutions.frcscout.Classes.Event;
-import com.alphadevelopmentsolutions.frcscout.Classes.Match;
-import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
-import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
-import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
-import com.alphadevelopmentsolutions.frcscout.Classes.Team;
-import com.alphadevelopmentsolutions.frcscout.Classes.User;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItem;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItemResult;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.PitCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Years;
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
@@ -683,7 +684,7 @@ public abstract class Server extends Api
                     int teamId = robotMediaJson.getInt(RobotMedia.COLUMN_NAME_TEAM_ID);
                     String fileUri = context.getPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "").toString() + "/assets/robot-media/" + robotMediaJson.getString(RobotMedia.COLUMN_NAME_FILE_URI);
 
-                    fileUri = apiParser.downloadImage(fileUri).getAbsolutePath();
+                    fileUri = apiParser.downloadImage(fileUri, Constants.ROBOT_MEDIA_DIRECTORY).getAbsolutePath();
 
                     robotMedia.add(new RobotMedia(
                             -1,
@@ -707,6 +708,86 @@ public abstract class Server extends Api
         public ArrayList<RobotMedia> getRobotMedia()
         {
             return robotMedia;
+        }
+
+
+        //endregion
+    }
+
+    public static class GetYears extends Server
+    {
+        private ArrayList<Years> yearsArrayList;
+
+        private MainActivity context;
+
+        public GetYears(final MainActivity context)
+        {
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
+            {{
+                put(API_PARAM_API_ACTION, "GetYears");
+            }});
+
+            yearsArrayList = new ArrayList<>();
+
+            this.context = context;
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception(context.getString(R.string.server_error));
+
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
+
+
+                //iterate through, create a new object and add it to the arraylist
+                for (int i = 0; i < response.getJSONArray(API_FIELD_NAME_RESPONSE).length(); i++)
+                {
+                    JSONObject yearsJson = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
+
+                    int id = yearsJson.getInt(Years.COLUMN_NAME_ID);
+                    String name = yearsJson.getString(Years.COLUMN_NAME_NAME);
+                    Date startDate = simpleDateFormat.parse(yearsJson.getString(Years.COLUMN_NAME_START_DATE));
+                    Date endDate = simpleDateFormat.parse(yearsJson.getString(Years.COLUMN_NAME_END_DATE));
+                    String fileUri = context.getPreference (Constants.SharedPrefKeys.WEB_URL_KEY, "").toString() + "/assets/year-media/" + yearsJson.getString(Years.COLUMN_NAME_IMAGE_URI);
+
+                    fileUri = apiParser.downloadImage(fileUri, Constants.YEAR_MEDIA_DIRECTORY).getAbsolutePath();
+
+                    yearsArrayList.add(new Years(
+                            id,
+                            name,
+                            startDate,
+                            endDate,
+                            fileUri
+                    ));
+
+                }
+
+                return true;
+            } catch (Exception e)
+            {
+                context.showSnackbar(e.getMessage());
+                return false;
+            }
+        }
+
+        //region Getters
+
+        public ArrayList<Years> getYears()
+        {
+            return yearsArrayList;
         }
 
 
