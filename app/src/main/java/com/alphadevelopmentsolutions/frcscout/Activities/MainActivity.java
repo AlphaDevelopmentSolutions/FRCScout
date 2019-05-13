@@ -73,6 +73,8 @@ import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -121,6 +123,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private ProgressDialog progressDialog;
 
+    private Button changeButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -138,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements
         //set the action bar
         setSupportActionBar(toolbar);
 
-        Button changeEventButton = findViewById(R.id.ChangeEventButton);
+        changeButton = findViewById(R.id.ChangeButton);
         View navHeader = navigationView.getHeaderView(0);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
@@ -160,13 +164,16 @@ public class MainActivity extends AppCompatActivity implements
         navigationView.setNavigationItemSelectedListener(this);
 
         //change event button logic
-        changeEventButton.setOnClickListener(new View.OnClickListener()
+        changeButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                Years year = new Years((Integer) getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)));
+                year.load(getDatabase());
+
                 //send to eventlist frag
-                changeFragment(new EventListFragment(), false);
+                changeFragment(EventListFragment.newInstance(year), false);
             }
         });
 
@@ -424,7 +431,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     final int remainingPercent = (downloadMedia) ? 90 : 100 - progressDialogProgess; //max amount of percentage we have before we can't add anymore to the progress dialog
 
-                    final ArrayList<Event> events = Event.getEvents(null, getDatabase());
+                    final ArrayList<Event> events = Event.getEvents(null, null, getDatabase());
 
                     //iterate through each event and get its data
                     for (int i = 0; i < events.size(); i++)
@@ -588,8 +595,15 @@ public class MainActivity extends AppCompatActivity implements
                         @Override
                         public void run()
                         {
+
+                            Years year = new Years((Integer) getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)));
+                            year.load(getDatabase());
+
+                            //set the year when showing the event list frag
+                            setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, year.getServerId());
+
                             progressDialog.dismiss();
-                            changeFragment(new EventListFragment(), false);
+                            changeFragment(EventListFragment.newInstance(year), false);
                         }
                     });
                 }
@@ -627,7 +641,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 boolean success = true;
 
-                for(Event event : Event.getEvents(null, getDatabase()))
+                for(Event event : Event.getEvents(null, null, getDatabase()))
                 {
 
                     //upload team specific data
@@ -960,6 +974,9 @@ public class MainActivity extends AppCompatActivity implements
         else getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE); //pop all backstacks
         fragmentTransaction.commit();
 
+        if(drawer.isDrawerOpen(GravityCompat.START))
+            drawer.closeDrawer(GravityCompat.START);
+
         hideKeyboard();
 
 //        elevateActionBar();
@@ -1007,8 +1024,14 @@ public class MainActivity extends AppCompatActivity implements
                 }
 
                 else
-                    //change the frag to the eventlist
-                    changeFragment(new YearListFragment(), false);
+                {
+                    Years year = new Years((Integer) getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)));
+                    year.load(getDatabase());
+
+                    //send to eventlist frag
+                    changeFragment(EventListFragment.newInstance(year), false);
+                }
+
             } else
             {
                 changeFragment(new ConfigFragment(), false);
@@ -1030,6 +1053,21 @@ public class MainActivity extends AppCompatActivity implements
     public void elevateActionBar()
     {
         appBarLayout.setElevation(ACTION_BAR_ELEVATION);
+    }
+
+    public void setChangeButtonOnClickListener(View.OnClickListener onClickListener, String buttonText, boolean showMenuItems)
+    {
+        //change event button logic
+        changeButton.setOnClickListener(onClickListener);
+        changeButton.setText(buttonText);
+
+        if(!showMenuItems)
+            navigationView.getMenu().clear();
+        else
+            navigationView.inflateMenu(R.menu.activity_main_drawer);
+
+
+
     }
 
     //endregion

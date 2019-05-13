@@ -17,6 +17,8 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Years;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 
+import java.util.Calendar;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -45,27 +47,15 @@ public class YearListFragment extends MasterFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment YearListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static YearListFragment newInstance(String param1, String param2) {
+    public static YearListFragment newInstance() {
         YearListFragment fragment = new YearListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     private RecyclerView yearListRecyclerView;
@@ -83,7 +73,7 @@ public class YearListFragment extends MasterFragment {
 
         //showing this view means the user has not selected an event or year, clear the shared pref
         context.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1);
-        context.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, -1);
+        context.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)); //default to current calendar year
 
         yearListRecyclerView = view.findViewById(R.id.YearListRecyclerView);
 
@@ -114,9 +104,11 @@ public class YearListFragment extends MasterFragment {
     }
 
     @Override
-    public void onDetach() {
+    public void onDetach()
+    {
         super.onDetach();
         mListener = null;
+        context.unlockDrawerLayout();
     }
 
     /**

@@ -13,6 +13,7 @@ public class Event extends Table
 
     public static final String TABLE_NAME = "events";
     public static final String COLUMN_NAME_ID = "Id";
+    public static final String COLUMN_NAME_YEAR_ID = "YearId";
     public static final String COLUMN_NAME_BLUE_ALLIANCE_ID = "BlueAllianceId";
     public static final String COLUMN_NAME_NAME = "Name";
     public static final String COLUMN_NAME_CITY = "City";
@@ -24,6 +25,7 @@ public class Event extends Table
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + " (" +
                     COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_YEAR_ID + " INTEGER," +
                     COLUMN_NAME_BLUE_ALLIANCE_ID + " TEXT," +
                     COLUMN_NAME_NAME + " TEXT," +
                     COLUMN_NAME_CITY + " TEXT," +
@@ -33,6 +35,7 @@ public class Event extends Table
                     COLUMN_NAME_END_DATE + " INTEGER)";
 
     private int id;
+    private int yearId;
 
     private String blueAllianceId;
     private String name;
@@ -45,6 +48,7 @@ public class Event extends Table
 
     public Event(
             int id,
+            int yearId,
             String blueAllianceId,
             String name,
             String city,
@@ -54,6 +58,7 @@ public class Event extends Table
             Date endDate)
     {
         this.id = id;
+        this.yearId = yearId;
         this.blueAllianceId = blueAllianceId;
         this.name = name;
         this.city = city;
@@ -79,6 +84,11 @@ public class Event extends Table
     public int getId()
     {
         return id;
+    }
+
+    public int getYearId()
+    {
+        return yearId;
     }
 
     public String getBlueAllianceId()
@@ -167,6 +177,11 @@ public class Event extends Table
         this.id = id;
     }
 
+    public void setYearId(int yearId)
+    {
+        this.yearId = yearId;
+    }
+
     public void setBlueAllianceId(String blueAllianceId)
     {
         this.blueAllianceId = blueAllianceId;
@@ -218,11 +233,12 @@ public class Event extends Table
 
         if(database.isOpen())
         {
-            ArrayList<Event> events = getEvents(this, database);
+            ArrayList<Event> events = getEvents(null, this, database);
             Event event = (events.size() > 0 ) ? events.get(0) : null;
 
             if (event != null)
             {
+                setYearId(event.getYearId());
                 setBlueAllianceId(event.getBlueAllianceId());
                 setName(event.getName());
                 setCity(event.getCity());
@@ -291,13 +307,14 @@ public class Event extends Table
 
     /**
      * Returns arraylist of events with specified filters from database
+     * @param year if specified, filters events by year id
      * @param event if specified, filters events by event id
      * @param database used to load events
      * @return arraylist of events
      */
-    public static ArrayList<Event> getEvents(@Nullable Event event, Database database)
+    public static ArrayList<Event> getEvents(@Nullable Years year, @Nullable Event event, Database database)
     {
-        return database.getEvents(event);
+        return database.getEvents(year, event);
     }
 
     //endregion

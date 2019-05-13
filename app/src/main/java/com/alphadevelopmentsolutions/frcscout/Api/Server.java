@@ -836,6 +836,7 @@ public abstract class Server extends Api
                 {
                     JSONObject eventObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
 
+                    int yearId = eventObject.getInt(Event.COLUMN_NAME_YEAR_ID);
                     String blueAllianceId = eventObject.getString(Event.COLUMN_NAME_BLUE_ALLIANCE_ID);
                     String name = eventObject.getString(Event.COLUMN_NAME_NAME);
                     String city = eventObject.getString(Event.COLUMN_NAME_CITY);
@@ -846,6 +847,7 @@ public abstract class Server extends Api
 
                     events.add(new Event(
                             -1,
+                            yearId,
                             blueAllianceId,
                             name,
                             city,

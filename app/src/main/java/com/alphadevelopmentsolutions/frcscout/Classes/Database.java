@@ -188,6 +188,7 @@ public class Database
     private Event getEventFromCursor(Cursor cursor)
     {
         int id = cursor.getInt(cursor.getColumnIndex(Event.COLUMN_NAME_ID));
+        int yearId = cursor.getInt(cursor.getColumnIndex(Event.COLUMN_NAME_YEAR_ID));
         String blueAllianceId = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_BLUE_ALLIANCE_ID));
         String name = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_NAME));
         String city = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_CITY));
@@ -198,6 +199,7 @@ public class Database
 
         return new Event(
                 id,
+                yearId,
                 blueAllianceId,
                 name,
                 city,
@@ -209,10 +211,11 @@ public class Database
 
     /**
      * Gets a specific event from the database and returns it
+     * @param year if specified, filters events by year id
      * @param event if specified, filters events by event id
      * @return event based off given ID
      */
-    public ArrayList<Event> getEvents(@Nullable Event event)
+    public ArrayList<Event> getEvents(@Nullable Years year, @Nullable Event event)
     {
         ArrayList<Event> events = new ArrayList<>();
 
@@ -220,12 +223,20 @@ public class Database
         String[] columns = getColumns();
 
         //where statement
-        String whereStatement = "";
+        StringBuilder whereStatement = new StringBuilder();
         ArrayList<String> whereArgs = new ArrayList<>();
+
+        if(year != null)
+        {
+            whereStatement.append(Event.COLUMN_NAME_YEAR_ID).append(" = ?");
+            whereArgs.add(String.valueOf(year.getServerId()));
+        }
 
         if(event != null)
         {
-            whereStatement = Event.COLUMN_NAME_ID + " = ?";
+            whereStatement
+                    .append((whereStatement.length() > 0) ? " AND " : "")
+                    .append(Event.COLUMN_NAME_ID).append(" = ?");
             whereArgs.add(String.valueOf(event.getId()));
         }
 
@@ -233,7 +244,7 @@ public class Database
         Cursor cursor = db.query(
                 Event.TABLE_NAME,
                 columns,
-                whereStatement,
+                whereStatement.toString(),
                 Arrays.copyOf(Objects.requireNonNull(whereArgs.toArray()), whereArgs.size(), String[].class),
                 null,
                 null,
@@ -266,6 +277,7 @@ public class Database
     {
         //set all the values
         ContentValues contentValues = new ContentValues();
+        contentValues.put(Event.COLUMN_NAME_YEAR_ID, event.getYearId());
         contentValues.put(Event.COLUMN_NAME_BLUE_ALLIANCE_ID, event.getBlueAllianceId());
         contentValues.put(Event.COLUMN_NAME_NAME, event.getName());
         contentValues.put(Event.COLUMN_NAME_CITY, event.getCity());
@@ -680,7 +692,9 @@ public class Database
 
         if(match != null)
         {
-            whereStatement.append(Match.COLUMN_NAME_KEY).append(" = ?");
+            whereStatement
+                    .append((whereStatement.length() > 0) ? " AND " : "")
+                    .append(Match.COLUMN_NAME_KEY).append(" = ?");
             whereArgs.add(match.getKey());
         }
 
@@ -1526,8 +1540,8 @@ public class Database
 
         if(year != null)
         {
-            whereStatement.append(Years.COLUMN_NAME_ID).append(" = ?");
-            whereArgs.add(String.valueOf(year.getId()));
+            whereStatement.append(Years.COLUMN_NAME_SERVER_ID).append(" = ?");
+            whereArgs.add(String.valueOf(year.getServerId()));
         }
 
         //select the info from the db

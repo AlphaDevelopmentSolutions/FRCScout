@@ -31,10 +31,10 @@
                 layout="@layout/layout_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/divider_height"
-                app:layout_constraintBottom_toTopOf="@+id/ChangeEventButton" />
+                app:layout_constraintBottom_toTopOf="@+id/ChangeButton" />
 
             <Button
-                android:id="@+id/ChangeEventButton"
+                android:id="@+id/ChangeButton"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

@@ -122,7 +122,6 @@ public class ConfigFragment extends MasterFragment
                                     {
                                         context.updateNavText();
                                         context.downloadApplicationData(false);
-                                        context.changeFragment(new EventListFragment(), false);
                                     }
                                 });
                             }

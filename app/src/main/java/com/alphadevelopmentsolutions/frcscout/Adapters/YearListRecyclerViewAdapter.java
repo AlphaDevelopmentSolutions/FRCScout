@@ -17,6 +17,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Years;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.squareup.picasso.Picasso;
 
@@ -98,7 +99,8 @@ public class YearListRecyclerViewAdapter extends RecyclerView.Adapter<YearListRe
             @Override
             public void onClick(View v)
             {
-                context.changeFragment(EventListFragment.newInstance(), true);
+                context.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, yearList.get(viewHolder.getAdapterPosition()).getServerId());
+                context.changeFragment(EventListFragment.newInstance(yearList.get(viewHolder.getAdapterPosition())), false);
             }
         });
 

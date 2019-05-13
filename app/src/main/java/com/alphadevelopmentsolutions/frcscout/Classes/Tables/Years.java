@@ -58,11 +58,11 @@ public class Years extends Table
 
     /**
      * Used for loading
-     * @param id to load
+     * @param serverId to load
      */
-    public Years(int id)
+    public Years(int serverId)
     {
-        this.id = id;
+        this.serverId = serverId;
     }
 
     //region Getters
@@ -168,6 +168,7 @@ public class Years extends Table
 
             if (year != null)
             {
+                setId(year.getId());
                 setName(year.getName());
                 setStartDate(year.getStartDate());
                 setEndDate(year.getEndDate());
