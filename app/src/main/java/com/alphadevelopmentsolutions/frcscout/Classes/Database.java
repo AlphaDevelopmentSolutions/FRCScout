@@ -14,12 +14,14 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.EventTeamList;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Robot;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfo;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfoKey;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Table;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Years;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year;
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.Exceptions.UnauthorizedClassException;
@@ -215,7 +217,7 @@ public class Database
      * @param event if specified, filters events by event id
      * @return event based off given ID
      */
-    public ArrayList<Event> getEvents(@Nullable Years year, @Nullable Event event)
+    public ArrayList<Event> getEvents(@Nullable Year year, @Nullable Event event)
     {
         ArrayList<Event> events = new ArrayList<>();
 
@@ -1257,6 +1259,318 @@ public class Database
         return false;
     }
     //endregion
+
+    //region Robot Info Logic
+
+    /**
+     * Takes in a cursor with info pulled from database and converts it into a pit card
+     * @param cursor info from database
+     * @return pitcard converted data
+     */
+    private RobotInfo getRobotInfoFromCursor(Cursor cursor)
+    {
+        int id = cursor.getInt(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_ID));
+        int yearId = cursor.getInt(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_YEAR_ID));
+        String eventId = cursor.getString(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_EVENT_ID));
+        int teamId = cursor.getInt(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_TEAM_ID));
+
+        String propertyState = cursor.getString(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_PROPERTY_STATE));
+        String propertyKey = cursor.getString(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_PROPERTY_KEY));
+        String propertyValue = cursor.getString(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_PROPERTY_VALUE));
+
+        boolean isDraft = cursor.getInt(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_IS_DRAFT)) == 1;
+
+
+        return new RobotInfo(
+                id,
+                yearId,
+                eventId,
+                teamId,
+
+                propertyState,
+                propertyKey,
+                propertyValue,
+
+                isDraft);
+    }
+
+    /**
+     * Gets all robot info
+     * @param year if specified, filters robot info by year id
+     * @param event if specified, filters robot info by event id
+     * @param team if specified, filters robot info by team id
+     * @param robotInfo if specified, filters robot info by robotInfo id
+     * @param onlyDrafts if true, filters by only drafts
+     * @return object based off given team ID
+     */
+    public ArrayList<RobotInfo> getRobotInfo(@Nullable Year year, @Nullable Event event, @Nullable Team team, @Nullable RobotInfo robotInfo, boolean onlyDrafts)
+    {
+        ArrayList<RobotInfo> robotInfos = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns = getColumns();
+
+        //where statement
+        StringBuilder whereStatement =  new StringBuilder();
+        ArrayList<String> whereArgs = new ArrayList<>();
+
+        if(year != null)
+        {
+            whereStatement.append(RobotInfo.COLUMN_NAME_YEAR_ID + " = ? ");
+            whereArgs.add(String.valueOf(year.getServerId()));
+        }
+
+        if(event != null)
+        {
+            whereStatement.append((whereStatement.length() > 0) ? " AND " : "").append(RobotInfo.COLUMN_NAME_EVENT_ID + " = ? ");
+            whereArgs.add(event.getBlueAllianceId());
+        }
+
+        if(team != null)
+        {
+            whereStatement.append((whereStatement.length() > 0) ? " AND " : "").append(RobotInfo.COLUMN_NAME_TEAM_ID + " = ?");
+            whereArgs.add(String.valueOf(team.getId()));
+        }
+
+        if(robotInfo != null)
+        {
+            whereStatement.append((whereStatement.length() > 0) ? " AND " : "").append(RobotInfo.COLUMN_NAME_ID + " = ?");
+            whereArgs.add(String.valueOf(robotInfo.getId()));
+        }
+
+        if(onlyDrafts)
+        {
+            whereStatement.append((whereStatement.length() > 0) ? " AND " : "").append(RobotInfo.COLUMN_NAME_IS_DRAFT + " = 1");
+        }
+
+        String orderBy = RobotInfo.COLUMN_NAME_ID + " DESC";
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                RobotInfo.TABLE_NAME,
+                columns,
+                whereStatement.toString(),
+                Arrays.copyOf(Objects.requireNonNull(whereArgs.toArray()), whereArgs.size(), String[].class),
+                null,
+                null,
+                orderBy);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while(cursor.moveToNext())
+            {
+                robotInfos.add(getRobotInfoFromCursor(cursor));
+            }
+
+            cursor.close();
+
+            return robotInfos;
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Saves a specific object from the database and returns it
+     *
+     * @param robotInfo with specified ID
+     * @return id of the saved robotInfo
+     */
+    public long setRobotInfo(RobotInfo robotInfo)
+    {
+        //set all the values
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(RobotInfo.COLUMN_NAME_YEAR_ID, robotInfo.getYearId());
+        contentValues.put(RobotInfo.COLUMN_NAME_EVENT_ID, robotInfo.getEventId());
+        contentValues.put(RobotInfo.COLUMN_NAME_TEAM_ID, robotInfo.getTeamId());
+
+        contentValues.put(RobotInfo.COLUMN_NAME_PROPERTY_STATE, robotInfo.getPropertyState());
+        contentValues.put(RobotInfo.COLUMN_NAME_PROPERTY_KEY, robotInfo.getPropertyKey());
+        contentValues.put(RobotInfo.COLUMN_NAME_PROPERTY_VALUE, robotInfo.getPropertyValue());
+
+        contentValues.put(RobotInfo.COLUMN_NAME_IS_DRAFT, robotInfo.isDraft() ? "1" : "0");
+
+        //robotInfo already exists in DB, update
+        if (robotInfo.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = RobotInfo.COLUMN_NAME_ID + " = ?";
+            String[] whereArgs = {robotInfo.getId() + ""};
+
+            //update
+            if(db.update(RobotInfo.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return robotInfo.getId();
+            else
+                return -1;
+        }
+        //insert new scoutCard in db
+        else return db.insert(RobotInfo.TABLE_NAME, null, contentValues);
+
+    }
+
+    /**
+     * Deletes a specific scoutCard from the database
+     *
+     * @param robotInfo with specified ID
+     * @return successful delete
+     */
+    public boolean deleteRobotInfo(RobotInfo robotInfo)
+    {
+        if (robotInfo.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = RobotInfo.COLUMN_NAME_ID + " = ?";
+            String[] whereArgs = {robotInfo.getId() + ""};
+
+            //delete
+            return db.delete(RobotInfo.TABLE_NAME, whereStatement, whereArgs) >= 1;
+        }
+
+        return false;
+    }
+    //endregion
+
+    //region Robot Info Keys Logic
+
+    /**
+     * Takes in a cursor with info pulled from database and converts it into a pit card
+     * @param cursor info from database
+     * @return pitcard converted data
+     */
+    private RobotInfoKey getRobotInfoKeyFromCursor(Cursor cursor)
+    {
+        int id = cursor.getInt(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_ID));
+        int yearId = cursor.getInt(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_YEAR_ID));
+
+        String keyState = cursor.getString(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_KEY_STATE));
+        String keyName = cursor.getString(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_KEY_NAME));
+        String keyValue = cursor.getString(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_KEY_VALUE));
+
+
+        return new RobotInfoKey(
+                id,
+                yearId,
+
+                keyState,
+                keyName,
+                keyValue);
+    }
+
+    /**
+     * Gets all robot info keys
+     * @param year if specified, filters by year id
+     * @param robotInfoKey if specified, filters by robotInfoKey id
+     * @return object based off given team ID
+     */
+    public ArrayList<RobotInfoKey> getRobotInfoKeys(@Nullable Year year, @Nullable RobotInfoKey robotInfoKey)
+    {
+        ArrayList<RobotInfoKey> robotInfoKeys = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns = getColumns();
+
+        //where statement
+        StringBuilder whereStatement =  new StringBuilder();
+        ArrayList<String> whereArgs = new ArrayList<>();
+
+        if(year != null)
+        {
+            whereStatement.append(RobotInfoKey.COLUMN_NAME_YEAR_ID + " = ? ");
+            whereArgs.add(String.valueOf(year.getServerId()));
+        }
+
+        if(robotInfoKey != null)
+        {
+            whereStatement.append((whereStatement.length() > 0) ? " AND " : "").append(RobotInfoKey.COLUMN_NAME_ID + " = ?");
+            whereArgs.add(String.valueOf(robotInfoKey.getId()));
+        }
+
+
+        String orderBy = RobotInfoKey.COLUMN_NAME_KEY_STATE + " DESC";
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                RobotInfoKey.TABLE_NAME,
+                columns,
+                whereStatement.toString(),
+                Arrays.copyOf(Objects.requireNonNull(whereArgs.toArray()), whereArgs.size(), String[].class),
+                null,
+                null,
+                orderBy);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while(cursor.moveToNext())
+            {
+                robotInfoKeys.add(getRobotInfoKeyFromCursor(cursor));
+            }
+
+            cursor.close();
+
+            return robotInfoKeys;
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Saves a specific object from the database and returns it
+     *
+     * @param robotInfoKey with specified ID
+     * @return id of the saved robotInfoKey
+     */
+    public long setRobotInfoKey(RobotInfoKey robotInfoKey)
+    {
+        //set all the values
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(RobotInfoKey.COLUMN_NAME_YEAR_ID, robotInfoKey.getYearId());
+        contentValues.put(RobotInfoKey.COLUMN_NAME_KEY_STATE, robotInfoKey.getKeyState());
+        contentValues.put(RobotInfoKey.COLUMN_NAME_KEY_NAME, robotInfoKey.getKeyName());
+        contentValues.put(RobotInfoKey.COLUMN_NAME_KEY_VALUE, robotInfoKey.getKeyValue());
+
+        //robotInfoKey already exists in DB, update
+        if (robotInfoKey.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = RobotInfoKey.COLUMN_NAME_ID + " = ?";
+            String[] whereArgs = {robotInfoKey.getId() + ""};
+
+            //update
+            if(db.update(RobotInfoKey.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return robotInfoKey.getId();
+            else
+                return -1;
+        }
+        //insert new scoutCard in db
+        else return db.insert(RobotInfoKey.TABLE_NAME, null, contentValues);
+
+    }
+
+    /**
+     * Deletes a specific scoutCard from the database
+     *
+     * @param robotInfoKey with specified ID
+     * @return successful delete
+     */
+    public boolean deleteRobotInfoKey(RobotInfoKey robotInfoKey)
+    {
+        if (robotInfoKey.getId() > 0)
+        {
+            //create the where statement
+            String whereStatement = RobotInfoKey.COLUMN_NAME_ID + " = ?";
+            String[] whereArgs = {robotInfoKey.getId() + ""};
+
+            //delete
+            return db.delete(RobotInfoKey.TABLE_NAME, whereStatement, whereArgs) >= 1;
+        }
+
+        return false;
+    }
+    //endregion
     
     //region User Logic
 
@@ -1498,23 +1812,23 @@ public class Database
     }
     //endregion
 
-    //region Years Logic
+    //region Year Logic
 
     /**
      * Takes in a cursor with info pulled from database and converts it into object
      * @param cursor info from database
      * @return years converted data
      */
-    private Years getYearsFromCursor(Cursor cursor)
+    private Year getYearsFromCursor(Cursor cursor)
     {
-        int id = cursor.getInt(cursor.getColumnIndex(Years.COLUMN_NAME_ID));
-        int serverId = cursor.getInt(cursor.getColumnIndex(Years.COLUMN_NAME_SERVER_ID));
-        String name = cursor.getString(cursor.getColumnIndex(Years.COLUMN_NAME_NAME));
-        Date startDate = new Date(cursor.getLong(cursor.getColumnIndex(Years.COLUMN_NAME_START_DATE)));
-        Date endDate = new Date(cursor.getLong(cursor.getColumnIndex(Years.COLUMN_NAME_END_DATE)));
-        String fileUri = cursor.getString(cursor.getColumnIndex(Years.COLUMN_NAME_IMAGE_URI));
+        int id = cursor.getInt(cursor.getColumnIndex(Year.COLUMN_NAME_ID));
+        int serverId = cursor.getInt(cursor.getColumnIndex(Year.COLUMN_NAME_SERVER_ID));
+        String name = cursor.getString(cursor.getColumnIndex(Year.COLUMN_NAME_NAME));
+        Date startDate = new Date(cursor.getLong(cursor.getColumnIndex(Year.COLUMN_NAME_START_DATE)));
+        Date endDate = new Date(cursor.getLong(cursor.getColumnIndex(Year.COLUMN_NAME_END_DATE)));
+        String fileUri = cursor.getString(cursor.getColumnIndex(Year.COLUMN_NAME_IMAGE_URI));
 
-        return new Years(
+        return new Year(
                 id,
                 serverId,
                 name,
@@ -1528,9 +1842,9 @@ public class Database
      * @param year if specified, object filters by year id
      * @return year based off given team ID
      */
-    public ArrayList<Years> getYears(@Nullable Years year)
+    public ArrayList<Year> getYears(@Nullable Year year)
     {
-        ArrayList<Years> yearList = new ArrayList<>();
+        ArrayList<Year> yearList = new ArrayList<>();
 
         //insert columns you are going to use here
         String[] columns = getColumns();
@@ -1540,13 +1854,13 @@ public class Database
 
         if(year != null)
         {
-            whereStatement.append(Years.COLUMN_NAME_SERVER_ID).append(" = ?");
+            whereStatement.append(Year.COLUMN_NAME_SERVER_ID).append(" = ?");
             whereArgs.add(String.valueOf(year.getServerId()));
         }
 
         //select the info from the db
         Cursor cursor = db.query(
-                Years.TABLE_NAME,
+                Year.TABLE_NAME,
                 columns,
                 whereStatement.toString(),
                 Arrays.copyOf(Objects.requireNonNull(whereArgs.toArray()), whereArgs.size(), String[].class),
@@ -1575,31 +1889,31 @@ public class Database
      * @param year with specified ID
      * @return id of the saved year
      */
-    public long setYears(Years year)
+    public long setYears(Year year)
     {
         //set all the values
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Years.COLUMN_NAME_SERVER_ID, year.getServerId());
-        contentValues.put(Years.COLUMN_NAME_NAME, year.getName());
-        contentValues.put(Years.COLUMN_NAME_START_DATE, year.getStartDate().getTime());
-        contentValues.put(Years.COLUMN_NAME_END_DATE, year.getEndDate().getTime());
-        contentValues.put(Years.COLUMN_NAME_IMAGE_URI, year.getImageUri());
+        contentValues.put(Year.COLUMN_NAME_SERVER_ID, year.getServerId());
+        contentValues.put(Year.COLUMN_NAME_NAME, year.getName());
+        contentValues.put(Year.COLUMN_NAME_START_DATE, year.getStartDate().getTime());
+        contentValues.put(Year.COLUMN_NAME_END_DATE, year.getEndDate().getTime());
+        contentValues.put(Year.COLUMN_NAME_IMAGE_URI, year.getImageUri());
 
         //year already exists in DB, update
         if (year.getId() > 0)
         {
             //create the where statement
-            String whereStatement = Years.COLUMN_NAME_ID + " = ?";
+            String whereStatement = Year.COLUMN_NAME_ID + " = ?";
             String[] whereArgs = {year.getId() + ""};
 
             //update
-            if(db.update(Years.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            if(db.update(Year.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 return year.getId();
             else
                 return -1;
         }
         //insert new year in db
-        else return db.insert(Years.TABLE_NAME, null, contentValues);
+        else return db.insert(Year.TABLE_NAME, null, contentValues);
 
     }
 
@@ -1608,16 +1922,16 @@ public class Database
      * @param year with specified ID
      * @return successful delete
      */
-    public boolean deleteYears(Years year)
+    public boolean deleteYears(Year year)
     {
         if (year.getId() > 0)
         {
             //create the where statement
-            String whereStatement = Years.COLUMN_NAME_ID + " = ?";
+            String whereStatement = Year.COLUMN_NAME_ID + " = ?";
             String[] whereArgs = {year.getId() + ""};
 
             //delete
-            return db.delete(Years.TABLE_NAME, whereStatement, whereArgs) >= 1;
+            return db.delete(Year.TABLE_NAME, whereStatement, whereArgs) >= 1;
         }
 
         return false;

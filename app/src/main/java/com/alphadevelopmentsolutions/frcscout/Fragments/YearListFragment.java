@@ -10,10 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alphadevelopmentsolutions.frcscout.Adapters.EventListRecyclerViewAdapter;
 import com.alphadevelopmentsolutions.frcscout.Adapters.YearListRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Years;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 
@@ -77,7 +75,7 @@ public class YearListFragment extends MasterFragment {
 
         yearListRecyclerView = view.findViewById(R.id.YearListRecyclerView);
 
-        YearListRecyclerViewAdapter yearListRecyclerViewAdapter = new YearListRecyclerViewAdapter(Years.getYears(null, database), context);
+        YearListRecyclerViewAdapter yearListRecyclerViewAdapter = new YearListRecyclerViewAdapter(Year.getYears(null, database), context);
         yearListRecyclerView.setAdapter(yearListRecyclerViewAdapter);
         yearListRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 

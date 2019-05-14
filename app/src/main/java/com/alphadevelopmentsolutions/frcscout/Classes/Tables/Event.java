@@ -312,7 +312,7 @@ public class Event extends Table
      * @param database used to load events
      * @return arraylist of events
      */
-    public static ArrayList<Event> getEvents(@Nullable Years year, @Nullable Event event, Database database)
+    public static ArrayList<Event> getEvents(@Nullable Year year, @Nullable Event event, Database database)
     {
         return database.getEvents(year, event);
     }

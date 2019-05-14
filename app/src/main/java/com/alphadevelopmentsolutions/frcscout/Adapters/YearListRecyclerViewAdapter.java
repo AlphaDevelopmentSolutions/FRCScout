@@ -11,12 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Years;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment;
-import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment;
-import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.squareup.picasso.Picasso;
@@ -30,12 +26,12 @@ public class YearListRecyclerViewAdapter extends RecyclerView.Adapter<YearListRe
 
     private MainActivity context;
 
-    private ArrayList<Years> yearList;
+    private ArrayList<Year> yearList;
 
     private SimpleDateFormat simpleDateFormat;
 
 
-    public YearListRecyclerViewAdapter(@NonNull ArrayList<Years> yearList, @NonNull MainActivity context)
+    public YearListRecyclerViewAdapter(@NonNull ArrayList<Year> yearList, @NonNull MainActivity context)
     {
         this.context = context;
         this.yearList = yearList;
@@ -74,7 +70,7 @@ public class YearListRecyclerViewAdapter extends RecyclerView.Adapter<YearListRe
     @Override
     public void onBindViewHolder(@NonNull final YearListRecyclerViewAdapter.ViewHolder viewHolder, int position)
     {
-        final Years year = yearList.get(viewHolder.getAdapterPosition());
+        final Year year = yearList.get(viewHolder.getAdapterPosition());
 
         //Set the content on the card
         viewHolder.yearTitleTextView.setText(year.toString());

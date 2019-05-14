@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.EventListRecyclerViewAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Years;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
@@ -46,7 +46,7 @@ public class EventListFragment extends MasterFragment
      * @param year to grab events from
      * @return A new instance of fragment EventListFragment.
      */
-    public static EventListFragment newInstance(Years year)
+    public static EventListFragment newInstance(Year year)
     {
         EventListFragment fragment = new EventListFragment();
         Bundle args = new Bundle();
@@ -73,7 +73,7 @@ public class EventListFragment extends MasterFragment
             {
                 //load the scout card from json, if available
                 if(yearJson != null && !yearJson.equals(""))
-                    year = new Gson().fromJson(yearJson, Years.class);
+                    year = new Gson().fromJson(yearJson, Year.class);
             }
         });
 
@@ -84,7 +84,7 @@ public class EventListFragment extends MasterFragment
 
     private Thread loadYearThread;
 
-    private Years year;
+    private Year year;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -163,7 +163,7 @@ public class EventListFragment extends MasterFragment
             @Override
             public void onClick(View v)
             {
-                Years year = new Years((Integer) context.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)));
+                Year year = new Year((Integer) context.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)));
                 year.load(database);
 
                 //send to eventlist frag

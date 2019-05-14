@@ -42,11 +42,14 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.EventTeamList;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.PitCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Robot;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfo;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfoKey;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Years;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ChecklistFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.ConfigFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment;
@@ -74,7 +77,6 @@ import com.alphadevelopmentsolutions.frcscout.R;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -169,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v)
             {
-                Years year = new Years((Integer) getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)));
+                Year year = new Year((Integer) getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)));
                 year.load(getDatabase());
 
                 //send to eventlist frag
@@ -367,11 +369,27 @@ public class MainActivity extends AppCompatActivity implements
                     Server.GetYears getYears = new Server.GetYears(context);
                     if (getYears.execute())
                     {
-                        Years.clearTable(getDatabase());
-                        for (Years year : getYears.getYears())
-                            year.save(getDatabase());
-                    }
+                        Year.clearTable(getDatabase());
+                        RobotInfoKey.clearTable(getDatabase());
 
+                        for (Year year : getYears.getYears())
+                        {
+                            if(year.save(getDatabase()) > 0)
+                            {
+                                //update robot info keys
+                                Server.GetRobotInfoKeys getRobotInfoKeys = new Server.GetRobotInfoKeys(context, year);
+
+                                if (getRobotInfoKeys.execute())
+                                {
+                                    for (RobotInfoKey robotInfoKey : getRobotInfoKeys.getRobotInfoKeyList())
+                                    {
+                                        robotInfoKey.setYearId(year.getServerId());
+                                        robotInfoKey.save(getDatabase());
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     //update events
                     Server.GetEvents getEvents = new Server.GetEvents(context);
@@ -398,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements
                     EventTeamList.clearTable(getDatabase());
                     Team.clearTable(getDatabase());
                     ScoutCard.clearTable(getDatabase(), false);
-                    PitCard.clearTable(getDatabase(), false);
+                    RobotInfo.clearTable(getDatabase(), false);
                     Match.clearTable(getDatabase());
                     ChecklistItem.clearTable(getDatabase());
                     ChecklistItemResult.clearTable(getDatabase(), false);
@@ -409,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements
                         @Override
                         public void run()
                         {
-                            progressDialog.setTitle("Downloading checklist data");
+                            progressDialog.setTitle("Downloading checklist data...");
                             progressDialog.setProgress(progressDialogProgess);
                         }
                     });
@@ -443,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements
                             @Override
                             public void run()
                             {
-                                progressDialog.setTitle("Downloading teams at " + event.getBlueAllianceId());
+                                progressDialog.setTitle("Downloading teams at " + event.getBlueAllianceId() + "...");
                             }
                         });
 
@@ -473,7 +491,7 @@ public class MainActivity extends AppCompatActivity implements
                             @Override
                             public void run()
                             {
-                                progressDialog.setTitle("Downloading matches");
+                                progressDialog.setTitle("Downloading matches...");
                             }
                         });
 
@@ -494,7 +512,7 @@ public class MainActivity extends AppCompatActivity implements
                             @Override
                             public void run()
                             {
-                                progressDialog.setTitle("Downloading scout card data");
+                                progressDialog.setTitle("Downloading scout card data...");
                             }
                         });
 
@@ -512,18 +530,18 @@ public class MainActivity extends AppCompatActivity implements
                             @Override
                             public void run()
                             {
-                                progressDialog.setTitle("Downloading teams at pit card data");
+                                progressDialog.setTitle("Downloading robot info data...");
 
                             }
                         });
 
-                        //update pit cards
-                        Server.GetPitCards getPitCards = new Server.GetPitCards(context, event);
+                        //update robot info
+                        Server.GetRobotInfo getRobotInfo = new Server.GetRobotInfo(context, event);
 
-                        if (getPitCards.execute())
+                        if (getRobotInfo.execute())
                         {
-                            for (PitCard pitCard : getPitCards.getPitCards())
-                                pitCard.save(getDatabase());
+                            for (RobotInfo robotInfo : getRobotInfo.getRobotInfoList())
+                                robotInfo.save(getDatabase());
                         }
 
                         final int finalI = i;
@@ -569,7 +587,7 @@ public class MainActivity extends AppCompatActivity implements
                                 @Override
                                 public void run()
                                 {
-                                    progressDialog.setTitle("Downloading teams " + team.getId() + " robot media");
+                                    progressDialog.setTitle("Downloading teams " + team.getId() + " robot media...");
                                 }
                             });
 
@@ -596,7 +614,7 @@ public class MainActivity extends AppCompatActivity implements
                         public void run()
                         {
 
-                            Years year = new Years((Integer) getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)));
+                            Year year = new Year((Integer) getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)));
                             year.load(getDatabase());
 
                             //set the year when showing the event list frag
@@ -1025,7 +1043,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 else
                 {
-                    Years year = new Years((Integer) getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)));
+                    Year year = new Year((Integer) getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)));
                     year.load(getDatabase());
 
                     //send to eventlist frag

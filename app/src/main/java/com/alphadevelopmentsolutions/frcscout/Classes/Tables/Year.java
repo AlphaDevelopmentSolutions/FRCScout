@@ -6,14 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
-import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.UUID;
 
-public class Years extends Table
+public class Year extends Table
 {
 
     public static final String TABLE_NAME = "years";
@@ -40,7 +37,7 @@ public class Years extends Table
     private Date endDate;
     private String imageUri;
 
-    public Years(
+    public Year(
             int id,
             int serverId,
             String name,
@@ -60,7 +57,7 @@ public class Years extends Table
      * Used for loading
      * @param serverId to load
      */
-    public Years(int serverId)
+    public Year(int serverId)
     {
         this.serverId = serverId;
     }
@@ -163,8 +160,8 @@ public class Years extends Table
 
         if(database.isOpen())
         {
-            ArrayList<Years> yearsArrayList = getYears(this, database);
-            Years year = (yearsArrayList.size() > 0 ) ? yearsArrayList.get(0) : null;
+            ArrayList<Year> yearArrayList = getYears(this, database);
+            Year year = (yearArrayList.size() > 0 ) ? yearArrayList.get(0) : null;
 
             if (year != null)
             {
@@ -239,7 +236,7 @@ public class Years extends Table
      * @param database used to load robot media
      * @return ArrayList of years
      */
-    public static ArrayList<Years> getYears(@Nullable Years year, @NonNull Database database)
+    public static ArrayList<Year> getYears(@Nullable Year year, @NonNull Database database)
     {
         return database.getYears(year);
     }

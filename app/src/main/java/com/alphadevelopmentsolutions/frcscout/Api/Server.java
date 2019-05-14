@@ -6,11 +6,13 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItemResult
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.PitCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfo;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfoKey;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Years;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year;
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece;
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
@@ -22,6 +24,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public abstract class Server extends Api
 {
@@ -533,6 +536,177 @@ public abstract class Server extends Api
         //endregion
     }
 
+    public static class GetRobotInfo extends Server
+    {
+        private ArrayList<RobotInfo> robotInfoList;
+
+        private MainActivity context;
+
+        public GetRobotInfo(final MainActivity context, final Event event)
+        {
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
+            {{
+                put(API_PARAM_API_ACTION, "GetRobotInfo");
+                put("EventId", event.getBlueAllianceId());
+            }});
+
+            robotInfoList = new ArrayList<>();
+
+            this.context = context;
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception(context.getString(R.string.server_error));
+
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
+
+
+                //iterate through, create a new object and add it to the arraylist
+                for (int i = 0; i < response.getJSONArray(API_FIELD_NAME_RESPONSE).length(); i++)
+                {
+                    JSONObject robotInfoObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
+
+                    int yearId = robotInfoObject.getInt(RobotInfo.COLUMN_NAME_YEAR_ID);
+                    String eventId = robotInfoObject.getString(RobotInfo.COLUMN_NAME_EVENT_ID);
+                    int teamId = robotInfoObject.getInt(RobotInfo.COLUMN_NAME_TEAM_ID);
+
+                    String propertyState = robotInfoObject.getString(RobotInfo.COLUMN_NAME_PROPERTY_STATE);
+                    String propertyKey = robotInfoObject.getString(RobotInfo.COLUMN_NAME_PROPERTY_KEY);
+                    String propertyValue = robotInfoObject.getString(RobotInfo.COLUMN_NAME_PROPERTY_VALUE);
+
+                    robotInfoList.add(new RobotInfo(
+                            -1,
+                            yearId,
+                            eventId,
+                            teamId,
+
+                            propertyState,
+                            propertyKey,
+                            propertyValue,
+
+                            false
+                    ));
+                }
+
+                return true;
+            } catch (Exception e)
+            {
+                context.showSnackbar(e.getMessage());
+                return false;
+            }
+        }
+
+        //region Getters
+
+        public ArrayList<RobotInfo> getRobotInfoList()
+        {
+            return robotInfoList;
+        }
+
+
+        //endregion
+    }
+
+    public static class GetRobotInfoKeys extends Server
+    {
+        private ArrayList<RobotInfoKey> robotInfoKeyList;
+
+        private MainActivity context;
+
+        public GetRobotInfoKeys(final MainActivity context, final Year year)
+        {
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
+            {{
+                put(API_PARAM_API_ACTION, "GetRobotInfoKeys");
+                put("YearId", String.valueOf(year.getServerId()));
+            }});
+
+            robotInfoKeyList = new ArrayList<>();
+
+            this.context = context;
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception(context.getString(R.string.server_error));
+
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
+
+                if(response.get(API_FIELD_NAME_RESPONSE) instanceof JSONObject)
+                {
+                    JSONObject robotInfoKeyObjects = response.getJSONObject(API_FIELD_NAME_RESPONSE);
+
+                    for (Iterator<String> iter = robotInfoKeyObjects.keys(); iter.hasNext(); )
+                    {
+                        String keyState = iter.next();
+
+                        if (robotInfoKeyObjects.get(keyState) instanceof JSONObject)
+                        {
+                            JSONObject keyValueObject = robotInfoKeyObjects.getJSONObject(keyState);
+
+                            for (Iterator<String> valueIter = keyValueObject.keys(); valueIter.hasNext(); )
+                            {
+                                String keyName = valueIter.next();
+                                String keyValue = keyValueObject.getString(keyName);
+
+                                robotInfoKeyList.add(new RobotInfoKey(
+                                        -1,
+                                        -1,
+
+                                        keyState,
+                                        keyName,
+                                        keyValue
+                                ));
+                            }
+                        }
+                    }
+                }
+
+                return true;
+            } catch (Exception e)
+            {
+                context.showSnackbar(e.getMessage());
+                return false;
+            }
+        }
+
+        //region Getters
+
+        public ArrayList<RobotInfoKey> getRobotInfoKeyList()
+        {
+            return robotInfoKeyList;
+        }
+
+        //endregion
+    }
+
     public static class GetMatches extends Server
     {
         private ArrayList<Match> matches;
@@ -716,7 +890,7 @@ public abstract class Server extends Api
 
     public static class GetYears extends Server
     {
-        private ArrayList<Years> yearsArrayList;
+        private ArrayList<Year> yearArrayList;
 
         private MainActivity context;
 
@@ -727,7 +901,7 @@ public abstract class Server extends Api
                 put(API_PARAM_API_ACTION, "GetYears");
             }});
 
-            yearsArrayList = new ArrayList<>();
+            yearArrayList = new ArrayList<>();
 
             this.context = context;
 
@@ -757,15 +931,15 @@ public abstract class Server extends Api
                 {
                     JSONObject yearsJson = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
 
-                    int serverId = yearsJson.getInt(Years.COLUMN_NAME_SERVER_ID);
-                    String name = yearsJson.getString(Years.COLUMN_NAME_NAME);
-                    Date startDate = simpleDateFormat.parse(yearsJson.getString(Years.COLUMN_NAME_START_DATE));
-                    Date endDate = simpleDateFormat.parse(yearsJson.getString(Years.COLUMN_NAME_END_DATE));
-                    String fileUri = context.getPreference (Constants.SharedPrefKeys.WEB_URL_KEY, "").toString() + "/assets/year-media/" + yearsJson.getString(Years.COLUMN_NAME_IMAGE_URI);
+                    int serverId = yearsJson.getInt(Year.COLUMN_NAME_SERVER_ID);
+                    String name = yearsJson.getString(Year.COLUMN_NAME_NAME);
+                    Date startDate = simpleDateFormat.parse(yearsJson.getString(Year.COLUMN_NAME_START_DATE));
+                    Date endDate = simpleDateFormat.parse(yearsJson.getString(Year.COLUMN_NAME_END_DATE));
+                    String fileUri = context.getPreference (Constants.SharedPrefKeys.WEB_URL_KEY, "").toString() + "/assets/year-media/" + yearsJson.getString(Year.COLUMN_NAME_IMAGE_URI);
 
                     fileUri = apiParser.downloadImage(fileUri, Constants.YEAR_MEDIA_DIRECTORY).getAbsolutePath();
 
-                    yearsArrayList.add(new Years(
+                    yearArrayList.add(new Year(
                             -1,
                             serverId,
                             name,
@@ -786,9 +960,9 @@ public abstract class Server extends Api
 
         //region Getters
 
-        public ArrayList<Years> getYears()
+        public ArrayList<Year> getYears()
         {
-            return yearsArrayList;
+            return yearArrayList;
         }
 
 
@@ -1147,6 +1321,58 @@ public abstract class Server extends Api
 
                 put(PitCard.COLUMN_NAME_NOTES, pitCard.getNotes());
                 put(PitCard.COLUMN_NAME_COMPLETED_BY, pitCard.getCompletedBy());
+            }});
+
+            this.context = context;
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception(context.getString(R.string.server_error));
+
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
+
+
+                return true;
+            } catch (Exception e)
+            {
+                context.showSnackbar(e.getMessage());
+                return false;
+            }
+        }
+    }
+
+    public static class SubmitRobotInfo extends Server
+    {
+        private MainActivity context;
+
+        public SubmitRobotInfo(final MainActivity context, final RobotInfo robotInfo)
+        {
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
+            {{
+                put(API_PARAM_API_ACTION, "SubmitRobotInfo");
+
+                put(RobotInfo.COLUMN_NAME_YEAR_ID, String.valueOf(robotInfo.getYearId()));
+                put(RobotInfo.COLUMN_NAME_EVENT_ID, robotInfo.getEventId());
+                put(RobotInfo.COLUMN_NAME_TEAM_ID, String.valueOf(robotInfo.getTeamId()));
+
+                put(RobotInfo.COLUMN_NAME_PROPERTY_STATE, robotInfo.getPropertyState());
+                put(RobotInfo.COLUMN_NAME_PROPERTY_KEY, robotInfo.getPropertyKey());
+                put(RobotInfo.COLUMN_NAME_PROPERTY_VALUE, robotInfo.getPropertyValue());
+
             }});
 
             this.context = context;
