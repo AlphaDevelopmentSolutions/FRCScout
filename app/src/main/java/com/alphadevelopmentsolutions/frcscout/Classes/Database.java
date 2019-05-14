@@ -1392,22 +1392,31 @@ public class Database
 
         contentValues.put(RobotInfo.COLUMN_NAME_IS_DRAFT, robotInfo.isDraft() ? "1" : "0");
 
-        //robotInfo already exists in DB, update
-        if (robotInfo.getId() > 0)
-        {
+        //try and update first
+        //if update fails, no record was in the database so add a new record
+
             //create the where statement
-            String whereStatement = RobotInfo.COLUMN_NAME_ID + " = ?";
-            String[] whereArgs = {robotInfo.getId() + ""};
+            String whereStatement =
+                    RobotInfo.COLUMN_NAME_YEAR_ID + " = ? AND "  +
+                    RobotInfo.COLUMN_NAME_EVENT_ID + " = ? AND " +
+                    RobotInfo.COLUMN_NAME_TEAM_ID + " = ? AND " +
+                    RobotInfo.COLUMN_NAME_PROPERTY_STATE + " = ? AND " +
+                    RobotInfo.COLUMN_NAME_PROPERTY_KEY + " = ? ";
+            String[] whereArgs =
+                    {
+                            String.valueOf(robotInfo.getYearId()),
+                            robotInfo.getEventId(),
+                            String.valueOf(robotInfo.getTeamId()),
+
+                            robotInfo.getPropertyState(),
+                            robotInfo.getPropertyKey()
+                    };
 
             //update
-            if(db.update(RobotInfo.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            if(db.update(RobotInfo.TABLE_NAME, contentValues, whereStatement, whereArgs) > 0)
                 return robotInfo.getId();
             else
-                return -1;
-        }
-        //insert new scoutCard in db
-        else return db.insert(RobotInfo.TABLE_NAME, null, contentValues);
-
+                return db.insert(RobotInfo.TABLE_NAME, null, contentValues);
     }
 
     /**
@@ -1443,6 +1452,7 @@ public class Database
     {
         int id = cursor.getInt(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_ID));
         int yearId = cursor.getInt(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_YEAR_ID));
+        int sortOrder = cursor.getInt(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_SORT_ORDER));
 
         String keyState = cursor.getString(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_KEY_STATE));
         String keyName = cursor.getString(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_KEY_NAME));
@@ -1452,6 +1462,7 @@ public class Database
         return new RobotInfoKey(
                 id,
                 yearId,
+                sortOrder,
 
                 keyState,
                 keyName,
@@ -1488,7 +1499,7 @@ public class Database
         }
 
 
-        String orderBy = RobotInfoKey.COLUMN_NAME_KEY_STATE + " DESC";
+        String orderBy = RobotInfoKey.COLUMN_NAME_SORT_ORDER + " ASC";
 
         //select the info from the db
         Cursor cursor = db.query(
@@ -1528,6 +1539,7 @@ public class Database
         //set all the values
         ContentValues contentValues = new ContentValues();
         contentValues.put(RobotInfoKey.COLUMN_NAME_YEAR_ID, robotInfoKey.getYearId());
+        contentValues.put(RobotInfoKey.COLUMN_NAME_SORT_ORDER, robotInfoKey.getSortOrder());
         contentValues.put(RobotInfoKey.COLUMN_NAME_KEY_STATE, robotInfoKey.getKeyState());
         contentValues.put(RobotInfoKey.COLUMN_NAME_KEY_NAME, robotInfoKey.getKeyName());
         contentValues.put(RobotInfoKey.COLUMN_NAME_KEY_VALUE, robotInfoKey.getKeyValue());

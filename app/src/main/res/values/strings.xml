@@ -127,4 +127,5 @@
     <string name="view_year">View Year</string>
     <string name="years">Years</string>
     <string name="change_year">Change Year</string>
+    <string name="save_robot_info">Save Robot Info</string>
 </resources>

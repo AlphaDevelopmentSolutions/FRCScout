@@ -234,19 +234,6 @@
             app:fab_label="@string/add_robot_photo"
             app:fab_size="mini" />
 
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/AddPitCardFloatingActingButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:src="@drawable/ic_assignment_white_24dp"
-            app:fab_colorNormal="@color/accent"
-            app:fab_colorPressed="@color/accent"
-            app:fab_colorRipple="@color/ripple"
-            app:fab_label="@string/add_pit_card"
-            app:fab_size="mini" />
-
     </com.github.clans.fab.FloatingActionMenu>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -12,6 +12,7 @@ public class RobotInfoKey extends Table
     public static final String TABLE_NAME = "robot_info_keys";
     public static final String COLUMN_NAME_ID = "id";
     public static final String COLUMN_NAME_YEAR_ID = "YearId";
+    public static final String COLUMN_NAME_SORT_ORDER = "SortOrder";
     public static final String COLUMN_NAME_KEY_STATE = "KeyState";
     public static final String COLUMN_NAME_KEY_NAME = "KeyName";
     public static final String COLUMN_NAME_KEY_VALUE = "KeyValue";
@@ -20,12 +21,14 @@ public class RobotInfoKey extends Table
             "CREATE TABLE " + TABLE_NAME +" (" +
                     COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
                     COLUMN_NAME_YEAR_ID + " INTEGER," +
+                    COLUMN_NAME_SORT_ORDER + " INTEGER," +
                     COLUMN_NAME_KEY_STATE + " TEXT," +
                     COLUMN_NAME_KEY_NAME + " TEXT," +
                     COLUMN_NAME_KEY_VALUE + " TEXT)";
 
     private int id;
     private int yearId;
+    private int sortOrder;
     private String keyState;
     private String keyName;
     private String keyValue;
@@ -33,12 +36,14 @@ public class RobotInfoKey extends Table
     public RobotInfoKey(
             int id,
             int yearId,
+            int sortOrder,
             String keyState,
             String keyName,
             String keyValue)
     {
         this.id = id;
         this.yearId = yearId;
+        this.sortOrder = sortOrder;
         this.keyState = keyState;
         this.keyName = keyName;
         this.keyValue = keyValue;
@@ -63,6 +68,11 @@ public class RobotInfoKey extends Table
     public int getYearId()
     {
         return yearId;
+    }
+
+    public int getSortOrder()
+    {
+        return sortOrder;
     }
 
     public String getKeyState()
@@ -98,6 +108,11 @@ public class RobotInfoKey extends Table
     public void setYearId(int yearId)
     {
         this.yearId = yearId;
+    }
+
+    public void setSortOrder(int sortOrder)
+    {
+        this.sortOrder = sortOrder;
     }
 
     public void setKeyState(String keyState)
@@ -138,6 +153,7 @@ public class RobotInfoKey extends Table
             if (robotInfoKey != null)
             {
                 setYearId(robotInfoKey.getYearId());
+                setSortOrder(robotInfoKey.getSortOrder());
                 setKeyState(robotInfoKey.getKeyState());
                 setKeyName(robotInfoKey.getKeyName());
                 setKeyValue(robotInfoKey.getKeyValue());
@@ -208,7 +224,7 @@ public class RobotInfoKey extends Table
      * @param database used to load
      * @return arraylist of robotInfoKeys
      */
-    public ArrayList<RobotInfoKey> getRobotInfoKeys(@Nullable Year year, @Nullable RobotInfoKey robotInfoKey, @NonNull Database database)
+    public static ArrayList<RobotInfoKey> getRobotInfoKeys(@Nullable Year year, @Nullable RobotInfoKey robotInfoKey, @NonNull Database database)
     {
         return database.getRobotInfoKeys(year, robotInfoKey);
     }

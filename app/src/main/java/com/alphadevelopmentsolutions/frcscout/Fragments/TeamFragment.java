@@ -78,7 +78,6 @@ public class TeamFragment extends MasterFragment
     private FontAwesomeIcon websiteFontAwesomeSolidIcon;
 
     private FloatingActionMenu teamFloatingActionMenu;
-    private FloatingActionButton addPitCardFloatingActionButton;
     private FloatingActionButton addRobotPhotoFloatingActionButton;
 
     @Override
@@ -107,19 +106,9 @@ public class TeamFragment extends MasterFragment
         websiteFontAwesomeSolidIcon = view.findViewById(R.id.WebsiteFontAwesomeSolidIcon);
 
         teamFloatingActionMenu = view.findViewById(R.id.TeamFloatingActionMenu);
-        addPitCardFloatingActionButton = view.findViewById(R.id.AddPitCardFloatingActingButton);
         addRobotPhotoFloatingActionButton = view.findViewById(R.id.AddRobotPhotoFloatingActionButton);
 
         joinLoadingThread();
-
-        addPitCardFloatingActionButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                context.changeFragment(PitCardFragment.newInstance(null, team), true);
-            }
-        });
 
         addRobotPhotoFloatingActionButton.setOnClickListener(new View.OnClickListener()
         {
@@ -168,7 +157,7 @@ public class TeamFragment extends MasterFragment
         FragmentViewPagerAdapter teamViewPagerAdapter = new FragmentViewPagerAdapter(getChildFragmentManager());
 
         teamViewPagerAdapter.addFragment(MatchListFragment.newInstance(team), getString(R.string.scout_cards));
-        teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(team), getString(R.string.robot_info));
+        teamViewPagerAdapter.addFragment(RobotInfoFragment.newInstance(team), getString(R.string.robot_info));
         teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(team), getString(R.string.robot_images));
         teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(team), getString(R.string.quick_stats));
 

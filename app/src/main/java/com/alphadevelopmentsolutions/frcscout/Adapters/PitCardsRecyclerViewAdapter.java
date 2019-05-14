@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
-import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.RobotInfoFragment;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 import java.util.ArrayList;
@@ -92,7 +92,7 @@ public class PitCardsRecyclerViewAdapter extends RecyclerView.Adapter<PitCardsRe
             public void onClick(View v)
             {
                 //swap fragments
-               context.changeFragment(PitCardFragment.newInstance(pitCards.get(viewHolder.getAdapterPosition()), team), true);
+               context.changeFragment(RobotInfoFragment.newInstance(team), true);
             }
         });
     }

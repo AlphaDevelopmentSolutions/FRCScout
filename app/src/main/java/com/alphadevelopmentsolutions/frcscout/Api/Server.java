@@ -674,16 +674,21 @@ public abstract class Server extends Api
                             for (Iterator<String> valueIter = keyValueObject.keys(); valueIter.hasNext(); )
                             {
                                 String keyName = valueIter.next();
-                                String keyValue = keyValueObject.getString(keyName);
+                                if(!keyName.equals("SortOrder"))
+                                {
+                                    String keyValue = keyValueObject.getString(keyName);
 
-                                robotInfoKeyList.add(new RobotInfoKey(
-                                        -1,
-                                        -1,
+                                    robotInfoKeyList.add(new RobotInfoKey(
+                                            -1,
+                                            -1,
+                                            keyValueObject.getInt("SortOrder"),
 
-                                        keyState,
-                                        keyName,
-                                        keyValue
-                                ));
+                                            keyState,
+                                            keyName,
+                                            keyValue
+                                    ));
+                                }
+
                             }
                         }
                     }

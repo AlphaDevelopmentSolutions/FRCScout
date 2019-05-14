@@ -42,7 +42,6 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.EventTeamList;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.PitCard;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Robot;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfo;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfoKey;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia;
@@ -55,8 +54,7 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.ConfigFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.LoginFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchListFragment;
-import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardFragment;
-import com.alphadevelopmentsolutions.frcscout.Fragments.PitCardListFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.RobotInfoFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.QuickStatsFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.RobotMediaFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.RobotMediaListFragment;
@@ -85,9 +83,8 @@ public class MainActivity extends AppCompatActivity implements
         TeamFragment.OnFragmentInteractionListener,
         ScoutCardFragment.OnFragmentInteractionListener,
         LoginFragment.OnFragmentInteractionListener,
-        PitCardFragment.OnFragmentInteractionListener,
+        RobotInfoFragment.OnFragmentInteractionListener,
         ScoutCardListFragment.OnFragmentInteractionListener,
-        PitCardListFragment.OnFragmentInteractionListener,
         ScoutCardPreGameFragment.OnFragmentInteractionListener,
         ScoutCardAutoFragment.OnFragmentInteractionListener,
         ScoutCardTeleopFragment.OnFragmentInteractionListener,
@@ -416,7 +413,7 @@ public class MainActivity extends AppCompatActivity implements
                     EventTeamList.clearTable(getDatabase());
                     Team.clearTable(getDatabase());
                     ScoutCard.clearTable(getDatabase(), false);
-                    RobotInfo.clearTable(getDatabase(), false);
+                    RobotInfo.clearTable(getDatabase(), true);
                     Match.clearTable(getDatabase());
                     ChecklistItem.clearTable(getDatabase());
                     ChecklistItemResult.clearTable(getDatabase(), false);
