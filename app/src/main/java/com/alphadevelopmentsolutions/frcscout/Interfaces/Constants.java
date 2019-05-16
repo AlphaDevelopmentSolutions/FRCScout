@@ -21,6 +21,7 @@ public interface Constants
         String TEAM_NAME_KEY = "TEAM_NAME";
 
         String SELECTED_EVENT_KEY = "SELECTED_EVENT";
+        String SELECTED_YEAR_KEY = "SELECTED_YEAR";
     }
 
 }

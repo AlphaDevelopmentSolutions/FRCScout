@@ -67,6 +67,7 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardTeleopFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.SplashFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment;
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment;
+import com.alphadevelopmentsolutions.frcscout.Fragments.YearListFragment;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 
@@ -94,7 +95,8 @@ public class MainActivity extends AppCompatActivity implements
         EventListFragment.OnFragmentInteractionListener,
         ConfigFragment.OnFragmentInteractionListener,
         SplashFragment.OnFragmentInteractionListener,
-        ChecklistFragment.OnFragmentInteractionListener
+        ChecklistFragment.OnFragmentInteractionListener,
+        YearListFragment.OnFragmentInteractionListener
 {
     private MainActivity context;
 
@@ -1006,7 +1008,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 else
                     //change the frag to the eventlist
-                    changeFragment(new EventListFragment(), false);
+                    changeFragment(new YearListFragment(), false);
             } else
             {
                 changeFragment(new ConfigFragment(), false);

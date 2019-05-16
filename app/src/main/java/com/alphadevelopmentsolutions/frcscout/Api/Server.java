@@ -757,7 +757,7 @@ public abstract class Server extends Api
                 {
                     JSONObject yearsJson = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
 
-                    int id = yearsJson.getInt(Years.COLUMN_NAME_ID);
+                    int serverId = yearsJson.getInt(Years.COLUMN_NAME_SERVER_ID);
                     String name = yearsJson.getString(Years.COLUMN_NAME_NAME);
                     Date startDate = simpleDateFormat.parse(yearsJson.getString(Years.COLUMN_NAME_START_DATE));
                     Date endDate = simpleDateFormat.parse(yearsJson.getString(Years.COLUMN_NAME_END_DATE));
@@ -766,7 +766,8 @@ public abstract class Server extends Api
                     fileUri = apiParser.downloadImage(fileUri, Constants.YEAR_MEDIA_DIRECTORY).getAbsolutePath();
 
                     yearsArrayList.add(new Years(
-                            id,
+                            -1,
+                            serverId,
                             name,
                             startDate,
                             endDate,

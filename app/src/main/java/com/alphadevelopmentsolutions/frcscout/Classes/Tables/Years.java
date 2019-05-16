@@ -17,7 +17,8 @@ public class Years extends Table
 {
 
     public static final String TABLE_NAME = "years";
-    public static final String COLUMN_NAME_ID = "Id";
+    public static final String COLUMN_NAME_ID = "LocalId";
+    public static final String COLUMN_NAME_SERVER_ID = "Id";
     public static final String COLUMN_NAME_NAME = "Name";
     public static final String COLUMN_NAME_START_DATE = "StartDate";
     public static final String COLUMN_NAME_END_DATE = "EndDate";
@@ -26,12 +27,14 @@ public class Years extends Table
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME +" (" +
                     COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_SERVER_ID + " INTEGER," +
                     COLUMN_NAME_NAME + " TEXT," +
                     COLUMN_NAME_START_DATE + " INTEGER," +
                     COLUMN_NAME_END_DATE + " INTEGER," +
                     COLUMN_NAME_IMAGE_URI + " TEXT)";
 
     private int id;
+    private int serverId;
     private String name;
     private Date startDate;
     private Date endDate;
@@ -39,12 +42,14 @@ public class Years extends Table
 
     public Years(
             int id,
+            int serverId,
             String name,
             Date startDate,
             Date endDate,
             String imageUri)
     {
         this.id = id;
+        this.serverId = serverId;
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -65,6 +70,11 @@ public class Years extends Table
     public int getId()
     {
         return id;
+    }
+
+    public int getServerId()
+    {
+        return serverId;
     }
 
     public String getName()
@@ -106,6 +116,11 @@ public class Years extends Table
         this.id = id;
     }
 
+    public void setServerId(int serverId)
+    {
+        this.serverId = serverId;
+    }
+
     public void setName(String name)
     {
         this.name = name;
@@ -129,7 +144,7 @@ public class Years extends Table
     @Override
     public String toString()
     {
-        return id + " " + name;
+        return serverId + " - " + name;
     }
 
     //endregion

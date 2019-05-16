@@ -1494,6 +1494,7 @@ public class Database
     private Years getYearsFromCursor(Cursor cursor)
     {
         int id = cursor.getInt(cursor.getColumnIndex(Years.COLUMN_NAME_ID));
+        int serverId = cursor.getInt(cursor.getColumnIndex(Years.COLUMN_NAME_SERVER_ID));
         String name = cursor.getString(cursor.getColumnIndex(Years.COLUMN_NAME_NAME));
         Date startDate = new Date(cursor.getLong(cursor.getColumnIndex(Years.COLUMN_NAME_START_DATE)));
         Date endDate = new Date(cursor.getLong(cursor.getColumnIndex(Years.COLUMN_NAME_END_DATE)));
@@ -1501,6 +1502,7 @@ public class Database
 
         return new Years(
                 id,
+                serverId,
                 name,
                 startDate,
                 endDate,
@@ -1563,6 +1565,7 @@ public class Database
     {
         //set all the values
         ContentValues contentValues = new ContentValues();
+        contentValues.put(Years.COLUMN_NAME_SERVER_ID, year.getServerId());
         contentValues.put(Years.COLUMN_NAME_NAME, year.getName());
         contentValues.put(Years.COLUMN_NAME_START_DATE, year.getStartDate().getTime());
         contentValues.put(Years.COLUMN_NAME_END_DATE, year.getEndDate().getTime());
