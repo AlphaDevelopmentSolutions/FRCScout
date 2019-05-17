@@ -78,35 +78,8 @@ public class RobotInfoFragment extends MasterFragment
     private LinearLayout robotInfoLinearLayout;
     private Button saveButton;
 
-
-
-
-
-
-
-
-
-    private AutoCompleteTextView teamNumberAutoCompleteTextView;
-    private AutoCompleteTextView scouterNameAutoCompleteTextView;
-    
-    private EditText driveStyleEditText;
-    private EditText robotWeightEditText;
-    private EditText robotLengthEditText;
-    private EditText robotWidthEditText;
-    private EditText robotHeightEditText;
-
-    private EditText autoExitHabitatEditText;
-    private EditText autoHatchEditText;
-    private EditText autoCargoEditText;
-
-    private EditText teleopHatchEditText;
-    private EditText teleopCargoEditText;
-
-    private EditText returnedToHabitatEditText;
-
-    private EditText notesEditText;
-
     private ArrayList<EditText> editTexts;
+    private ArrayList<Integer> infoIds;
     private ArrayList<String> infoKeys;
     private ArrayList<String> infoStates;
 
@@ -131,6 +104,7 @@ public class RobotInfoFragment extends MasterFragment
             public void run()
             {
                 editTexts = new ArrayList<>();
+                infoIds = new ArrayList<>();
                 infoKeys = new ArrayList<>();
                 infoStates = new ArrayList<>();
 
@@ -141,6 +115,9 @@ public class RobotInfoFragment extends MasterFragment
 
                 RobotInfoKey robotInfoKey;
                 RobotInfoKey nextRobotInfoKey;
+
+                ArrayList<RobotInfo> robotInfos;
+                RobotInfo robotInfo;
 
                 LinearLayout linearLayout = new LinearLayout(context);
 
@@ -154,6 +131,9 @@ public class RobotInfoFragment extends MasterFragment
                 {
                     robotInfoKey = robotInfoKeys.get(i);
                     nextRobotInfoKey = (( i + 1 < robotInfoKeys.size()) ?  robotInfoKeys.get(i + 1) : null);
+
+                    robotInfos = RobotInfo.getRobotInfo(null, event, team, robotInfoKey, null, false, database);
+                    robotInfo = (robotInfos.size() > 0) ? robotInfos.get(robotInfos.size() - 1) : null;
 
                     if(!currentInfoKeyState.equals(robotInfoKey.getKeyState()))
                     {
@@ -199,6 +179,14 @@ public class RobotInfoFragment extends MasterFragment
 
                     EditText editText = new EditText(context);
                     editText.setHint(robotInfoKey.getKeyName());
+                    if(robotInfo != null)
+                    {
+                        infoIds.add(robotInfo.getId());
+                        editText.setText(robotInfo.getPropertyValue());
+                    }
+                    else
+                        infoIds.add(-1);
+
 
                     textInputLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f));
 
@@ -210,7 +198,7 @@ public class RobotInfoFragment extends MasterFragment
 
                     linearLayout.addView(textInputLayout);
 
-                    if(((j % 2 == 0 && i != 0) && currentInfoKeyState.equals(robotInfoKey.getKeyState())) || (nextRobotInfoKey == null || !currentInfoKeyState.equals(nextRobotInfoKey.getKeyState())))
+                    if((j % 2 == 0 && currentInfoKeyState.equals(robotInfoKey.getKeyState())) || (nextRobotInfoKey == null || !currentInfoKeyState.equals(nextRobotInfoKey.getKeyState())))
                     {
                         j = 0;
                         int padding = (int) (8*scale + 0.5f);
@@ -251,6 +239,15 @@ public class RobotInfoFragment extends MasterFragment
 
                             robotInfo.save(database);
                         }
+
+                        context.runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                context.showSnackbar("Robot Info Saved!");
+                            }
+                        });
                     }
                 });
 
@@ -258,296 +255,7 @@ public class RobotInfoFragment extends MasterFragment
         }).start();
 
 
-
-
-
-
-
-
-
-
-
-//
-//        teamNumberAutoCompleteTextView = view.findViewById(R.id.TeamNumberTextInputEditText);
-//        scouterNameAutoCompleteTextView = view.findViewById(R.id.ScouterNameAutoCompleteTextView);
-//
-//        driveStyleEditText = view.findViewById(R.id.DriveStyleEditText);
-//        robotWeightEditText = view.findViewById(R.id.RobotWeightEditText);
-//        robotLengthEditText = view.findViewById(R.id.RobotLengthEditText);
-//        robotWidthEditText = view.findViewById(R.id.RobotWidthEditText);
-//        robotHeightEditText = view.findViewById(R.id.RobotHeightEditText);
-//
-//        autoExitHabitatEditText = view.findViewById(R.id.AutoExitHabitatEditText);
-//        autoHatchEditText = view.findViewById(R.id.AutoHatchEditText);
-//        autoCargoEditText = view.findViewById(R.id.AutoCargoEditText);
-//
-//        teleopHatchEditText = view.findViewById(R.id.TeleopHatchEditText);
-//        teleopCargoEditText = view.findViewById(R.id.TeleopCargoEditText);
-//
-//        returnedToHabitatEditText = view.findViewById(R.id.ReturnedToHabitatEditText);
-//
-//        notesEditText = view.findViewById(R.id.NotesEditText);
-//
-//
-//        joinLoadingThread();
-//
-//        saveButton.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-//                if(validateFields())
-//                {
-//
-//                    int teamNumber = Integer.parseInt(teamNumberAutoCompleteTextView.getText().toString());
-//                    String eventId = (pitCard == null) ? event.getBlueAllianceId() : pitCard.getEventId();
-//
-//                    String driveStyle = driveStyleEditText.getText().toString();
-//                    String robotWeight = robotWeightEditText.getText().toString();
-//                    String robotLength = robotLengthEditText.getText().toString();
-//                    String robotWidth = robotWidthEditText.getText().toString();
-//                    String robotHeight = robotHeightEditText.getText().toString();
-//
-//                    String autonomousExitHabitat = autoExitHabitatEditText.getText().toString();
-//                    String autonomousHatchPanelsSecured = autoHatchEditText.getText().toString();
-//                    String autonomousCargoStored = autoCargoEditText.getText().toString();
-//
-//                    String teleopHatchPanelsSecured = teleopHatchEditText.getText().toString();
-//                    String teleopCargoStored = teleopCargoEditText.getText().toString();
-//
-//                    String endGameReturnedToHabitat = returnedToHabitatEditText.getText().toString();
-//                    String notes = notesEditText.getText().toString();
-//
-//                    String scouterName = scouterNameAutoCompleteTextView.getText().toString();
-//
-//                    //pitcard is a draft
-//                    if (pitCard != null)
-//                    {
-//                        pitCard.setTeamId(teamNumber);
-//                        pitCard.setEventId(eventId);
-//
-//                        pitCard.setDriveStyle(driveStyle);
-//                        pitCard.setRobotWeight(robotWeight);
-//                        pitCard.setRobotLength(robotLength);
-//                        pitCard.setRobotWidth(robotWidth);
-//                        pitCard.setRobotHeight(robotHeight);
-//
-//                        pitCard.setAutoExitHabitat(autonomousExitHabitat);
-//                        pitCard.setAutoHatch(autonomousHatchPanelsSecured);
-//                        pitCard.setAutoCargo(autonomousCargoStored);
-//
-//                        pitCard.setTeleopHatch(teleopHatchPanelsSecured);
-//                        pitCard.setTeleopCargo(teleopCargoStored);
-//
-//                        pitCard.setReturnToHabitat(endGameReturnedToHabitat);
-//
-//                        pitCard.setNotes(notes);
-//
-//                        pitCard.setCompletedBy(scouterName);
-//
-//                        if (pitCard.save(database) > 0)
-//                        {
-//                            context.showSnackbar("Saved Successfully.");
-//                            context.getSupportFragmentManager().popBackStackImmediate();
-//                        }
-//
-//
-//                    }
-//                    //new pitcard
-//                    else
-//                    {
-//                        PitCard pitCard = new PitCard(
-//                                -1,
-//                                teamNumber,
-//                                eventId,
-//
-//                                driveStyle,
-//                                robotWeight,
-//                                robotLength,
-//                                robotWidth,
-//                                robotHeight,
-//
-//                                autonomousExitHabitat,
-//                                autonomousHatchPanelsSecured,
-//                                autonomousCargoStored,
-//
-//                                teleopHatchPanelsSecured,
-//                                teleopCargoStored,
-//
-//                                endGameReturnedToHabitat,
-//
-//                                notes,
-//
-//                                scouterName,
-//                                true);
-//                        if (pitCard.save(database) > 0)
-//                        {
-//                            context.showSnackbar("Saved Successfully.");
-//                            context.getSupportFragmentManager().popBackStackImmediate();
-//                        }
-//                    }
-//                }
-//            }
-//        });
-//
-//
-//        teamNumberAutoCompleteTextView.setText(String.valueOf(team.getId()));
-//        teamNumberAutoCompleteTextView.setFocusable(false);
-//        teamNumberAutoCompleteTextView.setInputType(InputType.TYPE_NULL);
-//
-//
-//        ArrayList<String> scouterNames = new ArrayList<>();
-//
-//        //get all users
-//        for(User user : User.getUsers(null, database))
-//            scouterNames.add(user.toString());
-//
-//        ArrayAdapter<String> scouterNameAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, scouterNames);
-//        scouterNameAutoCompleteTextView.setAdapter(scouterNameAdapter);
-//
-//        //pit card sent over, disable all fields and populate data
-//        if(pitCard != null)
-//        {
-//            teamNumberAutoCompleteTextView.setText(String.valueOf(pitCard.getTeamId()));
-//            scouterNameAutoCompleteTextView.setText(pitCard.getCompletedBy());
-//
-//            driveStyleEditText.setText(String.valueOf(pitCard.getDriveStyle()));
-//
-//            robotWeightEditText.setText(String.valueOf(pitCard.getRobotWeight()));
-//            robotLengthEditText.setText(String.valueOf(pitCard.getRobotLength()));
-//            robotWidthEditText.setText(String.valueOf(pitCard.getRobotWidth()));
-//            robotHeightEditText.setText(String.valueOf(pitCard.getRobotHeight()));
-//
-//            autoExitHabitatEditText.setText(pitCard.getAutoExitHabitat());
-//            autoHatchEditText.setText(String.valueOf(pitCard.getAutoHatch()));
-//            autoCargoEditText.setText(String.valueOf(pitCard.getAutoCargo()));
-//
-//            teleopHatchEditText.setText(String.valueOf(pitCard.getTeleopHatch()));
-//            teleopCargoEditText.setText(String.valueOf(pitCard.getTeleopCargo()));
-//
-//            returnedToHabitatEditText.setText(pitCard.getReturnToHabitat());
-//
-//            notesEditText.setText(pitCard.getNotes());
-//
-//
-//            //only disable fields if card is not draft
-//            if(!pitCard.isDraft())
-//            {
-//                saveButton.setVisibility(View.GONE);
-//
-//                scouterNameAutoCompleteTextView.setFocusable(false);
-//                scouterNameAutoCompleteTextView.setInputType(InputType.TYPE_NULL);
-//
-//                driveStyleEditText.setFocusable(false);
-//                driveStyleEditText.setInputType(InputType.TYPE_NULL);
-//
-//                robotWeightEditText.setFocusable(false);
-//                robotWeightEditText.setInputType(InputType.TYPE_NULL);
-//
-//                robotLengthEditText.setFocusable(false);
-//                robotLengthEditText.setInputType(InputType.TYPE_NULL);
-//
-//                robotWidthEditText.setFocusable(false);
-//                robotWidthEditText.setInputType(InputType.TYPE_NULL);
-//
-//                robotHeightEditText.setFocusable(false);
-//                robotHeightEditText.setInputType(InputType.TYPE_NULL);
-//
-//                autoExitHabitatEditText.setFocusable(false);
-//                autoExitHabitatEditText.setInputType(InputType.TYPE_NULL);
-//
-//                autoHatchEditText.setFocusable(false);
-//                autoHatchEditText.setInputType(InputType.TYPE_NULL);
-//
-//                autoCargoEditText.setFocusable(false);
-//                autoCargoEditText.setInputType(InputType.TYPE_NULL);
-//
-//                teleopHatchEditText.setFocusable(false);
-//                teleopHatchEditText.setInputType(InputType.TYPE_NULL);
-//
-//                teleopCargoEditText.setFocusable(false);
-//                teleopCargoEditText.setInputType(InputType.TYPE_NULL);
-//
-//                returnedToHabitatEditText.setFocusable(false);
-//                returnedToHabitatEditText.setInputType(InputType.TYPE_NULL);
-//
-//                notesEditText.setFocusable(false);
-//                notesEditText.setInputType(InputType.TYPE_NULL);
-//            }
-//        }
-
         return view;
-    }
-
-    /**
-     * Validates all fields are either filled in or filled in with correct data
-     * @return boolean if fields valid
-     */
-    private boolean validateFields()
-    {
-
-        if(!teamNumberAutoCompleteTextView.getText().toString().matches("^[-+]?\\d*$")
-                || teamNumberAutoCompleteTextView.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid team number.");
-            return false;
-        }
-
-        if(scouterNameAutoCompleteTextView.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid scouter name.");
-            return false;
-        }
-
-        if(driveStyleEditText.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid drivetrain.");
-            return false;
-        }
-
-        if(robotWeightEditText.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid robot weight.");
-            return false;
-        }
-
-        if(autoExitHabitatEditText.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid autonomous exit habitat info.");
-            return false;
-        }
-
-        if(autoHatchEditText.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid autonomous hatch panels info.");
-            return false;
-        }
-
-        if(autoCargoEditText.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid autonomous cargo stored info.");
-            return false;
-        }
-
-        if(teleopHatchEditText.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid teleop hatch panels secured info.");
-            return false;
-        }
-
-        if(teleopCargoEditText.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid teleop cargo stored info.");
-            return false;
-        }
-
-        if(returnedToHabitatEditText.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid end game returned to habitat info.");
-            return false;
-        }
-
-        return true;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

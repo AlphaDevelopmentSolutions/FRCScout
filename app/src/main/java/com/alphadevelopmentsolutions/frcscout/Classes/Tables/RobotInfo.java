@@ -189,7 +189,7 @@ public class RobotInfo extends Table
 
         if(database.isOpen())
         {
-            ArrayList<RobotInfo> robotInfoList = getRobotInfo(null, null, null, this, false, database);
+            ArrayList<RobotInfo> robotInfoList = getRobotInfo(null, null, null, null, this, false, database);
             RobotInfo robotInfo = (robotInfoList.size() > 0 ) ? robotInfoList.get(0) : null;
 
             if (robotInfo != null)
@@ -274,9 +274,9 @@ public class RobotInfo extends Table
      * @param database used to load
      * @return arraylist of robotInfo
      */
-    public static ArrayList<RobotInfo> getRobotInfo(@Nullable Year year, @Nullable Event event, @Nullable Team team, @Nullable RobotInfo robotInfo, boolean onlyDrafts, @NonNull Database database)
+    public static ArrayList<RobotInfo> getRobotInfo(@Nullable Year year, @Nullable Event event, @Nullable Team team, @Nullable RobotInfoKey robotInfoKey, @Nullable RobotInfo robotInfo, boolean onlyDrafts, @NonNull Database database)
     {
-        return database.getRobotInfo(year, event, team, robotInfo, onlyDrafts);
+        return database.getRobotInfo(year, event, team, robotInfoKey, robotInfo, onlyDrafts);
     }
 
     //endregion

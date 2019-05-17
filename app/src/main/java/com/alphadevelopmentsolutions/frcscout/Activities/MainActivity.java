@@ -684,7 +684,7 @@ public class MainActivity extends AppCompatActivity implements
                                 success = false;
                         }
 
-                        for (RobotInfo robotInfo : RobotInfo.getRobotInfo(null, null, team, null, true, getDatabase()))
+                        for (RobotInfo robotInfo : RobotInfo.getRobotInfo(null, null, team, null, null, true, getDatabase()))
                         {
                             Server.SubmitRobotInfo submitRobotInfo = new Server.SubmitRobotInfo(context, robotInfo);
                             if (submitRobotInfo.execute())

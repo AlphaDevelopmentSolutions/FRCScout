@@ -1300,10 +1300,11 @@ public class Database
      * @param event if specified, filters robot info by event id
      * @param team if specified, filters robot info by team id
      * @param robotInfo if specified, filters robot info by robotInfo id
+     * @param robotInfoKey if specified, filters robot info by robotInfoKey
      * @param onlyDrafts if true, filters by only drafts
      * @return object based off given team ID
      */
-    public ArrayList<RobotInfo> getRobotInfo(@Nullable Year year, @Nullable Event event, @Nullable Team team, @Nullable RobotInfo robotInfo, boolean onlyDrafts)
+    public ArrayList<RobotInfo> getRobotInfo(@Nullable Year year, @Nullable Event event, @Nullable Team team, @Nullable RobotInfoKey robotInfoKey, @Nullable RobotInfo robotInfo, boolean onlyDrafts)
     {
         ArrayList<RobotInfo> robotInfos = new ArrayList<>();
 
@@ -1328,19 +1329,26 @@ public class Database
 
         if(team != null)
         {
-            whereStatement.append((whereStatement.length() > 0) ? " AND " : "").append(RobotInfo.COLUMN_NAME_TEAM_ID + " = ?");
+            whereStatement.append((whereStatement.length() > 0) ? " AND " : "").append(RobotInfo.COLUMN_NAME_TEAM_ID + " = ? ");
             whereArgs.add(String.valueOf(team.getId()));
+        }
+
+        if(robotInfoKey != null)
+        {
+            whereStatement.append((whereStatement.length() > 0) ? " AND " : "").append(RobotInfo.COLUMN_NAME_PROPERTY_STATE + " = ? AND ").append(RobotInfo.COLUMN_NAME_PROPERTY_KEY + " = ? ");
+            whereArgs.add(robotInfoKey.getKeyState());
+            whereArgs.add(robotInfoKey.getKeyName());
         }
 
         if(robotInfo != null)
         {
-            whereStatement.append((whereStatement.length() > 0) ? " AND " : "").append(RobotInfo.COLUMN_NAME_ID + " = ?");
+            whereStatement.append((whereStatement.length() > 0) ? " AND " : "").append(RobotInfo.COLUMN_NAME_ID + " = ? ");
             whereArgs.add(String.valueOf(robotInfo.getId()));
         }
 
         if(onlyDrafts)
         {
-            whereStatement.append((whereStatement.length() > 0) ? " AND " : "").append(RobotInfo.COLUMN_NAME_IS_DRAFT + " = 1");
+            whereStatement.append((whereStatement.length() > 0) ? " AND " : "").append(RobotInfo.COLUMN_NAME_IS_DRAFT + " = 1 ");
         }
 
         String orderBy = RobotInfo.COLUMN_NAME_ID + " DESC";
