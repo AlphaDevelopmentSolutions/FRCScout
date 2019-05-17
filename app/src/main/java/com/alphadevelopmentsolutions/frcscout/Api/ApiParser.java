@@ -1,5 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Api;
 
+import android.util.Log;
+
 import com.alphadevelopmentsolutions.frcscout.Classes.Image;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 
@@ -36,6 +38,8 @@ public class ApiParser
     public JSONObject parse() throws IOException, JSONException
     {
         String response = queryAPI();
+
+        Log.i("API Response", response);
 
         //parse and return the response
         return new JSONObject(response);

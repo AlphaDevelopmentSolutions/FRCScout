@@ -1456,17 +1456,16 @@ public class Database
 
         String keyState = cursor.getString(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_KEY_STATE));
         String keyName = cursor.getString(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_KEY_NAME));
-        String keyValue = cursor.getString(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_KEY_VALUE));
 
 
         return new RobotInfoKey(
                 id,
                 yearId,
-                sortOrder,
 
                 keyState,
                 keyName,
-                keyValue);
+
+                sortOrder);
     }
 
     /**
@@ -1542,7 +1541,6 @@ public class Database
         contentValues.put(RobotInfoKey.COLUMN_NAME_SORT_ORDER, robotInfoKey.getSortOrder());
         contentValues.put(RobotInfoKey.COLUMN_NAME_KEY_STATE, robotInfoKey.getKeyState());
         contentValues.put(RobotInfoKey.COLUMN_NAME_KEY_NAME, robotInfoKey.getKeyName());
-        contentValues.put(RobotInfoKey.COLUMN_NAME_KEY_VALUE, robotInfoKey.getKeyValue());
 
         //robotInfoKey already exists in DB, update
         if (robotInfoKey.getId() > 0)

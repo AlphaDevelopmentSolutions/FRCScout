@@ -659,39 +659,28 @@ public abstract class Server extends Api
                 if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
                     throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
-                if(response.get(API_FIELD_NAME_RESPONSE) instanceof JSONObject)
+
+                //iterate through, create a new object and add it to the arraylist
+                for (int i = 0; i < response.getJSONArray(API_FIELD_NAME_RESPONSE).length(); i++)
                 {
-                    JSONObject robotInfoKeyObjects = response.getJSONObject(API_FIELD_NAME_RESPONSE);
+                    JSONObject robotInfoKeyObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
 
-                    for (Iterator<String> iter = robotInfoKeyObjects.keys(); iter.hasNext(); )
-                    {
-                        String keyState = iter.next();
+                    int yearId = robotInfoKeyObject.getInt(RobotInfoKey.COLUMN_NAME_YEAR_ID);
 
-                        if (robotInfoKeyObjects.get(keyState) instanceof JSONObject)
-                        {
-                            JSONObject keyValueObject = robotInfoKeyObjects.getJSONObject(keyState);
+                    String keyState = robotInfoKeyObject.getString(RobotInfoKey.COLUMN_NAME_KEY_STATE);
+                    String keyName = robotInfoKeyObject.getString(RobotInfoKey.COLUMN_NAME_KEY_NAME);
 
-                            for (Iterator<String> valueIter = keyValueObject.keys(); valueIter.hasNext(); )
-                            {
-                                String keyName = valueIter.next();
-                                if(!keyName.equals("SortOrder"))
-                                {
-                                    String keyValue = keyValueObject.getString(keyName);
+                    int sortOrder = robotInfoKeyObject.getInt(RobotInfoKey.COLUMN_NAME_SORT_ORDER);
 
-                                    robotInfoKeyList.add(new RobotInfoKey(
-                                            -1,
-                                            -1,
-                                            keyValueObject.getInt("SortOrder"),
+                    robotInfoKeyList.add(new RobotInfoKey(
+                            -1,
+                            yearId,
 
-                                            keyState,
-                                            keyName,
-                                            keyValue
-                                    ));
-                                }
+                            keyState,
+                            keyName,
 
-                            }
-                        }
-                    }
+                            sortOrder
+                    ));
                 }
 
                 return true;

@@ -15,7 +15,6 @@ public class RobotInfoKey extends Table
     public static final String COLUMN_NAME_SORT_ORDER = "SortOrder";
     public static final String COLUMN_NAME_KEY_STATE = "KeyState";
     public static final String COLUMN_NAME_KEY_NAME = "KeyName";
-    public static final String COLUMN_NAME_KEY_VALUE = "KeyValue";
 
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME +" (" +
@@ -23,30 +22,26 @@ public class RobotInfoKey extends Table
                     COLUMN_NAME_YEAR_ID + " INTEGER," +
                     COLUMN_NAME_SORT_ORDER + " INTEGER," +
                     COLUMN_NAME_KEY_STATE + " TEXT," +
-                    COLUMN_NAME_KEY_NAME + " TEXT," +
-                    COLUMN_NAME_KEY_VALUE + " TEXT)";
+                    COLUMN_NAME_KEY_NAME + " TEXT)";
 
     private int id;
     private int yearId;
     private int sortOrder;
     private String keyState;
     private String keyName;
-    private String keyValue;
 
     public RobotInfoKey(
             int id,
             int yearId,
-            int sortOrder,
             String keyState,
             String keyName,
-            String keyValue)
+            int sortOrder)
     {
         this.id = id;
         this.yearId = yearId;
         this.sortOrder = sortOrder;
         this.keyState = keyState;
         this.keyName = keyName;
-        this.keyValue = keyValue;
     }
 
     /**
@@ -85,11 +80,6 @@ public class RobotInfoKey extends Table
         return keyName;
     }
 
-    public String getKeyValue()
-    {
-        return keyValue;
-    }
-
     @Override
     public String toString()
     {
@@ -125,11 +115,6 @@ public class RobotInfoKey extends Table
         this.keyName = keyName;
     }
 
-    public void setKeyValue(String keyValue)
-    {
-        this.keyValue = keyValue;
-    }
-
 
     //endregion
 
@@ -156,7 +141,6 @@ public class RobotInfoKey extends Table
                 setSortOrder(robotInfoKey.getSortOrder());
                 setKeyState(robotInfoKey.getKeyState());
                 setKeyName(robotInfoKey.getKeyName());
-                setKeyValue(robotInfoKey.getKeyValue());
                 return true;
             }
         }

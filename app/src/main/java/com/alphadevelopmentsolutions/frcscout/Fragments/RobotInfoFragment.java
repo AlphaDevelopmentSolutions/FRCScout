@@ -198,7 +198,7 @@ public class RobotInfoFragment extends MasterFragment
                     TextInputLayout textInputLayout = new TextInputLayout(context);
 
                     EditText editText = new EditText(context);
-                    editText.setHint(robotInfoKey.getKeyValue());
+                    editText.setHint(robotInfoKey.getKeyName());
 
                     textInputLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f));
 

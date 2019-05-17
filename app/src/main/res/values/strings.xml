@@ -38,7 +38,8 @@
     <string name="match_number">Match Number</string>
     <string name="blue_alliance_scout_card_label">Blue Alliance -\u0020</string>
     <string name="red_alliance_scout_card_label">Red Alliance -\u0020</string>
-    <string name="upload_data">Upload Data</string>
+    <string name="upload_data">Upload Data?</string>
+    <string name="upload_data_desc">This will upload all data to the web server.</string>
     <string name="refresh_data">Refresh Data</string>
     <string name="uploading">Uploading scout card data...</string>
     <string name="no_internet">Not connected to internet.</string>

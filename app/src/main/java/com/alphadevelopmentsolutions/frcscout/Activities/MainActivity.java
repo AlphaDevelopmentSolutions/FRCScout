@@ -662,24 +662,13 @@ public class MainActivity extends AppCompatActivity implements
                     //upload team specific data
                     for (Team team : teams)
                     {
-                        for (ScoutCard scoutCard : ScoutCard.getScoutCards(event, null, team, null,true, getDatabase()))
+                        for (ScoutCard scoutCard : ScoutCard.getScoutCards(null, null, team, null,true, getDatabase()))
                         {
                             Server.SubmitScoutCard submitScoutCard = new Server.SubmitScoutCard(context, scoutCard);
                             if (submitScoutCard.execute())
                             {
                                 scoutCard.setDraft(false);
                                 scoutCard.save(getDatabase());
-                            } else
-                                success = false;
-                        }
-
-                        for (PitCard pitCard : PitCard.getPitCards(event, team, null, true, getDatabase()))
-                        {
-                            Server.SubmitPitCard submitScoutCard = new Server.SubmitPitCard(context, pitCard);
-                            if (submitScoutCard.execute())
-                            {
-                                pitCard.setDraft(false);
-                                pitCard.save(getDatabase());
                             } else
                                 success = false;
                         }
@@ -691,6 +680,17 @@ public class MainActivity extends AppCompatActivity implements
                             {
                                 robotMedia.setDraft(false);
                                 robotMedia.save(getDatabase());
+                            } else
+                                success = false;
+                        }
+
+                        for (RobotInfo robotInfo : RobotInfo.getRobotInfo(null, null, team, null, true, getDatabase()))
+                        {
+                            Server.SubmitRobotInfo submitRobotInfo = new Server.SubmitRobotInfo(context, robotInfo);
+                            if (submitRobotInfo.execute())
+                            {
+                                robotInfo.setDraft(false);
+                                robotInfo.save(getDatabase());
                             } else
                                 success = false;
                         }
@@ -850,8 +850,8 @@ public class MainActivity extends AppCompatActivity implements
                 if(isOnline())
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle(R.string.upload_scout_cards)
-                            .setMessage(R.string.upload_scout_cards_warning)
+                    builder.setTitle(R.string.upload_data)
+                            .setMessage(R.string.upload_data_desc)
                             .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which)
                                 {
