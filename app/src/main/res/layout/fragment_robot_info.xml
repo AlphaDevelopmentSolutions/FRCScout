@@ -24,6 +24,10 @@
                 android:id="@+id/RobotInfoLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/material_padding"
+                android:layout_marginTop="@dimen/basic_card_margin"
+                android:layout_marginEnd="@dimen/material_padding"
+                android:layout_marginBottom="@dimen/material_padding"
                 android:orientation="vertical" />
 
             <Button
@@ -31,7 +35,9 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="1dp"
+                android:layout_marginStart="@dimen/material_padding"
+                android:layout_marginEnd="@dimen/material_padding"
+                android:layout_marginBottom="@dimen/material_padding"
                 android:text="@string/save_robot_info"
                 android:textAlignment="viewStart"
                 android:textAllCaps="true"
