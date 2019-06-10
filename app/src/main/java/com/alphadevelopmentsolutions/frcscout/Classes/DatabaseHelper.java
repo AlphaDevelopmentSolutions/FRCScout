@@ -9,12 +9,12 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItemResult
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.EventTeamList;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Robot;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfo;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfoKey;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfoKey;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year;
@@ -22,7 +22,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year;
 public class DatabaseHelper extends SQLiteOpenHelper
 {
 
-    private static final int DB_VERSION = 11;
+    private static final int DB_VERSION = 12;
     private static final String DB_NAME = "FRCScout.db";
 
 
@@ -44,6 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL(RobotMedia.CREATE_TABLE);
 
         db.execSQL(ScoutCard.CREATE_TABLE);
+        db.execSQL(ScoutCardInfoKey.CREATE_TABLE);
         db.execSQL(RobotInfo.CREATE_TABLE);
         db.execSQL(RobotInfoKey.CREATE_TABLE);
 
@@ -66,6 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RobotMedia.TABLE_NAME);
 
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ScoutCard.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ScoutCardInfoKey.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RobotInfo.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RobotInfoKey.TABLE_NAME);
 

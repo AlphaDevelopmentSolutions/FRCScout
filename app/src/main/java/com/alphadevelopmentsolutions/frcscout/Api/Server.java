@@ -5,11 +5,11 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItem;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItemResult;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfo;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfoKey;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfoKey;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year;
@@ -24,7 +24,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public abstract class Server extends Api
 {
@@ -425,21 +424,21 @@ public abstract class Server extends Api
         //endregion
     }
 
-    public static class GetPitCards extends Server
+    public static class GetScoutCardInfoKeys extends Server
     {
-        private ArrayList<PitCard> pitCards;
+        private ArrayList<ScoutCardInfoKey> scoutCardInfoKeys;
 
         private MainActivity context;
 
-        public GetPitCards(final MainActivity context, final Event event)
+        public GetScoutCardInfoKeys(final MainActivity context, final Year year)
         {
             super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
-                put(API_PARAM_API_ACTION, "GetPitCards");
-                put("EventId", event.getBlueAllianceId());
+                put(API_PARAM_API_ACTION, "GetScoutCardInfoKeys");
+                put("YearId", String.valueOf(year.getServerId()));
             }});
 
-            pitCards = new ArrayList<>();
+            scoutCardInfoKeys = new ArrayList<>();
 
             this.context = context;
 
@@ -467,53 +466,37 @@ public abstract class Server extends Api
                 //iterate through, create a new object and add it to the arraylist
                 for (int i = 0; i < response.getJSONArray(API_FIELD_NAME_RESPONSE).length(); i++)
                 {
-                    JSONObject pitCardObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
+                    JSONObject robotInfoKeyObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
 
-                    int teamId = pitCardObject.getInt(PitCard.COLUMN_NAME_TEAM_ID);
-                    String eventId = pitCardObject.getString(PitCard.COLUMN_NAME_EVENT_ID);
+                    int yearId = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_YEAR_ID);
 
-                    String driveStyle = pitCardObject.getString(PitCard.COLUMN_NAME_DRIVE_STYLE);
-                    String robotWeight = pitCardObject.getString(PitCard.COLUMN_NAME_ROBOT_WEIGHT);
-                    String robotLength = pitCardObject.getString(PitCard.COLUMN_NAME_ROBOT_LENGTH);
-                    String robotWidth = pitCardObject.getString(PitCard.COLUMN_NAME_ROBOT_WIDTH);
-                    String robotHeight = pitCardObject.getString(PitCard.COLUMN_NAME_ROBOT_HEIGHT);
+                    String keyState = robotInfoKeyObject.getString(ScoutCardInfoKey.COLUMN_NAME_KEY_STATE);
+                    String keyName = robotInfoKeyObject.getString(ScoutCardInfoKey.COLUMN_NAME_KEY_NAME);
 
-                    String autonomousExitHabitat = pitCardObject.getString(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT);
-                    String autonomousHatchPanelsSecured = pitCardObject.getString(PitCard.COLUMN_NAME_AUTO_HATCH);
-                    String autonomousCargoStored = pitCardObject.getString(PitCard.COLUMN_NAME_AUTO_CARGO);
+                    int sortOrder = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER);
+                    int minValue = (robotInfoKeyObject.isNull(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE)) ? ScoutCardInfoKey.INT_NULL_VALUE : robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE);
+                    int maxValue = (robotInfoKeyObject.isNull(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE)) ? ScoutCardInfoKey.INT_NULL_VALUE : robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE);
 
-                    String teleopHatchPanelsSecured = pitCardObject.getString(PitCard.COLUMN_NAME_TELEOP_HATCH);
-                    String teleopCargoStored = pitCardObject.getString(PitCard.COLUMN_NAME_TELEOP_CARGO);
+                    boolean nullZeros = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_NULL_ZEROS) == 1;
+                    boolean includeInStats = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_INCLUDE_IN_STATS) == 1;
 
-                    String endGameReturnedToHabitat = pitCardObject.getString(PitCard.COLUMN_NAME_RETURN_TO_HABITAT);
+                    ScoutCardInfoKey.DataTypes dataType = ScoutCardInfoKey.DataTypes.parseString(robotInfoKeyObject.getString(ScoutCardInfoKey.COLUMN_NAME_DATA_TYPE));
 
-                    String notes = pitCardObject.getString(PitCard.COLUMN_NAME_NOTES);
-                    String completedBy = pitCardObject.getString(PitCard.COLUMN_NAME_COMPLETED_BY);
-
-
-                    pitCards.add(new PitCard(
+                    scoutCardInfoKeys.add(new ScoutCardInfoKey(
                             -1,
-                            teamId,
-                            eventId,
+                            yearId,
 
-                            driveStyle,
-                            robotWeight,
-                            robotLength,
-                            robotWidth,
-                            robotHeight,
+                            keyState,
+                            keyName,
 
-                            autonomousExitHabitat,
-                            autonomousHatchPanelsSecured,
-                            autonomousCargoStored,
+                            sortOrder,
+                            minValue,
+                            maxValue,
 
-                            teleopHatchPanelsSecured,
-                            teleopCargoStored,
+                            nullZeros,
+                            includeInStats,
 
-                            endGameReturnedToHabitat,
-
-                            notes,
-                            completedBy,
-                            false
+                            dataType
                     ));
                 }
 
@@ -527,9 +510,9 @@ public abstract class Server extends Api
 
         //region Getters
 
-        public ArrayList<PitCard> getPitCards()
+        public ArrayList<ScoutCardInfoKey> getScoutCardInfoKeys()
         {
-            return pitCards;
+            return scoutCardInfoKeys;
         }
 
 
@@ -1251,70 +1234,6 @@ public abstract class Server extends Api
                 put(ScoutCard.COLUMN_NAME_NOTES, scoutCard.getNotes());
 
                 put(ScoutCard.COLUMN_NAME_COMPLETED_DATE, scoutCard.getCompletedDateForSQL());
-            }});
-
-            this.context = context;
-
-        }
-
-        @Override
-        public boolean execute()
-        {
-            try
-            {
-                //parse the data from the server
-                ApiParser apiParser = new ApiParser(this);
-
-                //get the response from the server
-                JSONObject response = apiParser.parse();
-
-                //could not connect to server
-                if (response == null)
-                    throw new Exception(context.getString(R.string.server_error));
-
-                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
-                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
-
-
-                return true;
-            } catch (Exception e)
-            {
-                context.showSnackbar(e.getMessage());
-                return false;
-            }
-        }
-    }
-
-    public static class SubmitPitCard extends Server
-    {
-        private MainActivity context;
-
-        public SubmitPitCard(final MainActivity context, final PitCard pitCard)
-        {
-            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
-            {{
-                put(API_PARAM_API_ACTION, "SubmitPitCard");
-
-                put(PitCard.COLUMN_NAME_TEAM_ID, String.valueOf(pitCard.getTeamId()));
-                put(PitCard.COLUMN_NAME_EVENT_ID, pitCard.getEventId());
-
-                put(PitCard.COLUMN_NAME_DRIVE_STYLE, pitCard.getDriveStyle());
-                put(PitCard.COLUMN_NAME_ROBOT_WEIGHT, pitCard.getRobotWeight());
-                put(PitCard.COLUMN_NAME_ROBOT_LENGTH, pitCard.getRobotLength());
-                put(PitCard.COLUMN_NAME_ROBOT_WIDTH, pitCard.getRobotWidth());
-                put(PitCard.COLUMN_NAME_ROBOT_HEIGHT, pitCard.getRobotHeight());
-
-                put(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT, pitCard.getAutoExitHabitat());
-                put(PitCard.COLUMN_NAME_AUTO_HATCH, pitCard.getAutoHatch());
-                put(PitCard.COLUMN_NAME_AUTO_CARGO, pitCard.getAutoCargo());
-
-                put(PitCard.COLUMN_NAME_TELEOP_HATCH, pitCard.getTeleopHatch());
-                put(PitCard.COLUMN_NAME_TELEOP_CARGO, pitCard.getTeleopCargo());
-
-                put(PitCard.COLUMN_NAME_RETURN_TO_HABITAT, pitCard.getReturnToHabitat());
-
-                put(PitCard.COLUMN_NAME_NOTES, pitCard.getNotes());
-                put(PitCard.COLUMN_NAME_COMPLETED_BY, pitCard.getCompletedBy());
             }});
 
             this.context = context;

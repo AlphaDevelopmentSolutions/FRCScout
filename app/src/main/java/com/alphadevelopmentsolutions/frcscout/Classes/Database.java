@@ -12,12 +12,12 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItemResult
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.EventTeamList;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Robot;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfo;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfoKey;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfoKey;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Table;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User;
@@ -1058,75 +1058,56 @@ public class Database
     }
     //endregion
 
-    //region Pit Card Logic
+    //region Scout Card Info Keys Logic
 
     /**
      * Takes in a cursor with info pulled from database and converts it into a pit card
      * @param cursor info from database
      * @return pitcard converted data
      */
-    private PitCard getPitCardFromCursor(Cursor cursor)
+    private ScoutCardInfoKey getScoutCardInfoKeyFromCursor(Cursor cursor)
     {
-        int id = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_ID));
-        int teamId = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_TEAM_ID));
-        String eventId = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_EVENT_ID));
+        int id = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_ID));
+        int yearId = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_YEAR_ID));
 
-        String driveStyle = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_DRIVE_STYLE));
-        String robotWeight = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_ROBOT_WEIGHT));
-        String robotLength = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_ROBOT_LENGTH));
-        String robotWidth = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_ROBOT_WIDTH));
-        String robotHeight = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_ROBOT_HEIGHT));
+        String keyState = cursor.getString(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_KEY_STATE));
+        String keyName = cursor.getString(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_KEY_NAME));
 
-        String autoExitHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT));
-        String autoHatch = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_HATCH));
-        String autoCargo = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_AUTO_CARGO));
+        int sortOrder = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER));
+        int minValue = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE));
+        int maxValue = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE));
 
-        String teleopHatch = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_HATCH));
-        String teleopCargo = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_TELEOP_CARGO));
+        boolean nullZeros = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_NULL_ZEROS)) == 1;
+        boolean includeInStats = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_INCLUDE_IN_STATS)) == 1;
 
-        String returnToHabitat = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_RETURN_TO_HABITAT));
+        ScoutCardInfoKey.DataTypes dataType = ScoutCardInfoKey.DataTypes.parseString(cursor.getString(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_DATA_TYPE)));
 
-        String notes = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_NOTES));
-        String completedBy = cursor.getString(cursor.getColumnIndex(PitCard.COLUMN_NAME_COMPLETED_BY));
-        boolean isDraft = cursor.getInt(cursor.getColumnIndex(PitCard.COLUMN_NAME_IS_DRAFT)) == 1;
-
-
-        return new PitCard(
+        return new ScoutCardInfoKey(
                 id,
-                teamId,
-                eventId,
+                yearId,
 
-                driveStyle,
-                robotWeight,
-                robotLength,
-                robotWidth,
-                robotHeight,
+                keyState,
+                keyName,
 
-                autoExitHabitat,
-                autoHatch,
-                autoCargo,
+                sortOrder,
+                minValue,
+                maxValue,
 
-                teleopHatch,
-                teleopCargo,
-                returnToHabitat,
+                nullZeros,
+                includeInStats,
 
-                notes,
-
-                completedBy,
-                isDraft);
+                dataType);
     }
 
     /**
-     * Gets all pit cards
-     * @param event if specified, filters pit cards by event id
-     * @param team if specified, filters pit cards by team id
-     * @param pitCard if specified, filters pit cards by pitCard id
-     * @param onlyDrafts if true, filters by only drafts
+     * Gets all robot info keys
+     * @param year if specified, filters by year id
+     * @param scoutCardInfoKey if specified, filters by scoutCardInfoKey id
      * @return object based off given team ID
      */
-    public ArrayList<PitCard> getPitCards(@Nullable Event event, @Nullable Team team, @Nullable PitCard pitCard, boolean onlyDrafts)
+    public ArrayList<ScoutCardInfoKey> getScoutCardInfoKeys(@Nullable Year year, @Nullable ScoutCardInfoKey scoutCardInfoKey)
     {
-        ArrayList<PitCard> pitCards = new ArrayList<>();
+        ArrayList<ScoutCardInfoKey> scoutCardInfoKeys = new ArrayList<>();
 
         //insert columns you are going to use here
         String[] columns = getColumns();
@@ -1135,34 +1116,24 @@ public class Database
         StringBuilder whereStatement =  new StringBuilder();
         ArrayList<String> whereArgs = new ArrayList<>();
 
-        if(event != null)
+        if(year != null)
         {
-            whereStatement.append(ScoutCard.COLUMN_NAME_EVENT_ID + " = ? ");
-            whereArgs.add(event.getBlueAllianceId());
+            whereStatement.append(ScoutCardInfoKey.COLUMN_NAME_YEAR_ID + " = ? ");
+            whereArgs.add(String.valueOf(year.getServerId()));
         }
 
-        if(team != null)
+        if(scoutCardInfoKey != null)
         {
-            whereStatement.append((whereStatement.length() > 0) ? " AND " : "").append(PitCard.COLUMN_NAME_TEAM_ID + " = ?");
-            whereArgs.add(String.valueOf(team.getId()));
+            whereStatement.append((whereStatement.length() > 0) ? " AND " : "").append(ScoutCardInfoKey.COLUMN_NAME_ID + " = ?");
+            whereArgs.add(String.valueOf(scoutCardInfoKey.getId()));
         }
 
-        if(pitCard != null)
-        {
-            whereStatement.append((whereStatement.length() > 0) ? " AND " : "").append(PitCard.COLUMN_NAME_ID + " = ?");
-            whereArgs.add(String.valueOf(pitCard.getId()));
-        }
 
-        if(onlyDrafts)
-        {
-            whereStatement.append((whereStatement.length() > 0) ? " AND " : "").append(PitCard.COLUMN_NAME_IS_DRAFT + " = 1");
-        }
-
-        String orderBy = PitCard.COLUMN_NAME_ID + " DESC";
+        String orderBy = ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER + " ASC";
 
         //select the info from the db
         Cursor cursor = db.query(
-                PitCard.TABLE_NAME,
+                ScoutCardInfoKey.TABLE_NAME,
                 columns,
                 whereStatement.toString(),
                 Arrays.copyOf(Objects.requireNonNull(whereArgs.toArray()), whereArgs.size(), String[].class),
@@ -1175,12 +1146,12 @@ public class Database
         {
             while(cursor.moveToNext())
             {
-                pitCards.add(getPitCardFromCursor(cursor));
+                scoutCardInfoKeys.add(getScoutCardInfoKeyFromCursor(cursor));
             }
 
             cursor.close();
 
-            return pitCards;
+            return scoutCardInfoKeys;
         }
 
 
@@ -1190,70 +1161,58 @@ public class Database
     /**
      * Saves a specific object from the database and returns it
      *
-     * @param pitCard with specified ID
-     * @return id of the saved pitCard
+     * @param scoutCardInfoKey with specified ID
+     * @return id of the saved scoutCardInfoKey
      */
-    public long setPitCard(PitCard pitCard)
+    public long setScoutCardInfoKey(ScoutCardInfoKey scoutCardInfoKey)
     {
         //set all the values
         ContentValues contentValues = new ContentValues();
-        contentValues.put(PitCard.COLUMN_NAME_TEAM_ID, pitCard.getTeamId());
-        contentValues.put(PitCard.COLUMN_NAME_EVENT_ID, pitCard.getEventId());
+        contentValues.put(ScoutCardInfoKey.COLUMN_NAME_YEAR_ID, scoutCardInfoKey.getYearId());
+        contentValues.put(ScoutCardInfoKey.COLUMN_NAME_KEY_STATE, scoutCardInfoKey.getKeyState());
+        contentValues.put(ScoutCardInfoKey.COLUMN_NAME_KEY_NAME, scoutCardInfoKey.getKeyName());
+        contentValues.put(ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER, scoutCardInfoKey.getSortOrder());
+        contentValues.put(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE, scoutCardInfoKey.getMinValue());
+        contentValues.put(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE, scoutCardInfoKey.getMaxValue());
+        contentValues.put(ScoutCardInfoKey.COLUMN_NAME_NULL_ZEROS, scoutCardInfoKey.isNullZeros() ? 1 : 0);
+        contentValues.put(ScoutCardInfoKey.COLUMN_NAME_INCLUDE_IN_STATS, scoutCardInfoKey.isIncludeInStats() ? 1 : 0);
+        contentValues.put(ScoutCardInfoKey.COLUMN_NAME_DATA_TYPE, scoutCardInfoKey.getDataType().name());
 
-        contentValues.put(PitCard.COLUMN_NAME_DRIVE_STYLE, pitCard.getDriveStyle());
-        contentValues.put(PitCard.COLUMN_NAME_ROBOT_WEIGHT, pitCard.getRobotWeight());
-        contentValues.put(PitCard.COLUMN_NAME_ROBOT_LENGTH, pitCard.getRobotLength());
-        contentValues.put(PitCard.COLUMN_NAME_ROBOT_WIDTH, pitCard.getRobotWidth());
-        contentValues.put(PitCard.COLUMN_NAME_ROBOT_HEIGHT, pitCard.getRobotHeight());
 
-        contentValues.put(PitCard.COLUMN_NAME_AUTO_EXIT_HABITAT, pitCard.getAutoExitHabitat());
-        contentValues.put(PitCard.COLUMN_NAME_AUTO_HATCH, pitCard.getAutoHatch());
-        contentValues.put(PitCard.COLUMN_NAME_AUTO_CARGO, pitCard.getAutoCargo());
-
-        contentValues.put(PitCard.COLUMN_NAME_TELEOP_HATCH, pitCard.getTeleopHatch());
-        contentValues.put(PitCard.COLUMN_NAME_TELEOP_CARGO, pitCard.getTeleopCargo());
-
-        contentValues.put(PitCard.COLUMN_NAME_RETURN_TO_HABITAT, pitCard.getReturnToHabitat());
-
-        contentValues.put(PitCard.COLUMN_NAME_NOTES, pitCard.getNotes());
-
-        contentValues.put(PitCard.COLUMN_NAME_COMPLETED_BY, pitCard.getCompletedBy());
-        contentValues.put(PitCard.COLUMN_NAME_IS_DRAFT, pitCard.isDraft() ? "1" : "0");
-
-        //pitCard already exists in DB, update
-        if (pitCard.getId() > 0)
+        //scoutCardInfoKey already exists in DB, update
+        if (scoutCardInfoKey.getId() > 0)
         {
             //create the where statement
-            String whereStatement = ScoutCard.COLUMN_NAME_ID + " = ?";
-            String[] whereArgs = {pitCard.getId() + ""};
+            String whereStatement = ScoutCardInfoKey.COLUMN_NAME_ID + " = ?";
+            String[] whereArgs = {scoutCardInfoKey.getId() + ""};
 
             //update
-            if(db.update(PitCard.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
-                return pitCard.getId();
+            if(db.update(ScoutCardInfoKey.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                return scoutCardInfoKey.getId();
             else
                 return -1;
         }
         //insert new scoutCard in db
-        else return db.insert(PitCard.TABLE_NAME, null, contentValues);
+        else return db.insert(ScoutCardInfoKey.TABLE_NAME, null, contentValues);
 
     }
 
     /**
      * Deletes a specific scoutCard from the database
      *
-     * @param pitCard with specified ID
+     * @param scoutCardInfoKey with specified ID
      * @return successful delete
      */
-    public boolean deletePitCard(PitCard pitCard)
+    public boolean deleteScoutCardInfoKey(ScoutCardInfoKey scoutCardInfoKey)
     {
-        if (pitCard.getId() > 0)
+        if (scoutCardInfoKey.getId() > 0)
         {
             //create the where statement
-            String whereStatement = PitCard.COLUMN_NAME_ID + " = ?";
-            String[] whereArgs = {pitCard.getId() + ""};
+            String whereStatement = ScoutCardInfoKey.COLUMN_NAME_ID + " = ?";
+            String[] whereArgs = {scoutCardInfoKey.getId() + ""};
 
             //delete
-            return db.delete(PitCard.TABLE_NAME, whereStatement, whereArgs) >= 1;
+            return db.delete(ScoutCardInfoKey.TABLE_NAME, whereStatement, whereArgs) >= 1;
         }
 
         return false;

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class RobotInfoKey extends Table
 {
     public static final String TABLE_NAME = "robot_info_keys";
-    public static final String COLUMN_NAME_ID = "id";
+    public static final String COLUMN_NAME_ID = "Id";
     public static final String COLUMN_NAME_YEAR_ID = "YearId";
     public static final String COLUMN_NAME_SORT_ORDER = "SortOrder";
     public static final String COLUMN_NAME_KEY_STATE = "KeyState";

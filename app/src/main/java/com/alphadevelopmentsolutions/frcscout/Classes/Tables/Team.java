@@ -430,19 +430,6 @@ public class Team extends Table
 
     /**
      * Gets all scout cards associated with the team
-     * @param event if specified, filters pit cards by event id
-     * @param pitCard if specified, filters pit cards by pitcard id
-     * @param database used for loading cards
-     * @param onlyDrafts boolean if you only want drafts
-     * @return arraylist of scout cards
-     */
-    public ArrayList<PitCard> getPitCards(@Nullable Event event, @Nullable PitCard pitCard, boolean onlyDrafts, @NonNull Database database)
-    {
-        return PitCard.getPitCards(event, this, pitCard, onlyDrafts, database);
-    }
-
-    /**
-     * Gets all scout cards associated with the team
      * @param robotMedia if specified, filters robot media by robot media id
      * @param database used for loading cards
      * @param onlyDrafts boolean if you only want drafts

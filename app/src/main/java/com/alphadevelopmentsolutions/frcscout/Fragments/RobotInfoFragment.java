@@ -1,34 +1,26 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.text.InputType;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfo;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfoKey;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year;
 import com.alphadevelopmentsolutions.frcscout.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**

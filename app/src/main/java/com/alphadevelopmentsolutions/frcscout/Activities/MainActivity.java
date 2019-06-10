@@ -41,11 +41,11 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItemResult
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.EventTeamList;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfo;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfoKey;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard;
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfoKey;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year;
@@ -368,6 +368,7 @@ public class MainActivity extends AppCompatActivity implements
                     {
                         Year.clearTable(getDatabase());
                         RobotInfoKey.clearTable(getDatabase());
+                        ScoutCardInfoKey.clearTable(getDatabase());
 
                         for (Year year : getYears.getYears())
                         {
@@ -382,6 +383,18 @@ public class MainActivity extends AppCompatActivity implements
                                     {
                                         robotInfoKey.setYearId(year.getServerId());
                                         robotInfoKey.save(getDatabase());
+                                    }
+                                }
+
+                                //update scout card info keys
+                                Server.GetScoutCardInfoKeys getScoutCardInfoKeys = new Server.GetScoutCardInfoKeys(context, year);
+
+                                if (getScoutCardInfoKeys.execute())
+                                {
+                                    for (ScoutCardInfoKey scoutCardInfoKey : getScoutCardInfoKeys.getScoutCardInfoKeys())
+                                    {
+                                        scoutCardInfoKey.setYearId(year.getServerId());
+                                        scoutCardInfoKey.save(getDatabase());
                                     }
                                 }
                             }

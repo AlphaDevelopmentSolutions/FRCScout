@@ -8,7 +8,6 @@ import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
 import com.alphadevelopmentsolutions.frcscout.Classes.Database;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match;
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
@@ -36,7 +35,6 @@ public class MasterFragment extends Fragment
     protected Team team;
     protected Match match;
     protected ScoutCard scoutCard;
-    protected PitCard pitCard;
 
     protected Gson gson;
     protected static Gson staticGson;
@@ -84,10 +82,6 @@ public class MasterFragment extends Fragment
                 //load the scout card from json, if available
                 if(scoutCardJson != null && !scoutCardJson.equals(""))
                     scoutCard = new Gson().fromJson(scoutCardJson, ScoutCard.class);
-
-                //load the scout card from json, if available
-                if(pitCardJson != null && !pitCardJson.equals(""))
-                    pitCard = new Gson().fromJson(pitCardJson, PitCard.class);
             }
         });
 
