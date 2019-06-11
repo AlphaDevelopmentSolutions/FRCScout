@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -41,4 +45,5 @@ dependencies {
     implementation 'com.github.clans:fab:1.6.4'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 }
