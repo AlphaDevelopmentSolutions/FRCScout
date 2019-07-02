@@ -8,18 +8,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment
 import com.alphadevelopmentsolutions.frcscout.R
 import com.squareup.picasso.Picasso
-
 import java.io.File
-import java.util.ArrayList
+import java.util.*
 
 internal class TeamListRecyclerViewAdapter(private val match: Match?, private val teamList: ArrayList<Team>, private val context: MainActivity) : RecyclerView.Adapter<TeamListRecyclerViewAdapter.ViewHolder>()
 {

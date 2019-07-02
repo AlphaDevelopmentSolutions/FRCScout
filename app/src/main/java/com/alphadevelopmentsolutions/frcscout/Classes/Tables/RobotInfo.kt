@@ -1,8 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
-
-import java.util.ArrayList
+import java.util.*
 
 class RobotInfo(
         var id: Int,
@@ -48,7 +47,7 @@ class RobotInfo(
          */
         fun clearTable(database: Database, clearDrafts: Boolean)
         {
-            database.clearTable(TABLE_NAME, clearDrafts)
+            clearTable(database, TABLE_NAME, clearDrafts)
         }
 
         /**
@@ -61,7 +60,7 @@ class RobotInfo(
          * @param database used to load
          * @return arraylist of robotInfo
          */
-        fun getRobotInfo(year: Year?, event: Event?, team: Team?, robotInfoKey: RobotInfoKey?, robotInfo: RobotInfo?, onlyDrafts: Boolean, database: Database): ArrayList<RobotInfo>?
+        fun getObjects(year: Year?, event: Event?, team: Team?, robotInfoKey: RobotInfoKey?, robotInfo: RobotInfo?, onlyDrafts: Boolean, database: Database): ArrayList<RobotInfo>?
         {
             return database.getRobotInfo(year, event, team, robotInfoKey, robotInfo, onlyDrafts)
         }
@@ -86,7 +85,7 @@ class RobotInfo(
 
         if (database.isOpen)
         {
-            val robotInfoList = getRobotInfo(null, null, null, null, this, false, database)
+            val robotInfoList = getObjects(null, null, null, null, this, false, database)
             val robotInfo = if (robotInfoList!!.size > 0) robotInfoList[0] else null
 
             if (robotInfo != null)

@@ -9,13 +9,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.alphadevelopmentsolutions.frcscout.Adapters.YearListRecyclerViewAdapter
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
-
-import java.util.Calendar
+import java.util.*
 
 /**
  * A simple [Fragment] subclass.
@@ -53,7 +51,7 @@ class YearListFragment : MasterFragment()
 
         yearListRecyclerView = view.findViewById(R.id.YearListRecyclerView)
 
-        val yearListRecyclerViewAdapter = YearListRecyclerViewAdapter(Year.getYears(null, database)!!, context)
+        val yearListRecyclerViewAdapter = YearListRecyclerViewAdapter(Year.getObjects(null, database)!!, context)
         yearListRecyclerView!!.adapter = yearListRecyclerViewAdapter
         yearListRecyclerView!!.layoutManager = LinearLayoutManager(context)
 

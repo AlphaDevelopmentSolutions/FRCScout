@@ -1,9 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
-
-import java.util.ArrayList
-import java.util.Date
+import java.util.*
 
 class Event : Table
 {
@@ -84,7 +82,7 @@ class Event : Table
          */
         fun clearTable(database: Database)
         {
-            database.clearTable(TABLE_NAME)
+            clearTable(database, TABLE_NAME)
         }
 
         /**
@@ -94,7 +92,7 @@ class Event : Table
          * @param database used to load events
          * @return arraylist of events
          */
-        fun getEvents(year: Year?, event: Event?, database: Database): ArrayList<Event>?
+        fun getObjects(year: Year?, event: Event?, database: Database): ArrayList<Event>?
         {
             return database.getEvents(year, event)
         }
@@ -109,7 +107,7 @@ class Event : Table
      */
     fun getMatches(match: Match?, team: Team?, database: Database): ArrayList<Match>?
     {
-        return Match.getMatches(this, match, team, database)
+        return Match.getObjects(this, match, team, database)
     }
 
     /**
@@ -121,7 +119,7 @@ class Event : Table
      */
     fun getTeams(match: Match?, team: Team?, database: Database): ArrayList<Team>?
     {
-        return Team.getTeams(this, match, team, database)
+        return Team.getObjects(this, match, team, database)
     }
 
     /**
@@ -132,7 +130,7 @@ class Event : Table
      */
     fun getEventTeamList(eventTeamList: EventTeamList?, database: Database): ArrayList<EventTeamList>?
     {
-        return EventTeamList.getEventTeamList(eventTeamList, this, database)
+        return EventTeamList.getObjects(eventTeamList, this, database)
     }
 
 
@@ -157,7 +155,7 @@ class Event : Table
 
         if (database.isOpen)
         {
-            val events = getEvents(null, this, database)
+            val events = getObjects(null, this, database)
             val event = if (events!!.size > 0) events[0] else null
 
             if (event != null)

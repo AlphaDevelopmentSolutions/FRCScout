@@ -8,15 +8,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.alphadevelopmentsolutions.frcscout.Adapters.EventListRecyclerViewAdapter
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.gson.Gson
-
-import java.util.Calendar
+import java.util.*
 
 /**
  * A simple [Fragment] subclass.
@@ -86,7 +84,7 @@ class EventListFragment : MasterFragment()
 
         eventListRecyclerView = view.findViewById(R.id.EventListRecyclerView)
 
-        val eventListRecyclerViewAdapter = EventListRecyclerViewAdapter(Event.getEvents(year, null, database)!!, context)
+        val eventListRecyclerViewAdapter = EventListRecyclerViewAdapter(Event.getObjects(year, null, database)!!, context)
         eventListRecyclerView!!.adapter = eventListRecyclerViewAdapter
         eventListRecyclerView!!.layoutManager = LinearLayoutManager(context)
 

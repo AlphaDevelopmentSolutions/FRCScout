@@ -1,8 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
-
-import java.util.ArrayList
+import java.util.*
 
 class User(
         var id: Int,
@@ -28,7 +27,7 @@ class User(
          */
         fun clearTable(database: Database)
         {
-            database.clearTable(TABLE_NAME)
+            clearTable(database, TABLE_NAME)
         }
 
         /**
@@ -37,7 +36,7 @@ class User(
          * @param database used to load users
          * @return arraylist of users
          */
-        fun getUsers(user: User?, database: Database): ArrayList<User>?
+        fun getObjects(user: User?, database: Database): ArrayList<User>?
         {
             return database.getUsers(user)
         }
@@ -63,7 +62,7 @@ class User(
 
         if (database.isOpen)
         {
-            val users = getUsers(this, database)
+            val users = getObjects(this, database)
             val user = if (users!!.size > 0) users[0] else null
 
             if (user != null)

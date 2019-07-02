@@ -11,7 +11,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TableRow
 import android.widget.TextView
-
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
@@ -23,10 +22,8 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment
 import com.alphadevelopmentsolutions.frcscout.R
-
 import java.lang.reflect.Type
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 internal class MatchListRecyclerViewAdapter(event: Event, private val team: Team?, private val context: MainActivity, private val fragmentOnClick: Type) : RecyclerView.Adapter<MatchListRecyclerViewAdapter.ViewHolder>()
 {

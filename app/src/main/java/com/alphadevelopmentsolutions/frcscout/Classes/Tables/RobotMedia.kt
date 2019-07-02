@@ -3,12 +3,10 @@ package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
-
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
-
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.util.ArrayList
+import java.util.*
 
 class RobotMedia(
         var id: Int,
@@ -38,7 +36,7 @@ class RobotMedia(
          */
         fun clearTable(database: Database, clearDrafts: Boolean)
         {
-            database.clearTable(TABLE_NAME, clearDrafts)
+            clearTable(database, TABLE_NAME, clearDrafts)
         }
 
         /**
@@ -49,7 +47,7 @@ class RobotMedia(
          * @param database used to load robot media
          * @return arraylist of robot media
          */
-        fun getRobotMedia(robotMedia: RobotMedia?, team: Team?, onlyDrafts: Boolean, database: Database): ArrayList<RobotMedia>?
+        fun getObjects(robotMedia: RobotMedia?, team: Team?, onlyDrafts: Boolean, database: Database): ArrayList<RobotMedia>?
         {
             return database.getRobotMedia(robotMedia, team, onlyDrafts)
         }
@@ -105,7 +103,7 @@ class RobotMedia(
 
         if (database.isOpen)
         {
-            val robotMediaArrayList = getRobotMedia(this, null, false, database)
+            val robotMediaArrayList = getObjects(this, null, false, database)
             val robotMedia = if (robotMediaArrayList!!.size > 0) robotMediaArrayList[0] else null
 
             if (robotMedia != null)

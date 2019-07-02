@@ -10,17 +10,12 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
-import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor
-import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece
-import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition
 import com.alphadevelopmentsolutions.frcscout.R
-
-import java.util.Date
+import java.util.*
 
 /**
  * A simple [Fragment] subclass.

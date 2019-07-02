@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.TextView
-
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItem
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItemResult
@@ -17,9 +16,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Status
 import com.alphadevelopmentsolutions.frcscout.R
-
-import java.util.ArrayList
-import java.util.Date
+import java.util.*
 
 internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, private val checklistItems: ArrayList<ChecklistItem>, private val context: MainActivity) : RecyclerView.Adapter<ChecklistItemListRecyclerViewAdapter.ViewHolder>()
 {
@@ -33,7 +30,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
         val userNames = ArrayList<String>()
 
         //get all users
-        for (user in User.getUsers(null, context.getDatabase())!!)
+        for (user in User.getObjects(null, context.getDatabase())!!)
         {
             userNames.add(user.toString())
         }

@@ -6,31 +6,11 @@ import android.database.Cursor
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
-
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItem
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItemResult
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.EventTeamList
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Robot
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfo
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfoKey
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfoKey
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Table
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition
 import com.alphadevelopmentsolutions.frcscout.Exceptions.UnauthorizedClassException
-
-import java.lang.reflect.Field
-import java.util.ArrayList
-import java.util.Arrays
-import java.util.Date
-import java.util.Objects
+import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.javaField
@@ -164,23 +144,15 @@ class Database(context: Context)
 
     }
 
+
     /**
      * Clears a selected table
      * @param tableName table name
      * @param clearDrafts boolean to clear drafts in table
      */
-    fun clearTable(tableName: String, clearDrafts: Boolean)
+    fun clearTable(tableName: String, clearDrafts: Boolean? = null)
     {
-        db!!.execSQL(String.format("DELETE FROM %s%s", tableName, if (clearDrafts) "" else " WHERE IsDraft = 0"))
-    }
-
-    /**
-     * Clears a selected table
-     * @param tableName table name
-     */
-    fun clearTable(tableName: String)
-    {
-        db!!.execSQL(String.format("DELETE FROM %s", tableName))
+        db!!.execSQL(String.format("DELETE FROM %s%s", tableName, if (clearDrafts != null) (if(clearDrafts) "" else " WHERE IsDraft = 0") else ""))
     }
 
     //region Event Logic

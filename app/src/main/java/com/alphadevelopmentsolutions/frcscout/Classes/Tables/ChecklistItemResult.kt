@@ -1,10 +1,8 @@
 package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
-
 import java.text.SimpleDateFormat
-import java.util.ArrayList
-import java.util.Date
+import java.util.*
 
 class ChecklistItemResult(
         var id: Int,
@@ -42,7 +40,7 @@ class ChecklistItemResult(
          */
         fun clearTable(database: Database, clearDrafts: Boolean)
         {
-            database.clearTable(TABLE_NAME, clearDrafts)
+            clearTable(database, TABLE_NAME, clearDrafts)
         }
 
         /**
@@ -53,7 +51,7 @@ class ChecklistItemResult(
          * @param database used to load checklist items
          * @return arraylist of checklist items
          */
-        fun getChecklistItemResults(checklistItem: ChecklistItem?, checklistItemResult: ChecklistItemResult?, onlyDrafts: Boolean, database: Database): ArrayList<ChecklistItemResult>?
+        fun getObjects(checklistItem: ChecklistItem?, checklistItemResult: ChecklistItemResult?, onlyDrafts: Boolean, database: Database): ArrayList<ChecklistItemResult>?
         {
             return database.getChecklistItemResults(checklistItem, checklistItemResult, onlyDrafts)
         }
@@ -94,7 +92,7 @@ class ChecklistItemResult(
 
         if (database.isOpen)
         {
-            val checklistItemResults = getChecklistItemResults(null, this, false, database)
+            val checklistItemResults = getObjects(null, this, false, database)
             val checklistItemResult = if (checklistItemResults!!.size > 0) checklistItemResults[0] else null
 
             if (checklistItemResult != null)

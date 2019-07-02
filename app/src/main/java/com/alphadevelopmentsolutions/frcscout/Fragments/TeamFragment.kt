@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
 import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter
 import com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeIcon
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
@@ -18,10 +17,8 @@ import com.alphadevelopmentsolutions.frcscout.R
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import com.squareup.picasso.Picasso
-
-import java.io.File
-
 import de.hdodenhof.circleimageview.CircleImageView
+import java.io.File
 
 /**
  * A simple [Fragment] subclass.

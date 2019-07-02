@@ -1,8 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
-
-import java.util.ArrayList
+import java.util.*
 
 class ScoutCardInfoKey(
         var id: Int,
@@ -52,7 +51,7 @@ class ScoutCardInfoKey(
          */
         fun clearTable(database: Database)
         {
-            database.clearTable(TABLE_NAME)
+            clearTable(database, TABLE_NAME)
         }
 
         /**
@@ -62,7 +61,7 @@ class ScoutCardInfoKey(
          * @param database used to load
          * @return arraylist of robotInfoKeys
          */
-        fun getScoutCardInfoKeys(year: Year?, scoutCardInfoKey: ScoutCardInfoKey?, database: Database): ArrayList<ScoutCardInfoKey>?
+        fun getObjects(year: Year?, scoutCardInfoKey: ScoutCardInfoKey?, database: Database): ArrayList<ScoutCardInfoKey>?
         {
             return database.getScoutCardInfoKeys(year, scoutCardInfoKey)
         }
@@ -114,7 +113,7 @@ class ScoutCardInfoKey(
 
         if (database.isOpen)
         {
-            val scoutCardInfoKeys = getScoutCardInfoKeys(null, this, database)
+            val scoutCardInfoKeys = getObjects(null, this, database)
             val scoutCardInfoKey = if (scoutCardInfoKeys!!.size > 0) scoutCardInfoKeys[0] else null
 
             if (scoutCardInfoKey != null)

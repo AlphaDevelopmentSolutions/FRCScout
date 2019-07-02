@@ -3,21 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.Classes
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItem
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItemResult
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.EventTeamList
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Robot
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfo
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfoKey
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfoKey
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION)
 {

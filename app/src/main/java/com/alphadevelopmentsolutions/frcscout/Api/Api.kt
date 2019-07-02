@@ -3,7 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.Api
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.text.SimpleDateFormat
-import java.util.HashMap
+import java.util.*
 
 abstract class Api internal constructor(
         //region Getters

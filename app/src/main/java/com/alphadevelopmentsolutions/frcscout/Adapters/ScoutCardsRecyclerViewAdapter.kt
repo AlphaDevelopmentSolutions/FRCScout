@@ -7,14 +7,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment
 import com.alphadevelopmentsolutions.frcscout.R
-
-import java.util.ArrayList
+import java.util.*
 
 internal class ScoutCardsRecyclerViewAdapter(private val team: Team, private val scoutCards: ArrayList<ScoutCard>, private val context: MainActivity) : RecyclerView.Adapter<ScoutCardsRecyclerViewAdapter.ViewHolder>()
 {

@@ -1,8 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
-
-import java.util.ArrayList
+import java.util.*
 
 class EventTeamList(
         var id: Int,
@@ -29,7 +28,7 @@ class EventTeamList(
          */
         fun clearTable(database: Database)
         {
-            database.clearTable(TABLE_NAME)
+            clearTable(database, TABLE_NAME)
         }
 
         /**
@@ -39,7 +38,7 @@ class EventTeamList(
          * @param database used to load event team list
          * @return arraylist of event team list
          */
-        fun getEventTeamList(eventTeamList: EventTeamList?, event: Event?, database: Database): ArrayList<EventTeamList>?
+        fun getObjects(eventTeamList: EventTeamList?, event: Event?, database: Database): ArrayList<EventTeamList>?
         {
             return database.getEventTeamLists(eventTeamList, event)
         }
@@ -67,7 +66,7 @@ class EventTeamList(
 
         if (database.isOpen)
         {
-            val eventTeamLists = getEventTeamList(this, null, database)
+            val eventTeamLists = getObjects(this, null, database)
             val eventTeamList = if (eventTeamLists!!.size > 0) eventTeamLists[0] else null
 
             if (eventTeamList != null)

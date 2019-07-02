@@ -1,29 +1,12 @@
 package com.alphadevelopmentsolutions.frcscout.Api
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItem
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItemResult
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfo
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfoKey
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfoKey
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
-
-import org.json.JSONArray
-import org.json.JSONObject
-
-import java.util.ArrayList
-import java.util.Date
-import java.util.HashMap
+import java.util.*
 
 abstract class Server internal constructor(URL: String, key: String, postData: HashMap<String, String>) : Api(URL, key, postData)
 {

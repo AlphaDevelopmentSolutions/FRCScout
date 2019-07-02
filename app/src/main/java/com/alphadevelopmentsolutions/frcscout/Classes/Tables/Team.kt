@@ -2,13 +2,10 @@ package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import com.alphadevelopmentsolutions.frcscout.Interfaces.StatsKeys
-
 import java.io.File
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 class Team : Table
 {
@@ -96,7 +93,7 @@ class Team : Table
          */
         fun clearTable(database: Database)
         {
-            database.clearTable(TABLE_NAME)
+            clearTable(database, TABLE_NAME)
         }
 
         /**
@@ -107,7 +104,7 @@ class Team : Table
          * @param database used to load teams
          * @return arraylist of teams
          */
-        fun getTeams(event: Event?, match: Match?, team: Team?, database: Database): ArrayList<Team>?
+        fun getObjects(event: Event?, match: Match?, team: Team?, database: Database): ArrayList<Team>?
         {
             return database.getTeams(event, match, team)
         }
@@ -370,7 +367,7 @@ class Team : Table
      */
     fun getScoutCards(event: Event?, match: Match?, scoutCard: ScoutCard?, onlyDrafts: Boolean, database: Database): ArrayList<ScoutCard>?
     {
-        return ScoutCard.getScoutCards(event, match, this, scoutCard, onlyDrafts, database)
+        return ScoutCard.getObjects(event, match, this, scoutCard, onlyDrafts, database)
     }
 
     /**
@@ -382,7 +379,7 @@ class Team : Table
      */
     fun getRobotMedia(robotMedia: RobotMedia?, onlyDrafts: Boolean, database: Database): ArrayList<RobotMedia>?
     {
-        return RobotMedia.getRobotMedia(robotMedia, this, onlyDrafts, database)
+        return RobotMedia.getObjects(robotMedia, this, onlyDrafts, database)
     }
 
     override fun toString(): String
@@ -406,7 +403,7 @@ class Team : Table
 
         if (database.isOpen)
         {
-            val teams = getTeams(null, null, this, database)
+            val teams = getObjects(null, null, this, database)
             val team = if (teams!!.size > 0) teams[0] else null
 
             if (team != null)

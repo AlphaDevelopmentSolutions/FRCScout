@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Fragment
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -15,14 +14,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-
 import com.alphadevelopmentsolutions.frcscout.Classes.Image
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.gson.Gson
-
 import java.io.File
 
 /**

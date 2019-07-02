@@ -26,7 +26,7 @@ class Robot(
          */
         fun clearTable(database: Database)
         {
-            database.clearTable(TABLE_NAME)
+            clearTable(database, TABLE_NAME)
         }
     }
 

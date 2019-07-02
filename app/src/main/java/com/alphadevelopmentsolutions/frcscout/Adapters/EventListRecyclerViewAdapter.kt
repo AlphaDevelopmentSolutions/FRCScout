@@ -5,15 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event
 import com.alphadevelopmentsolutions.frcscout.Fragments.MatchListFragment
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
-
 import java.text.SimpleDateFormat
-import java.util.ArrayList
+import java.util.*
 
 internal class EventListRecyclerViewAdapter(private val eventList: ArrayList<Event>, private val context: MainActivity) : RecyclerView.Adapter<EventListRecyclerViewAdapter.ViewHolder>()
 {

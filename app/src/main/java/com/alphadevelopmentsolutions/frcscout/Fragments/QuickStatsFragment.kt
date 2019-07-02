@@ -11,13 +11,10 @@ import android.view.ViewGroup
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
-
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Interfaces.StatsKeys
 import com.alphadevelopmentsolutions.frcscout.R
-
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 
 /**

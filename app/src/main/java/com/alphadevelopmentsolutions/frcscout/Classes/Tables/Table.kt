@@ -9,4 +9,13 @@ abstract class Table protected constructor(private val TABLE_NAME: String, priva
     abstract fun save(database: Database): Int
     abstract fun delete(database: Database): Boolean
     abstract override fun toString(): String
+
+    companion object
+    {
+        @JvmStatic
+        protected fun clearTable(database: Database, tableName: String, clearDrafts: Boolean? = null)
+        {
+            database.clearTable(tableName, clearDrafts)
+        }
+    }
 }

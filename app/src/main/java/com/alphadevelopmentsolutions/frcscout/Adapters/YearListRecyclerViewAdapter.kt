@@ -8,17 +8,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.squareup.picasso.Picasso
-
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.ArrayList
+import java.util.*
 
 internal class YearListRecyclerViewAdapter(private val yearList: ArrayList<Year>, private val context: MainActivity) : RecyclerView.Adapter<YearListRecyclerViewAdapter.ViewHolder>()
 {

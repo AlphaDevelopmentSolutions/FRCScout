@@ -12,15 +12,13 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Spinner
-
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition
 import com.alphadevelopmentsolutions.frcscout.R
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * A simple [Fragment] subclass.
@@ -78,7 +76,7 @@ class ScoutCardPreGameFragment : MasterFragment()
             scouterNames = ArrayList()
 
             //get all users
-            for (user in User.getUsers(null, database)!!)
+            for (user in User.getObjects(null, database)!!)
                 scouterNames!!.add(user.toString())
 
             scouterNameAdapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, scouterNames!!)

@@ -2,11 +2,8 @@ package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
-
-import java.util.ArrayList
-import java.util.Date
+import java.util.*
 
 class Year: Table
 {
@@ -64,7 +61,7 @@ class Year: Table
          */
         fun clearTable(database: Database)
         {
-            database.clearTable(TABLE_NAME)
+            clearTable(database, TABLE_NAME)
         }
 
         /**
@@ -73,7 +70,7 @@ class Year: Table
          * @param database used to load robot media
          * @return ArrayList of years
          */
-        fun getYears(year: Year?, database: Database): ArrayList<Year>?
+        fun getObjects(year: Year?, database: Database): ArrayList<Year>?
         {
             return database.getYears(year)
         }
@@ -108,7 +105,7 @@ class Year: Table
 
         if (database.isOpen)
         {
-            val yearArrayList = getYears(this, database)
+            val yearArrayList = getObjects(this, database)
             val year = if (yearArrayList!!.size > 0) yearArrayList[0] else null
 
             if (year != null)

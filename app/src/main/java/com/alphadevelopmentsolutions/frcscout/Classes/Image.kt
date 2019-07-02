@@ -1,7 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Classes
 
 import java.io.File
-import java.util.UUID
+import java.util.*
 
 object Image
 {

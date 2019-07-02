@@ -3,10 +3,8 @@ package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece
 import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition
-
 import java.text.SimpleDateFormat
-import java.util.ArrayList
-import java.util.Date
+import java.util.*
 
 class ScoutCard(
         var id: Int,
@@ -126,7 +124,7 @@ class ScoutCard(
          */
         fun clearTable(database: Database, clearDrafts: Boolean)
         {
-            database.clearTable(TABLE_NAME, clearDrafts)
+            clearTable(database, TABLE_NAME, clearDrafts)
         }
 
         /**
@@ -139,7 +137,7 @@ class ScoutCard(
          * @param database used to load scout cards
          * @return arraylist of scout cards
          */
-        fun getScoutCards(event: Event?, match: Match?, team: Team?, scoutCard: ScoutCard?, onlyDrafts: Boolean, database: Database): ArrayList<ScoutCard>?
+        fun getObjects(event: Event?, match: Match?, team: Team?, scoutCard: ScoutCard?, onlyDrafts: Boolean, database: Database): ArrayList<ScoutCard>?
         {
             return database.getScoutCards(event, match, team, scoutCard, onlyDrafts)
         }
@@ -180,7 +178,7 @@ class ScoutCard(
 
         if (database.isOpen)
         {
-            val scoutCards = getScoutCards(null, null, null, this, false, database)
+            val scoutCards = getObjects(null, null, null, this, false, database)
             val scoutCard = if (scoutCards!!.size > 0) scoutCards[0] else null
 
             if (scoutCard != null)

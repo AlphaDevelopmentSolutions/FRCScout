@@ -5,14 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Fragments.RobotMediaFragment
 import com.alphadevelopmentsolutions.frcscout.R
-
-import java.util.ArrayList
+import java.util.*
 
 internal class RobotMediaListRecyclerViewAdapter(private val team: Team, private val robotMedia: ArrayList<RobotMedia>, private val context: MainActivity) : RecyclerView.Adapter<RobotMediaListRecyclerViewAdapter.ViewHolder>()
 {

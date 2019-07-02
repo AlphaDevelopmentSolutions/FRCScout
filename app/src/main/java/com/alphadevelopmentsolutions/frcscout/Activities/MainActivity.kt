@@ -373,7 +373,7 @@ class MainActivity : AppCompatActivity(),
 
                 val remainingPercent = if (downloadMedia) 90 else 100 - progressDialogProgess //max amount of percentage we have before we can't add anymore to the progress dialog
 
-                val events = Event.getEvents(null, null, getDatabase())
+                val events = Event.getObjects(null, null, getDatabase())
 
                 //iterate through each event and get its data
                 for (i in events!!.indices)
@@ -462,7 +462,7 @@ class MainActivity : AppCompatActivity(),
                     RobotMedia.clearTable(getDatabase(), false)
                     var getRobotMedia: Server.GetRobotMedia
 
-                    for (team in Team.getTeams(null, null, null, getDatabase())!!)
+                    for (team in Team.getObjects(null, null, null, getDatabase())!!)
                     {
                         context!!.runOnUiThread { progressDialog!!.setTitle("Downloading teams " + team.id + " robot media...") }
 
@@ -508,7 +508,7 @@ class MainActivity : AppCompatActivity(),
     {
         progressDialog = ProgressDialog(context)
 
-        val teams = Team.getTeams(null, null, null, getDatabase())
+        val teams = Team.getObjects(null, null, null, getDatabase())
         val totalTeams = teams!!.size
 
         progressDialog!!.max = totalTeams
@@ -519,14 +519,14 @@ class MainActivity : AppCompatActivity(),
         val uploadThread = Thread(Runnable {
             var success = true
 
-            for (event in Event.getEvents(null, null, getDatabase())!!)
+            for (event in Event.getObjects(null, null, getDatabase())!!)
             {
 
                 //upload team specific data
                 for (team in teams)
                 {
 
-                    for (robotMedia in RobotMedia.getRobotMedia(null, team, true, getDatabase())!!)
+                    for (robotMedia in RobotMedia.getObjects(null, team, true, getDatabase())!!)
                     {
                         val submitRobotMedia = Server.SubmitRobotMedia(context!!, robotMedia)
                         if (submitRobotMedia.execute())
@@ -537,7 +537,7 @@ class MainActivity : AppCompatActivity(),
                             success = false
                     }
 
-                    for (robotInfo in RobotInfo.getRobotInfo(null, null, team, null, null, true, getDatabase())!!)
+                    for (robotInfo in RobotInfo.getObjects(null, null, team, null, null, true, getDatabase())!!)
                     {
                         val submitRobotInfo = Server.SubmitRobotInfo(context!!, robotInfo)
                         if (submitRobotInfo.execute())
@@ -550,7 +550,7 @@ class MainActivity : AppCompatActivity(),
                 }
 
                 //Checklist item results
-                for (checklistItem in ChecklistItem.getChecklistItems(null, getDatabase())!!)
+                for (checklistItem in ChecklistItem.getObjects(null, getDatabase())!!)
                 {
                     for (checklistItemResult in checklistItem.getResults(null, true, getDatabase())!!)
                     {
@@ -829,7 +829,7 @@ class MainActivity : AppCompatActivity(),
             {
                 //check any teams are on device and if the device is online
                 //if no teams, update data
-                if (Team.getTeams(null, null, null, getDatabase())!!.size == 0 && isOnline())
+                if (Team.getObjects(null, null, null, getDatabase())!!.size == 0 && isOnline())
                     downloadApplicationData(false)
 
                 //join back up with the update thread if it is not null

@@ -14,14 +14,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfo
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfoKey
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
 import com.alphadevelopmentsolutions.frcscout.R
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * A simple [Fragment] subclass.
@@ -71,7 +69,7 @@ class RobotInfoFragment : MasterFragment()
 
             val year = Year(event!!.yearId, database)
 
-            val robotInfoKeys = RobotInfoKey.getRobotInfoKeys(year, null, database)
+            val robotInfoKeys = RobotInfoKey.getObjects(year, null, database)
 
             var robotInfoKey: RobotInfoKey
             var nextRobotInfoKey: RobotInfoKey?
@@ -92,7 +90,7 @@ class RobotInfoFragment : MasterFragment()
                 robotInfoKey = robotInfoKeys[i]
                 nextRobotInfoKey = if (i + 1 < robotInfoKeys.size) robotInfoKeys[i + 1] else null
 
-                robotInfos = RobotInfo.getRobotInfo(null, event, team, robotInfoKey, null, false, database)
+                robotInfos = RobotInfo.getObjects(null, event, team, robotInfoKey, null, false, database)
                 robotInfo = if (robotInfos!!.size > 0) robotInfos[robotInfos.size - 1] else null
 
                 if (currentInfoKeyState != robotInfoKey.keyState)

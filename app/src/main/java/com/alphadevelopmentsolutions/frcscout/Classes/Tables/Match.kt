@@ -2,9 +2,7 @@ package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor
-
-import java.util.ArrayList
-import java.util.Date
+import java.util.*
 
 class Match(
         var id: Int,
@@ -67,7 +65,7 @@ class Match(
          */
         fun clearTable(database: Database)
         {
-            database.clearTable(TABLE_NAME)
+            clearTable(database, TABLE_NAME)
         }
 
         /**
@@ -77,7 +75,7 @@ class Match(
          * @param database used to load teams
          * @return arraylist of teams
          */
-        fun getMatches(event: Event?, match: Match?, team: Team?, database: Database): ArrayList<Match>?
+        fun getObjects(event: Event?, match: Match?, team: Team?, database: Database): ArrayList<Match>?
         {
             return database.getMatches(event, match, team)
         }
@@ -195,7 +193,7 @@ class Match(
      */
     fun getScoutCards(event: Event?, team: Team?, scoutCard: ScoutCard?, onlyDrafts: Boolean, database: Database): ArrayList<ScoutCard>?
     {
-        return ScoutCard.getScoutCards(event, this, team, scoutCard, onlyDrafts, database)
+        return ScoutCard.getObjects(event, this, team, scoutCard, onlyDrafts, database)
     }
 
     /**
@@ -207,7 +205,7 @@ class Match(
      */
     fun getTeams(event: Event?, team: Team?, database: Database): ArrayList<Team>?
     {
-        return Team.getTeams(event, this, team, database)
+        return Team.getObjects(event, this, team, database)
     }
 
     /**
@@ -235,7 +233,7 @@ class Match(
 
         if (database.isOpen)
         {
-            val matches = getMatches(null, this, null, database)
+            val matches = getObjects(null, this, null, database)
             val match = if (matches!!.size > 0) matches[0] else null
 
             if (match != null)
