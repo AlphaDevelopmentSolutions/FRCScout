@@ -88,12 +88,12 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         }
     }
 
-    class GetTeamsAtEvent(private val context: MainActivity, event: Event) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetTeams(private val context: MainActivity, event: Event? = null) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
-            put(API_PARAM_API_ACTION, "GetTeamsAtEvent")
-            put("EventId", event.blueAllianceId!!)
+            put(API_PARAM_API_ACTION, "GetTeams")
+            put("EventId", event?.blueAllianceId ?: "")
         }
     })
     {
@@ -167,6 +167,64 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
+    class GetEventTeamList(private val context: MainActivity, event: Event? = null) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    {
+        init
+        {
+            put(API_PARAM_API_ACTION, "GetEventTeamList")
+            put("EventId", event?.blueAllianceId ?: "")
+        }
+    })
+    {
+        //region Getters
+
+        val eventTeamList: ArrayList<EventTeamList>
+
+        init
+        {
+
+            eventTeamList = ArrayList()
+
+        }
+
+        override fun execute(): Boolean
+        {
+            try
+            {
+                //parse the data from the server
+                val apiParser = ApiParser(this)
+
+                //get the response from the server
+                val response = apiParser.parse()
+
+                if (response.getString(API_FIELD_NAME_STATUS) != API_FIELD_NAME_STATUS_SUCCESS)
+                    throw Exception(response.getString(API_FIELD_NAME_RESPONSE))
+
+
+                //iterate through, create a new object and add it to the arraylist
+                for (i in 0 until response.getJSONArray(API_FIELD_NAME_RESPONSE).length())
+                {
+                    val eventTeamListObj = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i)
+
+                    val teamId = eventTeamListObj.getInt(EventTeamList.COLUMN_NAME_TEAM_ID)
+                    val eventId = eventTeamListObj.getString(EventTeamList.COLUMN_NAME_EVENT_ID)
+
+                    eventTeamList.add(EventTeamList(
+                            -1,
+                            teamId,
+                            eventId))
+                }
+
+                return true
+            } catch (e: Exception)
+            {
+                context.showSnackbar(e.message!!)
+                return false
+            }
+
+        }
+    }
+
     class GetUsers(private val context: MainActivity) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
@@ -224,12 +282,12 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
-    class GetScoutCardInfo(private val context: MainActivity, event: Event) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetScoutCardInfo(private val context: MainActivity, event: Event? = null) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
             put(API_PARAM_API_ACTION, "GetScoutCardInfo")
-            put("EventId", event.blueAllianceId!!)
+            put("EventId", event?.blueAllianceId ?: "")
         }
     })
     {
@@ -297,12 +355,12 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
-    class GetScoutCardInfoKeys(private val context: MainActivity, year: Year) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetScoutCardInfoKeys(private val context: MainActivity, year: Year? = null) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
             put(API_PARAM_API_ACTION, "GetScoutCardInfoKeys")
-            put("YearId", year.serverId.toString())
+            put("YearId", year?.serverId?.toString() ?: "")
         }
     })
     {
@@ -381,12 +439,12 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
-    class GetRobotInfo(private val context: MainActivity, event: Event) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetRobotInfo(private val context: MainActivity, event: Event? = null) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
             put(API_PARAM_API_ACTION, "GetRobotInfo")
-            put("EventId", event.blueAllianceId!!)
+            put("EventId", event?.blueAllianceId ?: "")
         }
     })
     {
@@ -455,12 +513,12 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
-    class GetRobotInfoKeys(private val context: MainActivity, year: Year) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetRobotInfoKeys(private val context: MainActivity, year: Year? = null) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
             put(API_PARAM_API_ACTION, "GetRobotInfoKeys")
-            put("YearId", year.serverId.toString())
+            put("YearId", year?.serverId?.toString() ?: "")
         }
     })
     {
@@ -524,12 +582,12 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
-    class GetMatches(private val context: MainActivity, event: Event) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetMatches(private val context: MainActivity, event: Event? = null) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
             put(API_PARAM_API_ACTION, "GetMatches")
-            put("EventId", event.blueAllianceId!!)
+            put("EventId", event?.blueAllianceId ?: "")
         }
     })
     {
@@ -617,12 +675,12 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
-    class GetRobotMedia(private val context: MainActivity, teamId: Int) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetRobotMedia(private val context: MainActivity, team: Team? = null) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
             put(API_PARAM_API_ACTION, "GetRobotMedia")
-            put("TeamId", teamId.toString())
+            put("TeamId", team?.id?.toString() ?: "")
         }
     })
     {
@@ -915,38 +973,34 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
                     throw Exception(response.getString(API_FIELD_NAME_RESPONSE))
 
 
-                //iterate through, create a new object and add it to the arraylist
-                for (i in 0 until response.getJSONArray(API_FIELD_NAME_RESPONSE).length())
+                val checklistItemResultArray = response.getJSONArray(API_FIELD_NAME_RESPONSE)
+
+                for (i in 0 until checklistItemResultArray.length())
                 {
-                    val checklistItemResultArray = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONArray(i)
+                    val checklistItemResultObject = checklistItemResultArray.getJSONObject(i)
 
-                    for (j in 0 until checklistItemResultArray.length())
-                    {
+                    val checklistItemId = checklistItemResultObject.getInt(ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID)
 
-                        val checklistItemResultObject = checklistItemResultArray.getJSONObject(j)
+                    val matchId = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_MATCH_ID)
+                    val status = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_STATUS)
+                    val completedBy = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY)
 
-                        val checklistItemId = checklistItemResultObject.getInt(ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID)
+                    val completedDate = simpleDateFormat.parse(checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE))
 
-                        val matchId = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_MATCH_ID)
-                        val status = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_STATUS)
-                        val completedBy = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY)
+                    checklistItemResults.add(
+                            ChecklistItemResult(
+                                    -1,
+                                    checklistItemId,
+                                    matchId,
 
-                        val completedDate = simpleDateFormat.parse(checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE))
+                                    status,
+                                    completedBy,
 
-                        checklistItemResults.add(
-                                ChecklistItemResult(
-                                        -1,
-                                        checklistItemId,
-                                        matchId,
-
-                                        status,
-                                        completedBy,
-
-                                        completedDate,
-                                        false
-                                ))
-                    }
+                                    completedDate,
+                                    false
+                            ))
                 }
+
 
                 return true
             } catch (e: Exception)

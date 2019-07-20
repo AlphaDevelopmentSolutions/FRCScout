@@ -18,7 +18,6 @@ import android.widget.TextView
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.R
 
-private const val ARG_SCOUT_CARD_INFO_KEY_STATE = "INFO_KEY_STATE"
 
 /**
  * A simple [Fragment] subclass.
@@ -31,6 +30,8 @@ private const val ARG_SCOUT_CARD_INFO_KEY_STATE = "INFO_KEY_STATE"
  */
 class ScoutCardInfoFormFragment : MasterFragment()
 {
+    private val ARG_SCOUT_CARD_INFO_KEY_STATE = "INFO_KEY_STATE"
+
     private var scoutCardInfoKeyState: String? = null
     private var listener: OnFragmentInteractionListener? = null
 

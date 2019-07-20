@@ -34,7 +34,7 @@ class RobotMedia(
          * @param database used to clear table
          * @param clearDrafts boolean if you want to include drafts in the clear
          */
-        fun clearTable(database: Database, clearDrafts: Boolean)
+        fun clearTable(database: Database, clearDrafts: Boolean = false)
         {
             clearTable(database, TABLE_NAME, clearDrafts)
         }

@@ -107,6 +107,23 @@ class Database(context: Context)
     }
 
     /**
+     * Starts a transaction when inserting a large number of records
+     */
+    fun beginTransaction()
+    {
+        db!!.beginTransaction()
+    }
+
+    /**
+     * Completes the transaction that was previously opened
+     */
+    fun finishTransaction()
+    {
+        db!!.setTransactionSuccessful()
+        db!!.endTransaction()
+    }
+
+    /**
      * Opens the database for usage
      *
      * @return boolean if database was opened successfully
@@ -903,8 +920,10 @@ class Database(context: Context)
         contentValues.put(ScoutCardInfo.COLUMN_NAME_PROPERTY_STATE, scoutCardInfo.propertyState)
         contentValues.put(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY, scoutCardInfo.propertyKey)
         contentValues.put(ScoutCardInfo.COLUMN_NAME_PROPERTY_VALUE, scoutCardInfo.propertyValue)
-        
+
         contentValues.put(ScoutCardInfo.COLUMN_NAME_IS_DRAFT, if (scoutCardInfo.isDraft) "1" else "0")
+
+        Log.i("Database Save", "Saving ${ScoutCardInfoKey.TABLE_NAME} with the Id ${scoutCardInfo.id}")
 
         //scoutCardInfo already exists in DB, update
         if (scoutCardInfo.id > 0)

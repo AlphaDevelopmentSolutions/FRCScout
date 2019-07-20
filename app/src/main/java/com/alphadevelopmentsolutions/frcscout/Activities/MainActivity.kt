@@ -240,6 +240,9 @@ class MainActivity : AppCompatActivity(),
         //update all app data
         if (isOnline())
         {
+
+
+            val increaseFactor = if(downloadMedia) 9 else 8
             progressDialog = ProgressDialog(this, R.style.CustomProgressDialog)
             progressDialog!!.setTitle("Downloading data...")
             progressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
@@ -247,237 +250,229 @@ class MainActivity : AppCompatActivity(),
             progressDialog!!.show()
 
             updateThread = Thread(Runnable {
-                var mediaFolder: File
+
+                getDatabase().beginTransaction()
 
                 progressDialogProgess = 0
 
                 context!!.runOnUiThread {
-                    progressDialog!!.setTitle("Downloading users...")
+                    progressDialog!!.setTitle("Downloading Users...")
                     progressDialog!!.progress = progressDialogProgess
                 }
 
-
-                //update users
+                //Update Users
                 val getUsers = Server.GetUsers(context!!)
-
                 if (getUsers.execute())
                 {
                     User.clearTable(getDatabase())
+
                     for (user in getUsers.users)
-                    {
                         user.save(getDatabase())
-                    }
                 }
 
-                progressDialogProgess = 5
-
+                progressDialogProgess += increaseFactor
                 context!!.runOnUiThread {
-                    progressDialog!!.setTitle("Downloading years...")
+                    progressDialog!!.setTitle("Downloading Years...")
                     progressDialog!!.progress = progressDialogProgess
                 }
 
-
-                //Get the folder and purge all files
-                mediaFolder = File(Constants.YEAR_MEDIA_DIRECTORY)
+                //Purge Year Media
+                val mediaFolder = File(Constants.YEAR_MEDIA_DIRECTORY)
                 if (mediaFolder.isDirectory)
                     for (child in mediaFolder.listFiles())
                         child.delete()
 
-                //update years
+                //Update Years
                 val getYears = Server.GetYears(context!!)
                 if (getYears.execute())
                 {
                     Year.clearTable(getDatabase())
-                    RobotInfoKey.clearTable(getDatabase())
-                    ScoutCardInfoKey.clearTable(getDatabase())
 
                     for (year in getYears.years)
-                    {
-                        if (year.save(getDatabase()) > 0)
-                        {
-                            //update robot info keys
-                            val getRobotInfoKeys = Server.GetRobotInfoKeys(context!!, year)
-
-                            if (getRobotInfoKeys.execute())
-                            {
-                                for (robotInfoKey in getRobotInfoKeys.robotInfoKeyList)
-                                {
-                                    robotInfoKey.yearId = year.serverId!!
-                                    robotInfoKey.save(getDatabase())
-                                }
-                            }
-
-                            //update scout card info keys
-                            val getScoutCardInfoKeys = Server.GetScoutCardInfoKeys(context!!, year)
-
-                            if (getScoutCardInfoKeys.execute())
-                            {
-                                for (scoutCardInfoKey in getScoutCardInfoKeys.scoutCardInfoKeys)
-                                {
-                                    scoutCardInfoKey.yearId = year.serverId!!
-                                    scoutCardInfoKey.save(getDatabase())
-                                }
-                            }
-                        }
-                    }
+                        year.save(getDatabase())
                 }
 
-                //update events
+                progressDialogProgess += increaseFactor
+                context!!.runOnUiThread {
+                    progressDialog!!.setTitle("Downloading Events...")
+                    progressDialog!!.progress = progressDialogProgess
+                }
+
+                //Update Events
                 val getEvents = Server.GetEvents(context!!)
                 if (getEvents.execute())
                 {
                     Event.clearTable(getDatabase())
+
                     for (event in getEvents.events)
                         event.save(getDatabase())
                 }
 
-                progressDialogProgess = 10
-
+                progressDialogProgess += increaseFactor
                 context!!.runOnUiThread {
-                    progressDialog!!.setTitle("Downloading events...")
+                    progressDialog!!.setTitle("Downloading Matches...")
                     progressDialog!!.progress = progressDialogProgess
                 }
 
-                //clear the saved data
-                EventTeamList.clearTable(getDatabase())
-                Team.clearTable(getDatabase())
-                ScoutCardInfo.clearTable(getDatabase(), false)
-                RobotInfo.clearTable(getDatabase(), true)
-                Match.clearTable(getDatabase())
-                ChecklistItem.clearTable(getDatabase())
-                ChecklistItemResult.clearTable(getDatabase(), false)
+                //Update Matches
+                val getMatches = Server.GetMatches(context!!)
+                if (getMatches.execute())
+                {
+                    Match.clearTable(getDatabase())
 
-                progressDialogProgess = 20
+                    for (match in getMatches.matches)
+                        match.save(getDatabase())
+                }
+
+                progressDialogProgess += increaseFactor
                 context!!.runOnUiThread {
-                    progressDialog!!.setTitle("Downloading checklist data...")
+                    progressDialog!!.setTitle("Downloading Teams...")
                     progressDialog!!.progress = progressDialogProgess
                 }
 
-                //download checklist data
+                //Update Teams
+                val getTeams = Server.GetTeams(context!!)
+                if (getTeams.execute())
+                {
+                    Team.clearTable(getDatabase())
+
+                    for (team in getTeams.teams)
+                        team.save(getDatabase())
+                }
+
+                progressDialogProgess += increaseFactor
+                context!!.runOnUiThread {
+                    progressDialog!!.setTitle("Downloading Event Metadata...")
+                    progressDialog!!.progress = progressDialogProgess
+                }
+
+                //Update Event Team List
+                val getEventTeamList = Server.GetEventTeamList(context!!)
+                if (getEventTeamList.execute())
+                {
+                    EventTeamList.clearTable(getDatabase())
+
+                    for (eventTeamListItem in getEventTeamList.eventTeamList)
+                        eventTeamListItem.save(getDatabase())
+                }
+
+                progressDialogProgess += increaseFactor
+                context!!.runOnUiThread {
+                    progressDialog!!.setTitle("Downloading Robot Info...")
+                    progressDialog!!.progress = progressDialogProgess
+                }
+
+                //Update Robot Info Keys
+                val getRobotInfoKeys = Server.GetRobotInfoKeys(context!!)
+                if (getRobotInfoKeys.execute())
+                {
+                    RobotInfoKey.clearTable(getDatabase())
+
+                    for (robotInfoKey in getRobotInfoKeys.robotInfoKeyList)
+                        robotInfoKey.save(getDatabase())
+                }
+
+                progressDialogProgess += increaseFactor
+
+                //Update Robot Info
+                val getRobotInfo = Server.GetRobotInfo(context!!)
+                if (getRobotInfo.execute())
+                {
+                    RobotInfo.clearTable(getDatabase())
+
+                    for (robotInfo in getRobotInfo.robotInfoList)
+                        robotInfo.save(getDatabase())
+                }
+
+                progressDialogProgess += increaseFactor
+                context!!.runOnUiThread {
+                    progressDialog!!.setTitle("Downloading Scout Cards...")
+                    progressDialog!!.progress = progressDialogProgess
+                }
+
+                //Update Scout Card Info Keys
+                val getScoutCardInfoKeys = Server.GetScoutCardInfoKeys(context!!)
+                if (getScoutCardInfoKeys.execute())
+                {
+                    ScoutCardInfoKey.clearTable(getDatabase())
+
+                    for (scoutCardInfoKey in getScoutCardInfoKeys.scoutCardInfoKeys)
+                        scoutCardInfoKey.save(getDatabase())
+                }
+
+                progressDialogProgess += increaseFactor
+
+                //Update Scout Card Info
+                val getScoutCardInfo = Server.GetScoutCardInfo(context!!)
+                if (getScoutCardInfo.execute())
+                {
+                    ScoutCardInfo.clearTable(getDatabase())
+
+                    for (scoutCardInfo in getScoutCardInfo.scoutCardInfos)
+                        scoutCardInfo.save(getDatabase())
+
+                    getDatabase().finishTransaction()
+                }
+
+                progressDialogProgess += increaseFactor
+                context!!.runOnUiThread {
+                    progressDialog!!.setTitle("Downloading Checklist...")
+                    progressDialog!!.progress = progressDialogProgess
+                }
+
+                //Update Checklist Items
                 val getChecklistItems = Server.GetChecklistItems(context!!)
                 if (getChecklistItems.execute())
                 {
+                    ChecklistItem.clearTable(getDatabase())
+
                     for (checklistItem in getChecklistItems.checklistItems)
                         checklistItem.save(getDatabase())
                 }
 
+                progressDialogProgess += increaseFactor
+
+                //Update Checklist Items Results
                 val getChecklistItemResults = Server.GetChecklistItemResults(context!!)
                 if (getChecklistItemResults.execute())
                 {
+                    ChecklistItemResult.clearTable(getDatabase())
+
                     for (checklistItemResult in getChecklistItemResults.checklistItemResults)
                         checklistItemResult.save(getDatabase())
                 }
-
-                val remainingPercent = if (downloadMedia) 90 else 100 - progressDialogProgess //max amount of percentage we have before we can't add anymore to the progress dialog
-
-                val events = Event.getObjects(null, null, getDatabase())
-
-                //iterate through each event and get its data
-                for (i in events!!.indices)
-                {
-                    val event = events[i]
-
-                    context!!.runOnUiThread { progressDialog!!.setTitle("Downloading teams at " + event.blueAllianceId + "...") }
-
-                    //update teams
-                    val getTeamsAtEvent = Server.GetTeamsAtEvent(context!!, event)
-
-                    //get teams at current event
-                    if (getTeamsAtEvent.execute())
-                    {
-                        //get the teams from API
-                        val teams = getTeamsAtEvent.teams
-
-                        for (team in teams)
-                        {
-                            //check if the team exists in the database
-                            //if not, save it
-                            if (!team.load(getDatabase()))
-                                team.save(getDatabase())
-
-                            //save a new eventteamlist to the database
-                            EventTeamList(-1, team.id!!, event.blueAllianceId!!).save(getDatabase())
-                        }
-                    }
-
-                    context!!.runOnUiThread { progressDialog!!.setTitle("Downloading matches...") }
-
-                    //update matches
-                    val getMatches = Server.GetMatches(context!!, event)
-
-                    //get teams at current event
-                    if (getMatches.execute())
-                    {
-                        //get the teams from API
-                        for (match in getMatches.matches)
-                            match.save(getDatabase())
-
-                    }
-
-                    context!!.runOnUiThread { progressDialog!!.setTitle("Downloading scout card data...") }
-
-                    //update scout cards
-                    val getScoutCardInfo = Server.GetScoutCardInfo(context!!, event)
-
-                    if (getScoutCardInfo.execute())
-                    {
-                        for (scoutCardInfo in getScoutCardInfo.scoutCardInfos)
-                            scoutCardInfo.save(getDatabase())
-                    }
-
-                    context!!.runOnUiThread { progressDialog!!.setTitle("Downloading robot info data...") }
-
-                    //update robot info
-                    val getRobotInfo = Server.GetRobotInfo(context!!, event)
-
-                    if (getRobotInfo.execute())
-                    {
-                        for (robotInfo in getRobotInfo.robotInfoList)
-                            robotInfo.save(getDatabase())
-                    }
-
-                    context!!.runOnUiThread { progressDialog!!.progress = remainingPercent / (events.size - i) + progressDialogProgess }
-                }
-
-
-                //download robot media from server
+                
+                //Update Robot Media
                 if (downloadMedia)
                 {
-                    progressDialogProgess = 90
-
+                    progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
-                        progressDialog!!.setTitle("Download robot media...")
+                        progressDialog!!.setTitle("Downloading Robot Media...")
                         progressDialog!!.progress = progressDialogProgess
                     }
 
                     //Get the folder and purge all files
-                    mediaFolder = File(Constants.ROBOT_MEDIA_DIRECTORY)
+                    val mediaFolder = File(Constants.ROBOT_MEDIA_DIRECTORY)
                     if (mediaFolder.isDirectory)
                         for (child in mediaFolder.listFiles())
                             child.delete()
 
-                    RobotMedia.clearTable(getDatabase(), false)
-                    var getRobotMedia: Server.GetRobotMedia
-
-                    for (team in Team.getObjects(null, null, null, getDatabase())!!)
+                    val getRobotMedia = Server.GetRobotMedia(context!!)
+                    if (getRobotMedia.execute())
                     {
-                        context!!.runOnUiThread { progressDialog!!.setTitle("Downloading teams " + team.id + " robot media...") }
+                        RobotMedia.clearTable(getDatabase(), true)
 
-                        getRobotMedia = Server.GetRobotMedia(context!!, team.id!!)
-
-                        if (getRobotMedia.execute())
+                        for (robotMedia in getRobotMedia.robotMedia)
                         {
-                            for (robotMedia in getRobotMedia.robotMedia)
+                            if(robotMedia.save(getDatabase()) > 0)
                             {
-                                robotMedia.save(getDatabase())
-
-                                //save the image for the team
+                                val team = Team(robotMedia.teamId, getDatabase())
                                 team.imageFileURI = robotMedia.fileUri
                                 team.save(getDatabase())
                             }
                         }
-                    }
 
+                    }
                 }
 
                 runOnUiThread {
