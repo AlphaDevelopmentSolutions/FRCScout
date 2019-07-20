@@ -113,7 +113,7 @@ class ChecklistItem(
 
         //set the id if the save was successful
         if (id > 0)
-            id = id
+            this.id = id
 
         return id
     }

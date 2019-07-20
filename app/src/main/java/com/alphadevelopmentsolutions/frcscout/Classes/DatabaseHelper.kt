@@ -19,7 +19,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
         db.execSQL(Robot.CREATE_TABLE)
         db.execSQL(RobotMedia.CREATE_TABLE)
 
-        db.execSQL(ScoutCard.CREATE_TABLE)
+        db.execSQL(ScoutCardInfo.CREATE_TABLE)
         db.execSQL(ScoutCardInfoKey.CREATE_TABLE)
         db.execSQL(RobotInfo.CREATE_TABLE)
         db.execSQL(RobotInfoKey.CREATE_TABLE)
@@ -41,7 +41,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Robot.TABLE_NAME)
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RobotMedia.TABLE_NAME)
 
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ScoutCard.TABLE_NAME)
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ScoutCardInfo.TABLE_NAME)
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ScoutCardInfoKey.TABLE_NAME)
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RobotInfo.TABLE_NAME)
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RobotInfoKey.TABLE_NAME)
@@ -57,7 +57,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
     companion object
     {
 
-        private val DB_VERSION = 12
+        private val DB_VERSION = 13
         private val DB_NAME = "FRCScout.db"
     }
 }

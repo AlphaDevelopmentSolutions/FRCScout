@@ -9,8 +9,8 @@ class ScoutCardInfoKey(
         var keyState: String,
         var keyName: String,
         var sortOrder: Int,
-        var minValue: Int,
-        var maxValue: Int,
+        var minValue: Int?,
+        var maxValue: Int?,
         var nullZeros: Boolean,
         var includeInStats: Boolean,
         var dataType: DataTypes) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
@@ -40,10 +40,6 @@ class ScoutCardInfoKey(
                 COLUMN_NAME_NULL_ZEROS + " INTEGER," +
                 COLUMN_NAME_INCLUDE_IN_STATS + " INTEGER," +
                 COLUMN_NAME_DATA_TYPE + " TEXT)"
-
-        //java does not allow nulls, create a unique val that will never be used
-        //in a real life scenario. THIS VAL IS THE LOWEST AN INT CAN BE
-        val INT_NULL_VALUE = -2147483648
 
         /**
          * Clears all data from the classes table
@@ -152,7 +148,7 @@ class ScoutCardInfoKey(
 
         //set the id if the save was successful
         if (id > 0)
-            id = id
+            this.id = id
 
         return id
     }

@@ -7,8 +7,6 @@ import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
-import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece
-import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition
 import com.alphadevelopmentsolutions.frcscout.Exceptions.UnauthorizedClassException
 import java.util.*
 import kotlin.reflect.KClass
@@ -764,87 +762,42 @@ class Database(context: Context)
     }
     //endregion
 
-    //region Scout Card Logic
+    //region Scout Card Info Logic
 
     /**
      * Takes in a cursor with info pulled from database and converts it into a scout card
      * @param cursor info from database
-     * @return scoutcard converted data
+     * @return scoutcardinfo converted data
      */
-    private fun getScoutCardFromCursor(cursor: Cursor): ScoutCard
+    private fun getScoutCardInfoFromCursor(cursor: Cursor): ScoutCardInfo
     {
-        val id = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ID))
-        val matchId = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_MATCH_ID))
-        val teamId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID))
-        val eventId = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID))
-        val allianceColor = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR))
-        val completedBy = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_BY))
+        val id = cursor.getInt(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_ID))
+        val yearId = cursor.getInt(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_YEAR_ID))
+        val eventId = cursor.getString(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_EVENT_ID))
+        val matchId = cursor.getString(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_MATCH_ID))
+        val teamId = cursor.getInt(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_TEAM_ID))
+        
+        val completedBy = cursor.getString(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_COMPLETED_BY))
+        
+        val propertyState = cursor.getString(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_PROPERTY_STATE))
+        val propertyKey = cursor.getString(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY))
+        val propertyValue = cursor.getString(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_PROPERTY_VALUE))
 
-        val preGameStartingLevel = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_LEVEL))
-        val preGameStartingPosition = StartingPosition.getPositionFromString(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_POSITION)))
-        val preGameStartingPiece = StartingPiece.getPieceFromString(cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_PIECE)))
+        val isDraft = cursor.getInt(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_IS_DRAFT)) == 1
 
-        val autonomousExitHabitat = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT)) == 1
-        val autonomousHatchPanelsPickedUp = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_PICKED_UP))
-        val autonomousHatchPanelsSecuredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS))
-        val autonomousHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED))
-        val autonomousCargoPickedUp = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_PICKED_UP))
-        val autonomousCargoStoredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS))
-        val autonomousCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED))
-
-        val teleopHatchPanelsPickedUp = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_PICKED_UP))
-        val teleopHatchPanelsSecuredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS))
-        val teleopHatchPanelsSecured = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED))
-        val teleopCargoPickedUp = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_PICKED_UP))
-        val teleopCargoStoredAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS))
-        val teleopCargoStored = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED))
-
-        val endGameReturnedToHabitat = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT))
-        val endGameReturnedToHabitatAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS))
-
-        val defenseRating = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_DEFENSE_RATING))
-        val offenseRating = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OFFENSE_RATING))
-        val driveRating = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_DRIVE_RATING))
-        val notes = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_NOTES))
-
-        val completedDate = Date(cursor.getLong(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)))
-        val isDraft = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_IS_DRAFT)) == 1
-
-        return ScoutCard(
+        return ScoutCardInfo(
                 id,
+                yearId,
+                eventId,
                 matchId,
                 teamId,
-                eventId,
-                allianceColor,
+                
                 completedBy,
-
-                preGameStartingLevel,
-                preGameStartingPosition,
-                preGameStartingPiece,
-
-                autonomousExitHabitat,
-                autonomousHatchPanelsPickedUp,
-                autonomousHatchPanelsSecuredAttempts,
-                autonomousHatchPanelsSecured,
-                autonomousCargoPickedUp,
-                autonomousCargoStoredAttempts,
-                autonomousCargoStored,
-
-                teleopHatchPanelsPickedUp,
-                teleopHatchPanelsSecuredAttempts,
-                teleopHatchPanelsSecured,
-                teleopCargoPickedUp,
-                teleopCargoStoredAttempts,
-                teleopCargoStored,
-
-                endGameReturnedToHabitat,
-                endGameReturnedToHabitatAttempts,
-
-                defenseRating,
-                offenseRating,
-                driveRating,
-                notes,
-                completedDate,
+                
+                propertyState,
+                propertyKey,
+                propertyValue,
+                
                 isDraft)
     }
 
@@ -853,13 +806,13 @@ class Database(context: Context)
      * @param event if specified, filters scout cards by event id
      * @param match if specified, filters scout cards by match id
      * @param team if specified, filters scout cards by team id
-     * @param scoutCard if specified, filters scout cards by scout card id
+     * @param scoutCardInfo if specified, filters scout cards by scout card info id
      * @param onlyDrafts  if true, filters scout cards by draft
      * @return scoutcard based off given info
      */
-    fun getScoutCards(event: Event?, match: Match?, team: Team?, scoutCard: ScoutCard?, onlyDrafts: Boolean): ArrayList<ScoutCard>?
+    fun getScoutCardInfo(event: Event?, match: Match?, team: Team?, scoutCardInfoKey: ScoutCardInfoKey?, scoutCardInfo: ScoutCardInfo?, onlyDrafts: Boolean): ArrayList<ScoutCardInfo>?
     {
-        val scoutCards = ArrayList<ScoutCard>()
+        val scoutCardInfos = ArrayList<ScoutCardInfo>()
 
         //insert columns you are going to use here
         val columns = columns
@@ -870,38 +823,45 @@ class Database(context: Context)
 
         if (event != null)
         {
-            whereStatement.append(ScoutCard.COLUMN_NAME_EVENT_ID).append(" = ?")
+            whereStatement.append(ScoutCardInfo.COLUMN_NAME_EVENT_ID).append(" = ?")
             whereArgs.add(event.blueAllianceId!!)
         }
 
         if (match != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCard.COLUMN_NAME_MATCH_ID).append(" = ?")
+            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_MATCH_ID).append(" = ?")
             whereArgs.add(match.key)
         }
 
         if (team != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCard.COLUMN_NAME_TEAM_ID).append(" = ?")
+            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_TEAM_ID).append(" = ?")
             whereArgs.add(team.id.toString())
         }
 
-        if (scoutCard != null)
+        if (scoutCardInfoKey != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCard.COLUMN_NAME_ID).append(" = ?")
-            whereArgs.add(scoutCard.id.toString())
+            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_PROPERTY_STATE + " = ? AND ").append(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY + " = ? ")
+            whereArgs.add(scoutCardInfoKey.keyState)
+            whereArgs.add(scoutCardInfoKey.keyName)
+        }
+
+        if (scoutCardInfo != null)
+        {
+            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_ID).append(" = ?")
+            whereArgs.add(scoutCardInfo.id.toString())
         }
 
         if (onlyDrafts)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCard.COLUMN_NAME_IS_DRAFT).append(" = 1")
+            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_IS_DRAFT).append(" = 1")
         }
 
-        val orderBy = ScoutCard.COLUMN_NAME_MATCH_ID + " DESC"
+        val orderBy = ScoutCardInfo.COLUMN_NAME_MATCH_ID + " DESC"
 
         //select the info from the db
         val cursor = db!!.query(
-                ScoutCard.TABLE_NAME,
+                ScoutCardInfo.TABLE_NAME,
                 columns,
                 whereStatement.toString(),
                 Arrays.copyOf(Objects.requireNonNull<Array<Any>>(whereArgs.toTypedArray()), whereArgs.size, Array<String>::class.java), null, null,
@@ -912,97 +872,73 @@ class Database(context: Context)
         {
             while (cursor.moveToNext())
             {
-                scoutCards.add(getScoutCardFromCursor(cursor))
+                scoutCardInfos.add(getScoutCardInfoFromCursor(cursor))
             }
 
             cursor.close()
 
-            return scoutCards
+            return scoutCardInfos
         }
 
         return null
     }
 
     /**
-     * Saves a specific scoutCard from the database and returns it
+     * Saves a specific scoutCardInfo from the database and returns it
      *
-     * @param scoutCard with specified ID
-     * @return id of the saved scoutCard
+     * @param scoutCardInfo with specified ID
+     * @return id of the saved scoutCardInfo
      */
-    fun setScoutCard(scoutCard: ScoutCard): Long
+    fun setScoutCardInfo(scoutCardInfo: ScoutCardInfo): Long
     {
         //set all the values
         val contentValues = ContentValues()
-        contentValues.put(ScoutCard.COLUMN_NAME_MATCH_ID, scoutCard.matchId)
-        contentValues.put(ScoutCard.COLUMN_NAME_TEAM_ID, scoutCard.teamId)
-        contentValues.put(ScoutCard.COLUMN_NAME_EVENT_ID, scoutCard.eventId)
-        contentValues.put(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR, scoutCard.allianceColor)
-        contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_BY, scoutCard.completedBy)
+        contentValues.put(ScoutCardInfo.COLUMN_NAME_YEAR_ID, scoutCardInfo.yearId)
+        contentValues.put(ScoutCardInfo.COLUMN_NAME_EVENT_ID, scoutCardInfo.eventId)
+        contentValues.put(ScoutCardInfo.COLUMN_NAME_MATCH_ID, scoutCardInfo.matchId)
+        contentValues.put(ScoutCardInfo.COLUMN_NAME_TEAM_ID, scoutCardInfo.teamId)
 
+        contentValues.put(ScoutCardInfo.COLUMN_NAME_COMPLETED_BY, scoutCardInfo.completedBy)
+        
+        contentValues.put(ScoutCardInfo.COLUMN_NAME_PROPERTY_STATE, scoutCardInfo.propertyState)
+        contentValues.put(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY, scoutCardInfo.propertyKey)
+        contentValues.put(ScoutCardInfo.COLUMN_NAME_PROPERTY_VALUE, scoutCardInfo.propertyValue)
+        
+        contentValues.put(ScoutCardInfo.COLUMN_NAME_IS_DRAFT, if (scoutCardInfo.isDraft) "1" else "0")
 
-        contentValues.put(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_LEVEL, scoutCard.preGameStartingLevel)
-        contentValues.put(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_POSITION, scoutCard.preGameStartingPosition.name)
-        contentValues.put(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_PIECE, scoutCard.preGameStartingPiece.name)
-
-        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT, if (scoutCard.autonomousExitHabitat) 1 else 0)
-        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_PICKED_UP, scoutCard.autonomousHatchPanelsPickedUp)
-        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS, scoutCard.autonomousHatchPanelsSecuredAttempts)
-        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED, scoutCard.autonomousHatchPanelsSecured)
-        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_PICKED_UP, scoutCard.autonomousCargoPickedUp)
-        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS, scoutCard.autonomousCargoStoredAttempts)
-        contentValues.put(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED, scoutCard.autonomousCargoStored)
-
-        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_PICKED_UP, scoutCard.teleopHatchPanelsPickedUp)
-        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS, scoutCard.teleopHatchPanelsSecuredAttempts)
-        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED, scoutCard.teleopHatchPanelsSecured)
-        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_CARGO_PICKED_UP, scoutCard.teleopCargoPickedUp)
-        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS, scoutCard.teleopCargoStoredAttempts)
-        contentValues.put(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED, scoutCard.teleopCargoStored)
-
-        contentValues.put(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT, scoutCard.endGameReturnedToHabitat)
-        contentValues.put(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS, scoutCard.endGameReturnedToHabitatAttempts)
-
-        contentValues.put(ScoutCard.COLUMN_NAME_DEFENSE_RATING, scoutCard.defenseRating)
-        contentValues.put(ScoutCard.COLUMN_NAME_OFFENSE_RATING, scoutCard.offenseRating)
-        contentValues.put(ScoutCard.COLUMN_NAME_DRIVE_RATING, scoutCard.driveRating)
-        contentValues.put(ScoutCard.COLUMN_NAME_NOTES, scoutCard.notes)
-
-        contentValues.put(ScoutCard.COLUMN_NAME_COMPLETED_DATE, scoutCard.completedDate.time)
-        contentValues.put(ScoutCard.COLUMN_NAME_IS_DRAFT, if (scoutCard.isDraft) "1" else "0")
-
-        //scoutCard already exists in DB, update
-        if (scoutCard.id > 0)
+        //scoutCardInfo already exists in DB, update
+        if (scoutCardInfo.id > 0)
         {
             //create the where statement
-            val whereStatement = ScoutCard.COLUMN_NAME_ID + " = ?"
-            val whereArgs = arrayOf(scoutCard.id.toString() + "")
+            val whereStatement = ScoutCardInfo.COLUMN_NAME_ID + " = ?"
+            val whereArgs = arrayOf(scoutCardInfo.id.toString() + "")
 
             //update
-            return if (db!!.update(ScoutCard.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
-                scoutCard.id.toLong()
+            return if (db!!.update(ScoutCardInfo.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                scoutCardInfo.id.toLong()
             else
                 -1
         } else
-            return db!!.insert(ScoutCard.TABLE_NAME, null, contentValues)//insert new scoutCard in db
+            return db!!.insert(ScoutCardInfo.TABLE_NAME, null, contentValues)//insert new scoutCardInfo in db
 
     }
 
     /**
-     * Deletes a specific scoutCard from the database
+     * Deletes a specific scoutCardInfo from the database
      *
-     * @param scoutCard with specified ID
+     * @param scoutCardInfo with specified ID
      * @return successful delete
      */
-    fun deleteScoutCard(scoutCard: ScoutCard): Boolean
+    fun deleteScoutCardInfo(scoutCardInfo: ScoutCardInfo): Boolean
     {
-        if (scoutCard.id > 0)
+        if (scoutCardInfo.id > 0)
         {
             //create the where statement
-            val whereStatement = ScoutCard.COLUMN_NAME_ID + " = ?"
-            val whereArgs = arrayOf(scoutCard.id.toString() + "")
+            val whereStatement = ScoutCardInfo.COLUMN_NAME_ID + " = ?"
+            val whereArgs = arrayOf(scoutCardInfo.id.toString() + "")
 
             //delete
-            return db!!.delete(ScoutCard.TABLE_NAME, whereStatement, whereArgs) >= 1
+            return db!!.delete(ScoutCardInfo.TABLE_NAME, whereStatement, whereArgs) >= 1
         }
 
         return false
@@ -1025,8 +961,13 @@ class Database(context: Context)
         val keyName = cursor.getString(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_KEY_NAME))
 
         val sortOrder = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER))
-        val minValue = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE))
-        val maxValue = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE))
+
+        val stringMinValue = cursor.getString(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE))
+        val stringMaxValue = cursor.getString(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE))
+
+        val minValue = if(stringMinValue != null) Integer.parseInt(stringMinValue) else null
+        val maxValue = if(stringMaxValue != null) Integer.parseInt(stringMaxValue) else null
+
 
         val nullZeros = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_NULL_ZEROS)) == 1
         val includeInStats = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_INCLUDE_IN_STATS)) == 1
@@ -1143,12 +1084,12 @@ class Database(context: Context)
             else
                 -1
         } else
-            return db!!.insert(ScoutCardInfoKey.TABLE_NAME, null, contentValues)//insert new scoutCard in db
+            return db!!.insert(ScoutCardInfoKey.TABLE_NAME, null, contentValues)//insert new scoutCardInfo in db
 
     }
 
     /**
-     * Deletes a specific scoutCard from the database
+     * Deletes a specific scoutCardInfo from the database
      *
      * @param scoutCardInfoKey with specified ID
      * @return successful delete
@@ -1330,7 +1271,7 @@ class Database(context: Context)
     }
 
     /**
-     * Deletes a specific scoutCard from the database
+     * Deletes a specific scoutCardInfo from the database
      *
      * @param robotInfo with specified ID
      * @return successful delete
@@ -1465,12 +1406,12 @@ class Database(context: Context)
             else
                 -1
         } else
-            return db!!.insert(RobotInfoKey.TABLE_NAME, null, contentValues)//insert new scoutCard in db
+            return db!!.insert(RobotInfoKey.TABLE_NAME, null, contentValues)//insert new scoutCardInfo in db
 
     }
 
     /**
-     * Deletes a specific scoutCard from the database
+     * Deletes a specific scoutCardInfo from the database
      *
      * @param robotInfoKey with specified ID
      * @return successful delete
@@ -1544,7 +1485,7 @@ class Database(context: Context)
     }
 
     /**
-     * Saves a specific scoutCard from the database and returns it
+     * Saves a specific scoutCardInfo from the database and returns it
      * @param user with specified ID
      * @return id of the saved user
      */

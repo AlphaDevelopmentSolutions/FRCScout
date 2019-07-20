@@ -47,11 +47,7 @@ class MainActivity : AppCompatActivity(),
         LoginFragment.OnFragmentInteractionListener,
         RobotInfoFragment.OnFragmentInteractionListener,
         ScoutCardListFragment.OnFragmentInteractionListener,
-        ScoutCardPreGameFragment.OnFragmentInteractionListener,
-        ScoutCardAutoFragment.OnFragmentInteractionListener,
-        ScoutCardTeleopFragment.OnFragmentInteractionListener,
-        ScoutCardEndGameFragment.OnFragmentInteractionListener,
-        ScoutCardPostGameFragment.OnFragmentInteractionListener,
+        ScoutCardInfoFormFragment.OnFragmentInteractionListener,
         RobotMediaFragment.OnFragmentInteractionListener,
         RobotMediaListFragment.OnFragmentInteractionListener,
         QuickStatsFragment.OnFragmentInteractionListener,
@@ -64,6 +60,7 @@ class MainActivity : AppCompatActivity(),
     private var context: MainActivity? = null
 
     private var database: Database? = null
+
     private var sharedPreferences: SharedPreferences? = null
     private var sharedPreferencesEditor: SharedPreferences.Editor? = null
 
@@ -344,7 +341,7 @@ class MainActivity : AppCompatActivity(),
                 //clear the saved data
                 EventTeamList.clearTable(getDatabase())
                 Team.clearTable(getDatabase())
-                ScoutCard.clearTable(getDatabase(), false)
+                ScoutCardInfo.clearTable(getDatabase(), false)
                 RobotInfo.clearTable(getDatabase(), true)
                 Match.clearTable(getDatabase())
                 ChecklistItem.clearTable(getDatabase())
@@ -420,12 +417,12 @@ class MainActivity : AppCompatActivity(),
                     context!!.runOnUiThread { progressDialog!!.setTitle("Downloading scout card data...") }
 
                     //update scout cards
-                    val getScoutCards = Server.GetScoutCards(context!!, event)
+                    val getScoutCardInfo = Server.GetScoutCardInfo(context!!, event)
 
-                    if (getScoutCards.execute())
+                    if (getScoutCardInfo.execute())
                     {
-                        for (scoutCard in getScoutCards.scoutCards)
-                            scoutCard.save(getDatabase())
+                        for (scoutCardInfo in getScoutCardInfo.scoutCardInfos)
+                            scoutCardInfo.save(getDatabase())
                     }
 
                     context!!.runOnUiThread { progressDialog!!.setTitle("Downloading robot info data...") }
@@ -519,53 +516,60 @@ class MainActivity : AppCompatActivity(),
         val uploadThread = Thread(Runnable {
             var success = true
 
-            for (event in Event.getObjects(null, null, getDatabase())!!)
+            //Robot Media
+            for (robotMedia in RobotMedia.getObjects(null, null, true, getDatabase())!!)
             {
-
-                //upload team specific data
-                for (team in teams)
+                val submitRobotMedia = Server.SubmitRobotMedia(context!!, robotMedia)
+                if (submitRobotMedia.execute())
                 {
+                    robotMedia.isDraft = false
+                    robotMedia.save(getDatabase())
+                } else
+                    success = false
+            }
 
-                    for (robotMedia in RobotMedia.getObjects(null, team, true, getDatabase())!!)
-                    {
-                        val submitRobotMedia = Server.SubmitRobotMedia(context!!, robotMedia)
-                        if (submitRobotMedia.execute())
-                        {
-                            robotMedia.isDraft = false
-                            robotMedia.save(getDatabase())
-                        } else
-                            success = false
-                    }
 
-                    for (robotInfo in RobotInfo.getObjects(null, null, team, null, null, true, getDatabase())!!)
-                    {
-                        val submitRobotInfo = Server.SubmitRobotInfo(context!!, robotInfo)
-                        if (submitRobotInfo.execute())
-                        {
-                            robotInfo.isDraft = false
-                            robotInfo.save(getDatabase())
-                        } else
-                            success = false
-                    }
-                }
-
-                //Checklist item results
-                for (checklistItem in ChecklistItem.getObjects(null, getDatabase())!!)
+            //Robot Info
+            for (robotInfo in RobotInfo.getObjects(null, null, null, null, null, true, getDatabase())!!)
+            {
+                val submitRobotInfo = Server.SubmitRobotInfo(context!!, robotInfo)
+                if (submitRobotInfo.execute())
                 {
-                    for (checklistItemResult in checklistItem.getResults(null, true, getDatabase())!!)
-                    {
-                        val submitChecklistItemResult = Server.SubmitChecklistItemResult(context!!, checklistItemResult)
-                        if (submitChecklistItemResult.execute())
-                        {
-                            checklistItemResult.isDraft = false
-                            checklistItemResult.save(getDatabase())
-                        } else
-                            success = false
+                    robotInfo.isDraft = false
+                    robotInfo.save(getDatabase())
+                } else
+                    success = false
+            }
 
-                    }
+            //Scout Card Info
+            for (scoutCardInfo in ScoutCardInfo.getObjects(null, null, null, null, null, true, getDatabase())!!)
+            {
+                val submitScoutCardInfo = Server.SubmitScoutCardInfo(context!!, scoutCardInfo)
+                if (submitScoutCardInfo.execute())
+                {
+                    scoutCardInfo.isDraft = false
+                    scoutCardInfo.save(getDatabase())
                 }
+                else
+                    success = false
+            }
+
+
+            //Checklist item results
+            for (checklistItemResult in ChecklistItemResult.getObjects(null, null, true, getDatabase())!!)
+            {
+                val submitChecklistItemResult = Server.SubmitChecklistItemResult(context!!, checklistItemResult)
+                if (submitChecklistItemResult.execute())
+                {
+                    checklistItemResult.isDraft = false
+                    checklistItemResult.save(getDatabase())
+                } else
+                    success = false
 
             }
+
+
+
 
             val finalSuccess = success
             runOnUiThread {

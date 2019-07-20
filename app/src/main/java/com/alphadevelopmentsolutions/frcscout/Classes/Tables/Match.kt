@@ -186,14 +186,14 @@ class Match(
      * Gets all scout cards associated with the match
      * @param event if specified, filters scout cards by event id
      * @param team if specified, filters scout cards by team id
-     * @param scoutCard if specified, filters scout cards by scoutcard id
+     * @param scoutCardInfo if specified, filters scout cards by scoutcard id
      * @param onlyDrafts boolean if you only want drafts
      * @param database used for loading cards
      * @return arraylist of scout cards
      */
-    fun getScoutCards(event: Event?, team: Team?, scoutCard: ScoutCard?, onlyDrafts: Boolean, database: Database): ArrayList<ScoutCard>?
+    fun getScoutCards(event: Event?, team: Team?, scoutCardInfo: ScoutCardInfo?, onlyDrafts: Boolean, database: Database): ArrayList<ScoutCardInfo>?
     {
-        return ScoutCard.getObjects(event, this, team, scoutCard, onlyDrafts, database)
+        return ScoutCardInfo.getObjects(event, this, team, null, scoutCardInfo, onlyDrafts, database)
     }
 
     /**
@@ -278,7 +278,7 @@ class Match(
 
         //set the id if the save was successful
         if (id > 0)
-            id = id
+            this.id = id
 
         return id
     }

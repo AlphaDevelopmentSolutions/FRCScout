@@ -3,11 +3,13 @@ package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import java.util.*
 
-class RobotInfo(
+class ScoutCardInfo(
         var id: Int,
         var yearId: Int,
         var eventId: String,
+        var matchId: String,
         var teamId: Int,
+        var completedBy: String,
         var propertyState: String,
         var propertyKey: String,
         var propertyValue: String,
@@ -16,11 +18,14 @@ class RobotInfo(
     companion object
     {
 
-        val TABLE_NAME = "robot_info"
+        val TABLE_NAME = "scout_card_info"
         val COLUMN_NAME_ID = "Id"
         val COLUMN_NAME_YEAR_ID = "YearId"
         val COLUMN_NAME_EVENT_ID = "EventId"
+        val COLUMN_NAME_MATCH_ID = "MatchId"
         val COLUMN_NAME_TEAM_ID = "TeamId"
+
+        val COLUMN_NAME_COMPLETED_BY = "CompletedBy"
 
         val COLUMN_NAME_PROPERTY_STATE = "PropertyState"
         val COLUMN_NAME_PROPERTY_KEY = "PropertyKey"
@@ -32,7 +37,10 @@ class RobotInfo(
                 COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
                 COLUMN_NAME_YEAR_ID + " INTEGER," +
                 COLUMN_NAME_EVENT_ID + " TEXT," +
+                COLUMN_NAME_MATCH_ID + " TEXT," +
                 COLUMN_NAME_TEAM_ID + " INTEGER," +
+
+                COLUMN_NAME_COMPLETED_BY + " TEXT," +
 
                 COLUMN_NAME_PROPERTY_STATE + " TEXT," +
                 COLUMN_NAME_PROPERTY_KEY + " TEXT," +
@@ -51,25 +59,26 @@ class RobotInfo(
         }
 
         /**
-         * Returns arraylist of pit cards with specified filters from database
-         * @param year if specified, filters by year id
-         * @param event if specified, filters by event id
-         * @param team if specified, filters by team id
-         * @param robotInfo if specified, filters by robotinfo id
-         * @param onlyDrafts if true, filters by draft
-         * @param database used to load
-         * @return arraylist of robotInfo
+         * Returns arraylist of scout cards with specified filters from database
+         * @param event if specified, filters scout cards by event id
+         * @param match if specified, filters scout cards by match id
+         * @param team if specified, filters scout cards by team id
+         * @param scoutCard if specified, filters scout cards by scout card id
+         * @param onlyDrafts if true, filters scout cards by draft
+         * @param database used to load scout cards
+         * @return arraylist of scout cards
          */
-        fun getObjects(year: Year?, event: Event?, team: Team?, robotInfoKey: RobotInfoKey?, robotInfo: RobotInfo?, onlyDrafts: Boolean, database: Database): ArrayList<RobotInfo>?
+        fun getObjects(event: Event?, match: Match?, team: Team?, scoutCardInfoKey: ScoutCardInfoKey?, scoutCardInfo: ScoutCardInfo?, onlyDrafts: Boolean, database: Database): ArrayList<ScoutCardInfo>?
         {
-            return database.getRobotInfo(year, event, team, robotInfoKey, robotInfo, onlyDrafts)
+            return database.getScoutCardInfo(event, match, team, scoutCardInfoKey, scoutCardInfo, onlyDrafts)
         }
     }
 
     override fun toString(): String
     {
-        return "Team $teamId - Robot Info"
+        return "Team $teamId - Scout Card"
     }
+
 
     //region Load, Save & Delete
 
@@ -85,20 +94,23 @@ class RobotInfo(
 
         if (database.isOpen)
         {
-            val robotInfoList = getObjects(null, null, null, null, this, false, database)
-            val robotInfo = if (robotInfoList!!.size > 0) robotInfoList[0] else null
+            val scoutCardInfos = getObjects(null, null, null, null,this, false, database)
+            val scoutCardInfo = if (scoutCardInfos!!.size > 0) scoutCardInfos[0] else null
 
-            if (robotInfo != null)
+            if (scoutCardInfo != null)
             {
-                yearId = robotInfo.yearId
-                eventId = robotInfo.eventId
-                teamId = robotInfo.teamId
+                yearId = scoutCardInfo.yearId
+                eventId = scoutCardInfo.eventId
+                matchId = scoutCardInfo.matchId
+                teamId = scoutCardInfo.teamId
 
-                propertyState = robotInfo.propertyState
-                propertyKey = robotInfo.propertyKey
-                propertyValue = robotInfo.propertyValue
+                completedBy = scoutCardInfo.completedBy
 
-                isDraft = robotInfo.isDraft
+                propertyState = scoutCardInfo.propertyState
+                propertyKey = scoutCardInfo.propertyKey
+                propertyValue = scoutCardInfo.propertyValue
+
+                isDraft = scoutCardInfo.isDraft
                 return true
             }
         }
@@ -109,7 +121,7 @@ class RobotInfo(
     /**
      * Saves the object into the database
      * @param database used for interacting with the SQLITE db
-     * @return int id of the saved object
+     * @return int id of the saved ScoutCard
      */
     override fun save(database: Database): Int
     {
@@ -120,7 +132,7 @@ class RobotInfo(
             database.open()
 
         if (database.isOpen)
-            id = database.setRobotInfo(this).toInt()
+            id = database.setScoutCardInfo(this).toInt()
 
         //set the id if the save was successful
         if (id > 0)
@@ -143,7 +155,7 @@ class RobotInfo(
 
         if (database.isOpen)
         {
-            successful = database.deleteRobotInfo(this)
+            successful = database.deleteScoutCardInfo(this)
 
         }
 

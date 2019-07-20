@@ -14,7 +14,7 @@ import android.widget.TextView
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor
 import com.alphadevelopmentsolutions.frcscout.Fragments.ChecklistFragment
@@ -30,7 +30,7 @@ internal class MatchListRecyclerViewAdapter(event: Event, private val team: Team
 
     private val matches: ArrayList<Match>?
 
-    private val scoutCards: HashMap<Match, ArrayList<ScoutCard>>
+    private val scoutCards: HashMap<Match, ArrayList<ScoutCardInfo>>
 
     init
     {
@@ -272,7 +272,7 @@ internal class MatchListRecyclerViewAdapter(event: Event, private val team: Team
             //get the list of scout cards from the hashmap and pull the one for the current team
             val scoutCards = this.scoutCards[match]
 
-            var scoutCard: ScoutCard? = null
+            var scoutCardInfo: ScoutCardInfo? = null
 
             if (scoutCards!!.size > 0)
             {
@@ -280,16 +280,16 @@ internal class MatchListRecyclerViewAdapter(event: Event, private val team: Team
                 {
                     if (storedScoutCard.teamId == team!!.id)
                     {
-                        scoutCard = storedScoutCard
+                        scoutCardInfo = storedScoutCard
                         break
                     }
                 }
             }
 
-            val finalScoutCard = scoutCard
+            val finalScoutCard = scoutCardInfo
 
             //no card available, show the add card button
-            if (scoutCard == null)
+            if (scoutCardInfo == null)
             {
                 viewHolder.viewMatchButton.visibility = View.GONE
                 viewHolder.addCardButton.visibility = View.VISIBLE

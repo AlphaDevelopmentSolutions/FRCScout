@@ -197,128 +197,128 @@ class Team : Table
 
         for (scoutCard in scoutCards!!)
         {
-            //calculate min
-
-            //if they exited, check the level
-            if (scoutCard.autonomousExitHabitat)
-            {
-                if (scoutCard.preGameStartingLevel < minStats[StatsKeys.AUTO_EXIT_HAB]!!)
-                    minStats[StatsKeys.AUTO_EXIT_HAB] = scoutCard.preGameStartingLevel.toDouble()
-            } else if (0 < minStats[StatsKeys.AUTO_EXIT_HAB]!!)
-                minStats[StatsKeys.AUTO_EXIT_HAB] = 0.0//if they didn't exit, set to 0
-
-            if (scoutCard.autonomousHatchPanelsSecured < minStats[StatsKeys.AUTO_HATCH]!!)
-                minStats[StatsKeys.AUTO_HATCH] = scoutCard.autonomousHatchPanelsSecured.toDouble()
-
-            if (scoutCard.autonomousHatchPanelsSecuredAttempts < minStats[StatsKeys.AUTO_HATCH_DROPPED]!!)
-                minStats[StatsKeys.AUTO_HATCH_DROPPED] = scoutCard.autonomousHatchPanelsSecuredAttempts.toDouble()
-
-            if (scoutCard.autonomousCargoStored < minStats[StatsKeys.AUTO_CARGO]!!)
-                minStats[StatsKeys.AUTO_CARGO] = scoutCard.autonomousCargoStored.toDouble()
-
-            if (scoutCard.autonomousCargoStoredAttempts < minStats[StatsKeys.AUTO_CARGO_DROPPED]!!)
-                minStats[StatsKeys.AUTO_CARGO_DROPPED] = scoutCard.autonomousCargoStoredAttempts.toDouble()
-
-            if (scoutCard.teleopHatchPanelsSecured < minStats[StatsKeys.TELEOP_HATCH]!!)
-                minStats[StatsKeys.TELEOP_HATCH] = scoutCard.teleopHatchPanelsSecured.toDouble()
-
-            if (scoutCard.teleopHatchPanelsSecuredAttempts < minStats[StatsKeys.TELEOP_HATCH_DROPPED]!!)
-                minStats[StatsKeys.TELEOP_HATCH_DROPPED] = scoutCard.teleopHatchPanelsSecuredAttempts.toDouble()
-
-            if (scoutCard.teleopCargoStored < minStats[StatsKeys.TELEOP_CARGO]!!)
-                minStats[StatsKeys.TELEOP_CARGO] = scoutCard.teleopCargoStored.toDouble()
-
-            if (scoutCard.teleopCargoStoredAttempts < minStats[StatsKeys.TELEOP_CARGO_DROPPED]!!)
-                minStats[StatsKeys.TELEOP_CARGO_DROPPED] = scoutCard.teleopCargoStoredAttempts.toDouble()
-
-            if (scoutCard.endGameReturnedToHabitat < minStats[StatsKeys.RETURNED_HAB]!!)
-                minStats[StatsKeys.RETURNED_HAB] = scoutCard.endGameReturnedToHabitat.toDouble()
-
-            if (scoutCard.endGameReturnedToHabitatAttempts < minStats[StatsKeys.RETURNED_HAB_FAILS]!!)
-                minStats[StatsKeys.RETURNED_HAB_FAILS] = scoutCard.endGameReturnedToHabitatAttempts.toDouble()
-
-            if (scoutCard.defenseRating != 0 && scoutCard.defenseRating < minStats[StatsKeys.DEFENSE_RATING]!!)
-                minStats[StatsKeys.DEFENSE_RATING] = scoutCard.defenseRating.toDouble()
-
-            if (scoutCard.offenseRating != 0 && scoutCard.offenseRating < minStats[StatsKeys.OFFENSE_RATING]!!)
-                minStats[StatsKeys.OFFENSE_RATING] = scoutCard.offenseRating.toDouble()
-
-            if (scoutCard.driveRating < minStats[StatsKeys.DRIVE_RATING]!!)
-                minStats[StatsKeys.DRIVE_RATING] = scoutCard.driveRating.toDouble()
-
-            //calculate avg
-            if (scoutCard.autonomousExitHabitat)
-                avgStats[StatsKeys.AUTO_EXIT_HAB] = avgStats[StatsKeys.AUTO_EXIT_HAB]!! + scoutCard.preGameStartingLevel
-            avgStats[StatsKeys.AUTO_HATCH] = avgStats[StatsKeys.AUTO_HATCH]!! + scoutCard.autonomousHatchPanelsSecured
-            avgStats[StatsKeys.AUTO_HATCH_DROPPED] = avgStats[StatsKeys.AUTO_HATCH_DROPPED]!! + scoutCard.autonomousHatchPanelsSecuredAttempts
-            avgStats[StatsKeys.AUTO_CARGO] = avgStats[StatsKeys.AUTO_CARGO]!! + scoutCard.autonomousCargoStored
-            avgStats[StatsKeys.AUTO_CARGO_DROPPED] = avgStats[StatsKeys.AUTO_CARGO_DROPPED]!! + scoutCard.autonomousCargoStoredAttempts
-
-            avgStats[StatsKeys.TELEOP_HATCH] = avgStats[StatsKeys.TELEOP_HATCH]!! + scoutCard.teleopHatchPanelsSecured
-            avgStats[StatsKeys.TELEOP_HATCH_DROPPED] = avgStats[StatsKeys.TELEOP_HATCH_DROPPED]!! + scoutCard.teleopHatchPanelsSecuredAttempts
-            avgStats[StatsKeys.TELEOP_CARGO] = avgStats[StatsKeys.TELEOP_CARGO]!! + scoutCard.teleopCargoStored
-            avgStats[StatsKeys.TELEOP_CARGO_DROPPED] = avgStats[StatsKeys.TELEOP_CARGO_DROPPED]!! + scoutCard.teleopCargoStoredAttempts
-
-            avgStats[StatsKeys.RETURNED_HAB] = avgStats[StatsKeys.RETURNED_HAB]!! + scoutCard.endGameReturnedToHabitat
-            avgStats[StatsKeys.RETURNED_HAB_FAILS] = avgStats[StatsKeys.RETURNED_HAB_FAILS]!! + scoutCard.endGameReturnedToHabitatAttempts
-
-            avgStats[StatsKeys.DEFENSE_RATING] = avgStats[StatsKeys.DEFENSE_RATING]!! + scoutCard.defenseRating
-            avgStats[StatsKeys.OFFENSE_RATING] = avgStats[StatsKeys.OFFENSE_RATING]!! + scoutCard.offenseRating
-            avgStats[StatsKeys.DRIVE_RATING] = avgStats[StatsKeys.DRIVE_RATING]!! + scoutCard.driveRating
-
-            nulledDefenseRatings = if (scoutCard.defenseRating == 0) nulledDefenseRatings + 1 else nulledDefenseRatings
-            nulledOffenseRatings = if (scoutCard.offenseRating == 0) nulledOffenseRatings + 1 else nulledOffenseRatings
-
-            i++
-
-            //calculate max
-
-            //if they exited, check the level
-            if (scoutCard.autonomousExitHabitat)
-            {
-                if (scoutCard.preGameStartingLevel > maxStats[StatsKeys.AUTO_EXIT_HAB]!!)
-                    maxStats[StatsKeys.AUTO_EXIT_HAB] = scoutCard.preGameStartingLevel.toDouble()
-            } else if (0 > maxStats[StatsKeys.AUTO_EXIT_HAB]!!)
-                maxStats[StatsKeys.AUTO_EXIT_HAB] = scoutCard.preGameStartingLevel.toDouble()//if they didn't exit, set to 0
-
-            if (scoutCard.autonomousHatchPanelsSecured > maxStats[StatsKeys.AUTO_HATCH]!!)
-                maxStats[StatsKeys.AUTO_HATCH] = scoutCard.autonomousHatchPanelsSecured.toDouble()
-
-            if (scoutCard.autonomousHatchPanelsSecuredAttempts > maxStats[StatsKeys.AUTO_HATCH_DROPPED]!!)
-                maxStats[StatsKeys.AUTO_HATCH_DROPPED] = scoutCard.autonomousHatchPanelsSecuredAttempts.toDouble()
-
-            if (scoutCard.autonomousCargoStored > maxStats[StatsKeys.AUTO_CARGO]!!)
-                maxStats[StatsKeys.AUTO_CARGO] = scoutCard.autonomousCargoStored.toDouble()
-
-            if (scoutCard.autonomousCargoStoredAttempts > maxStats[StatsKeys.AUTO_CARGO_DROPPED]!!)
-                maxStats[StatsKeys.AUTO_CARGO_DROPPED] = scoutCard.autonomousCargoStoredAttempts.toDouble()
-
-            if (scoutCard.teleopHatchPanelsSecured > maxStats[StatsKeys.TELEOP_HATCH]!!)
-                maxStats[StatsKeys.TELEOP_HATCH] = scoutCard.teleopHatchPanelsSecured.toDouble()
-
-            if (scoutCard.teleopHatchPanelsSecuredAttempts > maxStats[StatsKeys.TELEOP_HATCH_DROPPED]!!)
-                maxStats[StatsKeys.TELEOP_HATCH_DROPPED] = scoutCard.teleopHatchPanelsSecuredAttempts.toDouble()
-
-            if (scoutCard.teleopCargoStored > maxStats[StatsKeys.TELEOP_CARGO]!!)
-                maxStats[StatsKeys.TELEOP_CARGO] = scoutCard.teleopCargoStored.toDouble()
-
-            if (scoutCard.teleopCargoStoredAttempts > maxStats[StatsKeys.TELEOP_CARGO_DROPPED]!!)
-                maxStats[StatsKeys.TELEOP_CARGO_DROPPED] = scoutCard.teleopCargoStoredAttempts.toDouble()
-
-            if (scoutCard.endGameReturnedToHabitat > maxStats[StatsKeys.RETURNED_HAB]!!)
-                maxStats[StatsKeys.RETURNED_HAB] = scoutCard.endGameReturnedToHabitat.toDouble()
-
-            if (scoutCard.endGameReturnedToHabitatAttempts > maxStats[StatsKeys.RETURNED_HAB_FAILS]!!)
-                maxStats[StatsKeys.RETURNED_HAB_FAILS] = scoutCard.endGameReturnedToHabitatAttempts.toDouble()
-
-            if (scoutCard.defenseRating > maxStats[StatsKeys.DEFENSE_RATING]!!)
-                maxStats[StatsKeys.DEFENSE_RATING] = scoutCard.defenseRating.toDouble()
-
-            if (scoutCard.offenseRating > maxStats[StatsKeys.OFFENSE_RATING]!!)
-                maxStats[StatsKeys.OFFENSE_RATING] = scoutCard.offenseRating.toDouble()
-
-            if (scoutCard.driveRating > maxStats[StatsKeys.DRIVE_RATING]!!)
-                maxStats[StatsKeys.DRIVE_RATING] = scoutCard.driveRating.toDouble()
+//            //calculate min
+//
+//            //if they exited, check the level
+//            if (scoutCard.autonomousExitHabitat)
+//            {
+//                if (scoutCard.preGameStartingLevel < minStats[StatsKeys.AUTO_EXIT_HAB]!!)
+//                    minStats[StatsKeys.AUTO_EXIT_HAB] = scoutCard.preGameStartingLevel.toDouble()
+//            } else if (0 < minStats[StatsKeys.AUTO_EXIT_HAB]!!)
+//                minStats[StatsKeys.AUTO_EXIT_HAB] = 0.0//if they didn't exit, set to 0
+//
+//            if (scoutCard.autonomousHatchPanelsSecured < minStats[StatsKeys.AUTO_HATCH]!!)
+//                minStats[StatsKeys.AUTO_HATCH] = scoutCard.autonomousHatchPanelsSecured.toDouble()
+//
+//            if (scoutCard.autonomousHatchPanelsSecuredAttempts < minStats[StatsKeys.AUTO_HATCH_DROPPED]!!)
+//                minStats[StatsKeys.AUTO_HATCH_DROPPED] = scoutCard.autonomousHatchPanelsSecuredAttempts.toDouble()
+//
+//            if (scoutCard.autonomousCargoStored < minStats[StatsKeys.AUTO_CARGO]!!)
+//                minStats[StatsKeys.AUTO_CARGO] = scoutCard.autonomousCargoStored.toDouble()
+//
+//            if (scoutCard.autonomousCargoStoredAttempts < minStats[StatsKeys.AUTO_CARGO_DROPPED]!!)
+//                minStats[StatsKeys.AUTO_CARGO_DROPPED] = scoutCard.autonomousCargoStoredAttempts.toDouble()
+//
+//            if (scoutCard.teleopHatchPanelsSecured < minStats[StatsKeys.TELEOP_HATCH]!!)
+//                minStats[StatsKeys.TELEOP_HATCH] = scoutCard.teleopHatchPanelsSecured.toDouble()
+//
+//            if (scoutCard.teleopHatchPanelsSecuredAttempts < minStats[StatsKeys.TELEOP_HATCH_DROPPED]!!)
+//                minStats[StatsKeys.TELEOP_HATCH_DROPPED] = scoutCard.teleopHatchPanelsSecuredAttempts.toDouble()
+//
+//            if (scoutCard.teleopCargoStored < minStats[StatsKeys.TELEOP_CARGO]!!)
+//                minStats[StatsKeys.TELEOP_CARGO] = scoutCard.teleopCargoStored.toDouble()
+//
+//            if (scoutCard.teleopCargoStoredAttempts < minStats[StatsKeys.TELEOP_CARGO_DROPPED]!!)
+//                minStats[StatsKeys.TELEOP_CARGO_DROPPED] = scoutCard.teleopCargoStoredAttempts.toDouble()
+//
+//            if (scoutCard.endGameReturnedToHabitat < minStats[StatsKeys.RETURNED_HAB]!!)
+//                minStats[StatsKeys.RETURNED_HAB] = scoutCard.endGameReturnedToHabitat.toDouble()
+//
+//            if (scoutCard.endGameReturnedToHabitatAttempts < minStats[StatsKeys.RETURNED_HAB_FAILS]!!)
+//                minStats[StatsKeys.RETURNED_HAB_FAILS] = scoutCard.endGameReturnedToHabitatAttempts.toDouble()
+//
+//            if (scoutCard.defenseRating != 0 && scoutCard.defenseRating < minStats[StatsKeys.DEFENSE_RATING]!!)
+//                minStats[StatsKeys.DEFENSE_RATING] = scoutCard.defenseRating.toDouble()
+//
+//            if (scoutCard.offenseRating != 0 && scoutCard.offenseRating < minStats[StatsKeys.OFFENSE_RATING]!!)
+//                minStats[StatsKeys.OFFENSE_RATING] = scoutCard.offenseRating.toDouble()
+//
+//            if (scoutCard.driveRating < minStats[StatsKeys.DRIVE_RATING]!!)
+//                minStats[StatsKeys.DRIVE_RATING] = scoutCard.driveRating.toDouble()
+//
+//            //calculate avg
+//            if (scoutCard.autonomousExitHabitat)
+//                avgStats[StatsKeys.AUTO_EXIT_HAB] = avgStats[StatsKeys.AUTO_EXIT_HAB]!! + scoutCard.preGameStartingLevel
+//            avgStats[StatsKeys.AUTO_HATCH] = avgStats[StatsKeys.AUTO_HATCH]!! + scoutCard.autonomousHatchPanelsSecured
+//            avgStats[StatsKeys.AUTO_HATCH_DROPPED] = avgStats[StatsKeys.AUTO_HATCH_DROPPED]!! + scoutCard.autonomousHatchPanelsSecuredAttempts
+//            avgStats[StatsKeys.AUTO_CARGO] = avgStats[StatsKeys.AUTO_CARGO]!! + scoutCard.autonomousCargoStored
+//            avgStats[StatsKeys.AUTO_CARGO_DROPPED] = avgStats[StatsKeys.AUTO_CARGO_DROPPED]!! + scoutCard.autonomousCargoStoredAttempts
+//
+//            avgStats[StatsKeys.TELEOP_HATCH] = avgStats[StatsKeys.TELEOP_HATCH]!! + scoutCard.teleopHatchPanelsSecured
+//            avgStats[StatsKeys.TELEOP_HATCH_DROPPED] = avgStats[StatsKeys.TELEOP_HATCH_DROPPED]!! + scoutCard.teleopHatchPanelsSecuredAttempts
+//            avgStats[StatsKeys.TELEOP_CARGO] = avgStats[StatsKeys.TELEOP_CARGO]!! + scoutCard.teleopCargoStored
+//            avgStats[StatsKeys.TELEOP_CARGO_DROPPED] = avgStats[StatsKeys.TELEOP_CARGO_DROPPED]!! + scoutCard.teleopCargoStoredAttempts
+//
+//            avgStats[StatsKeys.RETURNED_HAB] = avgStats[StatsKeys.RETURNED_HAB]!! + scoutCard.endGameReturnedToHabitat
+//            avgStats[StatsKeys.RETURNED_HAB_FAILS] = avgStats[StatsKeys.RETURNED_HAB_FAILS]!! + scoutCard.endGameReturnedToHabitatAttempts
+//
+//            avgStats[StatsKeys.DEFENSE_RATING] = avgStats[StatsKeys.DEFENSE_RATING]!! + scoutCard.defenseRating
+//            avgStats[StatsKeys.OFFENSE_RATING] = avgStats[StatsKeys.OFFENSE_RATING]!! + scoutCard.offenseRating
+//            avgStats[StatsKeys.DRIVE_RATING] = avgStats[StatsKeys.DRIVE_RATING]!! + scoutCard.driveRating
+//
+//            nulledDefenseRatings = if (scoutCard.defenseRating == 0) nulledDefenseRatings + 1 else nulledDefenseRatings
+//            nulledOffenseRatings = if (scoutCard.offenseRating == 0) nulledOffenseRatings + 1 else nulledOffenseRatings
+//
+//            i++
+//
+//            //calculate max
+//
+//            //if they exited, check the level
+//            if (scoutCard.autonomousExitHabitat)
+//            {
+//                if (scoutCard.preGameStartingLevel > maxStats[StatsKeys.AUTO_EXIT_HAB]!!)
+//                    maxStats[StatsKeys.AUTO_EXIT_HAB] = scoutCard.preGameStartingLevel.toDouble()
+//            } else if (0 > maxStats[StatsKeys.AUTO_EXIT_HAB]!!)
+//                maxStats[StatsKeys.AUTO_EXIT_HAB] = scoutCard.preGameStartingLevel.toDouble()//if they didn't exit, set to 0
+//
+//            if (scoutCard.autonomousHatchPanelsSecured > maxStats[StatsKeys.AUTO_HATCH]!!)
+//                maxStats[StatsKeys.AUTO_HATCH] = scoutCard.autonomousHatchPanelsSecured.toDouble()
+//
+//            if (scoutCard.autonomousHatchPanelsSecuredAttempts > maxStats[StatsKeys.AUTO_HATCH_DROPPED]!!)
+//                maxStats[StatsKeys.AUTO_HATCH_DROPPED] = scoutCard.autonomousHatchPanelsSecuredAttempts.toDouble()
+//
+//            if (scoutCard.autonomousCargoStored > maxStats[StatsKeys.AUTO_CARGO]!!)
+//                maxStats[StatsKeys.AUTO_CARGO] = scoutCard.autonomousCargoStored.toDouble()
+//
+//            if (scoutCard.autonomousCargoStoredAttempts > maxStats[StatsKeys.AUTO_CARGO_DROPPED]!!)
+//                maxStats[StatsKeys.AUTO_CARGO_DROPPED] = scoutCard.autonomousCargoStoredAttempts.toDouble()
+//
+//            if (scoutCard.teleopHatchPanelsSecured > maxStats[StatsKeys.TELEOP_HATCH]!!)
+//                maxStats[StatsKeys.TELEOP_HATCH] = scoutCard.teleopHatchPanelsSecured.toDouble()
+//
+//            if (scoutCard.teleopHatchPanelsSecuredAttempts > maxStats[StatsKeys.TELEOP_HATCH_DROPPED]!!)
+//                maxStats[StatsKeys.TELEOP_HATCH_DROPPED] = scoutCard.teleopHatchPanelsSecuredAttempts.toDouble()
+//
+//            if (scoutCard.teleopCargoStored > maxStats[StatsKeys.TELEOP_CARGO]!!)
+//                maxStats[StatsKeys.TELEOP_CARGO] = scoutCard.teleopCargoStored.toDouble()
+//
+//            if (scoutCard.teleopCargoStoredAttempts > maxStats[StatsKeys.TELEOP_CARGO_DROPPED]!!)
+//                maxStats[StatsKeys.TELEOP_CARGO_DROPPED] = scoutCard.teleopCargoStoredAttempts.toDouble()
+//
+//            if (scoutCard.endGameReturnedToHabitat > maxStats[StatsKeys.RETURNED_HAB]!!)
+//                maxStats[StatsKeys.RETURNED_HAB] = scoutCard.endGameReturnedToHabitat.toDouble()
+//
+//            if (scoutCard.endGameReturnedToHabitatAttempts > maxStats[StatsKeys.RETURNED_HAB_FAILS]!!)
+//                maxStats[StatsKeys.RETURNED_HAB_FAILS] = scoutCard.endGameReturnedToHabitatAttempts.toDouble()
+//
+//            if (scoutCard.defenseRating > maxStats[StatsKeys.DEFENSE_RATING]!!)
+//                maxStats[StatsKeys.DEFENSE_RATING] = scoutCard.defenseRating.toDouble()
+//
+//            if (scoutCard.offenseRating > maxStats[StatsKeys.OFFENSE_RATING]!!)
+//                maxStats[StatsKeys.OFFENSE_RATING] = scoutCard.offenseRating.toDouble()
+//
+//            if (scoutCard.driveRating > maxStats[StatsKeys.DRIVE_RATING]!!)
+//                maxStats[StatsKeys.DRIVE_RATING] = scoutCard.driveRating.toDouble()
         }
 
         //once iterations have ended, do a final calculation for avg
@@ -360,14 +360,14 @@ class Team : Table
      * Gets all scout cards associated with the team
      * @param event if specified, filters scout cards by event id
      * @param match if specified, filters scout cards by match id
-     * @param scoutCard if specified, filters scout cards by scoutcard id
+     * @param scoutCardInfo if specified, filters scout cards by scoutcard id
      * @param database used for loading cards
      * @param onlyDrafts boolean if you only want drafts
      * @return arraylist of scout cards
      */
-    fun getScoutCards(event: Event?, match: Match?, scoutCard: ScoutCard?, onlyDrafts: Boolean, database: Database): ArrayList<ScoutCard>?
+    fun getScoutCards(event: Event?, match: Match?, scoutCardInfo: ScoutCardInfo?, onlyDrafts: Boolean, database: Database): ArrayList<ScoutCardInfo>?
     {
-        return ScoutCard.getObjects(event, match, this, scoutCard, onlyDrafts, database)
+        return ScoutCardInfo.getObjects(event, match, this, null, scoutCardInfo, onlyDrafts, database)
     }
 
     /**
@@ -444,7 +444,7 @@ class Team : Table
 
         //set the id if the save was successful
         if (id > 0)
-            id = id
+            this.id = id
 
         return id
     }

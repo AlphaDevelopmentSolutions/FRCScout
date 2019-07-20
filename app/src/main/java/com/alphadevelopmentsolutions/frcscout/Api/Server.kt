@@ -2,8 +2,6 @@ package com.alphadevelopmentsolutions.frcscout.Api
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
-import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece
-import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import java.util.*
@@ -226,25 +224,18 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
-    class GetScoutCards(private val context: MainActivity, event: Event) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetScoutCardInfo(private val context: MainActivity, event: Event) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
-            put(API_PARAM_API_ACTION, "GetScoutCards")
+            put(API_PARAM_API_ACTION, "GetScoutCardInfo")
             put("EventId", event.blueAllianceId!!)
         }
     })
     {
         //region Getters
 
-        val scoutCards: ArrayList<ScoutCard>
-
-        init
-        {
-
-            scoutCards = ArrayList()
-
-        }
+        val scoutCardInfos: ArrayList<ScoutCardInfo> = ArrayList()
 
         override fun execute(): Boolean
         {
@@ -263,79 +254,33 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
                 //iterate through, create a new object and add it to the arraylist
                 for (i in 0 until response.getJSONArray(API_FIELD_NAME_RESPONSE).length())
                 {
-                    val scoutCardObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i)
+                    val scoutCardInfoObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i)
 
-                    val matchId = scoutCardObject.getString(ScoutCard.COLUMN_NAME_MATCH_ID)
-                    val teamId = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_TEAM_ID)
-                    val eventId = scoutCardObject.getString(ScoutCard.COLUMN_NAME_EVENT_ID)
-                    val allianceColor = scoutCardObject.getString(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR)
-                    val completedBy = scoutCardObject.getString(ScoutCard.COLUMN_NAME_COMPLETED_BY)
+                    val yearId = scoutCardInfoObject.getInt(ScoutCardInfo.COLUMN_NAME_YEAR_ID)
+                    val eventId = scoutCardInfoObject.getString(ScoutCardInfo.COLUMN_NAME_EVENT_ID)
+                    val matchId = scoutCardInfoObject.getString(ScoutCardInfo.COLUMN_NAME_MATCH_ID)
+                    val teamId = scoutCardInfoObject.getInt(ScoutCardInfo.COLUMN_NAME_TEAM_ID)
 
-                    val preGameStartingLevel = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_LEVEL)
-                    val preGameStartingPosition = StartingPosition.getPositionFromString(scoutCardObject.getString(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_POSITION))
-                    val preGameStartingPiece = StartingPiece.getPieceFromString(scoutCardObject.getString(ScoutCard.COLUMN_NAME_PRE_GAME_STARTING_PIECE))
+                    val completedBy = scoutCardInfoObject.getString(ScoutCardInfo.COLUMN_NAME_COMPLETED_BY)
 
-                    val autonomousExitHabitat = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_AUTONOMOUS_EXIT_HABITAT) == 1
-                    val autonomousHatchPanelsPickedUp = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_PICKED_UP)
-                    val autonomousHatchPanelsSecuredAttempts = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED_ATTEMPTS)
-                    val autonomousHatchPanelsSecured = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_AUTONOMOUS_HATCH_PANELS_SECURED)
-                    val autonomousCargoPickedUp = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_PICKED_UP)
-                    val autonomousCargoStoredAttempts = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED_ATTEMPTS)
-                    val autonomousCargoStored = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_AUTONOMOUS_CARGO_STORED)
+                    val propertyState = scoutCardInfoObject.getString(ScoutCardInfo.COLUMN_NAME_PROPERTY_STATE)
+                    val propertyKey = scoutCardInfoObject.getString(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY)
+                    val propertyValue = scoutCardInfoObject.getString(ScoutCardInfo.COLUMN_NAME_PROPERTY_VALUE)
 
-                    val teleopHatchPanelsPickedUp = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_PICKED_UP)
-                    val teleopHatchPanelsSecuredAttempts = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED_ATTEMPTS)
-                    val teleopHatchPanelsSecured = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_TELEOP_HATCH_PANELS_SECURED)
-                    val teleopCargoPickedUp = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_TELEOP_CARGO_PICKED_UP)
-                    val teleopCargoStoredAttempts = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED_ATTEMPTS)
-                    val teleopCargoStored = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_TELEOP_CARGO_STORED)
-
-                    val endGameReturnedToHabitat = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT)
-                    val endGameReturnedToHabitatAttempts = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS)
-
-                    val defenseRating = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_DEFENSE_RATING)
-                    val offenseRating = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_OFFENSE_RATING)
-                    val driveRating = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_DRIVE_RATING)
-                    val notes = scoutCardObject.getString(ScoutCard.COLUMN_NAME_NOTES)
-
-                    val completedDate = simpleDateFormat.parse(scoutCardObject.getString(ScoutCard.COLUMN_NAME_COMPLETED_DATE))
-
-                    scoutCards.add(
-                            ScoutCard(
+                    scoutCardInfos.add(
+                            ScoutCardInfo(
                                     -1,
+                                    yearId,
+                                    eventId,
                                     matchId,
                                     teamId,
-                                    eventId,
-                                    allianceColor,
+
                                     completedBy,
 
-                                    preGameStartingLevel,
-                                    preGameStartingPosition,
-                                    preGameStartingPiece,
+                                    propertyState,
+                                    propertyKey,
+                                    propertyValue,
 
-                                    autonomousExitHabitat,
-                                    autonomousHatchPanelsPickedUp,
-                                    autonomousHatchPanelsSecuredAttempts,
-                                    autonomousHatchPanelsSecured,
-                                    autonomousCargoPickedUp,
-                                    autonomousCargoStoredAttempts,
-                                    autonomousCargoStored,
-
-                                    teleopHatchPanelsPickedUp,
-                                    teleopHatchPanelsSecuredAttempts,
-                                    teleopHatchPanelsSecured,
-                                    teleopCargoPickedUp,
-                                    teleopCargoStoredAttempts,
-                                    teleopCargoStored,
-
-                                    endGameReturnedToHabitat,
-                                    endGameReturnedToHabitatAttempts,
-
-                                    defenseRating,
-                                    offenseRating,
-                                    driveRating,
-                                    notes,
-                                    completedDate,
                                     false))
                 }
 
@@ -397,8 +342,8 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
                     val keyName = robotInfoKeyObject.getString(ScoutCardInfoKey.COLUMN_NAME_KEY_NAME)
 
                     val sortOrder = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER)
-                    val minValue = if (robotInfoKeyObject.isNull(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE)) ScoutCardInfoKey.INT_NULL_VALUE else robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE)
-                    val maxValue = if (robotInfoKeyObject.isNull(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE)) ScoutCardInfoKey.INT_NULL_VALUE else robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE)
+                    val minValue = if (robotInfoKeyObject.isNull(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE)) null else robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE)
+                    val maxValue = if (robotInfoKeyObject.isNull(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE)) null else robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE)
 
                     val nullZeros = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_NULL_ZEROS) == 1
                     val includeInStats = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_INCLUDE_IN_STATS) == 1
@@ -1032,6 +977,51 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
             put(RobotInfo.COLUMN_NAME_PROPERTY_STATE, robotInfo.propertyState!!)
             put(RobotInfo.COLUMN_NAME_PROPERTY_KEY, robotInfo.propertyKey!!)
             put(RobotInfo.COLUMN_NAME_PROPERTY_VALUE, robotInfo.propertyValue!!)
+
+        }
+    })
+    {
+
+        override fun execute(): Boolean
+        {
+            try
+            {
+                //parse the data from the server
+                val apiParser = ApiParser(this)
+
+                //get the response from the server
+                val response = apiParser.parse()
+
+                if (response.getString(API_FIELD_NAME_STATUS) != API_FIELD_NAME_STATUS_SUCCESS)
+                    throw Exception(response.getString(API_FIELD_NAME_RESPONSE))
+
+
+                return true
+            } catch (e: Exception)
+            {
+                context.showSnackbar(e.message!!)
+                return false
+            }
+
+        }
+    }
+
+    class SubmitScoutCardInfo(private val context: MainActivity, scoutCardInfo: ScoutCardInfo) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    {
+        init
+        {
+            put(API_PARAM_API_ACTION, "SubmitScoutCardInfo")
+
+            put(ScoutCardInfo.COLUMN_NAME_YEAR_ID, scoutCardInfo.yearId.toString())
+            put(ScoutCardInfo.COLUMN_NAME_EVENT_ID, scoutCardInfo.eventId)
+            put(ScoutCardInfo.COLUMN_NAME_MATCH_ID, scoutCardInfo.matchId)
+            put(ScoutCardInfo.COLUMN_NAME_TEAM_ID, scoutCardInfo.teamId.toString())
+
+            put(ScoutCardInfo.COLUMN_NAME_COMPLETED_BY, scoutCardInfo.propertyState)
+
+            put(ScoutCardInfo.COLUMN_NAME_PROPERTY_STATE, scoutCardInfo.propertyState)
+            put(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY, scoutCardInfo.propertyKey)
+            put(ScoutCardInfo.COLUMN_NAME_PROPERTY_VALUE, scoutCardInfo.propertyValue)
 
         }
     })

@@ -7,7 +7,7 @@ import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCard
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
@@ -28,7 +28,7 @@ open class MasterFragment : Fragment()
 
     protected var team: Team? = null
     protected var match: Match? = null
-    protected var scoutCard: ScoutCard? = null
+    protected var scoutCardInfo: ScoutCardInfo? = null
 
     protected lateinit var gson: Gson
 
@@ -69,7 +69,7 @@ open class MasterFragment : Fragment()
 
             //load the scout card from json, if available
             if (scoutCardJson != null && scoutCardJson != "")
-                scoutCard = Gson().fromJson(scoutCardJson, ScoutCard::class.java)
+                scoutCardInfo = gson.fromJson(scoutCardJson, ScoutCardInfo::class.java)
         })
 
         loadingThread.start()
