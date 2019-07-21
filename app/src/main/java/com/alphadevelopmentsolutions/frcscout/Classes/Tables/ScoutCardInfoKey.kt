@@ -9,6 +9,7 @@ class ScoutCardInfoKey(
         var keyState: String,
         var keyName: String,
         var sortOrder: Int,
+        var groupNumber: Int?,
         var minValue: Int?,
         var maxValue: Int?,
         var nullZeros: Boolean,
@@ -23,6 +24,7 @@ class ScoutCardInfoKey(
         val COLUMN_NAME_KEY_STATE = "KeyState"
         val COLUMN_NAME_KEY_NAME = "KeyName"
         val COLUMN_NAME_SORT_ORDER = "SortOrder"
+        val COLUMN_NAME_GROUP_NUMBER = "GroupNumber"
         val COLUMN_NAME_MIN_VALUE = "MinValue"
         val COLUMN_NAME_MAX_VALUE = "MaxValue"
         val COLUMN_NAME_NULL_ZEROS = "NullZeros"
@@ -35,6 +37,7 @@ class ScoutCardInfoKey(
                 COLUMN_NAME_KEY_STATE + " TEXT," +
                 COLUMN_NAME_KEY_NAME + " TEXT," +
                 COLUMN_NAME_SORT_ORDER + " INTEGER," +
+                COLUMN_NAME_GROUP_NUMBER + " INTEGER," +
                 COLUMN_NAME_MIN_VALUE + " INTEGER," +
                 COLUMN_NAME_MAX_VALUE + " INTEGER," +
                 COLUMN_NAME_NULL_ZEROS + " INTEGER," +
@@ -116,6 +119,7 @@ class ScoutCardInfoKey(
             {
                 yearId = scoutCardInfoKey.yearId
                 sortOrder = scoutCardInfoKey.sortOrder
+                groupNumber = scoutCardInfoKey.groupNumber
                 keyState = scoutCardInfoKey.keyState
                 keyName = scoutCardInfoKey.keyName
                 minValue = scoutCardInfoKey.minValue

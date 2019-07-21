@@ -242,7 +242,7 @@ class MainActivity : AppCompatActivity(),
         {
 
 
-            val increaseFactor = if(downloadMedia) 9 else 8
+            val increaseFactor = if(downloadMedia) 8 else 9
             progressDialog = ProgressDialog(this, R.style.CustomProgressDialog)
             progressDialog!!.setTitle("Downloading data...")
             progressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)

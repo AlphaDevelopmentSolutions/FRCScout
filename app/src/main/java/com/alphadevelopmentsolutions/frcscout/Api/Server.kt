@@ -400,6 +400,8 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
                     val keyName = robotInfoKeyObject.getString(ScoutCardInfoKey.COLUMN_NAME_KEY_NAME)
 
                     val sortOrder = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER)
+                    val groupNumber =  if (robotInfoKeyObject.isNull(ScoutCardInfoKey.COLUMN_NAME_GROUP_NUMBER)) null else robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_GROUP_NUMBER)
+
                     val minValue = if (robotInfoKeyObject.isNull(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE)) null else robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE)
                     val maxValue = if (robotInfoKeyObject.isNull(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE)) null else robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE)
 
@@ -416,6 +418,8 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
                             keyName,
 
                             sortOrder,
+                            groupNumber,
+
                             minValue,
                             maxValue,
 

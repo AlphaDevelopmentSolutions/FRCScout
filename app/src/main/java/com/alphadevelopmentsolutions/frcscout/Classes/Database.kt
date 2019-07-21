@@ -980,6 +980,7 @@ class Database(context: Context)
         val keyName = cursor.getString(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_KEY_NAME))
 
         val sortOrder = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER))
+        val groupNumber = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_GROUP_NUMBER))
 
         val stringMinValue = cursor.getString(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE))
         val stringMaxValue = cursor.getString(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE))
@@ -1001,6 +1002,8 @@ class Database(context: Context)
                 keyName,
 
                 sortOrder,
+                groupNumber,
+
                 minValue,
                 maxValue,
 
@@ -1081,6 +1084,7 @@ class Database(context: Context)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_KEY_STATE, scoutCardInfoKey.keyState)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_KEY_NAME, scoutCardInfoKey.keyName)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER, scoutCardInfoKey.sortOrder)
+        contentValues.put(ScoutCardInfoKey.COLUMN_NAME_GROUP_NUMBER, scoutCardInfoKey.groupNumber)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE, scoutCardInfoKey.minValue)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE, scoutCardInfoKey.maxValue)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_NULL_ZEROS, if (scoutCardInfoKey.nullZeros) 1 else 0)
