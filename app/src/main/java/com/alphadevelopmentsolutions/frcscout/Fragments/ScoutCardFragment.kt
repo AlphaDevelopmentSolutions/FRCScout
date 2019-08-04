@@ -3,7 +3,6 @@ package com.alphadevelopmentsolutions.frcscout.Fragments
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
@@ -13,8 +12,6 @@ import android.view.ViewGroup
 import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.R
-import com.github.mikephil.charting.utils.Utils.init
-import com.google.gson.Gson
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -79,6 +76,8 @@ class ScoutCardFragment : MasterFragment()
 
         scoutCardTabLayout = view.findViewById(R.id.ScoutCardTabLayout)
         scoutCardViewPager = view.findViewById(R.id.ScoutCardViewPager)
+
+        scoutCardTabLayout!!.setBackgroundColor(context.primaryColor)
 
         val scoutCardViewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
 

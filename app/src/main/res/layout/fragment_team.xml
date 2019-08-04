@@ -25,6 +25,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <android.support.constraint.ConstraintLayout
+                android:id="@+id/HeaderConstraintLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/primary"
@@ -40,7 +41,7 @@
                     app:civ_border_width="0dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <TextView
                     android:id="@+id/TeamNumberNameTextView"
@@ -54,7 +55,7 @@
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/TeamLogoImageView" />
+                    app:layout_constraintTop_toBottomOf="@+id/TeamLogoImageView"/>
 
                 <TextView
                     android:id="@+id/TeamLocationTextView"
@@ -67,7 +68,7 @@
                     android:textSize="@dimen/textSecondary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/TeamNumberNameTextView" />
+                    app:layout_constraintTop_toBottomOf="@+id/TeamNumberNameTextView"/>
 
                 <LinearLayout
                     android:id="@+id/linearLayout4"
@@ -92,7 +93,7 @@
                         android:textColor="@color/textSecondaryLight"
                         android:textSize="25sp"
                         tools:layout_editor_absoluteX="354dp"
-                        tools:layout_editor_absoluteY="338dp" />
+                        tools:layout_editor_absoluteY="338dp"/>
 
                     <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
                         android:id="@+id/TwitterFontAwesomeBrandIcon"
@@ -105,7 +106,7 @@
                         android:textColor="@color/textSecondaryLight"
                         android:textSize="25sp"
                         tools:layout_editor_absoluteX="66dp"
-                        tools:layout_editor_absoluteY="138dp" />
+                        tools:layout_editor_absoluteY="138dp"/>
 
                     <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
                         android:id="@+id/InstagramFontAwesomeBrandIcon"
@@ -118,7 +119,7 @@
                         android:textColor="@color/textSecondaryLight"
                         android:textSize="25sp"
                         tools:layout_editor_absoluteX="354dp"
-                        tools:layout_editor_absoluteY="238dp" />
+                        tools:layout_editor_absoluteY="238dp"/>
 
                     <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
                         android:id="@+id/YoutubeFontAwesomeBrandIcon"
@@ -131,7 +132,7 @@
                         android:textColor="@color/textSecondaryLight"
                         android:textSize="25sp"
                         tools:layout_editor_absoluteX="354dp"
-                        tools:layout_editor_absoluteY="238dp" />
+                        tools:layout_editor_absoluteY="238dp"/>
 
                     <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeSolidIcon
                         android:id="@+id/WebsiteFontAwesomeSolidIcon"
@@ -144,7 +145,7 @@
                         android:textColor="@color/textSecondaryLight"
                         android:textSize="25sp"
                         tools:layout_editor_absoluteX="354dp"
-                        tools:layout_editor_absoluteY="238dp" />
+                        tools:layout_editor_absoluteY="238dp"/>
 
                 </LinearLayout>
 

@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.Fragments
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
@@ -31,6 +32,8 @@ import java.io.File
 class TeamFragment : MasterFragment()
 {
     private var mListener: OnFragmentInteractionListener? = null
+
+    private var headerConstraintLayout: ConstraintLayout? = null
 
     private var teamTabLayout: TabLayout? = null
     private var teamViewPager: ViewPager? = null
@@ -64,6 +67,8 @@ class TeamFragment : MasterFragment()
         context.dropActionBar()
 
         //assign the vars to the views on the page
+        headerConstraintLayout = view.findViewById(R.id.HeaderConstraintLayout)
+
         teamNumberNameTextView = view.findViewById(R.id.TeamNumberNameTextView)
         teamLocationTextView = view.findViewById(R.id.TeamLocationTextView)
 
@@ -80,6 +85,13 @@ class TeamFragment : MasterFragment()
 
         teamFloatingActionMenu = view.findViewById(R.id.TeamFloatingActionMenu)
         addRobotPhotoFloatingActionButton = view.findViewById(R.id.AddRobotPhotoFloatingActionButton)
+
+        headerConstraintLayout!!.setBackgroundColor(context.primaryColor)
+        teamTabLayout!!.setBackgroundColor(context.primaryColor)
+        teamFloatingActionMenu!!.menuButtonColorNormal = context.primaryColor
+        teamFloatingActionMenu!!.menuButtonColorPressed = context.primaryColorDark
+        addRobotPhotoFloatingActionButton!!.colorNormal = context.primaryColor
+        addRobotPhotoFloatingActionButton!!.colorPressed = context.primaryColorDark
 
         joinLoadingThread()
 

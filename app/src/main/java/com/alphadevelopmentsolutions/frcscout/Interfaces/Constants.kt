@@ -16,6 +16,10 @@ interface Constants
 
             val TEAM_NUMBER_KEY = "TEAM_NUMBER"
             val TEAM_NAME_KEY = "TEAM_NAME"
+            val APP_NAME_KEY = "APP_NAME"
+
+            val PRIMARY_COLOR_KEY = "PRIMARY_COLOR"
+            val PRIMARY_COLOR_DARK_KEY = "PRIMARY_COLOR_DARK"
 
             val SELECTED_EVENT_KEY = "SELECTED_EVENT"
             val SELECTED_YEAR_KEY = "SELECTED_YEAR"

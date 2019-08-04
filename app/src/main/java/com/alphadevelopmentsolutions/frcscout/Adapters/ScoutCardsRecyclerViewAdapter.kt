@@ -17,7 +17,7 @@ import java.util.*
 internal class ScoutCardsRecyclerViewAdapter(private val team: Team, private val scoutCards: ArrayList<ScoutCardInfo>, private val context: MainActivity) : RecyclerView.Adapter<ScoutCardsRecyclerViewAdapter.ViewHolder>()
 {
 
-    internal class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    internal class ViewHolder(view: View, context: MainActivity) : RecyclerView.ViewHolder(view)
     {
 
         var matchIdTextView: TextView
@@ -30,6 +30,7 @@ internal class ScoutCardsRecyclerViewAdapter(private val team: Team, private val
             matchIdTextView = view.findViewById(R.id.MatchIdTextView)
             matchOptionsImageView = view.findViewById(R.id.MatchOptionsImageView)
             viewMatchButton = view.findViewById(R.id.ViewMatchButton)
+            viewMatchButton.setTextColor(context.primaryColor)
         }
     }
 
@@ -38,7 +39,7 @@ internal class ScoutCardsRecyclerViewAdapter(private val team: Team, private val
         //Inflate the event layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_match, viewGroup, false)
 
-        return ScoutCardsRecyclerViewAdapter.ViewHolder(view)
+        return ScoutCardsRecyclerViewAdapter.ViewHolder(view, context)
     }
 
     override fun onBindViewHolder(viewHolder: ScoutCardsRecyclerViewAdapter.ViewHolder, position: Int)

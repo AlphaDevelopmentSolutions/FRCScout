@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.button.MaterialButton
@@ -195,7 +196,9 @@ class ScoutCardInfoFormFragment : MasterFragment()
                         valTextView.textAlignment = View.TEXT_ALIGNMENT_CENTER
 
                         plusButton.layoutParams = params
+                        plusButton.backgroundTintList = ColorStateList.valueOf(context.primaryColorDark)
                         minusButton.layoutParams = params
+                        minusButton.backgroundTintList = ColorStateList.valueOf(context.primaryColorDark)
 
                         itemLayout.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f)
                         itemLayout.orientation = LinearLayout.VERTICAL
@@ -279,7 +282,9 @@ class ScoutCardInfoFormFragment : MasterFragment()
                         valTextView.textAlignment = View.TEXT_ALIGNMENT_CENTER
 
                         yesButton.layoutParams = params
+                        yesButton.backgroundTintList = ColorStateList.valueOf(context.primaryColorDark)
                         noButton.layoutParams = params
+                        noButton.backgroundTintList = ColorStateList.valueOf(context.primaryColorDark)
 
                         itemLayout.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f)
                         itemLayout.orientation = LinearLayout.VERTICAL

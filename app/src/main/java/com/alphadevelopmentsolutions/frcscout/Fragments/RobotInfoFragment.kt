@@ -61,6 +61,8 @@ class RobotInfoFragment : MasterFragment()
         robotInfoLinearLayout = view.findViewById(R.id.RobotInfoLinearLayout)
         saveButton = view.findViewById(R.id.SaveButton)
 
+        saveButton!!.setTextColor(context.primaryColor)
+
         Thread(Runnable {
             editTexts = ArrayList()
             infoIds = ArrayList()

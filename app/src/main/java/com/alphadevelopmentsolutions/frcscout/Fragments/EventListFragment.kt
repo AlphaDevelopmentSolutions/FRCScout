@@ -74,7 +74,6 @@ class EventListFragment : MasterFragment()
 
         context.setTitle(year!!.toString())
         context.setChangeButtonOnClickListener(View.OnClickListener{
-            //send to eventlist frag
             context.changeFragment(YearListFragment.newInstance(), false)
         }, getString(R.string.change_year), false)
 

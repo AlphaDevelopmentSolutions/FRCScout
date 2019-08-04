@@ -6,10 +6,13 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.constraint.ConstraintLayout
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
@@ -71,6 +74,7 @@ class MainActivity : AppCompatActivity(),
     private var appBarLayout: AppBarLayout? = null
     private var teamNumberTextView: TextView? = null
     private var teamNameTextView: TextView? = null
+    private var headerConstraintLayout: ConstraintLayout? = null
 
     private var updateThread: Thread? = null
 
@@ -89,12 +93,15 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //assign ass base layout vars
+        //assign as base layout vars
         mainFrame = findViewById(R.id.MainFrame)
         appBarLayout = findViewById(R.id.AppBarLayout)
         toolbar = findViewById(R.id.toolbar)
         drawer = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.nav_view)
+
+        //set context
+        context = this
 
         //set the action bar
         setSupportActionBar(toolbar)
@@ -105,9 +112,9 @@ class MainActivity : AppCompatActivity(),
 
         teamNumberTextView = navHeader.findViewById(R.id.TeamNumberTextView)
         teamNameTextView = navHeader.findViewById(R.id.TeamNameTextView)
+        headerConstraintLayout = navHeader.findViewById(R.id.HeaderConstraintLayout)
 
-        //set context
-        context = this
+        updateAppColors()
 
         //open the database as soon as the app starts
         database = Database(context!!)
@@ -119,14 +126,6 @@ class MainActivity : AppCompatActivity(),
 
         //set the item selected listener
         navigationView!!.setNavigationItemSelectedListener(this)
-
-        //change event button logic
-        changeButton!!.setOnClickListener {
-            val year = Year((getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!, getDatabase())
-
-            //send to eventlist frag
-            changeFragment(EventListFragment.newInstance(year), false)
-        }
 
         //updates the nav text to the current team saved in shared pref
         updateNavText()
@@ -240,8 +239,6 @@ class MainActivity : AppCompatActivity(),
         //update all app data
         if (isOnline())
         {
-
-
             val increaseFactor = if(downloadMedia) 8 else 9
             progressDialog = ProgressDialog(this, R.style.CustomProgressDialog)
             progressDialog!!.setTitle("Downloading data...")
@@ -258,6 +255,17 @@ class MainActivity : AppCompatActivity(),
                 context!!.runOnUiThread {
                     progressDialog!!.setTitle("Downloading Users...")
                     progressDialog!!.progress = progressDialogProgess
+                }
+
+                //Update Server Config
+                val getServerConfig = Server.GetServerConfig(context!!)
+                if(getServerConfig.execute())
+                {
+                    runOnUiThread{
+                        primaryColor = Color.parseColor("#" + getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, Integer.toHexString(R.color.primary).toUpperCase().substring(2)).toString())
+                        primaryColorDark = Color.parseColor("#" + getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_DARK_KEY, Integer.toHexString(R.color.primaryDark).toUpperCase().substring(2)).toString())
+                        updateAppColors()
+                    }
                 }
 
                 //Update Users
@@ -719,6 +727,53 @@ class MainActivity : AppCompatActivity(),
     //endregion
 
     //region Layout Methods
+
+    /**
+     * Stores the primary color from the shared preference
+     */
+    var primaryColor: Int = 0
+        get()
+            {
+                if(field == 0)
+                    field = Color.parseColor("#" + getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, Integer.toHexString(R.color.primary).toUpperCase().substring(2)).toString())
+
+                return field
+            }
+
+    /**
+     * Stores the primary dark color from the shared preference
+     */
+    var primaryColorDark: Int = 0
+        get()
+            {
+                if(field == 0)
+                    field = Color.parseColor("#" + getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_DARK_KEY, Integer.toHexString(R.color.primaryDark).toUpperCase().substring(2)).toString())
+
+                return field
+            }
+
+    /**
+     * Updates the apps colors to the specified ones in the shared preferences
+     */
+    fun updateAppColors()
+    {
+        this.window.statusBarColor = Color.parseColor("#" + getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_DARK_KEY, Integer.toHexString(R.color.primaryDark).toUpperCase().substring(2)).toString())
+        toolbar!!.setBackgroundColor(Color.parseColor("#" + getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, Integer.toHexString(R.color.primary).toUpperCase().substring(2)).toString()))
+        headerConstraintLayout!!.setBackgroundColor(Color.parseColor("#" + getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, Integer.toHexString(R.color.primary).toUpperCase().substring(2)).toString()))
+
+        val states: Array<IntArray> = arrayOf(
+                intArrayOf(android.R.attr.state_checked),
+                intArrayOf(android.R.attr.state_enabled))
+
+        val colors: IntArray = intArrayOf(
+                primaryColor,
+                Color.DKGRAY)
+
+        navigationView!!.itemTextColor = ColorStateList(states, colors)
+        navigationView!!.itemIconTintList = ColorStateList(states, colors)
+
+        changeButton!!.setTextColor(primaryColor)
+    }
 
     /**
      * Sets the title of the nav bar

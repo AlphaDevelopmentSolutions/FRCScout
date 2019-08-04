@@ -30,7 +30,7 @@ internal class YearListRecyclerViewAdapter(private val yearList: ArrayList<Year>
         simpleDateFormat = SimpleDateFormat("MMM d, yyyy")
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    class ViewHolder(view: View, context: MainActivity) : RecyclerView.ViewHolder(view)
     {
         var yearTitleTextView: TextView
         var yearDateTextView: TextView
@@ -44,6 +44,7 @@ internal class YearListRecyclerViewAdapter(private val yearList: ArrayList<Year>
             yearDateTextView = view.findViewById(R.id.YearDateTextView)
             yearLogoImageView = view.findViewById(R.id.YearLogoImageView)
             viewButton = view.findViewById(R.id.ViewButton)
+            viewButton.setTextColor(context.primaryColor)
         }
     }
 
@@ -52,7 +53,7 @@ internal class YearListRecyclerViewAdapter(private val yearList: ArrayList<Year>
         //Inflate the event layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_year, viewGroup, false)
 
-        return YearListRecyclerViewAdapter.ViewHolder(view)
+        return YearListRecyclerViewAdapter.ViewHolder(view, context)
     }
 
     override fun onBindViewHolder(viewHolder: YearListRecyclerViewAdapter.ViewHolder, position: Int)

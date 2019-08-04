@@ -113,6 +113,9 @@ class TeamListFragment : MasterFragment()
         allianceViewPager = view.findViewById(R.id.AllianceViewPager)
         searchTeamsToolbar = view.findViewById(R.id.SearchTeamsToolbar)
 
+        searchTeamsToolbar!!.setBackgroundColor(context.primaryColor)
+        allianceTabLayout!!.setBackgroundColor(context.primaryColor)
+
 
         //join back up with the load teams thread
         try

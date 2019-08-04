@@ -24,7 +24,7 @@ internal class EventListRecyclerViewAdapter(private val eventList: ArrayList<Eve
         simpleDateFormat = SimpleDateFormat("MMM d, yyyy")
     }
 
-    internal class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    internal class ViewHolder(view: View, context: MainActivity) : RecyclerView.ViewHolder(view)
     {
         var eventTitleTextView: TextView
         var eventLocationTextView: TextView
@@ -38,6 +38,7 @@ internal class EventListRecyclerViewAdapter(private val eventList: ArrayList<Eve
             eventLocationTextView = view.findViewById(R.id.EventLocationTextView)
             eventDateTextView = view.findViewById(R.id.EventDateTextView)
             viewEventButton = view.findViewById(R.id.ViewEventButton)
+            viewEventButton.setTextColor(context.primaryColor)
         }
     }
 
@@ -46,7 +47,7 @@ internal class EventListRecyclerViewAdapter(private val eventList: ArrayList<Eve
         //Inflate the event layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_event, viewGroup, false)
 
-        return EventListRecyclerViewAdapter.ViewHolder(view)
+        return EventListRecyclerViewAdapter.ViewHolder(view, context)
     }
 
     override fun onBindViewHolder(viewHolder: EventListRecyclerViewAdapter.ViewHolder, position: Int)

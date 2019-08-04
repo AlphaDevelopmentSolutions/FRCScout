@@ -1,5 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters
 
+import android.content.res.ColorStateList
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -39,7 +40,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
 
     }
 
-    internal class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    internal class ViewHolder(view: View, context: MainActivity) : RecyclerView.ViewHolder(view)
     {
 
         var titleTextView: TextView
@@ -61,6 +62,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
             completedByAutoCompleteTextView = view.findViewById(R.id.CompletedByAutoCompleteTextView)
 
             toggleStatusButton = view.findViewById(R.id.ToggleStatusButton)
+            toggleStatusButton.setTextColor(context.primaryColor)
         }
     }
 
@@ -70,7 +72,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_checklist_item, viewGroup, false)
 
 
-        val viewHolder = ChecklistItemListRecyclerViewAdapter.ViewHolder(view)
+        val viewHolder = ChecklistItemListRecyclerViewAdapter.ViewHolder(view, context)
         viewHolder.completedByAutoCompleteTextView.setAdapter(userNamesAdapter)
 
         return viewHolder

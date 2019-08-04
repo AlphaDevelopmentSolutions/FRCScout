@@ -50,7 +50,7 @@ internal class MatchListRecyclerViewAdapter(event: Event, private val team: Team
         }
     }
 
-    internal class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    internal class ViewHolder(view: View, context: MainActivity) : RecyclerView.ViewHolder(view)
     {
 
         var matchIdTextView: TextView
@@ -90,7 +90,10 @@ internal class MatchListRecyclerViewAdapter(event: Event, private val team: Team
             matchOptionsImageView = view.findViewById(R.id.MatchOptionsImageView)
 
             viewMatchButton = view.findViewById(R.id.ViewMatchButton)
+            viewMatchButton.setTextColor(context.primaryColor)
+
             addCardButton = view.findViewById(R.id.AddCardButton)
+            addCardButton.setTextColor(context.primaryColor)
         }
     }
 
@@ -99,7 +102,7 @@ internal class MatchListRecyclerViewAdapter(event: Event, private val team: Team
         //Inflate the event layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_match, viewGroup, false)
 
-        return MatchListRecyclerViewAdapter.ViewHolder(view)
+        return MatchListRecyclerViewAdapter.ViewHolder(view, context)
     }
 
     override fun onBindViewHolder(viewHolder: MatchListRecyclerViewAdapter.ViewHolder, position: Int)

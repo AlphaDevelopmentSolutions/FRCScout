@@ -66,17 +66,16 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
                 if (response.getString(API_FIELD_NAME_STATUS) != API_FIELD_NAME_STATUS_SUCCESS)
                     throw Exception(response.getString(API_FIELD_NAME_RESPONSE))
 
-                //get the json obj from the server
-                val serverConfigObject = response.getJSONObject(API_FIELD_NAME_RESPONSE)
+                val responseArray = response.getJSONArray(API_FIELD_NAME_RESPONSE)
 
-                val apiKey = serverConfigObject.getString("ApiKey")
-                val teamNumber = serverConfigObject.getInt("TeamNumber")
-                val teamName = serverConfigObject.getString("TeamName")
+                for(i in 0 until responseArray.length())
+                {
+                    val serverConfigObject = responseArray.getJSONObject(i)
+                    val key = serverConfigObject.getString("Key")
+                    var value = serverConfigObject.getString("Value")
 
-                //store the configs into the shared prefs
-                context.setPreference(Constants.SharedPrefKeys.API_KEY_KEY, apiKey)
-                context.setPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, teamNumber)
-                context.setPreference(Constants.SharedPrefKeys.TEAM_NAME_KEY, teamName)
+                    context.setPreference(key, if(serverConfigObject.getString("Value").toIntOrNull() == null) value else value.toInt())
+                }
 
                 return true
             } catch (e: Exception)

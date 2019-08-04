@@ -21,7 +21,7 @@ import java.util.*
 internal class TeamListRecyclerViewAdapter(private val match: Match?, private val teamList: ArrayList<Team>, private val context: MainActivity) : RecyclerView.Adapter<TeamListRecyclerViewAdapter.ViewHolder>()
 {
 
-    internal class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    internal class ViewHolder(view: View, context: MainActivity) : RecyclerView.ViewHolder(view)
     {
         var teamNameTextView: TextView
         var teamLocationTextView: TextView
@@ -35,6 +35,7 @@ internal class TeamListRecyclerViewAdapter(private val match: Match?, private va
             teamLocationTextView = view.findViewById(R.id.TeamLocationTextView)
             teamLogoImageView = view.findViewById(R.id.TeamLogoImageView)
             viewTeamButton = view.findViewById(R.id.ViewTeamButton)
+            viewTeamButton.setTextColor(context.primaryColor)
         }
     }
 
@@ -43,7 +44,7 @@ internal class TeamListRecyclerViewAdapter(private val match: Match?, private va
         //Inflate the event layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_team, viewGroup, false)
 
-        return TeamListRecyclerViewAdapter.ViewHolder(view)
+        return TeamListRecyclerViewAdapter.ViewHolder(view, context)
     }
 
     override fun onBindViewHolder(viewHolder: TeamListRecyclerViewAdapter.ViewHolder, position: Int)
