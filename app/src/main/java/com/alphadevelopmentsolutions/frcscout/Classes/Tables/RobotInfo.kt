@@ -8,9 +8,8 @@ class RobotInfo(
         var yearId: Int,
         var eventId: String,
         var teamId: Int,
-        var propertyState: String,
-        var propertyKey: String,
         var propertyValue: String,
+        var propertyKeyId: Int,
         var isDraft: Boolean) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
     companion object
@@ -22,9 +21,8 @@ class RobotInfo(
         val COLUMN_NAME_EVENT_ID = "EventId"
         val COLUMN_NAME_TEAM_ID = "TeamId"
 
-        val COLUMN_NAME_PROPERTY_STATE = "PropertyState"
-        val COLUMN_NAME_PROPERTY_KEY = "PropertyKey"
         val COLUMN_NAME_PROPERTY_VALUE = "PropertyValue"
+        val COLUMN_NAME_PROPERTY_KEY_ID = "PropertyKeyId"
 
         val COLUMN_NAME_IS_DRAFT = "IsDraft"
 
@@ -34,9 +32,8 @@ class RobotInfo(
                 COLUMN_NAME_EVENT_ID + " TEXT," +
                 COLUMN_NAME_TEAM_ID + " INTEGER," +
 
-                COLUMN_NAME_PROPERTY_STATE + " TEXT," +
-                COLUMN_NAME_PROPERTY_KEY + " TEXT," +
                 COLUMN_NAME_PROPERTY_VALUE + " TEXT," +
+                COLUMN_NAME_PROPERTY_KEY_ID + " INTEGER," +
 
                 COLUMN_NAME_IS_DRAFT + " INTEGER)"
 
@@ -94,9 +91,8 @@ class RobotInfo(
                 eventId = robotInfo.eventId
                 teamId = robotInfo.teamId
 
-                propertyState = robotInfo.propertyState
-                propertyKey = robotInfo.propertyKey
                 propertyValue = robotInfo.propertyValue
+                propertyKeyId = robotInfo.propertyKeyId
 
                 isDraft = robotInfo.isDraft
                 return true

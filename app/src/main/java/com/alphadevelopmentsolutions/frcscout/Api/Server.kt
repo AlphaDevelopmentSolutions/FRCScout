@@ -484,9 +484,8 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
                     val eventId = robotInfoObject.getString(RobotInfo.COLUMN_NAME_EVENT_ID)
                     val teamId = robotInfoObject.getInt(RobotInfo.COLUMN_NAME_TEAM_ID)
 
-                    val propertyState = robotInfoObject.getString(RobotInfo.COLUMN_NAME_PROPERTY_STATE)
-                    val propertyKey = robotInfoObject.getString(RobotInfo.COLUMN_NAME_PROPERTY_KEY)
                     val propertyValue = robotInfoObject.getString(RobotInfo.COLUMN_NAME_PROPERTY_VALUE)
+                    val propertyKeyId = robotInfoObject.getInt(RobotInfo.COLUMN_NAME_PROPERTY_KEY_ID)
 
                     robotInfoList.add(RobotInfo(
                             -1,
@@ -494,9 +493,8 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
                             eventId,
                             teamId,
 
-                            propertyState,
-                            propertyKey,
                             propertyValue,
+                            propertyKeyId,
 
                             false
                     ))
@@ -554,6 +552,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
                 {
                     val robotInfoKeyObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i)
 
+                    val serverId = robotInfoKeyObject.getInt(RobotInfoKey.COLUMN_NAME_SERVER_ID)
                     val yearId = robotInfoKeyObject.getInt(RobotInfoKey.COLUMN_NAME_YEAR_ID)
 
                     val keyState = robotInfoKeyObject.getString(RobotInfoKey.COLUMN_NAME_KEY_STATE)
@@ -563,6 +562,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
 
                     robotInfoKeyList.add(RobotInfoKey(
                             -1,
+                            serverId,
                             yearId,
 
                             keyState,
@@ -1030,9 +1030,8 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
             put(RobotInfo.COLUMN_NAME_EVENT_ID, robotInfo.eventId)
             put(RobotInfo.COLUMN_NAME_TEAM_ID, robotInfo.teamId.toString())
 
-            put(RobotInfo.COLUMN_NAME_PROPERTY_STATE, robotInfo.propertyState)
-            put(RobotInfo.COLUMN_NAME_PROPERTY_KEY, robotInfo.propertyKey)
             put(RobotInfo.COLUMN_NAME_PROPERTY_VALUE, robotInfo.propertyValue)
+            put(RobotInfo.COLUMN_NAME_PROPERTY_KEY_ID, robotInfo.propertyKeyId.toString())
 
         }
     })

@@ -1143,9 +1143,8 @@ class Database(context: Context)
         val eventId = cursor.getString(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_EVENT_ID))
         val teamId = cursor.getInt(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_TEAM_ID))
 
-        val propertyState = cursor.getString(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_PROPERTY_STATE))
-        val propertyKey = cursor.getString(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_PROPERTY_KEY))
         val propertyValue = cursor.getString(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_PROPERTY_VALUE))
+        val propertyKeyId = cursor.getInt(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_PROPERTY_KEY_ID))
 
         val isDraft = cursor.getInt(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_IS_DRAFT)) == 1
 
@@ -1156,9 +1155,8 @@ class Database(context: Context)
                 eventId,
                 teamId,
 
-                propertyState,
-                propertyKey,
                 propertyValue,
+                propertyKeyId,
 
                 isDraft)
     }
@@ -1204,9 +1202,8 @@ class Database(context: Context)
 
         if (robotInfoKey != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(RobotInfo.COLUMN_NAME_PROPERTY_STATE + " = ? AND ").append(RobotInfo.COLUMN_NAME_PROPERTY_KEY + " = ? ")
-            whereArgs.add(robotInfoKey.keyState)
-            whereArgs.add(robotInfoKey.keyName)
+            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(RobotInfo.COLUMN_NAME_PROPERTY_KEY_ID + " = ? AND ")
+            whereArgs.add(robotInfoKey.serverId.toString())
         }
 
         if (robotInfo != null)
@@ -1261,9 +1258,8 @@ class Database(context: Context)
         contentValues.put(RobotInfo.COLUMN_NAME_EVENT_ID, robotInfo.eventId)
         contentValues.put(RobotInfo.COLUMN_NAME_TEAM_ID, robotInfo.teamId)
 
-        contentValues.put(RobotInfo.COLUMN_NAME_PROPERTY_STATE, robotInfo.propertyState)
-        contentValues.put(RobotInfo.COLUMN_NAME_PROPERTY_KEY, robotInfo.propertyKey)
         contentValues.put(RobotInfo.COLUMN_NAME_PROPERTY_VALUE, robotInfo.propertyValue)
+        contentValues.put(RobotInfo.COLUMN_NAME_PROPERTY_KEY_ID, robotInfo.propertyValue)
 
         contentValues.put(RobotInfo.COLUMN_NAME_IS_DRAFT, if (robotInfo.isDraft) "1" else "0")
 
@@ -1276,11 +1272,9 @@ class Database(context: Context)
         val whereStatement = RobotInfo.COLUMN_NAME_YEAR_ID + " = ? AND " +
                 RobotInfo.COLUMN_NAME_EVENT_ID + " = ? AND " +
                 RobotInfo.COLUMN_NAME_TEAM_ID + " = ? AND " +
-                RobotInfo.COLUMN_NAME_PROPERTY_STATE + " = ? AND " +
-                RobotInfo.COLUMN_NAME_PROPERTY_KEY + " = ? "
+                RobotInfo.COLUMN_NAME_PROPERTY_KEY_ID + " = ? "
         val whereArgs = arrayOf<String>(robotInfo.yearId.toString(), robotInfo.eventId, robotInfo.teamId.toString(),
-
-                robotInfo.propertyState, robotInfo.propertyKey)
+                robotInfo.propertyKeyId.toString())
 
         //update
         return if (db!!.update(RobotInfo.TABLE_NAME, contentValues, whereStatement, whereArgs) > 0)
@@ -1321,6 +1315,7 @@ class Database(context: Context)
     private fun getRobotInfoKeyFromCursor(cursor: Cursor): RobotInfoKey
     {
         val id = cursor.getInt(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_ID))
+        val serverId = cursor.getInt(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_SERVER_ID))
         val yearId = cursor.getInt(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_YEAR_ID))
         val sortOrder = cursor.getInt(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_SORT_ORDER))
 
@@ -1330,6 +1325,7 @@ class Database(context: Context)
 
         return RobotInfoKey(
                 id,
+                serverId,
                 yearId,
 
                 keyState,

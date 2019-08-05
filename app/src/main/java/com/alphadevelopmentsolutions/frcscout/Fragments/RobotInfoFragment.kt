@@ -41,6 +41,7 @@ class RobotInfoFragment : MasterFragment()
     private var infoIds: ArrayList<Int>? = null
     private var infoKeys: ArrayList<String>? = null
     private var infoStates: ArrayList<String>? = null
+    private var infoKeyIds: ArrayList<Int>? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -68,6 +69,7 @@ class RobotInfoFragment : MasterFragment()
             infoIds = ArrayList()
             infoKeys = ArrayList()
             infoStates = ArrayList()
+            infoKeyIds = ArrayList()
 
             val year = Year(event!!.yearId, database)
 
@@ -140,6 +142,7 @@ class RobotInfoFragment : MasterFragment()
                 editTexts!!.add(editText)
                 infoKeys!!.add(robotInfoKey.keyName)
                 infoStates!!.add(robotInfoKey.keyState)
+                infoKeyIds!!.add(robotInfoKey.serverId)
 
                 linearLayout.addView(textInputLayout)
 
@@ -166,9 +169,8 @@ class RobotInfoFragment : MasterFragment()
                             event!!.yearId,
                             event!!.blueAllianceId!!,
                             team!!.id!!,
-                            infoStates!![i],
-                            infoKeys!![i],
                             editTexts!![i].text.toString(),
+                            infoKeyIds!![i],
                             true)
 
                     nRobotInfo.save(database)

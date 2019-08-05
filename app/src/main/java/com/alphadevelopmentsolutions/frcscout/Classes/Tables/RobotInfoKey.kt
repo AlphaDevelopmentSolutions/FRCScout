@@ -5,6 +5,7 @@ import java.util.*
 
 class RobotInfoKey(
         var id: Int,
+        var serverId: Int,
         var yearId: Int,
         var keyState: String,
         var keyName: String,
@@ -13,7 +14,8 @@ class RobotInfoKey(
     companion object
     {
         val TABLE_NAME = "robot_info_keys"
-        val COLUMN_NAME_ID = "Id"
+        val COLUMN_NAME_ID = "LocalId"
+        val COLUMN_NAME_SERVER_ID = "Id"
         val COLUMN_NAME_YEAR_ID = "YearId"
         val COLUMN_NAME_SORT_ORDER = "SortOrder"
         val COLUMN_NAME_KEY_STATE = "KeyState"
@@ -21,6 +23,7 @@ class RobotInfoKey(
 
         val CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
                 COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                COLUMN_NAME_SERVER_ID + " INTEGER," +
                 COLUMN_NAME_YEAR_ID + " INTEGER," +
                 COLUMN_NAME_SORT_ORDER + " INTEGER," +
                 COLUMN_NAME_KEY_STATE + " TEXT," +
@@ -73,6 +76,7 @@ class RobotInfoKey(
 
             if (robotInfoKey != null)
             {
+                serverId = robotInfoKey.serverId
                 yearId = robotInfoKey.yearId
                 sortOrder = robotInfoKey.sortOrder
                 keyState = robotInfoKey.keyState
