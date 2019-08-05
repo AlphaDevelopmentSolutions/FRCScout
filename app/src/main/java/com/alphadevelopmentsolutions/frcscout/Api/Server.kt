@@ -320,9 +320,8 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
 
                     val completedBy = scoutCardInfoObject.getString(ScoutCardInfo.COLUMN_NAME_COMPLETED_BY)
 
-                    val propertyState = scoutCardInfoObject.getString(ScoutCardInfo.COLUMN_NAME_PROPERTY_STATE)
-                    val propertyKey = scoutCardInfoObject.getString(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY)
                     val propertyValue = scoutCardInfoObject.getString(ScoutCardInfo.COLUMN_NAME_PROPERTY_VALUE)
+                    val propertyKeyId = scoutCardInfoObject.getInt(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY_ID)
 
                     scoutCardInfos.add(
                             ScoutCardInfo(
@@ -334,9 +333,8 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
 
                                     completedBy,
 
-                                    propertyState,
-                                    propertyKey,
                                     propertyValue,
+                                    propertyKeyId,
 
                                     false))
                 }
@@ -393,13 +391,13 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
                 {
                     val robotInfoKeyObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i)
 
+                    val serverId = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_SERVER_ID)
                     val yearId = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_YEAR_ID)
 
                     val keyState = robotInfoKeyObject.getString(ScoutCardInfoKey.COLUMN_NAME_KEY_STATE)
                     val keyName = robotInfoKeyObject.getString(ScoutCardInfoKey.COLUMN_NAME_KEY_NAME)
 
                     val sortOrder = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER)
-                    val groupNumber =  if (robotInfoKeyObject.isNull(ScoutCardInfoKey.COLUMN_NAME_GROUP_NUMBER)) null else robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_GROUP_NUMBER)
 
                     val minValue = if (robotInfoKeyObject.isNull(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE)) null else robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE)
                     val maxValue = if (robotInfoKeyObject.isNull(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE)) null else robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE)
@@ -411,13 +409,14 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
 
                     scoutCardInfoKeys.add(ScoutCardInfoKey(
                             -1,
+
+                            serverId,
                             yearId,
 
                             keyState,
                             keyName,
 
                             sortOrder,
-                            groupNumber,
 
                             minValue,
                             maxValue,
@@ -1028,12 +1027,12 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
             put(API_PARAM_API_ACTION, "SubmitRobotInfo")
 
             put(RobotInfo.COLUMN_NAME_YEAR_ID, robotInfo.yearId.toString())
-            put(RobotInfo.COLUMN_NAME_EVENT_ID, robotInfo.eventId!!)
+            put(RobotInfo.COLUMN_NAME_EVENT_ID, robotInfo.eventId)
             put(RobotInfo.COLUMN_NAME_TEAM_ID, robotInfo.teamId.toString())
 
-            put(RobotInfo.COLUMN_NAME_PROPERTY_STATE, robotInfo.propertyState!!)
-            put(RobotInfo.COLUMN_NAME_PROPERTY_KEY, robotInfo.propertyKey!!)
-            put(RobotInfo.COLUMN_NAME_PROPERTY_VALUE, robotInfo.propertyValue!!)
+            put(RobotInfo.COLUMN_NAME_PROPERTY_STATE, robotInfo.propertyState)
+            put(RobotInfo.COLUMN_NAME_PROPERTY_KEY, robotInfo.propertyKey)
+            put(RobotInfo.COLUMN_NAME_PROPERTY_VALUE, robotInfo.propertyValue)
 
         }
     })
@@ -1074,11 +1073,10 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
             put(ScoutCardInfo.COLUMN_NAME_MATCH_ID, scoutCardInfo.matchId)
             put(ScoutCardInfo.COLUMN_NAME_TEAM_ID, scoutCardInfo.teamId.toString())
 
-            put(ScoutCardInfo.COLUMN_NAME_COMPLETED_BY, scoutCardInfo.propertyState)
+            put(ScoutCardInfo.COLUMN_NAME_COMPLETED_BY, scoutCardInfo.completedBy)
 
-            put(ScoutCardInfo.COLUMN_NAME_PROPERTY_STATE, scoutCardInfo.propertyState)
-            put(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY, scoutCardInfo.propertyKey)
             put(ScoutCardInfo.COLUMN_NAME_PROPERTY_VALUE, scoutCardInfo.propertyValue)
+            put(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY_ID, scoutCardInfo.propertyKeyId.toString())
 
         }
     })

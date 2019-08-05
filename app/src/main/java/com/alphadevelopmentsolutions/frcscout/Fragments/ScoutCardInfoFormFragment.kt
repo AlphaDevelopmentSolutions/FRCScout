@@ -108,9 +108,8 @@ class ScoutCardInfoFormFragment : MasterFragment()
                             match!!.key,
                             team!!.id!!,
                             "",
-                            scoutCardInfoKey.keyState,
-                            scoutCardInfoKey.keyName,
                             "",
+                            scoutCardInfoKey.serverId,
                             true
                             )
 
@@ -341,7 +340,7 @@ class ScoutCardInfoFormFragment : MasterFragment()
                     linearLayout.setPadding(padding, padding, padding, padding)
 
                     val finalLinearLayout = linearLayout
-                    context.runOnUiThread { scoutCardInfoLinearLayout!!.addView(finalLinearLayout) }
+                    context.runOnUiThread { scoutCardInfoLinearLayout.addView(finalLinearLayout) }
 
                     linearLayout = LinearLayout(context)
                 }

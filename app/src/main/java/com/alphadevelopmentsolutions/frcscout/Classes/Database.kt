@@ -796,9 +796,8 @@ class Database(context: Context)
         
         val completedBy = cursor.getString(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_COMPLETED_BY))
         
-        val propertyState = cursor.getString(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_PROPERTY_STATE))
-        val propertyKey = cursor.getString(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY))
         val propertyValue = cursor.getString(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_PROPERTY_VALUE))
+        val propertyKeyId = cursor.getInt(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY_ID))
 
         val isDraft = cursor.getInt(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_IS_DRAFT)) == 1
 
@@ -811,9 +810,8 @@ class Database(context: Context)
                 
                 completedBy,
                 
-                propertyState,
-                propertyKey,
                 propertyValue,
+                propertyKeyId,
                 
                 isDraft)
     }
@@ -858,9 +856,8 @@ class Database(context: Context)
 
         if (scoutCardInfoKey != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_PROPERTY_STATE + " = ? AND ").append(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY + " = ? ")
-            whereArgs.add(scoutCardInfoKey.keyState)
-            whereArgs.add(scoutCardInfoKey.keyName)
+            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY_ID + " = ? AND ")
+            whereArgs.add(scoutCardInfoKey.serverId.toString())
         }
 
         if (scoutCardInfo != null)
@@ -917,9 +914,8 @@ class Database(context: Context)
 
         contentValues.put(ScoutCardInfo.COLUMN_NAME_COMPLETED_BY, scoutCardInfo.completedBy)
         
-        contentValues.put(ScoutCardInfo.COLUMN_NAME_PROPERTY_STATE, scoutCardInfo.propertyState)
-        contentValues.put(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY, scoutCardInfo.propertyKey)
         contentValues.put(ScoutCardInfo.COLUMN_NAME_PROPERTY_VALUE, scoutCardInfo.propertyValue)
+        contentValues.put(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY_ID, scoutCardInfo.propertyKeyId)
 
         contentValues.put(ScoutCardInfo.COLUMN_NAME_IS_DRAFT, if (scoutCardInfo.isDraft) "1" else "0")
 
@@ -974,13 +970,13 @@ class Database(context: Context)
     private fun getScoutCardInfoKeyFromCursor(cursor: Cursor): ScoutCardInfoKey
     {
         val id = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_ID))
+        val serverId = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_SERVER_ID))
         val yearId = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_YEAR_ID))
 
         val keyState = cursor.getString(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_KEY_STATE))
         val keyName = cursor.getString(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_KEY_NAME))
 
         val sortOrder = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER))
-        val groupNumber = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_GROUP_NUMBER))
 
         val stringMinValue = cursor.getString(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE))
         val stringMaxValue = cursor.getString(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE))
@@ -996,13 +992,13 @@ class Database(context: Context)
 
         return ScoutCardInfoKey(
                 id,
+                serverId,
                 yearId,
 
                 keyState,
                 keyName,
 
                 sortOrder,
-                groupNumber,
 
                 minValue,
                 maxValue,
@@ -1080,11 +1076,11 @@ class Database(context: Context)
     {
         //set all the values
         val contentValues = ContentValues()
+        contentValues.put(ScoutCardInfoKey.COLUMN_NAME_SERVER_ID, scoutCardInfoKey.serverId)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_YEAR_ID, scoutCardInfoKey.yearId)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_KEY_STATE, scoutCardInfoKey.keyState)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_KEY_NAME, scoutCardInfoKey.keyName)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER, scoutCardInfoKey.sortOrder)
-        contentValues.put(ScoutCardInfoKey.COLUMN_NAME_GROUP_NUMBER, scoutCardInfoKey.groupNumber)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE, scoutCardInfoKey.minValue)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE, scoutCardInfoKey.maxValue)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_NULL_ZEROS, if (scoutCardInfoKey.nullZeros) 1 else 0)
@@ -1282,9 +1278,9 @@ class Database(context: Context)
                 RobotInfo.COLUMN_NAME_TEAM_ID + " = ? AND " +
                 RobotInfo.COLUMN_NAME_PROPERTY_STATE + " = ? AND " +
                 RobotInfo.COLUMN_NAME_PROPERTY_KEY + " = ? "
-        val whereArgs = arrayOf<String>(robotInfo.yearId.toString(), robotInfo.eventId!!, robotInfo.teamId.toString(),
+        val whereArgs = arrayOf<String>(robotInfo.yearId.toString(), robotInfo.eventId, robotInfo.teamId.toString(),
 
-                robotInfo.propertyState!!, robotInfo.propertyKey!!)
+                robotInfo.propertyState, robotInfo.propertyKey)
 
         //update
         return if (db!!.update(RobotInfo.TABLE_NAME, contentValues, whereStatement, whereArgs) > 0)

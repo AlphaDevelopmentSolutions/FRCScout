@@ -5,11 +5,11 @@ import java.util.*
 
 class ScoutCardInfoKey(
         var id: Int,
+        var serverId: Int,
         var yearId: Int,
         var keyState: String,
         var keyName: String,
         var sortOrder: Int,
-        var groupNumber: Int?,
         var minValue: Int?,
         var maxValue: Int?,
         var nullZeros: Boolean,
@@ -19,12 +19,12 @@ class ScoutCardInfoKey(
     companion object
     {
         val TABLE_NAME = "scout_card_info_keys"
-        val COLUMN_NAME_ID = "Id"
+        val COLUMN_NAME_ID = "LocalId"
+        val COLUMN_NAME_SERVER_ID = "Id"
         val COLUMN_NAME_YEAR_ID = "YearId"
         val COLUMN_NAME_KEY_STATE = "KeyState"
         val COLUMN_NAME_KEY_NAME = "KeyName"
         val COLUMN_NAME_SORT_ORDER = "SortOrder"
-        val COLUMN_NAME_GROUP_NUMBER = "GroupNumber"
         val COLUMN_NAME_MIN_VALUE = "MinValue"
         val COLUMN_NAME_MAX_VALUE = "MaxValue"
         val COLUMN_NAME_NULL_ZEROS = "NullZeros"
@@ -33,11 +33,11 @@ class ScoutCardInfoKey(
 
         val CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
                 COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                COLUMN_NAME_SERVER_ID + " INTEGER," +
                 COLUMN_NAME_YEAR_ID + " INTEGER," +
                 COLUMN_NAME_KEY_STATE + " TEXT," +
                 COLUMN_NAME_KEY_NAME + " TEXT," +
                 COLUMN_NAME_SORT_ORDER + " INTEGER," +
-                COLUMN_NAME_GROUP_NUMBER + " INTEGER," +
                 COLUMN_NAME_MIN_VALUE + " INTEGER," +
                 COLUMN_NAME_MAX_VALUE + " INTEGER," +
                 COLUMN_NAME_NULL_ZEROS + " INTEGER," +
@@ -117,15 +117,21 @@ class ScoutCardInfoKey(
 
             if (scoutCardInfoKey != null)
             {
+                serverId = scoutCardInfoKey.serverId
+
                 yearId = scoutCardInfoKey.yearId
+
                 sortOrder = scoutCardInfoKey.sortOrder
-                groupNumber = scoutCardInfoKey.groupNumber
+
                 keyState = scoutCardInfoKey.keyState
                 keyName = scoutCardInfoKey.keyName
+
                 minValue = scoutCardInfoKey.minValue
                 maxValue = scoutCardInfoKey.minValue
+
                 nullZeros = scoutCardInfoKey.nullZeros
                 includeInStats = scoutCardInfoKey.includeInStats
+
                 dataType = scoutCardInfoKey.dataType
                 return true
             }

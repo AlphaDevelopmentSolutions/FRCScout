@@ -10,9 +10,8 @@ class ScoutCardInfo(
         var matchId: String,
         var teamId: Int,
         var completedBy: String,
-        var propertyState: String,
-        var propertyKey: String,
         var propertyValue: String,
+        var propertyKeyId: Int,
         var isDraft: Boolean) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
     companion object
@@ -27,9 +26,8 @@ class ScoutCardInfo(
 
         val COLUMN_NAME_COMPLETED_BY = "CompletedBy"
 
-        val COLUMN_NAME_PROPERTY_STATE = "PropertyState"
-        val COLUMN_NAME_PROPERTY_KEY = "PropertyKey"
         val COLUMN_NAME_PROPERTY_VALUE = "PropertyValue"
+        val COLUMN_NAME_PROPERTY_KEY_ID = "PropertyKeyId"
 
         val COLUMN_NAME_IS_DRAFT = "IsDraft"
 
@@ -42,9 +40,8 @@ class ScoutCardInfo(
 
                 COLUMN_NAME_COMPLETED_BY + " TEXT," +
 
-                COLUMN_NAME_PROPERTY_STATE + " TEXT," +
-                COLUMN_NAME_PROPERTY_KEY + " TEXT," +
                 COLUMN_NAME_PROPERTY_VALUE + " TEXT," +
+                COLUMN_NAME_PROPERTY_KEY_ID + " TEXT," +
 
                 COLUMN_NAME_IS_DRAFT + " INTEGER)"
 
@@ -106,9 +103,8 @@ class ScoutCardInfo(
 
                 completedBy = scoutCardInfo.completedBy
 
-                propertyState = scoutCardInfo.propertyState
-                propertyKey = scoutCardInfo.propertyKey
                 propertyValue = scoutCardInfo.propertyValue
+                propertyKeyId = scoutCardInfo.propertyKeyId
 
                 isDraft = scoutCardInfo.isDraft
                 return true
