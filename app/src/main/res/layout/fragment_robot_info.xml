@@ -29,20 +29,6 @@
                 android:layout_marginBottom="@dimen/material_padding"
                 android:orientation="vertical" />
 
-            <Button
-                android:id="@+id/SaveButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/material_padding"
-                android:layout_marginEnd="@dimen/material_padding"
-                android:layout_marginBottom="@dimen/material_padding"
-                android:text="@string/save_robot_info"
-                android:textAlignment="viewStart"
-                android:textAllCaps="true"
-                android:textColor="@color/textLink"
-                android:textSize="@dimen/textSecondary"
-                android:textStyle="bold" />
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

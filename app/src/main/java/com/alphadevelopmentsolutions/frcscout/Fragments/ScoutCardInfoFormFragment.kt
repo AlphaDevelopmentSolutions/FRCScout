@@ -82,10 +82,6 @@ class ScoutCardInfoFormFragment : MasterFragment()
         {
             getDataThread.join()
 
-            var editTexts = ArrayList<EditText>()
-            var infoKeys = ArrayList<String>()
-            var infoStates = ArrayList<String>()
-
             var linearLayout = LinearLayout(context)
 
             var currentInfoKeyState: String? = ""
@@ -169,10 +165,6 @@ class ScoutCardInfoFormFragment : MasterFragment()
                         textInputLayout.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f)
 
                         textInputLayout.addView(editText)
-
-                        editTexts.add(editText)
-                        infoKeys.add(scoutCardInfoKey.keyName)
-                        infoStates.add(scoutCardInfoKey.keyState)
 
                         linearLayout.addView(textInputLayout)
                     }

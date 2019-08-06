@@ -6,11 +6,12 @@ import android.os.Bundle
 import android.support.design.widget.TextInputLayout
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -35,13 +36,7 @@ class RobotInfoFragment : MasterFragment()
 
 
     private var robotInfoLinearLayout: LinearLayout? = null
-    private var saveButton: Button? = null
 
-    private var editTexts: ArrayList<EditText>? = null
-    private var infoIds: ArrayList<Int>? = null
-    private var infoKeys: ArrayList<String>? = null
-    private var infoStates: ArrayList<String>? = null
-    private var infoKeyIds: ArrayList<Int>? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -58,16 +53,8 @@ class RobotInfoFragment : MasterFragment()
         context.dropActionBar()
 
         robotInfoLinearLayout = view.findViewById(R.id.RobotInfoLinearLayout)
-        saveButton = view.findViewById(R.id.SaveButton)
-
-        saveButton!!.setTextColor(context.primaryColor)
 
         Thread(Runnable {
-            editTexts = ArrayList()
-            infoIds = ArrayList()
-            infoKeys = ArrayList()
-            infoStates = ArrayList()
-            infoKeyIds = ArrayList()
 
             val year = Year(event!!.yearId, database)
 
@@ -77,7 +64,6 @@ class RobotInfoFragment : MasterFragment()
             var nextRobotInfoKey: RobotInfoKey?
 
             var robotInfos: ArrayList<RobotInfo>?
-            var robotInfo: RobotInfo?
 
             var linearLayout = LinearLayout(context)
 
@@ -93,7 +79,16 @@ class RobotInfoFragment : MasterFragment()
                 nextRobotInfoKey = if (i + 1 < robotInfoKeys.size) robotInfoKeys[i + 1] else null
 
                 robotInfos = RobotInfo.getObjects(null, event, team, robotInfoKey, null, false, database)
-                robotInfo = if (robotInfos!!.size > 0) robotInfos[robotInfos.size - 1] else null
+                val robotInfo = if (robotInfos!!.size > 0) robotInfos[robotInfos.size - 1] else
+                    RobotInfo(
+                            -1,
+                            year.serverId!!,
+                            event!!.blueAllianceId!!,
+                            team!!.id!!,
+                            "",
+                            robotInfoKey.serverId,
+                            true
+                    )
 
                 if (currentInfoKeyState != robotInfoKey.keyState)
                 {
@@ -125,22 +120,33 @@ class RobotInfoFragment : MasterFragment()
 
                 val editText = EditText(context)
                 editText.hint = robotInfoKey.keyName
-                if (robotInfo != null)
-                {
-                    infoIds!!.add(robotInfo.id)
-                    editText.setText(robotInfo.propertyValue)
-                } else
-                    infoIds!!.add(-1)
 
+                if (!robotInfo.isDraft)
+                    editText.setText(robotInfo.propertyValue)
+
+                editText.addTextChangedListener(object : TextWatcher
+                {
+                    override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int)
+                    {
+
+                    }
+
+                    override fun onTextChanged(searchText: CharSequence, start: Int, before: Int, count: Int)
+                    {
+                        robotInfo.propertyValue = searchText.toString()
+                        robotInfo.isDraft = true
+                        robotInfo.save(database)
+                    }
+
+                    override fun afterTextChanged(editable: Editable)
+                    {
+
+                    }
+                })
 
                 textInputLayout.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f)
 
                 textInputLayout.addView(editText)
-
-                editTexts!!.add(editText)
-                infoKeys!!.add(robotInfoKey.keyName)
-                infoStates!!.add(robotInfoKey.keyState)
-                infoKeyIds!!.add(robotInfoKey.serverId)
 
                 linearLayout.addView(textInputLayout)
 
@@ -157,24 +163,6 @@ class RobotInfoFragment : MasterFragment()
                 }
 
                 j++
-            }
-
-            saveButton!!.setOnClickListener {
-                for (i in editTexts!!.indices)
-                {
-                    val nRobotInfo = RobotInfo(
-                            -1,
-                            event!!.yearId,
-                            event!!.blueAllianceId!!,
-                            team!!.id!!,
-                            editTexts!![i].text.toString(),
-                            infoKeyIds!![i],
-                            true)
-
-                    nRobotInfo.save(database)
-                }
-
-                context.runOnUiThread { context.showSnackbar("Robot Info Saved!") }
             }
         }).start()
 
