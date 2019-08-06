@@ -19,6 +19,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
@@ -262,8 +263,23 @@ class MainActivity : AppCompatActivity(),
                 if(getServerConfig.execute())
                 {
                     runOnUiThread{
-                        primaryColor = Color.parseColor("#" + getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, Integer.toHexString(R.color.primary).toUpperCase().substring(2)).toString())
-                        primaryColorDark = Color.parseColor("#" + getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_DARK_KEY, Integer.toHexString(R.color.primaryDark).toUpperCase().substring(2)).toString())
+
+                        var color = getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, "")
+
+                        primaryColor =
+                            if(color != "")
+                                Color.parseColor("#$color")
+                            else
+                                ResourcesCompat.getColor(resources, R.color.primary, null)
+
+                        color = getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_DARK_KEY, "")
+
+                        primaryColorDark =
+                                if(color != "")
+                                    Color.parseColor("#$color")
+                                else
+                                    ResourcesCompat.getColor(resources, R.color.primaryDark, null)
+
                         updateAppColors()
                     }
                 }
@@ -571,9 +587,6 @@ class MainActivity : AppCompatActivity(),
 
             }
 
-
-
-
             val finalSuccess = success
             runOnUiThread {
                 progressDialog!!.hide()
@@ -735,7 +748,15 @@ class MainActivity : AppCompatActivity(),
         get()
             {
                 if(field == 0)
-                    field = Color.parseColor("#" + getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, Integer.toHexString(R.color.primary).toUpperCase().substring(2)).toString())
+                {
+                    val color = getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, "")
+
+                    field =
+                    if(color != "")
+                        Color.parseColor("#$color")
+                    else
+                        ResourcesCompat.getColor(resources, R.color.primary, null)
+                }
 
                 return field
             }
@@ -747,7 +768,15 @@ class MainActivity : AppCompatActivity(),
         get()
             {
                 if(field == 0)
-                    field = Color.parseColor("#" + getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_DARK_KEY, Integer.toHexString(R.color.primaryDark).toUpperCase().substring(2)).toString())
+                {
+                    val color = getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_DARK_KEY, "")
+
+                    field =
+                    if(color != "")
+                        Color.parseColor("#$color")
+                    else
+                        ResourcesCompat.getColor(resources, R.color.primaryDark, null)
+                }
 
                 return field
             }
@@ -757,9 +786,9 @@ class MainActivity : AppCompatActivity(),
      */
     fun updateAppColors()
     {
-        this.window.statusBarColor = Color.parseColor("#" + getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_DARK_KEY, Integer.toHexString(R.color.primaryDark).toUpperCase().substring(2)).toString())
-        toolbar!!.setBackgroundColor(Color.parseColor("#" + getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, Integer.toHexString(R.color.primary).toUpperCase().substring(2)).toString()))
-        headerConstraintLayout!!.setBackgroundColor(Color.parseColor("#" + getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, Integer.toHexString(R.color.primary).toUpperCase().substring(2)).toString()))
+        this.window.statusBarColor = primaryColorDark
+        toolbar!!.setBackgroundColor(primaryColor)
+        headerConstraintLayout!!.setBackgroundColor(primaryColor)
 
         val states: Array<IntArray> = arrayOf(
                 intArrayOf(android.R.attr.state_checked),
