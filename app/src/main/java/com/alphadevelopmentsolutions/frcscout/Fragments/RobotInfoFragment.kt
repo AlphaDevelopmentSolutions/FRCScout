@@ -57,8 +57,6 @@ class RobotInfoFragment : MasterFragment()
         //gets rid of the shadow on the actionbar
         context.dropActionBar()
 
-
-
         robotInfoLinearLayout = view.findViewById(R.id.RobotInfoLinearLayout)
         saveButton = view.findViewById(R.id.SaveButton)
 

@@ -856,7 +856,7 @@ class Database(context: Context)
 
         if (scoutCardInfoKey != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY_ID + " = ? AND ")
+            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY_ID + " = ?")
             whereArgs.add(scoutCardInfoKey.serverId.toString())
         }
 
@@ -1202,7 +1202,7 @@ class Database(context: Context)
 
         if (robotInfoKey != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(RobotInfo.COLUMN_NAME_PROPERTY_KEY_ID + " = ? AND ")
+            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(RobotInfo.COLUMN_NAME_PROPERTY_KEY_ID + " = ? ")
             whereArgs.add(robotInfoKey.serverId.toString())
         }
 
@@ -1259,7 +1259,7 @@ class Database(context: Context)
         contentValues.put(RobotInfo.COLUMN_NAME_TEAM_ID, robotInfo.teamId)
 
         contentValues.put(RobotInfo.COLUMN_NAME_PROPERTY_VALUE, robotInfo.propertyValue)
-        contentValues.put(RobotInfo.COLUMN_NAME_PROPERTY_KEY_ID, robotInfo.propertyValue)
+        contentValues.put(RobotInfo.COLUMN_NAME_PROPERTY_KEY_ID, robotInfo.propertyKeyId)
 
         contentValues.put(RobotInfo.COLUMN_NAME_IS_DRAFT, if (robotInfo.isDraft) "1" else "0")
 
@@ -1401,6 +1401,7 @@ class Database(context: Context)
     {
         //set all the values
         val contentValues = ContentValues()
+        contentValues.put(RobotInfoKey.COLUMN_NAME_SERVER_ID, robotInfoKey.serverId)
         contentValues.put(RobotInfoKey.COLUMN_NAME_YEAR_ID, robotInfoKey.yearId)
         contentValues.put(RobotInfoKey.COLUMN_NAME_SORT_ORDER, robotInfoKey.sortOrder)
         contentValues.put(RobotInfoKey.COLUMN_NAME_KEY_STATE, robotInfoKey.keyState)
