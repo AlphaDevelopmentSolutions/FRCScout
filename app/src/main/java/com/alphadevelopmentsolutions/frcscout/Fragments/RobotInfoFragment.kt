@@ -18,7 +18,6 @@ import android.widget.TextView
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfo
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfoKey
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
 import com.alphadevelopmentsolutions.frcscout.R
 import java.util.*
 
@@ -56,7 +55,7 @@ class RobotInfoFragment : MasterFragment()
 
         Thread(Runnable {
 
-            val year = Year(event!!.yearId, database)
+            joinLoadingThread()
 
             val robotInfoKeys = RobotInfoKey.getObjects(year, null, database)
 
@@ -82,7 +81,7 @@ class RobotInfoFragment : MasterFragment()
                 val robotInfo = if (robotInfos!!.size > 0) robotInfos[robotInfos.size - 1] else
                     RobotInfo(
                             -1,
-                            year.serverId!!,
+                            year!!.serverId!!,
                             event!!.blueAllianceId!!,
                             team!!.id!!,
                             "",

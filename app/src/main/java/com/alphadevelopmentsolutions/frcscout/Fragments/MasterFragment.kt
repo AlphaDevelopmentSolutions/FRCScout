@@ -5,19 +5,19 @@ import android.support.v4.app.Fragment
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfo
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.gson.Gson
+import java.util.*
 
 open class MasterFragment : Fragment()
 {
     //store the context and database in the master fragment which all other fragmets extend from
     protected lateinit var context: MainActivity
     protected lateinit var database: Database
+
+    protected var year: Year? = null
 
     protected var event: Event? = null
 
@@ -54,7 +54,9 @@ open class MasterFragment : Fragment()
 
         //create and start the thread to load the json vars
         loadingThread = Thread(Runnable {
-            //check if the event id is set properly, and load the event
+
+            year = Year(context.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int, database)
+
             val eventId = context.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int
             if (eventId > 0)
                 event = Event(eventId, database)

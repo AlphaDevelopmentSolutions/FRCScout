@@ -34,8 +34,6 @@ class EventListFragment : MasterFragment()
 
     private var loadYearThread: Thread? = null
 
-    private var year: Year? = null
-
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)

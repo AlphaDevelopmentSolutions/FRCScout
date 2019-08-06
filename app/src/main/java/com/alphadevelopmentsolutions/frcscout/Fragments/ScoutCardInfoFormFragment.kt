@@ -16,7 +16,10 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfo
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfoKey
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.R
 
 
@@ -38,7 +41,6 @@ class ScoutCardInfoFormFragment : MasterFragment()
 
     private lateinit var getDataThread: Thread
     private var scoutCardInfoKeys: ArrayList<ScoutCardInfoKey>? = null
-    private lateinit var year: Year
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -50,8 +52,6 @@ class ScoutCardInfoFormFragment : MasterFragment()
         getDataThread = Thread(Runnable
         {
             joinLoadingThread()
-            
-            year = Year(event!!.yearId, database)
 
             scoutCardInfoKeys = ScoutCardInfoKey.getObjects(year, null, database)
 
@@ -99,7 +99,7 @@ class ScoutCardInfoFormFragment : MasterFragment()
                 val scoutCardInfo = if (scoutCardInfos!!.size > 0) scoutCardInfos[scoutCardInfos.size - 1] else
                     ScoutCardInfo(
                             -1,
-                            year.serverId!!,
+                            year!!.serverId!!,
                             event!!.blueAllianceId!!,
                             match!!.key,
                             team!!.id!!,
