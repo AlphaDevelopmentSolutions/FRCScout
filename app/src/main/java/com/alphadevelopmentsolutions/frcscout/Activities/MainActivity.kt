@@ -131,6 +131,13 @@ class MainActivity : AppCompatActivity(),
         //updates the nav text to the current team saved in shared pref
         updateNavText()
 
+        setChangeButtonOnClickListener(View.OnClickListener{
+            val year = Year(getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int, getDatabase())
+
+            //send to eventlist frag
+            changeFragment(EventListFragment.newInstance(year), false)
+        }, getString(R.string.change_event))
+
         //android >= marshmallow, permission needed
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
@@ -964,16 +971,19 @@ class MainActivity : AppCompatActivity(),
         appBarLayout!!.elevation = ACTION_BAR_ELEVATION.toFloat()
     }
 
-    fun setChangeButtonOnClickListener(onClickListener: View.OnClickListener, buttonText: String, showMenuItems: Boolean)
+    fun setChangeButtonOnClickListener(onClickListener: View.OnClickListener, buttonText: String, showMenuItems: Boolean? = null)
     {
         //change event button logic
         changeButton!!.setOnClickListener(onClickListener)
         changeButton!!.text = buttonText
 
-        if (!showMenuItems)
-            navigationView!!.menu.clear()
-        else
-            navigationView!!.inflateMenu(R.menu.activity_main_drawer)
+        if(showMenuItems != null)
+        {
+            if (!showMenuItems)
+                navigationView!!.menu.clear()
+            else
+                navigationView!!.inflateMenu(R.menu.activity_main_drawer)
+        }
 
 
     }
