@@ -1,25 +1,17 @@
 package com.alphadevelopmentsolutions.frcscout.Api
 
+import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.text.SimpleDateFormat
 import java.util.*
 
 abstract class Api internal constructor(
-        //region Getters
-
-        val url: String, private val key: String, postData: HashMap<String, String>?)
+        context: MainActivity,
+        private val key: String,
+        private val postData: HashMap<String, String>)
 {
-    val action: String? = null
-
-    private var postData: HashMap<String, String>? = null
-
-    //endregion
-
-    //region Setters
-
-    var isSuccess: Boolean = false
-
     private val MYSQL_DATE_FORMAT = "yyyy-MM-dd H:mm:ss"
 
     protected val API_FIELD_NAME_STATUS = "Status"
@@ -31,11 +23,8 @@ abstract class Api internal constructor(
 
     init
     {
-
-        if (postData != null)
-            this.postData = postData
-        else
-            this.postData = HashMap()
+        postData["CoreUsername"] = context.getPreference(Constants.SharedPrefKeys.API_CORE_USERNAME, "").toString()
+        postData["CorePassword"] = context.getPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, "").toString()
 
         simpleDateFormat = SimpleDateFormat(MYSQL_DATE_FORMAT)
     }
@@ -53,7 +42,7 @@ abstract class Api internal constructor(
         formattedPostData.append("$API_PARAM_SESSION_KEY=").append(key)
 
         //add each post data to the string builder
-        for ((key1, value) in postData!!)
+        for ((key1, value) in postData)
         {
             //replace all spaced with %20
             val parsedKey = URLEncoder.encode(key1, "UTF-8")
@@ -69,8 +58,6 @@ abstract class Api internal constructor(
         //return the formatted data
         return formattedPostData.toString()
     }
-
-    //endregion
 
     abstract fun execute(): Boolean
 

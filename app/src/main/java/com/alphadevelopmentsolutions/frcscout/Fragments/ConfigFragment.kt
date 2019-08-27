@@ -30,7 +30,8 @@ class ConfigFragment : MasterFragment()
 
     private var mListener: OnFragmentInteractionListener? = null
 
-    private var webUrlEditText: EditText? = null
+    private var usernameEditText: EditText? = null
+    private var passwordEditText: EditText? = null
 
     private var connectButton: Button? = null
 
@@ -52,18 +53,15 @@ class ConfigFragment : MasterFragment()
 
         //hide the actionbar while connecting
         context.supportActionBar!!.hide()
+        context.lockDrawerLayout()
 
-        webUrlEditText = view.findViewById(R.id.WebUrlEditText)
+        usernameEditText = view.findViewById(R.id.UsernameEditText)
+        passwordEditText = view.findViewById(R.id.PasswordEditText)
         connectButton = view.findViewById(R.id.ConnectButton)
 
         connectButton!!.setOnClickListener {
-            var url = webUrlEditText!!.text.toString()
-
-            if (!url.contains("http"))
-                url = "http://$url"
-
-            context.setPreference(Constants.SharedPrefKeys.WEB_URL_KEY, url)
-            context.setPreference(Constants.SharedPrefKeys.API_URL_KEY, "$url/api/api.php")
+            context.setPreference(Constants.SharedPrefKeys.API_CORE_USERNAME, usernameEditText!!.text.toString())
+            context.setPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, passwordEditText!!.text.toString())
             context.setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "TEMP")
 
             Thread(Runnable {

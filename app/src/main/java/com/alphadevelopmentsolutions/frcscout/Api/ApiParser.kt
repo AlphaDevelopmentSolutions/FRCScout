@@ -42,7 +42,7 @@ class ApiParser(private val api: Api)
         val response = StringBuilder()
 
         //create the url based on the app URL and specified file
-        val url = URL(api.url)
+        val url = URL(Constants.API_URL)
 
         //create a new connection to the server
         val httpURLConnection = url.openConnection() as HttpURLConnection

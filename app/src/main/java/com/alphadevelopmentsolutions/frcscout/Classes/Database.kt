@@ -1,20 +1,21 @@
 package com.alphadevelopmentsolutions.frcscout.Classes
 
 import android.content.ContentValues
-import android.content.Context
 import android.database.Cursor
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Exceptions.UnauthorizedClassException
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.javaField
 import kotlin.reflect.jvm.jvmName
 
-class Database(context: Context)
+class Database(private val context: MainActivity)
 {
     private val databaseHelper: DatabaseHelper
     private var db: SQLiteDatabase? = null
@@ -207,7 +208,7 @@ class Database(context: Context)
      * @param event if specified, filters events by event id
      * @return event based off given ID
      */
-    fun getEvents(year: Year?, event: Event?): ArrayList<Event>?
+    fun getEvents(year: Year?, event: Event?, team: Team?): ArrayList<Event>?
     {
         val events = ArrayList<Event>()
 
@@ -230,6 +231,13 @@ class Database(context: Context)
                     .append(if (whereStatement.length > 0) " AND " else "")
                     .append(Event.COLUMN_NAME_ID).append(" = ?")
             whereArgs.add(event.id.toString())
+        }
+
+        if (team != null)
+        {
+            whereStatement
+                    .append(if (whereStatement.length > 0) " AND " else "")
+                    .append("${Event.COLUMN_NAME_BLUE_ALLIANCE_ID} IN (SELECT ${EventTeamList.COLUMN_NAME_EVENT_ID} FROM ${EventTeamList.TABLE_NAME} WHERE ${EventTeamList.COLUMN_NAME_TEAM_ID} = ${team.id})")
         }
 
         //select the info from the db
@@ -464,10 +472,14 @@ class Database(context: Context)
                     whereArgs, null, null, null)
 
             if (cursor.count > 0)
-            //update
+            {
+                cursor.close()
+                //update
                 return db!!.update(Team.TABLE_NAME, contentValues, whereStatement, whereArgs).toLong()
+            }
             else
             {
+                cursor.close()
                 contentValues.put(Team.COLUMN_NAME_ID, team.id)
                 return db!!.insert(Team.TABLE_NAME, null, contentValues)
             }//record doesn't exist yet, insert

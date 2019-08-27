@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Interfaces
 
 import android.os.Environment
+import com.alphadevelopmentsolutions.frcscout.BuildConfig
 
 interface Constants
 {
@@ -11,8 +12,9 @@ interface Constants
         {
             //Shared Pref Keys
             val API_KEY_KEY = "API_KEY" //key to access web
-            val WEB_URL_KEY = "WEB_URL" //web url - http(s)://subdomain.domain.com/
-            val API_URL_KEY = "API_URL" //api url - http(s)://subdomain.domain.com/api/api.php
+
+            val API_CORE_USERNAME = "API_CORE_USERNAME"
+            val API_CORE_PASSWORD = "API_CORE_PASSWORD"
 
             val TEAM_NUMBER_KEY = "TEAM_NUMBER"
             val TEAM_NAME_KEY = "TEAM_NAME"
@@ -33,6 +35,11 @@ interface Constants
         val YEAR_MEDIA_DIRECTORY = BASE_FILE_DIRECTORY + "year-media/"
 
         val ROBOT_MEDIA_REQUEST_CODE = 5885
+
+        val WEB_URL = BuildConfig.API_URL
+        val API_URL = "$WEB_URL/api/api.php"
+
+
     }
 
 }

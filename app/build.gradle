@@ -15,13 +15,21 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-        release {
+        release
+        {
+            buildConfigField("String", "API_URL", "\"https://www.frcscout.app\"")
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
+        dev
+        {
+            buildConfigField("String", "API_URL", "\"https://www.frcscout.dev\"")
+        }
+
         debug
         {
+            buildConfigField("String", "API_URL", "\"https://www.frcscout.dev\"")
             testCoverageEnabled = true
         }
     }

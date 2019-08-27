@@ -129,4 +129,6 @@
     <string name="years">Years</string>
     <string name="change_year">Change Year</string>
     <string name="save_robot_info">Save Robot Info</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
 </resources>

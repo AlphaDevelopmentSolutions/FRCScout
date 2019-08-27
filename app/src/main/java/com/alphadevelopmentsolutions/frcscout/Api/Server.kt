@@ -6,12 +6,15 @@ import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import java.util.*
 
-abstract class Server internal constructor(URL: String, key: String, postData: HashMap<String, String>) : Api(URL, key, postData)
+abstract class Server internal constructor(
+        context: MainActivity,
+        key: String,
+        postData: HashMap<String, String>) : Api(context, key, postData)
 {
 
     //region Getters
 
-    class Hello(private val context: MainActivity) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class Hello(private val context: MainActivity) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -44,7 +47,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         }
     }
 
-    class GetServerConfig(private val context: MainActivity) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetServerConfig(private val context: MainActivity) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -72,7 +75,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
                 {
                     val serverConfigObject = responseArray.getJSONObject(i)
                     val key = serverConfigObject.getString("Key")
-                    var value = serverConfigObject.getString("Value")
+                    val value = serverConfigObject.getString("Value")
 
                     context.setPreference(key, if(serverConfigObject.getString("Value").toIntOrNull() == null) value else value.toInt())
                 }
@@ -87,7 +90,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         }
     }
 
-    class GetTeams(private val context: MainActivity, event: Event? = null) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetTeams(private val context: MainActivity, event: Event? = null) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -98,14 +101,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
     {
         //region Getters
 
-        val teams: ArrayList<Team>
-
-        init
-        {
-
-            teams = ArrayList()
-
-        }
+        val teams: ArrayList<Team> = ArrayList()
 
         override fun execute(): Boolean
         {
@@ -166,7 +162,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
-    class GetEventTeamList(private val context: MainActivity, event: Event? = null) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetEventTeamList(private val context: MainActivity, event: Event? = null) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -177,14 +173,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
     {
         //region Getters
 
-        val eventTeamList: ArrayList<EventTeamList>
-
-        init
-        {
-
-            eventTeamList = ArrayList()
-
-        }
+        val eventTeamList: ArrayList<EventTeamList> = ArrayList()
 
         override fun execute(): Boolean
         {
@@ -224,7 +213,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         }
     }
 
-    class GetUsers(private val context: MainActivity) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetUsers(private val context: MainActivity) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -234,14 +223,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
     {
         //region Getters
 
-        val users: ArrayList<User>
-
-        init
-        {
-
-            users = ArrayList()
-
-        }
+        val users: ArrayList<User> = ArrayList()
 
         override fun execute(): Boolean
         {
@@ -281,7 +263,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
-    class GetScoutCardInfo(private val context: MainActivity, event: Event? = null) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetScoutCardInfo(private val context: MainActivity, event: Event? = null) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -352,7 +334,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
-    class GetScoutCardInfoKeys(private val context: MainActivity, year: Year? = null) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetScoutCardInfoKeys(private val context: MainActivity, year: Year? = null) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -363,14 +345,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
     {
         //region Getters
 
-        val scoutCardInfoKeys: ArrayList<ScoutCardInfoKey>
-
-        init
-        {
-
-            scoutCardInfoKeys = ArrayList()
-
-        }
+        val scoutCardInfoKeys: ArrayList<ScoutCardInfoKey> = ArrayList()
 
         override fun execute(): Boolean
         {
@@ -441,7 +416,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
-    class GetRobotInfo(private val context: MainActivity, event: Event? = null) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetRobotInfo(private val context: MainActivity, event: Event? = null) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -452,14 +427,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
     {
         //region Getters
 
-        val robotInfoList: ArrayList<RobotInfo>
-
-        init
-        {
-
-            robotInfoList = ArrayList()
-
-        }
+        val robotInfoList: ArrayList<RobotInfo> = ArrayList()
 
         override fun execute(): Boolean
         {
@@ -513,7 +481,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
-    class GetRobotInfoKeys(private val context: MainActivity, year: Year? = null) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetRobotInfoKeys(private val context: MainActivity, year: Year? = null) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -524,14 +492,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
     {
         //region Getters
 
-        val robotInfoKeyList: ArrayList<RobotInfoKey>
-
-        init
-        {
-
-            robotInfoKeyList = ArrayList()
-
-        }
+        val robotInfoKeyList: ArrayList<RobotInfoKey> = ArrayList()
 
         override fun execute(): Boolean
         {
@@ -584,7 +545,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
-    class GetMatches(private val context: MainActivity, event: Event? = null) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetMatches(private val context: MainActivity, event: Event? = null) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -595,14 +556,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
     {
         //region Getters
 
-        val matches: ArrayList<Match>
-
-        init
-        {
-
-            matches = ArrayList()
-
-        }
+        val matches: ArrayList<Match> = ArrayList()
 
         override fun execute(): Boolean
         {
@@ -677,7 +631,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
-    class GetRobotMedia(private val context: MainActivity, team: Team? = null) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetRobotMedia(private val context: MainActivity, team: Team? = null) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -688,14 +642,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
     {
         //region Getters
 
-        val robotMedia: ArrayList<RobotMedia>
-
-        init
-        {
-
-            robotMedia = ArrayList()
-
-        }
+        val robotMedia: ArrayList<RobotMedia> = ArrayList()
 
         override fun execute(): Boolean
         {
@@ -717,7 +664,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
                     val robotMediaJson = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i)
 
                     val teamId = robotMediaJson.getInt(RobotMedia.COLUMN_NAME_TEAM_ID)
-                    var fileUri = context.getPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "")!!.toString() + "/assets/robot-media/" + robotMediaJson.getString(RobotMedia.COLUMN_NAME_FILE_URI)
+                    var fileUri = Constants.WEB_URL + "/assets/robot-media/" + robotMediaJson.getString(RobotMedia.COLUMN_NAME_FILE_URI)
 
                     fileUri = apiParser.downloadImage(fileUri, Constants.ROBOT_MEDIA_DIRECTORY).absolutePath
 
@@ -739,11 +686,10 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
 
         }
 
-
         //endregion
     }
 
-    class GetYears(private val context: MainActivity) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetYears(private val context: MainActivity) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -753,14 +699,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
     {
         //region Getters
 
-        val years: ArrayList<Year>
-
-        init
-        {
-
-            years = ArrayList()
-
-        }
+        val years: ArrayList<Year> = ArrayList()
 
         override fun execute(): Boolean
         {
@@ -785,7 +724,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
                     val name = yearsJson.getString(Year.COLUMN_NAME_NAME)
                     val startDate = simpleDateFormat.parse(yearsJson.getString(Year.COLUMN_NAME_START_DATE))
                     val endDate = simpleDateFormat.parse(yearsJson.getString(Year.COLUMN_NAME_END_DATE))
-                    var fileUri = context.getPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "")!!.toString() + "/assets/year-media/" + yearsJson.getString(Year.COLUMN_NAME_IMAGE_URI)
+                    var fileUri = Constants.WEB_URL + "/assets/year-media/" + yearsJson.getString(Year.COLUMN_NAME_IMAGE_URI)
 
                     fileUri = apiParser.downloadImage(fileUri, Constants.YEAR_MEDIA_DIRECTORY).absolutePath
 
@@ -813,21 +752,16 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
-    class GetEvents(private val context: MainActivity) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetEvents(private val context: MainActivity, private val team: Team? = null) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
             put(API_PARAM_API_ACTION, "GetEvents")
+            put("TeamId", team?.id?.toString() ?: "")
         }
     })
     {
-        val events: ArrayList<Event>
-
-        init
-        {
-            events = ArrayList()
-
-        }
+        val events: ArrayList<Event> = ArrayList()
 
         override fun execute(): Boolean
         {
@@ -879,7 +813,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         }
     }
 
-    class GetChecklistItems(private val context: MainActivity) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetChecklistItems(private val context: MainActivity) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -889,14 +823,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
     {
         //region Getters
 
-        val checklistItems: ArrayList<ChecklistItem>
-
-        init
-        {
-
-            checklistItems = ArrayList()
-
-        }
+        val checklistItems: ArrayList<ChecklistItem> = ArrayList()
 
         override fun execute(): Boolean
         {
@@ -942,7 +869,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         //endregion
     }
 
-    class GetChecklistItemResults(private val context: MainActivity) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetChecklistItemResults(private val context: MainActivity) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -952,14 +879,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
     {
         //region Getters
 
-        val checklistItemResults: ArrayList<ChecklistItemResult>
-
-        init
-        {
-
-            checklistItemResults = ArrayList()
-
-        }
+        val checklistItemResults: ArrayList<ChecklistItemResult> = ArrayList()
 
         override fun execute(): Boolean
         {
@@ -1020,7 +940,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
 
     //region Setters
 
-    class SubmitRobotInfo(private val context: MainActivity, robotInfo: RobotInfo) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class SubmitRobotInfo(private val context: MainActivity, robotInfo: RobotInfo) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -1061,7 +981,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         }
     }
 
-    class SubmitScoutCardInfo(private val context: MainActivity, scoutCardInfo: ScoutCardInfo) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class SubmitScoutCardInfo(private val context: MainActivity, scoutCardInfo: ScoutCardInfo) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -1105,7 +1025,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         }
     }
 
-    class SubmitRobotMedia(private val context: MainActivity, robotMedia: RobotMedia) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class SubmitRobotMedia(private val context: MainActivity, robotMedia: RobotMedia) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -1141,7 +1061,7 @@ abstract class Server internal constructor(URL: String, key: String, postData: H
         }
     }
 
-    class SubmitChecklistItemResult(private val context: MainActivity, checklistItemResult: ChecklistItemResult) : Server(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "")!!.toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class SubmitChecklistItemResult(private val context: MainActivity, checklistItemResult: ChecklistItemResult) : Server(context, context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
     {
         init
         {

@@ -219,8 +219,8 @@ class MainActivity : AppCompatActivity(),
     fun clearApiConfig()
     {
         setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")
-        setPreference(Constants.SharedPrefKeys.API_URL_KEY, "")
-        setPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "")
+        setPreference(Constants.SharedPrefKeys.API_CORE_USERNAME, "")
+        setPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, "")
     }
 
     /**
@@ -230,8 +230,8 @@ class MainActivity : AppCompatActivity(),
     private fun validateConfig(): Boolean
     {
         return getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "") != "" &&
-                getPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "") != "" &&
-                getPreference(Constants.SharedPrefKeys.API_URL_KEY, "") != ""
+                getPreference(Constants.SharedPrefKeys.API_CORE_USERNAME, "") != "" &&
+                getPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, "") != ""
     }
 
     //endregion

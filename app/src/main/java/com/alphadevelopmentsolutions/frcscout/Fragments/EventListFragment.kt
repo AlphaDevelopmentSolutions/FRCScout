@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.alphadevelopmentsolutions.frcscout.Adapters.EventListRecyclerViewAdapter
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
@@ -81,7 +82,7 @@ class EventListFragment : MasterFragment()
 
         eventListRecyclerView = view.findViewById(R.id.EventListRecyclerView)
 
-        val eventListRecyclerViewAdapter = EventListRecyclerViewAdapter(Event.getObjects(year, null, database)!!, context)
+        val eventListRecyclerViewAdapter = EventListRecyclerViewAdapter(Event.getObjects(year, null, Team(context.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Int, database), database)!!, context)
         eventListRecyclerView!!.adapter = eventListRecyclerViewAdapter
         eventListRecyclerView!!.layoutManager = LinearLayoutManager(context)
 

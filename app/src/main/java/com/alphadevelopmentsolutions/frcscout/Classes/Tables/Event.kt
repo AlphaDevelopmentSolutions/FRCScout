@@ -92,9 +92,9 @@ class Event : Table
          * @param database used to load events
          * @return arraylist of events
          */
-        fun getObjects(year: Year?, event: Event?, database: Database): ArrayList<Event>?
+        fun getObjects(year: Year?, event: Event?, team: Team?, database: Database): ArrayList<Event>?
         {
-            return database.getEvents(year, event)
+            return database.getEvents(year, event, team)
         }
     }
 
@@ -155,7 +155,7 @@ class Event : Table
 
         if (database.isOpen)
         {
-            val events = getObjects(null, this, database)
+            val events = getObjects(null, this, null, database)
             val event = if (events!!.size > 0) events[0] else null
 
             if (event != null)

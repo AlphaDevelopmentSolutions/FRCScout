@@ -27,16 +27,34 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:foregroundTint="@android:color/white"
-            android:hint="@string/enter_web_url"
+            android:hint="@string/username"
             app:hintTextAppearance="@style/TextInputLayoutLight">
 
             <EditText
-                android:id="@+id/WebUrlEditText"
+                android:id="@+id/UsernameEditText"
                 style="@style/EditTextLight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="@string/url_placeholder"
+                android:textColor="@android:color/white"
+                android:textColorHint="@android:color/white"
+                android:theme="@style/EditTextLight" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:foregroundTint="@android:color/white"
+            android:hint="@string/password"
+            app:hintTextAppearance="@style/TextInputLayoutLight">
+
+            <EditText
+                android:id="@+id/PasswordEditText"
+                style="@style/EditTextLight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:textColor="@android:color/white"
                 android:textColorHint="@android:color/white"
                 android:theme="@style/EditTextLight" />
