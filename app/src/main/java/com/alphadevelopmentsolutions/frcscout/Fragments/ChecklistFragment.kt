@@ -63,6 +63,7 @@ class ChecklistFragment : MasterFragment()
             context.setTitle(event!!.name)
         } else
         {
+            context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
             view = inflater.inflate(R.layout.fragment_checklist, container, false)
 
             recyclerView = view.findViewById(R.id.ChecklistItemsRecyclerView)
@@ -101,6 +102,9 @@ class ChecklistFragment : MasterFragment()
 
     override fun onDetach()
     {
+        if(match != null)
+            context.unlockDrawerLayout()
+
         super.onDetach()
         mListener = null
     }

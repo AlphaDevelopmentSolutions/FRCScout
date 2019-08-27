@@ -65,6 +65,7 @@ class TeamFragment : MasterFragment()
 
         //gets rid of the shadow on the actionbar
         context.dropActionBar()
+        context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
 
         //assign the vars to the views on the page
         headerConstraintLayout = view.findViewById(R.id.HeaderConstraintLayout)
@@ -192,6 +193,7 @@ class TeamFragment : MasterFragment()
 
     override fun onDetach()
     {
+        context.unlockDrawerLayout()
         super.onDetach()
         mListener = null
     }

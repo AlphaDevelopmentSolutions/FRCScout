@@ -63,6 +63,7 @@ internal class EventListRecyclerViewAdapter(private val eventList: ArrayList<Eve
         viewHolder.viewEventButton.setOnClickListener {
             //store the selected event in the shared pref
             context.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, eventList[viewHolder.adapterPosition].id)
+            context.setCheckedMenuItem(0)
             context.changeFragment(MatchListFragment.newInstance(null), false)
         }
     }

@@ -118,6 +118,7 @@ class ConfigFragment : MasterFragment()
     override fun onDetach()
     {
         context.supportActionBar!!.show()
+        context.unlockDrawerLayout()
         super.onDetach()
         mListener = null
     }

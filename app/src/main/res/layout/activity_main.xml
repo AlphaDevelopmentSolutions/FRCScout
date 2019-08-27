@@ -25,13 +25,8 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <include
-                layout="@layout/layout_line"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/divider_height"
-                app:layout_constraintBottom_toTopOf="@+id/ChangeButton" />
+            android:layout_height="match_parent"
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/ChangeButton"
@@ -47,6 +42,12 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
+
+            <include
+                layout="@layout/layout_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider_height"
+                app:layout_constraintBottom_toTopOf="@+id/ChangeButton" />
         </android.support.constraint.ConstraintLayout>
 
     </android.support.design.widget.NavigationView>

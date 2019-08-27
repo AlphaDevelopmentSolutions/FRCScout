@@ -59,6 +59,7 @@ class EventListFragment : MasterFragment()
     {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_event_list, container, false)
+        context.lockDrawerLayout(true, View.OnClickListener { context.changeFragment(YearListFragment.newInstance(), false) })
 
         joinLoadingThread()
 
@@ -72,10 +73,6 @@ class EventListFragment : MasterFragment()
         }
 
         context.setTitle(year!!.toString())
-        context.setChangeButtonOnClickListener(View.OnClickListener{
-            context.changeFragment(YearListFragment.newInstance(), false)
-        }, getString(R.string.change_year), false)
-
 
         //showing this view means the user has not selected an event, clear the shared pref
         context.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1)
@@ -114,12 +111,6 @@ class EventListFragment : MasterFragment()
     {
         super.onDetach()
         mListener = null
-        context.setChangeButtonOnClickListener(View.OnClickListener{
-            val year = Year(context.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int, database)
-
-            //send to eventlist frag
-            context.changeFragment(EventListFragment.newInstance(year), false)
-        }, getString(R.string.change_event), true)
     }
 
     override fun onStop()

@@ -26,6 +26,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -70,6 +71,7 @@ class MainActivity : AppCompatActivity(),
 
     private var mainFrame: FrameLayout? = null
     private var toolbar: Toolbar? = null
+    private var actionBarToggle: ActionBarDrawerToggle? = null
     private var drawer: DrawerLayout? = null
     private var navigationView: NavigationView? = null
     private var appBarLayout: AppBarLayout? = null
@@ -109,7 +111,7 @@ class MainActivity : AppCompatActivity(),
 
         changeButton = findViewById(R.id.ChangeButton)
         val navHeader = navigationView!!.getHeaderView(0)
-        val toggle = ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        actionBarToggle = ActionBarDrawerToggle(context, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
 
         teamNumberTextView = navHeader.findViewById(R.id.TeamNumberTextView)
         teamNameTextView = navHeader.findViewById(R.id.TeamNameTextView)
@@ -122,8 +124,8 @@ class MainActivity : AppCompatActivity(),
         database!!.open()
 
         //add the listener for the drawer
-        drawer!!.addDrawerListener(toggle)
-        toggle.syncState()
+        drawer!!.addDrawerListener(actionBarToggle!!)
+        actionBarToggle!!.syncState()
 
         //set the item selected listener
         navigationView!!.setNavigationItemSelectedListener(this)
@@ -661,7 +663,9 @@ class MainActivity : AppCompatActivity(),
 
             R.id.nav_teams -> changeFragment(TeamListFragment.newInstance(null, null), false)
 
-            R.id.nav_checklist -> changeFragment(ChecklistFragment.newInstance(Team((context!!.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Int?)!!, database!!), null), false)
+            R.id.nav_checklist -> changeFragment(ChecklistFragment.newInstance(Team((getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Int?)!!, database!!), null), false)
+
+            R.id.nav_events -> changeFragment(EventListFragment.newInstance(Year(getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int, getDatabase())), false)
         }
 
         val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
@@ -841,10 +845,17 @@ class MainActivity : AppCompatActivity(),
     /**
      * Locks the drawer layout
      */
-    fun lockDrawerLayout()
+    fun lockDrawerLayout(setBackIcon: Boolean = false, backIconClickListener: View.OnClickListener? = null)
     {
-        toolbar!!.navigationIcon = null
         drawer!!.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+
+        if(setBackIcon)
+        {
+            toolbar!!.navigationIcon = resources.getDrawable(R.drawable.ic_arrow_back_white_24dp, null)
+            toolbar!!.setNavigationOnClickListener(backIconClickListener)
+        }
+        else
+            toolbar!!.navigationIcon = null
     }
 
     /**
@@ -854,6 +865,9 @@ class MainActivity : AppCompatActivity(),
     {
         toolbar!!.navigationIcon = resources.getDrawable(R.drawable.ic_dehaze_white_24dp, null)
         drawer!!.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        toolbar!!.setNavigationOnClickListener {
+            drawer!!.openDrawer(GravityCompat.START)
+        }
 
     }
 
@@ -982,10 +996,19 @@ class MainActivity : AppCompatActivity(),
             if (!showMenuItems)
                 navigationView!!.menu.clear()
             else
+            {
+                navigationView!!.menu.clear()
                 navigationView!!.inflateMenu(R.menu.activity_main_drawer)
+            }
         }
+    }
 
-
+    /**
+     * Sets the menu item to be checked
+     */
+    fun setCheckedMenuItem(menuItem: Int)
+    {
+        navigationView!!.menu.getItem(menuItem).isChecked = true
     }
 
     //endregion

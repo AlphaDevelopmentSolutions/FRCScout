@@ -63,7 +63,7 @@ class TeamListFragment : MasterFragment()
         //check if any args were passed, specifically for team and match json
         if (arguments != null)
         {
-            matchJson = arguments!!.getString(MasterFragment.ARG_MATCH_JSON)
+            matchJson = arguments!!.getString(ARG_MATCH_JSON)
             allianceColorString = arguments!!.getString(ARG_ALLIANCE_COLOR)
         }
 
@@ -203,11 +203,13 @@ class TeamListFragment : MasterFragment()
 
             val viewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
 
-            viewPagerAdapter.addFragment(TeamListFragment.newInstance(match, AllianceColor.BLUE), getString(R.string.blue_alliance))
-            viewPagerAdapter.addFragment(TeamListFragment.newInstance(match, AllianceColor.RED), getString(R.string.red_alliance))
+            viewPagerAdapter.addFragment(newInstance(match, AllianceColor.BLUE), getString(R.string.blue_alliance))
+            viewPagerAdapter.addFragment(newInstance(match, AllianceColor.RED), getString(R.string.red_alliance))
 
             allianceViewPager!!.adapter = viewPagerAdapter
             allianceTabLayout!!.setupWithViewPager(allianceViewPager)
+
+            context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
         }//if match specified, setup the viewpager and hide the recyclerview
 
         return view
@@ -236,6 +238,9 @@ class TeamListFragment : MasterFragment()
 
     override fun onDetach()
     {
+        if (match != null)
+            context.unlockDrawerLayout()
+
         super.onDetach()
         mListener = null
     }
