@@ -28,8 +28,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:text="@string/placeholder"
-                android:textColor="@color/textPrimary"
-                android:textSize="@dimen/textPrimary"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_primary"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/TeamLogoImageView"
                 app:layout_constraintStart_toStartOf="parent"
@@ -42,8 +42,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/placeholder"
-                android:textColor="@color/textSecondary"
-                android:textSize="@dimen/textSecondary"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_secondary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/YearTitleTextView" />
 
@@ -64,8 +64,8 @@
                 android:layout_marginStart="1dp"
                 android:text="@string/view_year"
                 android:textAllCaps="true"
-                android:textColor="@color/textLink"
-                android:textSize="@dimen/textSecondary"
+                android:textColor="@color/text_link"
+                android:textSize="@dimen/text_secondary"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

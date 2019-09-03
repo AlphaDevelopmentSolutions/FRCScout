@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity(),
         QuickStatsFragment.OnFragmentInteractionListener,
         EventListFragment.OnFragmentInteractionListener,
         ConfigFragment.OnFragmentInteractionListener,
+        ConfigViewPagerFragment.OnFragmentInteractionListener,
         SplashFragment.OnFragmentInteractionListener,
         ChecklistFragment.OnFragmentInteractionListener,
         YearListFragment.OnFragmentInteractionListener
@@ -140,16 +141,7 @@ class MainActivity : AppCompatActivity(),
             changeFragment(EventListFragment.newInstance(year), false)
         }, getString(R.string.change_event))
 
-        //android >= marshmallow, permission needed
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            //write permission not granted, request
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 5885)
-            else
-                loadView(savedInstanceState)//permission granted, continue
-        } else
-            loadView(savedInstanceState)//android < marshmallow, permission not needed
+        loadView(savedInstanceState)//permission granted, continue
 
     }
 
@@ -254,6 +246,8 @@ class MainActivity : AppCompatActivity(),
             progressDialog!!.setTitle("Downloading data...")
             progressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
             progressDialog!!.max = 100
+            progressDialog!!.setCancelable(false)
+            progressDialog!!.setCanceledOnTouchOutside(false)
             progressDialog!!.show()
 
             updateThread = Thread(Runnable {
@@ -287,7 +281,7 @@ class MainActivity : AppCompatActivity(),
                                 if(color != "")
                                     Color.parseColor("#$color")
                                 else
-                                    ResourcesCompat.getColor(resources, R.color.primaryDark, null)
+                                    ResourcesCompat.getColor(resources, R.color.primary_dark, null)
 
                         updateAppColors()
                     }
@@ -677,18 +671,18 @@ class MainActivity : AppCompatActivity(),
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 5885)
-            } else
-            {
-                val intent = intent
-                finish()
-                startActivity(intent)
-            }
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+//        {
+//            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+//            {
+////                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 5885)
+//            } else
+//            {
+////                val intent = intent
+////                finish()
+////                startActivity(intent)
+//            }
+//        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
@@ -786,7 +780,7 @@ class MainActivity : AppCompatActivity(),
                     if(color != "")
                         Color.parseColor("#$color")
                     else
-                        ResourcesCompat.getColor(resources, R.color.primaryDark, null)
+                        ResourcesCompat.getColor(resources, R.color.primary_dark, null)
                 }
 
                 return field
@@ -924,13 +918,22 @@ class MainActivity : AppCompatActivity(),
         //if not previous saved state, eg not rotation
         if (savedInstanceState == null)
         {
-
             //default to the splash frag until changed
             changeFragment(SplashFragment(), false)
+
+
 
             //validate the app config to ensure all properties are filled
             if (validateConfig())
             {
+                //android >= marshmallow, permission needed
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                {
+                    //write permission not granted, request
+                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 5885)
+                }
+
                 //check any teams are on device and if the device is online
                 //if no teams, update data
                 if (Team.getObjects(null, null, null, getDatabase())!!.size == 0 && isOnline())
@@ -964,7 +967,7 @@ class MainActivity : AppCompatActivity(),
 
             } else
             {
-                changeFragment(ConfigFragment(), false)
+                changeFragment(ConfigViewPagerFragment(), false)
             }
         }
     }

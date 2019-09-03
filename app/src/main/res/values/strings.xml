@@ -131,4 +131,14 @@
     <string name="save_robot_info">Save Robot Info</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
+    <string name="grant">Grant</string>
+    <string name="config_permission_header">Grant File Permission</string>
+    <string name="config_permission_support">We need permission to access your files to store year and robot images.</string>
+    <string name="welcome">Welcome</string>
+    <string name="welcome_support">To FRC Scout</string>
+    <string name="login">Login</string>
+    <string name="welcome_screen_header">Welcome to</string>
+    <string name="no_account">No account? Sign up</string>
+    <string name="next">Next</string>
+    <string name="back">Back</string>
 </resources>

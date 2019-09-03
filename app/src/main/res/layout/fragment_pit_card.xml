@@ -19,7 +19,7 @@
             android:layout_marginTop="@dimen/material_padding"
             android:layout_marginBottom="@dimen/material_padding"
             android:text="@string/pre_game"
-            android:textSize="@dimen/textSupport"
+            android:textSize="@dimen/text_support"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -174,7 +174,7 @@
                 android:layout_marginTop="@dimen/material_padding"
                 android:layout_marginBottom="@dimen/material_padding"
                 android:text="@string/autonomous"
-                android:textSize="@dimen/textSupport"
+                android:textSize="@dimen/text_support"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -263,7 +263,7 @@
                 android:layout_marginTop="@dimen/material_padding"
                 android:layout_marginBottom="@dimen/material_padding"
                 android:text="@string/teleop"
-                android:textSize="@dimen/textSupport"
+                android:textSize="@dimen/text_support"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -331,7 +331,7 @@
                 android:layout_marginTop="@dimen/material_padding"
                 android:layout_marginBottom="@dimen/material_padding"
                 android:text="@string/end_game"
-                android:textSize="@dimen/textSupport"
+                android:textSize="@dimen/text_support"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

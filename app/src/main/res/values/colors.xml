@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="primary">#03A9F4</color>
-    <color name="primaryDark">#0288D1</color>
-    <color name="primaryLight">#B3E5FC</color>
-    <color name="accent">#0288D1</color>
-    <color name="textPrimary">#212121</color>
-    <color name="textSecondary">#757575</color>
-    <color name="textSecondaryLight">#ECECEC</color>
-    <color name="textLink">@color/primaryDark</color>
+    <color name="primary_dark">#0288D1</color>
+    <color name="primary_darker">#0285CC</color>
+    <color name="primary_light">#B3E5FC</color>
+    <color name="accent">@color/primary_dark</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_secondary_light">#ECECEC</color>
+    <color name="text_link">@color/primary_dark</color>
     <color name="divider">#0C000000</color>
     <color name="ripple">#dcdcdc</color>
 
@@ -24,5 +25,7 @@
     <color name="bad">#E67C73</color>
     <color name="blue_alliance">#EEEEFF</color>
     <color name="red_alliance">#FFEEEE</color>
+
+    <color tools:override="true" name="mtrl_textinput_default_box_stroke_color">#fff</color>
 
 </resources>
