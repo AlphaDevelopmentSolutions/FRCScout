@@ -140,6 +140,11 @@ class Match(
                 else
                     Type.f
             }
+
+            fun getTypes() : ArrayList<Type>
+            {
+                return arrayListOf(qm, qf, sf, f)
+            }
         }
     }
 

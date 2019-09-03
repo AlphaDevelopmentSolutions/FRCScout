@@ -28,18 +28,13 @@ import java.util.*
 internal class MatchListRecyclerViewAdapter(event: Event, private val team: Team?, private val context: MainActivity, private val fragmentOnClick: Type) : RecyclerView.Adapter<MatchListRecyclerViewAdapter.ViewHolder>()
 {
 
-    private val matches: ArrayList<Match>?
+    //get all matches for a specific team (if specified), at the specified event
+    private val matches: ArrayList<Match>? = event.getMatches(null, team, context.getDatabase())
 
-    private val scoutCards: HashMap<Match, ArrayList<ScoutCardInfo>>
+    private val scoutCards: HashMap<Match, ArrayList<ScoutCardInfo>> = HashMap()
 
     init
     {
-
-        //get all matches for a specific team (if specified), at the specified event
-        this.matches = event.getMatches(null, team, context.getDatabase())
-
-        scoutCards = HashMap()
-
         //load all scout cards for specific team from specific match
         if (fragmentOnClick == ScoutCardFragment::class.java)
         {

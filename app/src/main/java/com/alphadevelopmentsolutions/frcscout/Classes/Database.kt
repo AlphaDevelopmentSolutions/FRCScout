@@ -8,7 +8,6 @@ import android.util.Log
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Exceptions.UnauthorizedClassException
-import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
@@ -665,60 +664,73 @@ class Database(private val context: MainActivity)
         //insert columns you are going to use here
         val columns = columns
 
-        //where statement
-        val whereStatement = StringBuilder()
-        val whereArgs = ArrayList<String>()
+        //begin a transaction for multiple calls
+        if(!db!!.inTransaction())
+            beginTransaction()
 
-        if (event != null)
-        {
-            whereStatement.append(Match.COLUMN_NAME_EVENT_ID).append(" = ?")
-            whereArgs.add(event.blueAllianceId!!)
-        }
+        Match.Type.getTypes().forEach{
 
-        if (match != null)
-        {
+            //where statement
+            val whereStatement = StringBuilder()
+            val whereArgs = ArrayList<String>()
+
+            if (event != null)
+            {
+                whereStatement.append(Match.COLUMN_NAME_EVENT_ID).append(" = ?")
+                whereArgs.add(event.blueAllianceId!!)
+            }
+
+            if (match != null)
+            {
+                whereStatement
+                        .append(if (whereStatement.isNotEmpty()) " AND " else "")
+                        .append(Match.COLUMN_NAME_KEY).append(" = ?")
+                whereArgs.add(match.key)
+            }
+
+            if (team != null)
+            {
+                whereStatement
+                        .append(if (whereStatement.isNotEmpty()) " AND " else "")
+                        .append(team.id).append(" IN (")
+
+                        .append(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID).append(", ")
+                        .append(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID).append(", ")
+                        .append(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID).append(", ")
+
+                        .append(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID).append(", ")
+                        .append(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID).append(", ")
+                        .append(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID).append(")")
+            }
+
             whereStatement
-                    .append(if (whereStatement.length > 0) " AND " else "")
-                    .append(Match.COLUMN_NAME_KEY).append(" = ?")
-            whereArgs.add(match.key)
+                    .append(if (whereStatement.isNotEmpty()) " AND " else "")
+                    .append(" ${Match.COLUMN_NAME_MATCH_TYPE} = ? ")
+            whereArgs.add(it.toString())
+
+            //select the info from the db
+            val cursor = db!!.query(
+                    Match.TABLE_NAME,
+                    columns,
+                    whereStatement.toString(),
+                    Arrays.copyOf(Objects.requireNonNull<Array<Any>>(whereArgs.toTypedArray()), whereArgs.size, Array<String>::class.java),
+                    null,
+                    null,
+                    "${Match.COLUMN_NAME_MATCH_NUMBER} DESC")
+
+            //make sure the cursor isn't null, else we die
+            if (cursor != null)
+            {
+                while (cursor.moveToNext())
+                    matches.add(getMatchFromCursor(cursor))
+
+                cursor.close()
+            }
         }
 
-        if (team != null)
-        {
-            whereStatement
-                    .append(if (whereStatement.length > 0) " AND " else "")
-                    .append(team.id).append(" IN (")
+        finishTransaction()
 
-                    .append(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID).append(", ")
-                    .append(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID).append(", ")
-                    .append(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID).append(", ")
-
-                    .append(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID).append(", ")
-                    .append(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID).append(", ")
-                    .append(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID).append(")")
-        }
-
-        //select the info from the db
-        val cursor = db!!.query(
-                Match.TABLE_NAME,
-                columns,
-                whereStatement.toString(),
-                Arrays.copyOf(Objects.requireNonNull<Array<Any>>(whereArgs.toTypedArray()), whereArgs.size, Array<String>::class.java), null, null, null)
-
-        //make sure the cursor isn't null, else we die
-        if (cursor != null)
-        {
-            while (cursor.moveToNext())
-                matches.add(getMatchFromCursor(cursor))
-
-
-            cursor.close()
-
-            return matches
-        }
-
-
-        return null
+        return matches
     }
 
     /**
