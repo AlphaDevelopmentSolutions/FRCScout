@@ -15,19 +15,13 @@ import com.alphadevelopmentsolutions.frcscout.Interfaces.StatsKeys
 import com.alphadevelopmentsolutions.frcscout.R
 import java.util.*
 
-
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [QuickStatsFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [QuickStatsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class QuickStatsFragment : MasterFragment()
 {
-    private var mListener: OnFragmentInteractionListener? = null
-
+    override fun onBackPressed(): Boolean
+    {
+        return false
+    }
+    
     private var statsMinTableLayout: TableLayout? = null
     private var statsMaxTableLayout: TableLayout? = null
     private var statsAvgTableLayout: TableLayout? = null
@@ -43,7 +37,7 @@ class QuickStatsFragment : MasterFragment()
         super.onCreate(savedInstanceState)
 
         loadStatsThread = Thread(Runnable {
-            joinLoadingThread()
+            loadingThread.join()
 
             //get the stats from the team object
             val allStats = team!!.getStats(database, event!!)
@@ -234,67 +228,22 @@ class QuickStatsFragment : MasterFragment()
 
         return view
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri)
-    {
-        if (mListener != null)
-        {
-            mListener!!.onFragmentInteraction(uri)
-        }
-    }
-
-    override fun onAttach(context: Context?)
-    {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener)
-        {
-            mListener = context
-        } else
-        {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
-    }
-
-    override fun onDetach()
-    {
-        super.onDetach()
-        mListener = null
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener
-    {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
-    }
-
+    
     companion object
     {
 
         /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param team
-         * @return A new instance of fragment QuickStatsFragment.
+         * Creates a new instance
+         * @param team to show stats for
+         * @return A new instance of fragment [QuickStatsFragment].
          */
-        // TODO: Rename and change types and number of parameters
         fun newInstance(team: Team): QuickStatsFragment
         {
             val fragment = QuickStatsFragment()
             val args = Bundle()
-            args.putString(MasterFragment.ARG_TEAM_JSON, MasterFragment.toJson(team))
+            args.putString(ARG_TEAM_JSON, toJson(team))
             fragment.arguments = args
             return fragment
         }
     }
-}// Required empty public constructor
+}

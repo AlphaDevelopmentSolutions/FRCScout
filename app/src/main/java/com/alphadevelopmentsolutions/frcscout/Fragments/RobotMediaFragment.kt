@@ -1,11 +1,8 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
 import android.app.Activity
-import android.app.Fragment
-import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
@@ -22,22 +19,15 @@ import com.alphadevelopmentsolutions.frcscout.R
 import com.google.gson.Gson
 import java.io.File
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [RobotMediaFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [RobotMediaFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class RobotMediaFragment : MasterFragment()
 {
-
-    // TODO: Rename and change types of parameters
+    override fun onBackPressed(): Boolean
+    {
+        return false
+    }
+    
     private var robotMediaJson: String? = null
-
-    private var mListener: OnFragmentInteractionListener? = null
-
+    
     private var robotMedia: RobotMedia? = null
 
     private var robotMediaImageView: ImageView? = null
@@ -95,7 +85,7 @@ class RobotMediaFragment : MasterFragment()
                 //                            FileOutputStream fileOutputStream = new FileOutputStream(mediaFile);
                 //                            robotThumbBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream); //write data to file
 
-                joinLoadingThread()
+                loadingThread.join()
                 robotMedia = RobotMedia(
                         -1,
                         team!!.id!!,
@@ -146,26 +136,6 @@ class RobotMediaFragment : MasterFragment()
         }
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri)
-    {
-        if (mListener != null)
-        {
-            mListener!!.onFragmentInteraction(uri)
-        }
-    }
-
-    override fun onAttach(context: Context?)
-    {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener)
-        {
-            mListener = context
-        } else
-        {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
-    }
 
     override fun onDetach()
     {
@@ -175,47 +145,26 @@ class RobotMediaFragment : MasterFragment()
                 mediaFile!!.delete()
 
         super.onDetach()
-        mListener = null
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener
-    {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
     }
 
     companion object
     {
-        // TODO: Rename parameter arguments, choose names that match
-        // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-        private val ARG_ROBOT_MEDIA = "robot_media_json"
+        private const val ARG_ROBOT_MEDIA = "robot_media_json"
 
         /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param robotMedia
-         * @param team
-         * @return A new instance of fragment RobotMediaFragment.
+         * Creates a new instance
+         * @param robotMedia to show on the fragment
+         * @param team to get robot media from
+         * @return A new instance of fragment [RobotMediaFragment].
          */
-        // TODO: Rename and change types and number of parameters
         fun newInstance(robotMedia: RobotMedia?, team: Team): RobotMediaFragment
         {
             val fragment = RobotMediaFragment()
             val args = Bundle()
-            args.putString(ARG_ROBOT_MEDIA, MasterFragment.toJson(robotMedia))
-            args.putString(MasterFragment.ARG_TEAM_JSON, MasterFragment.toJson(team))
+            args.putString(ARG_ROBOT_MEDIA, toJson(robotMedia))
+            args.putString(ARG_TEAM_JSON, toJson(team))
             fragment.arguments = args
             return fragment
         }
     }
-}// Required empty public constructor
+}

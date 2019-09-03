@@ -1,7 +1,5 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -15,19 +13,14 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.gson.Gson
-import java.util.*
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [EventListFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [EventListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class EventListFragment : MasterFragment()
 {
-    private var mListener: OnFragmentInteractionListener? = null
+    override fun onBackPressed(): Boolean
+    {
+        context.changeFragment(YearListFragment.newInstance(), false)
+        return true
+    }
 
     private var yearJson: String? = null
 
@@ -61,7 +54,7 @@ class EventListFragment : MasterFragment()
         val view = inflater.inflate(R.layout.fragment_event_list, container, false)
         context.lockDrawerLayout(true, View.OnClickListener { context.changeFragment(YearListFragment.newInstance(), false) })
 
-        joinLoadingThread()
+        loadingThread.join()
 
         //join back up with the load year thread
         try
@@ -86,72 +79,29 @@ class EventListFragment : MasterFragment()
         return view
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri)
-    {
-        if (mListener != null)
-        {
-            mListener!!.onFragmentInteraction(uri)
-        }
-    }
-
-    override fun onAttach(context: Context?)
-    {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener)
-        {
-            mListener = context
-        } else
-        {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
-    }
-
-    override fun onDetach()
-    {
-        super.onDetach()
-        mListener = null
-    }
-
     override fun onStop()
     {
         context.unlockDrawerLayout()
         super.onStop()
     }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener
-    {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
-    }
-
+    
     companion object
     {
 
-        private val ARG_YEAR_JSON = "YEAR_JSON"
+        private const val ARG_YEAR_JSON = "YEAR_JSON"
 
         /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
+         * Creates a new instance
          * @param year to grab events from
-         * @return A new instance of fragment EventListFragment.
+         * @return A new instance of fragment [EventListFragment].
          */
         fun newInstance(year: Year): EventListFragment
         {
             val fragment = EventListFragment()
             val args = Bundle()
-            args.putString(ARG_YEAR_JSON, MasterFragment.toJson(year))
+            args.putString(ARG_YEAR_JSON, toJson(year))
             fragment.arguments = args
             return fragment
         }
     }
-}// Required empty public constructor
+}

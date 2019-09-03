@@ -1,7 +1,5 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
@@ -11,13 +9,13 @@ import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter
 import com.alphadevelopmentsolutions.frcscout.R
 import kotlinx.android.synthetic.main.fragment_config_view_pager.view.*
 
-
-
 class ConfigViewPagerFragment : MasterFragment()
 {
-
-    private var mListener: OnFragmentInteractionListener? = null
-
+    override fun onBackPressed(): Boolean
+    {
+        return false
+    }
+    
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
     {
@@ -27,7 +25,7 @@ class ConfigViewPagerFragment : MasterFragment()
 
         val view = inflater.inflate(R.layout.fragment_config_view_pager, container, false)
 
-        joinLoadingThread()
+        loadingThread.join()
 
         //add all config frags to viewpager
         val viewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
@@ -75,59 +73,19 @@ class ConfigViewPagerFragment : MasterFragment()
         return view
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri)
-    {
-        if (mListener != null)
-        {
-            mListener!!.onFragmentInteraction(uri)
-        }
-    }
-
-    override fun onAttach(context: Context?)
-    {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener)
-        {
-            mListener = context
-        } else
-        {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
-    }
-
     override fun onDetach()
     {
         context.supportActionBar!!.show()
         super.onDetach()
-        mListener = null
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener
-    {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
     }
 
     companion object
     {
         /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param index index of the config activity for the viewpager
-         * @return A new instance of fragment ConfigFragment.
+         * Creates a new instance
+         * @param index of the config activity for the viewpager
+         * @return A new instance of fragment [ConfigViewPagerFragment].
          */
-        // TODO: Rename and change types and number of parameters
         fun newInstance(): ConfigViewPagerFragment
         {
             val fragment = ConfigViewPagerFragment()
@@ -136,4 +94,4 @@ class ConfigViewPagerFragment : MasterFragment()
             return fragment
         }
     }
-}// Required empty public constructor
+}

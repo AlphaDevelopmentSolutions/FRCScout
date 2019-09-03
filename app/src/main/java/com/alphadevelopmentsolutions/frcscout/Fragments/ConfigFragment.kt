@@ -1,7 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -17,31 +16,21 @@ import com.alphadevelopmentsolutions.frcscout.R
 import kotlinx.android.synthetic.main.fragment_config.view.*
 import kotlinx.android.synthetic.main.layout_permission.view.*
 
-
-
-
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [ConfigFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [ConfigFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ConfigFragment : MasterFragment()
 {
+    override fun onBackPressed(): Boolean
+    {
+        return false
+    }
 
-    // TODO: Rename and change types of parameters
-    private var mParam1: Int? = null
-
-    private var mListener: OnFragmentInteractionListener? = null
+    private var configNumber: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         if (arguments != null)
         {
-            mParam1 = arguments!!.getInt(ARG_PARAM1)
+            configNumber = arguments!!.getInt(ARG_FRAGMENT_NUMBER)
         }
     }
 
@@ -54,7 +43,7 @@ class ConfigFragment : MasterFragment()
 
         var view: View? = null
 
-        when(mParam1)
+        when(configNumber)
         {
             1 -> view = inflater.inflate(R.layout.layout_welcome, container, false)
             2 ->
@@ -147,72 +136,31 @@ class ConfigFragment : MasterFragment()
         }).start()
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri)
-    {
-        if (mListener != null)
-        {
-            mListener!!.onFragmentInteraction(uri)
-        }
-    }
 
-    override fun onAttach(context: Context?)
-    {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener)
-        {
-            mListener = context
-        } else
-        {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
-    }
 
     override fun onDetach()
     {
         context.supportActionBar!!.show()
         context.unlockDrawerLayout()
         super.onDetach()
-        mListener = null
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener
-    {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
     }
 
     companion object
     {
-        // TODO: Rename parameter arguments, choose names that match
-        // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-        private val ARG_PARAM1 = "param1"
-        private val ARG_PARAM2 = "param2"
+        private const val ARG_FRAGMENT_NUMBER = "fragment_number"
 
         /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param index index of the config activity for the viewpager
-         * @return A new instance of fragment ConfigFragment.
+         * Creates a new instance
+         * @param index of the config activity for the viewpager
+         * @return A new instance of fragment [ConfigFragment].
          */
-        // TODO: Rename and change types and number of parameters
         fun newInstance(index: Int): ConfigFragment
         {
             val fragment = ConfigFragment()
             val args = Bundle()
-            args.putInt(ARG_PARAM1, index)
+            args.putInt(ARG_FRAGMENT_NUMBER, index)
             fragment.arguments = args
             return fragment
         }
     }
-}// Required empty public constructor
+}

@@ -1,10 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -24,21 +21,15 @@ import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor
 import com.alphadevelopmentsolutions.frcscout.R
 import java.util.*
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [TeamListFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [TeamListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TeamListFragment : MasterFragment()
 {
+    override fun onBackPressed(): Boolean
+    {
+        return false
+    }
 
     private var allianceColorString: String? = null
-
-    private var mListener: OnFragmentInteractionListener? = null
-
+    
     private var teamsRecyclerView: RecyclerView? = null
 
     private var teamSearchEditText: EditText? = null
@@ -68,7 +59,7 @@ class TeamListFragment : MasterFragment()
         }
 
         loadTeamsThread = Thread(Runnable {
-            joinLoadingThread()
+            loadingThread.join()
 
             if (match != null && allianceColorString != null && allianceColorString != "")
                 allianceColor = AllianceColor.getColorFromString(allianceColorString!!)
@@ -78,7 +69,7 @@ class TeamListFragment : MasterFragment()
 
             //if a match and alliance color was specified,
             //remove any teams that are not in that match or alliance color
-            if (match != null && allianceColor != null)
+            searchedTeams = if (match != null && allianceColor != null)
             {
                 for (team in ArrayList(teams!!))
                 {
@@ -88,10 +79,10 @@ class TeamListFragment : MasterFragment()
                 }
 
                 //add all the teams to the searchedTeams arraylist
-                searchedTeams = ArrayList(teams!!)
+                ArrayList(teams!!)
             } else
-            //add all the teams to the searchedTeams arraylist
-                searchedTeams = ArrayList(teams!!)
+                //add all the teams to the searchedTeams arraylist
+                ArrayList(teams!!)
         })
 
         loadTeamsThread!!.start()
@@ -115,7 +106,6 @@ class TeamListFragment : MasterFragment()
 
         searchTeamsToolbar!!.setBackgroundColor(context.primaryColor)
         allianceTabLayout!!.setBackgroundColor(context.primaryColor)
-
 
         //join back up with the load teams thread
         try
@@ -198,6 +188,7 @@ class TeamListFragment : MasterFragment()
             })
         } else
         {
+            context.supportActionBar!!.title = match.toString()
             allianceViewPagerLinearLayout!!.visibility = View.VISIBLE
             teamsRecyclerView!!.visibility = View.GONE
 
@@ -215,26 +206,6 @@ class TeamListFragment : MasterFragment()
         return view
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri)
-    {
-        if (mListener != null)
-        {
-            mListener!!.onFragmentInteraction(uri)
-        }
-    }
-
-    override fun onAttach(context: Context?)
-    {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener)
-        {
-            mListener = context
-        } else
-        {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
-    }
 
     override fun onDetach()
     {
@@ -242,43 +213,26 @@ class TeamListFragment : MasterFragment()
             context.unlockDrawerLayout()
 
         super.onDetach()
-        mListener = null
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener
-    {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
     }
 
     companion object
     {
-        internal val ARG_ALLIANCE_COLOR = "ALLIANCE_COLOR"
+        internal const val ARG_ALLIANCE_COLOR = "ALLIANCE_COLOR"
 
         /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @return A new instance of fragment TeamListFragment.
+         * Creates a new instance
+         * @param match to get teams from
+         * @param allianceColor to get teams from
+         * @return A new instance of fragment [TeamListFragment].
          */
-        // TODO: Rename and change types and number of parameters
         fun newInstance(match: Match?, allianceColor: AllianceColor?): TeamListFragment
         {
             val fragment = TeamListFragment()
             val args = Bundle()
-            args.putString(MasterFragment.ARG_MATCH_JSON, MasterFragment.toJson(match))
+            args.putString(ARG_MATCH_JSON, toJson(match))
             args.putString(ARG_ALLIANCE_COLOR, allianceColor?.name ?: AllianceColor.NONE.name)
             fragment.arguments = args
             return fragment
         }
     }
-}// Required empty public constructor
+}

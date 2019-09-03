@@ -1,19 +1,19 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
-import com.alphadevelopmentsolutions.frcscout.R
 import com.google.gson.Gson
 import java.util.*
 
-open class MasterFragment : Fragment()
+abstract class MasterFragment : Fragment()
 {
-    //store the context and database in the master fragment which all other fragmets extend from
+    //store the context and database in the master fragment which all other fragments extend from
     protected lateinit var context: MainActivity
     protected lateinit var database: Database
 
@@ -21,18 +21,44 @@ open class MasterFragment : Fragment()
 
     protected var event: Event? = null
 
-    protected var teamJson: String? = null
+    private var teamJson: String? = null
     protected var matchJson: String? = null
-    protected var scoutCardJson: String? = null
-    protected var pitCardJson: String? = null
+    private var scoutCardJson: String? = null
+    private var pitCardJson: String? = null
 
     protected var team: Team? = null
     protected var match: Match? = null
     protected var scoutCardInfo: ScoutCardInfo? = null
 
-    protected lateinit var gson: Gson
+    private lateinit var gson: Gson
 
     protected lateinit var loadingThread: Thread
+
+    private var mListener: OnFragmentInteractionListener? = null
+
+    override fun onAttach(context: Context?)
+    {
+        super.onAttach(context)
+        if (context is OnFragmentInteractionListener)
+        {
+            mListener = context
+        }
+        else
+        {
+            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
+        }
+    }
+
+    override fun onDetach()
+    {
+        super.onDetach()
+        mListener = null
+    }
+
+    interface OnFragmentInteractionListener
+    {
+        fun onFragmentInteraction(uri: Uri)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -77,32 +103,14 @@ open class MasterFragment : Fragment()
         loadingThread.start()
     }
 
-    override fun onDetach()
-    {
-        //reset the title of the app upon detach
-        context.supportActionBar!!.setTitle(R.string.app_name)
-        super.onDetach()
-    }
-
     /**
-     * Joins back up with the loading thread
+     * Used to override the activities back pressed event
+     * @return [Boolean] true to override activities back press event
      */
-    protected fun joinLoadingThread()
-    {
-        //join back up with the loading thread
-        try
-        {
-            loadingThread.join()
-        } catch (e: InterruptedException)
-        {
-            e.printStackTrace()
-        }
-
-    }
+    abstract fun onBackPressed() : Boolean
 
     companion object
     {
-
         @JvmStatic
         protected val ARG_TEAM_JSON = "TEAM_JSON"
 

@@ -1,11 +1,9 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
-import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
@@ -21,18 +19,13 @@ import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [TeamFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [TeamFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TeamFragment : MasterFragment()
 {
-    private var mListener: OnFragmentInteractionListener? = null
-
+    override fun onBackPressed(): Boolean
+    {
+        return false
+    }
+    
     private var headerConstraintLayout: ConstraintLayout? = null
 
     private var teamTabLayout: TabLayout? = null
@@ -51,11 +44,6 @@ class TeamFragment : MasterFragment()
 
     private var teamFloatingActionMenu: FloatingActionMenu? = null
     private var addRobotPhotoFloatingActionButton: FloatingActionButton? = null
-
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
@@ -94,7 +82,7 @@ class TeamFragment : MasterFragment()
         addRobotPhotoFloatingActionButton!!.colorNormal = context.primaryColor
         addRobotPhotoFloatingActionButton!!.colorPressed = context.primaryColorDark
 
-        joinLoadingThread()
+        loadingThread.join()
 
         addRobotPhotoFloatingActionButton!!.setOnClickListener { context.changeFragment(RobotMediaFragment.newInstance(null, team!!), true) }
 
@@ -179,57 +167,27 @@ class TeamFragment : MasterFragment()
         return view
     }
 
-    override fun onAttach(context: Context?)
-    {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener)
-        {
-            mListener = context
-        } else
-        {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
-    }
-
     override fun onDetach()
     {
         context.unlockDrawerLayout()
         super.onDetach()
-        mListener = null
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener
-    {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
     }
 
     companion object
     {
 
         /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param team
-         * @return A new instance of fragment TeamFragment.
+         * Creates a new instance
+         * @param team to show
+         * @return A new instance of fragment [TeamFragment].
          */
         fun newInstance(team: Team): TeamFragment
         {
             val fragment = TeamFragment()
             val args = Bundle()
-            args.putString(MasterFragment.ARG_TEAM_JSON, MasterFragment.toJson(team))
+            args.putString(ARG_TEAM_JSON, toJson(team))
             fragment.arguments = args
             return fragment
         }
     }
-}// Required empty public constructor
+}

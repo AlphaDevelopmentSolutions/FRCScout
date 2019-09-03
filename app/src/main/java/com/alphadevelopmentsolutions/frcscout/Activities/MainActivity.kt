@@ -3,7 +3,6 @@ package com.alphadevelopmentsolutions.frcscout.Activities
 import android.Manifest
 import android.app.Activity
 import android.app.ProgressDialog
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -26,7 +25,6 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -45,23 +43,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(),
         NavigationView.OnNavigationItemSelectedListener,
-        MatchListFragment.OnFragmentInteractionListener,
-        TeamListFragment.OnFragmentInteractionListener,
-        TeamFragment.OnFragmentInteractionListener,
-        ScoutCardFragment.OnFragmentInteractionListener,
-        LoginFragment.OnFragmentInteractionListener,
-        RobotInfoFragment.OnFragmentInteractionListener,
-        ScoutCardListFragment.OnFragmentInteractionListener,
-        ScoutCardInfoFormFragment.OnFragmentInteractionListener,
-        RobotMediaFragment.OnFragmentInteractionListener,
-        RobotMediaListFragment.OnFragmentInteractionListener,
-        QuickStatsFragment.OnFragmentInteractionListener,
-        EventListFragment.OnFragmentInteractionListener,
-        ConfigFragment.OnFragmentInteractionListener,
-        ConfigViewPagerFragment.OnFragmentInteractionListener,
-        SplashFragment.OnFragmentInteractionListener,
-        ChecklistFragment.OnFragmentInteractionListener,
-        YearListFragment.OnFragmentInteractionListener
+        MasterFragment.OnFragmentInteractionListener
 {
     private var context: MainActivity? = null
 
@@ -643,15 +625,18 @@ class MainActivity : AppCompatActivity(),
             drawer.closeDrawer(GravityCompat.START)
         } else
         {
-            super.onBackPressed()
+            //gets the highest fragment being shown
+            val masterFragment = supportFragmentManager.fragments[supportFragmentManager.fragments.size - 1] as MasterFragment
+
+            //master frag eats back press
+            if(!masterFragment.onBackPressed())
+                super.onBackPressed()
         }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean
     {
-        val id = item.itemId
-
-        when (id)
+        when (item.itemId)
         {
             R.id.nav_matches -> changeFragment(MatchListFragment.newInstance(null), false)
 
@@ -665,29 +650,6 @@ class MainActivity : AppCompatActivity(),
         val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
         drawer.closeDrawer(GravityCompat.START)
         return true
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray)
-    {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-//        {
-//            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-//            {
-////                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 5885)
-//            } else
-//            {
-////                val intent = intent
-////                finish()
-////                startActivity(intent)
-//            }
-//        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
-    {
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean

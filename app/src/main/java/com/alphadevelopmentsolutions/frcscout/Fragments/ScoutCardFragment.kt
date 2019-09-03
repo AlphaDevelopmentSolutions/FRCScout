@@ -1,10 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
@@ -15,18 +12,13 @@ import com.alphadevelopmentsolutions.frcscout.R
 import java.util.*
 import kotlin.collections.HashMap
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [ScoutCardFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [ScoutCardFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ScoutCardFragment : MasterFragment()
 {
-    private var mListener: OnFragmentInteractionListener? = null
-
+    override fun onBackPressed(): Boolean
+    {
+        return false
+    }
+    
     private var scoutCardTabLayout: TabLayout? = null
     private var scoutCardViewPager: ViewPager? = null
 
@@ -41,7 +33,7 @@ class ScoutCardFragment : MasterFragment()
 
         //start the creation of fragments on a new thread
         fragCreationThread = Thread(Runnable {
-            joinLoadingThread()
+            loadingThread.join()
 
             var scoutCardInfoKeys = ScoutCardInfoKey.getObjects(Year(event!!.yearId, database), null, database)
 
@@ -108,71 +100,25 @@ class ScoutCardFragment : MasterFragment()
         return view
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri)
-    {
-        if (mListener != null)
-        {
-            mListener!!.onFragmentInteraction(uri)
-        }
-    }
-
-    override fun onAttach(context: Context?)
-    {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener)
-        {
-            mListener = context
-        } else
-        {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
-    }
-
-
-    override fun onDetach()
-    {
-        super.onDetach()
-        mListener = null
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener
-    {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
-    }
-
     companion object
     {
 
         /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param match
-         * @param scoutCard
-         * @param team
-         * @return A new instance of fragment ScoutCardFragment.
+         * Creates a new instance
+         * @param match to get scout cards from
+         * @param scoutCardInfo to display on the fragment
+         * @param team to get scout cards from
+         * @return A new instance of fragment [ScoutCardFragment].
          */
-        // TODO: Rename and change types and number of parameters
         fun newInstance(match: Match, scoutCardInfo: ScoutCardInfo?, team: Team): ScoutCardFragment
         {
             val fragment = ScoutCardFragment()
             val args = Bundle()
-            args.putString(MasterFragment.ARG_MATCH_JSON, MasterFragment.toJson(match))
-            args.putString(MasterFragment.ARG_PARAM_SCOUT_CARD_JSON, MasterFragment.toJson(scoutCardInfo))
-            args.putString(MasterFragment.ARG_TEAM_JSON, MasterFragment.toJson(team))
+            args.putString(ARG_MATCH_JSON, toJson(match))
+            args.putString(ARG_PARAM_SCOUT_CARD_JSON, toJson(scoutCardInfo))
+            args.putString(ARG_TEAM_JSON, toJson(team))
             fragment.arguments = args
             return fragment
         }
     }
-}// Required empty public constructor
+}
