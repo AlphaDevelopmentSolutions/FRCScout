@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.TeamFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@color/primary"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/TeamLogoImageView"
+                android:layout_width="@dimen/team_page_image_width"
+                android:layout_height="@dimen/team_page_image_height"
+                android:layout_marginTop="16dp"
+                android:src="@mipmap/ic_launcher"
+                app:civ_border_width="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/TeamNumberNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/placeholder"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/textPrimary"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/TeamLogoImageView" />
+
+            <TextView
+                android:id="@+id/TeamLocationTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/placeholder"
+                android:textAlignment="center"
+                android:textColor="@color/textSecondaryLight"
+                android:textSize="@dimen/textSecondary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/TeamNumberNameTextView" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/TeamLocationTextView">
+
+                <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
+                    android:id="@+id/FacebookFontAwesomeBrandIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center"
+                    android:text="@string/icon_facebook"
+                    android:textColor="@color/textSecondaryLight"
+                    android:textSize="25sp"
+                    tools:layout_editor_absoluteX="354dp"
+                    tools:layout_editor_absoluteY="338dp" />
+
+                <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
+                    android:id="@+id/TwitterFontAwesomeBrandIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center"
+                    android:text="@string/icon_twitter"
+                    android:textColor="@color/textSecondaryLight"
+                    android:textSize="25sp"
+                    tools:layout_editor_absoluteX="66dp"
+                    tools:layout_editor_absoluteY="138dp" />
+
+                <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
+                    android:id="@+id/InstagramFontAwesomeBrandIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center"
+                    android:text="@string/icon_instagram"
+                    android:textColor="@color/textSecondaryLight"
+                    android:textSize="25sp"
+                    tools:layout_editor_absoluteX="354dp"
+                    tools:layout_editor_absoluteY="238dp" />
+
+                <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
+                    android:id="@+id/YoutubeFontAwesomeBrandIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center"
+                    android:text="@string/icon_youtube"
+                    android:textColor="@color/textSecondaryLight"
+                    android:textSize="25sp"
+                    tools:layout_editor_absoluteX="354dp"
+                    tools:layout_editor_absoluteY="238dp" />
+
+                <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeSolidIcon
+                    android:id="@+id/WebsiteFontAwesomeSolidIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center"
+                    android:text="@string/icon_website"
+                    android:textColor="@color/textSecondaryLight"
+                    android:textSize="25sp"
+                    tools:layout_editor_absoluteX="354dp"
+                    tools:layout_editor_absoluteY="238dp" />
+
+            </LinearLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/TeamTabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/primary"
+                android:elevation="@dimen/toolbar_elevation"
+                app:tabTextColor="@android:color/white"
+                tools:layout_editor_absoluteY="200dp" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/TeamViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/TeamFloatingActionMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_add_white_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:menu_animationDelayPerItem="50"
+        app:menu_backgroundColor="@android:color/transparent"
+        app:menu_buttonSpacing="0dp"
+        app:menu_colorNormal="@color/accent"
+        app:menu_colorPressed="@color/accent"
+        app:menu_colorRipple="#99FFFFFF"
+        app:menu_fab_size="normal"
+        app:menu_icon="@drawable/fab_add"
+        app:menu_labels_colorNormal="#333333"
+        app:menu_labels_colorPressed="#444444"
+        app:menu_labels_colorRipple="#66FFFFFF"
+        app:menu_labels_cornerRadius="3dp"
+        app:menu_labels_ellipsize="none"
+        app:menu_labels_hideAnimation="@anim/fab_slide_out_to_right"
+        app:menu_labels_margin="0dp"
+        app:menu_labels_maxLines="-1"
+        app:menu_labels_padding="8dp"
+        app:menu_labels_paddingBottom="4dp"
+        app:menu_labels_paddingLeft="8dp"
+        app:menu_labels_paddingRight="8dp"
+        app:menu_labels_paddingTop="4dp"
+        app:menu_labels_position="left"
+        app:menu_labels_showAnimation="@anim/fab_slide_in_from_right"
+        app:menu_labels_showShadow="true"
+        app:menu_labels_singleLine="false"
+        app:menu_labels_textColor="#FFFFFF"
+        app:menu_labels_textSize="14sp"
+        app:menu_openDirection="up"
+        app:menu_shadowColor="#66000000"
+        app:menu_shadowRadius="4dp"
+        app:menu_shadowXOffset="1dp"
+        app:menu_shadowYOffset="3dp"
+        app:menu_showShadow="true">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/AddRobotPhotoFloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_photo_camera_white_24dp"
+            app:fab_colorNormal="@color/accent"
+            app:fab_colorPressed="@color/accent"
+            app:fab_colorRipple="@color/ripple"
+            app:fab_label="@string/add_robot_photo"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/AddPitCardFloatingActingButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_assignment_white_24dp"
+            app:fab_colorNormal="@color/accent"
+            app:fab_colorPressed="@color/accent"
+            app:fab_colorRipple="@color/ripple"
+            app:fab_label="@string/add_pit_card"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/AddMatchFloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_assignment_white_24dp"
+            app:fab_colorNormal="@color/accent"
+            app:fab_colorPressed="@color/accent"
+            app:fab_colorRipple="@color/ripple"
+            app:fab_label="@string/add_scout_card"
+            app:fab_size="mini" />
+    </com.github.clans.fab.FloatingActionMenu>
+
+</android.support.constraint.ConstraintLayout>

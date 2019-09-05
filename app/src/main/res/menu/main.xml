@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/UploadDataItem"
+        android:icon="@drawable/ic_cloud_upload_white_24dp"
+        android:title="@string/upload_data"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/RefreshDataItem"
+        android:icon="@drawable/ic_refresh_white_24dp"
+        android:title="@string/refresh_data"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/ChangeEventItem"
+        android:title="@string/change_event"
+        app:showAsAction="never" />
+
+</menu>

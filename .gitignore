@@ -40,6 +40,8 @@ captures/
 .idea/gradle.xml
 .idea/dictionaries
 .idea/libraries
+.idea/*
+.idea/
 
 # Keystore files
 *.jks
@@ -54,4 +56,7 @@ google-services.json
 freeline.py
 freeline/
 freeline_project_description.json
+
+#Keys file
+app/src/main/java/com/alphadevelopmentsolutions/frcscout/Interfaces/Keys.java
 
