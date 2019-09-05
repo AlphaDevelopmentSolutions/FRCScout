@@ -13,6 +13,7 @@ import com.alphadevelopmentsolutions.frcscout.Interfaces.Keys;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,12 +46,12 @@ public abstract class Server extends Api
 
         private MainActivity context;
 
-        public GetTeamsAtEvent(final MainActivity context, final String event)
+        public GetTeamsAtEvent(final MainActivity context, final Event event)
         {
             super("", new HashMap<String, String>()
             {{
                 put("action", "GetTeamsAtEvent");
-                put("EventId", event);
+                put("EventId", event.getBlueAllianceId());
             }});
 
             teams = new ArrayList<>();
@@ -241,12 +242,12 @@ public abstract class Server extends Api
 
         private MainActivity context;
 
-        public GetScoutCards(final MainActivity context, final String event)
+        public GetScoutCards(final MainActivity context, final Event event)
         {
             super("", new HashMap<String, String>()
             {{
                 put("action", "GetScoutCards");
-                put("EventId", event);
+                put("EventId", event.getBlueAllianceId());
             }});
 
             scoutCards = new ArrayList<>();
@@ -402,12 +403,12 @@ public abstract class Server extends Api
 
         private MainActivity context;
 
-        public GetPitCards(final MainActivity context, final String event)
+        public GetPitCards(final MainActivity context, final Event event)
         {
             super("", new HashMap<String, String>()
             {{
                 put("action", "GetPitCards");
-                put("EventId", event);
+                put("EventId", event.getBlueAllianceId());
             }});
 
             pitCards = new ArrayList<>();
@@ -603,6 +604,8 @@ public abstract class Server extends Api
 
         private MainActivity context;
 
+        private SimpleDateFormat simpleDateFormat;
+
         public GetEvents(final MainActivity context)
         {
             super("", new HashMap<String, String>()
@@ -612,6 +615,8 @@ public abstract class Server extends Api
 
             this.context = context;
             events = new ArrayList<>();
+
+            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         }
 
@@ -643,10 +648,10 @@ public abstract class Server extends Api
                     String city = eventObject.getString(API_FIELD_NAME_EVENT_CITY);
                     String stateProvince = eventObject.getString(API_FIELD_NAME_EVENT_STATE_PROVINCE);
                     String country = eventObject.getString(API_FIELD_NAME_EVENT_COUNTRY);
-//                    String startDate = eventObject.getString(API_FIELD_NAME_EVENT_START_DATE);
-//                    String endDate = eventObject.getString(API_FIELD_NAME_EVENT_END_DATE);
+                    String startDate = eventObject.getString(API_FIELD_NAME_EVENT_START_DATE);
+                    String endDate = eventObject.getString(API_FIELD_NAME_EVENT_END_DATE);
 
-                    events.add(new Event(-1, blueAllianceId, name, city, stateProvince, country, new Date(), new Date()));
+                    events.add(new Event(-1, blueAllianceId, name, city, stateProvince, country, simpleDateFormat.parse(startDate), simpleDateFormat.parse(endDate)));
                 }
 
 

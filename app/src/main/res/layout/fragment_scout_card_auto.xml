@@ -23,7 +23,7 @@
                 android:id="@+id/AutonomousHatchPanelsLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/material_padding"
+                android:layout_marginEnd="@dimen/material_padding"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -191,7 +191,7 @@
                 android:id="@+id/AutonomousCargoStoredLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/material_padding"
+                android:layout_marginStart="@dimen/material_padding"
                 android:layout_weight="1"
                 android:orientation="vertical">
 

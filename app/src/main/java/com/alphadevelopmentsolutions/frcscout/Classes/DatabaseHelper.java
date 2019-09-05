@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper
 {
 
-    private static final int DB_VERSION = 6;
+    private static final int DB_VERSION = 7;
     private static final String DB_NAME = "FRCScout.db";
 
 
@@ -21,6 +21,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     Event.COLUMN_NAME_COUNTRY + " TEXT," +
                     Event.COLUMN_NAME_START_DATE + " INTEGER," +
                     Event.COLUMN_NAME_END_DATE + " INTEGER)";
+
+    private final String CREATE_EVENT_TEAM_LIST_TABLE =
+            "CREATE TABLE " + EventTeamList.TABLE_NAME + " (" +
+                    EventTeamList.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    EventTeamList.COLUMN_NAME_TEAM_ID + " INTEGER," +
+                    EventTeamList.COLUMN_NAME_EVENT_ID + " TEXT)";
 
     private final String CREATE_TEAMS_TABLE =
             "CREATE TABLE " + Team.TABLE_NAME + " (" +
@@ -158,6 +164,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL(CREATE_USERS_TABLE);
         db.execSQL(CREATE_PIT_CARDS_TABLE);
         db.execSQL(CREATE_ROBOT_MEDIA_TABLE);
+        db.execSQL(CREATE_EVENT_TEAM_LIST_TABLE);
     }
 
     @Override
@@ -171,6 +178,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + User.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PitCard.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RobotMedia.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + EventTeamList.TABLE_NAME);
 
         sqLiteDatabase.execSQL(CREATE_EVENTS_TABLE);
         sqLiteDatabase.execSQL(CREATE_TEAMS_TABLE);
@@ -180,5 +188,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
         sqLiteDatabase.execSQL(CREATE_USERS_TABLE);
         sqLiteDatabase.execSQL(CREATE_PIT_CARDS_TABLE);
         sqLiteDatabase.execSQL(CREATE_ROBOT_MEDIA_TABLE);
+        sqLiteDatabase.execSQL(CREATE_EVENT_TEAM_LIST_TABLE);
     }
 }

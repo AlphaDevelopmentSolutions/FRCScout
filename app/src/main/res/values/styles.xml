@@ -7,7 +7,7 @@
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
         <item name="actionBarTheme">@style/AppTheme.ActionBarTheme</item> <!-- used for the back arrow on the action bar -->
-
+        <item name="toolbarStyle">@style/CustomToolBarStyle</item>
     </style>
 
     <style name="AppTheme.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
@@ -21,6 +21,8 @@
         <item name="android:tint">#FFF</item>
     </style>
 
-
+    <style name="CustomToolBarStyle" parent="@style/Widget.AppCompat.Toolbar">
+        <item name="titleTextColor">#FFF</item>
+    </style>
 
 </resources>

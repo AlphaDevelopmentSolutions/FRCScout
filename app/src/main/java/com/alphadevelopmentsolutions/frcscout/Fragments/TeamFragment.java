@@ -12,8 +12,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.TeamViewPagerAdapter;
+import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeIcon;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -36,8 +38,10 @@ public class TeamFragment extends MasterFragment
 {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "teamId";
+    private static final String ARG_PARAM2 = "eventJson";
 
     private String teamJson;
+    private String eventJson;
 
     private OnFragmentInteractionListener mListener;
 
@@ -51,13 +55,15 @@ public class TeamFragment extends MasterFragment
      * this fragment using the provided parameters.
      *
      * @param teamJson json of team
+     * @param eventJson json of event
      * @return A new instance of fragment TeamFragment.
      */
-    public static TeamFragment newInstance(String teamJson)
+    public static TeamFragment newInstance(String teamJson, String eventJson)
     {
         TeamFragment fragment = new TeamFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, teamJson);
+        args.putString(ARG_PARAM2, eventJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -69,24 +75,24 @@ public class TeamFragment extends MasterFragment
         if (getArguments() != null)
         {
             teamJson = getArguments().getString(ARG_PARAM1);
+            eventJson = getArguments().getString(ARG_PARAM2);
         }
 
-        //gets rid of the shadow on the actionbar
-        context.dropActionBar();
-
-        loadTeamThread = new Thread(new Runnable()
+        loadThread = new Thread(new Runnable()
         {
             @Override
             public void run()
             {
                 team = new Gson().fromJson(teamJson, Team.class);
+                event = new Gson().fromJson(eventJson, Event.class);
             }
         });
-        loadTeamThread.start();
+        loadThread.start();
 
     }
 
     private Team team;
+    private Event event;
 
     private TabLayout teamTabLayout;
     private ViewPager teamViewPager;
@@ -107,7 +113,7 @@ public class TeamFragment extends MasterFragment
     private FloatingActionButton addPitCardFloatingActionButton;
     private FloatingActionButton addRobotPhotoFloatingActionButton;
 
-    private Thread loadTeamThread;
+    private Thread loadThread;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -115,6 +121,9 @@ public class TeamFragment extends MasterFragment
     {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_team, container, false);
+
+        //gets rid of the shadow on the actionbar
+        context.dropActionBar();
 
         //assign the vars to the views on the page
         teamNumberNameTextView = view.findViewById(R.id.TeamNumberNameTextView);
@@ -142,7 +151,7 @@ public class TeamFragment extends MasterFragment
             @Override
             public void onClick(View v)
             {
-                context.changeFragment(ScoutCardFragment.newInstance(null, team.getId()), true);
+                context.changeFragment(ScoutCardFragment.newInstance(null, eventJson, team.getId()), true);
             }
         });
 
@@ -151,7 +160,7 @@ public class TeamFragment extends MasterFragment
             @Override
             public void onClick(View v)
             {
-                context.changeFragment(PitCardFragment.newInstance(null, team.getId()), true);
+                context.changeFragment(PitCardFragment.newInstance(null, eventJson, team.getId()), true);
             }
         });
 
@@ -160,14 +169,26 @@ public class TeamFragment extends MasterFragment
             @Override
             public void onClick(View v)
             {
-                context.changeFragment(RobotMediaFragment.newInstance(null, team.getId()), true);
+
+                //Ensure the robot media folder exists
+                File mediaFolder = new File(Constants.MEDIA_DIRECTORY);
+                if(!mediaFolder.isDirectory())
+                {
+                    if (!mediaFolder.mkdir())
+                        context.showSnackbar(getString(R.string.mkdir_fail));
+                    else
+                        context.changeFragment(RobotMediaFragment.newInstance(null, team.getId()), true);
+
+                }
+                else
+                    context.changeFragment(RobotMediaFragment.newInstance(null, team.getId()), true);
             }
         });
 
         //join back up with the load team thread
         try
         {
-            loadTeamThread.join();
+            loadThread.join();
         } catch (InterruptedException e)
         {
             e.printStackTrace();
@@ -207,10 +228,10 @@ public class TeamFragment extends MasterFragment
 
         TeamViewPagerAdapter teamViewPagerAdapter = new TeamViewPagerAdapter(getChildFragmentManager());
 
-        teamViewPagerAdapter.addFragment(ScoutCardListFragment.newInstance(teamJson), "Scout Cards");
-        teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(teamJson), "Pit Cards");
+        teamViewPagerAdapter.addFragment(ScoutCardListFragment.newInstance(teamJson, eventJson), "Scout Cards");
+        teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(teamJson, eventJson), "Pit Cards");
         teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(teamJson), "Robot Images");
-        teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(team.getId()), "Quick Stats");
+        teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(team.getId(), eventJson), "Quick Stats");
 
         teamViewPager.setAdapter(teamViewPagerAdapter);
         teamViewPager.setOffscreenPageLimit(5);

@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
@@ -18,8 +20,6 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRecyclerViewAdapter.ViewHolder>
 {
 
@@ -27,10 +27,13 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
 
     private ArrayList<Team> teamList;
 
-    public TeamListRecyclerViewAdapter(ArrayList<Team> teamList, MainActivity context)
+    private String eventJson;
+
+    public TeamListRecyclerViewAdapter(ArrayList<Team> teamList, String eventJson, MainActivity context)
     {
         this.context = context;
         this.teamList = teamList;
+        this.eventJson = eventJson;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder
@@ -38,8 +41,8 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
         TextView teamNameTextView;
         TextView teamNumberTextView;
         TextView teamLocationTextView;
-        CircleImageView teamLogoImageView;
-        TextView viewTeamButton;
+        ImageView teamLogoImageView;
+        Button viewTeamButton;
 
         ViewHolder(@NonNull View view)
         {
@@ -78,8 +81,6 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
                     .load(Uri.fromFile(new File(team.getImageFileURI())))
                     .fit()
                     .centerCrop()
-                    .placeholder(R.drawable.frc_logo)
-                    .error(R.drawable.frc_logo)
                     .into(viewHolder.teamLogoImageView);
 
         else
@@ -93,7 +94,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
             @Override
             public void onClick(View v)
             {
-               context.changeFragment(TeamFragment.newInstance(new Gson().toJson(teamList.get(viewHolder.getAdapterPosition()))), true);
+               context.changeFragment(TeamFragment.newInstance(new Gson().toJson(teamList.get(viewHolder.getAdapterPosition())), eventJson), true);
             }
         });
     }

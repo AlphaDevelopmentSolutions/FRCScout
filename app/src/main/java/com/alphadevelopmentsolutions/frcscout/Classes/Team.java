@@ -8,6 +8,7 @@ import com.alphadevelopmentsolutions.frcscout.Interfaces.StatsKeys;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Team
 {
@@ -160,7 +161,7 @@ public class Team
      * @param database used to pull data
      * @return hashmap of stats
      */
-    public HashMap<String, HashMap<String, Double>> getStats(Database database)
+    public HashMap<String, HashMap<String, Double>> getStats(Database database, Event event)
     {
         HashMap<String, HashMap<String, Double>> stats = new HashMap<>();
         HashMap<String, Double> minStats = new HashMap<>();
@@ -217,10 +218,13 @@ public class Team
 
 
         //get all scout cards from the database
-        ArrayList<ScoutCard> scoutCards = database.getScoutCards(this, false);
+        ArrayList<ScoutCard> scoutCards = database.getScoutCards(this, event,false);
 
         //store iterations for avg
         int i = 0;
+
+        int nulledDefenseRatings = 0;
+        int nulledOffenseRatings = 0;
         
         for(ScoutCard scoutCard : scoutCards)
         {
@@ -267,10 +271,10 @@ public class Team
             if (scoutCard.getEndGameReturnedToHabitatAttempts() < minStats.get(StatsKeys.RETURNED_HAB_FAILS))
                 minStats.put(StatsKeys.RETURNED_HAB_FAILS, (double) scoutCard.getEndGameReturnedToHabitatAttempts());
 
-            if (scoutCard.getDefenseRating() < minStats.get(StatsKeys.DEFENSE_RATING))
+            if (scoutCard.getDefenseRating() != 0 && scoutCard.getDefenseRating() < minStats.get(StatsKeys.DEFENSE_RATING))
                 minStats.put(StatsKeys.DEFENSE_RATING, (double) scoutCard.getDefenseRating());
 
-            if (scoutCard.getOffenseRating() < minStats.get(StatsKeys.OFFENSE_RATING))
+            if (scoutCard.getOffenseRating() != 0 && scoutCard.getOffenseRating() < minStats.get(StatsKeys.OFFENSE_RATING))
                 minStats.put(StatsKeys.OFFENSE_RATING, (double) scoutCard.getOffenseRating());
 
             if (scoutCard.getDriveRating() < minStats.get(StatsKeys.DRIVE_RATING))
@@ -283,15 +287,22 @@ public class Team
             avgStats.put(StatsKeys.AUTO_HATCH_DROPPED, avgStats.get(StatsKeys.AUTO_HATCH_DROPPED) + scoutCard.getAutonomousHatchPanelsSecuredAttempts());
             avgStats.put(StatsKeys.AUTO_CARGO, avgStats.get(StatsKeys.AUTO_CARGO) + scoutCard.getAutonomousCargoStored());
             avgStats.put(StatsKeys.AUTO_CARGO_DROPPED, avgStats.get(StatsKeys.AUTO_CARGO_DROPPED) + scoutCard.getAutonomousCargoStoredAttempts());
+
             avgStats.put(StatsKeys.TELEOP_HATCH, avgStats.get(StatsKeys.TELEOP_HATCH) + scoutCard.getTeleopHatchPanelsSecured());
             avgStats.put(StatsKeys.TELEOP_HATCH_DROPPED, avgStats.get(StatsKeys.TELEOP_HATCH_DROPPED) + scoutCard.getTeleopHatchPanelsSecuredAttempts());
             avgStats.put(StatsKeys.TELEOP_CARGO, avgStats.get(StatsKeys.TELEOP_CARGO) + scoutCard.getTeleopCargoStored());
             avgStats.put(StatsKeys.TELEOP_CARGO_DROPPED, avgStats.get(StatsKeys.TELEOP_CARGO_DROPPED) + scoutCard.getTeleopCargoStoredAttempts());
+
             avgStats.put(StatsKeys.RETURNED_HAB, avgStats.get(StatsKeys.RETURNED_HAB) + scoutCard.getEndGameReturnedToHabitat());
             avgStats.put(StatsKeys.RETURNED_HAB_FAILS, avgStats.get(StatsKeys.RETURNED_HAB_FAILS) + scoutCard.getEndGameReturnedToHabitatAttempts());
+
             avgStats.put(StatsKeys.DEFENSE_RATING, avgStats.get(StatsKeys.DEFENSE_RATING) + scoutCard.getDefenseRating());
             avgStats.put(StatsKeys.OFFENSE_RATING, avgStats.get(StatsKeys.OFFENSE_RATING) + scoutCard.getOffenseRating());
             avgStats.put(StatsKeys.DRIVE_RATING, avgStats.get(StatsKeys.DRIVE_RATING) + scoutCard.getDriveRating());
+
+            nulledDefenseRatings = scoutCard.getDefenseRating() == 0 ? nulledDefenseRatings + 1 : nulledDefenseRatings;
+            nulledOffenseRatings = scoutCard.getOffenseRating() == 0 ? nulledOffenseRatings + 1 : nulledOffenseRatings;
+
             i++;
             
             //calculate max
@@ -354,17 +365,26 @@ public class Team
         avgStats.put(StatsKeys.AUTO_HATCH_DROPPED, avgStats.get(StatsKeys.AUTO_HATCH_DROPPED) / i );
         avgStats.put(StatsKeys.AUTO_CARGO, avgStats.get(StatsKeys.AUTO_CARGO) / i );
         avgStats.put(StatsKeys.AUTO_CARGO_DROPPED, avgStats.get(StatsKeys.AUTO_CARGO_DROPPED) / i );
+
         avgStats.put(StatsKeys.TELEOP_HATCH, avgStats.get(StatsKeys.TELEOP_HATCH) / i );
         avgStats.put(StatsKeys.TELEOP_HATCH_DROPPED, avgStats.get(StatsKeys.TELEOP_HATCH_DROPPED) / i );
         avgStats.put(StatsKeys.TELEOP_CARGO, avgStats.get(StatsKeys.TELEOP_CARGO) / i );
         avgStats.put(StatsKeys.TELEOP_CARGO_DROPPED, avgStats.get(StatsKeys.TELEOP_CARGO_DROPPED) / i );
+
         avgStats.put(StatsKeys.RETURNED_HAB, avgStats.get(StatsKeys.RETURNED_HAB) / i );
         avgStats.put(StatsKeys.RETURNED_HAB_FAILS, avgStats.get(StatsKeys.RETURNED_HAB_FAILS) / i );
-        avgStats.put(StatsKeys.DEFENSE_RATING, avgStats.get(StatsKeys.DEFENSE_RATING) / i );
-        avgStats.put(StatsKeys.OFFENSE_RATING, avgStats.get(StatsKeys.OFFENSE_RATING) / i );
+
+        avgStats.put(StatsKeys.DEFENSE_RATING, avgStats.get(StatsKeys.DEFENSE_RATING) / (i - nulledDefenseRatings) );
+        avgStats.put(StatsKeys.OFFENSE_RATING, avgStats.get(StatsKeys.OFFENSE_RATING) / (i - nulledOffenseRatings) );
         avgStats.put(StatsKeys.DRIVE_RATING, avgStats.get(StatsKeys.DRIVE_RATING) / i );
-        
-        
+
+        //verify the min stats are not still at default 1000
+        for(Map.Entry<String, Double> minStat : minStats.entrySet())
+        {
+            if(minStat.getValue() > 900)
+                minStats.put(minStat.getKey(), 0.0);
+        }
+
         stats.put(StatsKeys.MIN, minStats);
         stats.put(StatsKeys.AVG, avgStats);
         stats.put(StatsKeys.MAX, maxStats);

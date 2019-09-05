@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,11 +27,14 @@ public class PitCardsRecyclerViewAdapter extends RecyclerView.Adapter<PitCardsRe
 
     private MainActivity context;
 
-    public PitCardsRecyclerViewAdapter(Team team, ArrayList<PitCard> pitCards, MainActivity context)
+    private String eventJson;
+
+    public PitCardsRecyclerViewAdapter(Team team, String eventJson, ArrayList<PitCard> pitCards, MainActivity context)
     {
         this.team = team;
         this.pitCards = pitCards;
         this.context = context;
+        this.eventJson = eventJson;
 
     }
 
@@ -40,7 +44,7 @@ public class PitCardsRecyclerViewAdapter extends RecyclerView.Adapter<PitCardsRe
         TextView pitCardIdTextView;
         TextView completedByTextView;
         ImageView pitCardOptionsImageView;
-        TextView viewPitCardButton;
+        Button viewPitCardButton;
 
         ViewHolder(@NonNull View view)
         {
@@ -69,9 +73,9 @@ public class PitCardsRecyclerViewAdapter extends RecyclerView.Adapter<PitCardsRe
 
         PitCard pitCard = pitCards.get(viewHolder.getAdapterPosition());
 
-        //set scores
+        //set pit card info
         viewHolder.completedByTextView.setText(pitCard.getCompletedBy());
-        viewHolder.pitCardIdTextView.setText(String.valueOf(pitCard.getId()));
+        viewHolder.pitCardIdTextView.setText(String.valueOf(pitCards.size() - viewHolder.getAdapterPosition()));
 
         //Opens an option menu for various options on that score card
         viewHolder.pitCardOptionsImageView.setOnClickListener(new View.OnClickListener()
@@ -91,7 +95,7 @@ public class PitCardsRecyclerViewAdapter extends RecyclerView.Adapter<PitCardsRe
             public void onClick(View v)
             {
                 //swap fragments
-               context.changeFragment(PitCardFragment.newInstance(new Gson().toJson(pitCards.get(viewHolder.getAdapterPosition())), -1), true);
+               context.changeFragment(PitCardFragment.newInstance(new Gson().toJson(pitCards.get(viewHolder.getAdapterPosition())), eventJson,-1), true);
             }
         });
     }

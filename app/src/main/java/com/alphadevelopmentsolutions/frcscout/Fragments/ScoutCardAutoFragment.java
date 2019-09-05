@@ -119,7 +119,8 @@ public class ScoutCardAutoFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                autonomousExitHabitatTextView.setText(R.string.no);
+                if(scoutCard == null || scoutCard.isDraft())
+                    autonomousExitHabitatTextView.setText(R.string.no);
             }
         });
 
@@ -128,7 +129,8 @@ public class ScoutCardAutoFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                autonomousExitHabitatTextView.setText(R.string.yes);
+                if(scoutCard == null || scoutCard.isDraft())
+                    autonomousExitHabitatTextView.setText(R.string.yes);
             }
         });
 
@@ -153,7 +155,8 @@ public class ScoutCardAutoFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                autonomousHatchPanelsPickupTextView.setText((Integer.parseInt(autonomousHatchPanelsPickupTextView.getText().toString()) - 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    autonomousHatchPanelsPickupTextView.setText((Integer.parseInt(autonomousHatchPanelsPickupTextView.getText().toString()) - 1) + "");
             }
         });
 
@@ -162,7 +165,8 @@ public class ScoutCardAutoFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                autonomousHatchPanelsPickupTextView.setText((Integer.parseInt(autonomousHatchPanelsPickupTextView.getText().toString()) + 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    autonomousHatchPanelsPickupTextView.setText((Integer.parseInt(autonomousHatchPanelsPickupTextView.getText().toString()) + 1) + "");
             }
         });
 
@@ -171,7 +175,8 @@ public class ScoutCardAutoFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                autonomousHatchPanelsSecuredAttemptsTextView.setText((Integer.parseInt(autonomousHatchPanelsSecuredAttemptsTextView.getText().toString()) - 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    autonomousHatchPanelsSecuredAttemptsTextView.setText((Integer.parseInt(autonomousHatchPanelsSecuredAttemptsTextView.getText().toString()) - 1) + "");
             }
         });
 
@@ -180,7 +185,8 @@ public class ScoutCardAutoFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                autonomousHatchPanelsSecuredAttemptsTextView.setText((Integer.parseInt(autonomousHatchPanelsSecuredAttemptsTextView.getText().toString()) + 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    autonomousHatchPanelsSecuredAttemptsTextView.setText((Integer.parseInt(autonomousHatchPanelsSecuredAttemptsTextView.getText().toString()) + 1) + "");
             }
         });
 
@@ -189,7 +195,8 @@ public class ScoutCardAutoFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                autonomousHatchPanelsSecuredTextView.setText((Integer.parseInt(autonomousHatchPanelsSecuredTextView.getText().toString()) - 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    autonomousHatchPanelsSecuredTextView.setText((Integer.parseInt(autonomousHatchPanelsSecuredTextView.getText().toString()) - 1) + "");
             }
         });
 
@@ -198,7 +205,8 @@ public class ScoutCardAutoFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                autonomousHatchPanelsSecuredTextView.setText((Integer.parseInt(autonomousHatchPanelsSecuredTextView.getText().toString()) + 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    autonomousHatchPanelsSecuredTextView.setText((Integer.parseInt(autonomousHatchPanelsSecuredTextView.getText().toString()) + 1) + "");
             }
         });
 
@@ -223,7 +231,8 @@ public class ScoutCardAutoFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                autonomousCargoPickupTextView.setText((Integer.parseInt(autonomousCargoPickupTextView.getText().toString()) - 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    autonomousCargoPickupTextView.setText((Integer.parseInt(autonomousCargoPickupTextView.getText().toString()) - 1) + "");
             }
         });
 
@@ -232,7 +241,8 @@ public class ScoutCardAutoFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                autonomousCargoPickupTextView.setText((Integer.parseInt(autonomousCargoPickupTextView.getText().toString()) + 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    autonomousCargoPickupTextView.setText((Integer.parseInt(autonomousCargoPickupTextView.getText().toString()) + 1) + "");
             }
         });
 
@@ -241,7 +251,8 @@ public class ScoutCardAutoFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                autonomousCargoStoredAttemptsTextView.setText((Integer.parseInt(autonomousCargoStoredAttemptsTextView.getText().toString()) - 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    autonomousCargoStoredAttemptsTextView.setText((Integer.parseInt(autonomousCargoStoredAttemptsTextView.getText().toString()) - 1) + "");
             }
         });
 
@@ -250,7 +261,8 @@ public class ScoutCardAutoFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                autonomousCargoStoredAttemptsTextView.setText((Integer.parseInt(autonomousCargoStoredAttemptsTextView.getText().toString()) + 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    autonomousCargoStoredAttemptsTextView.setText((Integer.parseInt(autonomousCargoStoredAttemptsTextView.getText().toString()) + 1) + "");
             }
         });
 
@@ -259,7 +271,8 @@ public class ScoutCardAutoFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                autonomousCargoStoredTextView.setText((Integer.parseInt(autonomousCargoStoredTextView.getText().toString()) - 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    autonomousCargoStoredTextView.setText((Integer.parseInt(autonomousCargoStoredTextView.getText().toString()) - 1) + "");
             }
         });
 
@@ -268,7 +281,8 @@ public class ScoutCardAutoFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                autonomousCargoStoredTextView.setText((Integer.parseInt(autonomousCargoStoredTextView.getText().toString()) + 1) + "");
+                if(scoutCard == null || scoutCard.isDraft())
+                    autonomousCargoStoredTextView.setText((Integer.parseInt(autonomousCargoStoredTextView.getText().toString()) + 1) + "");
             }
         });
 

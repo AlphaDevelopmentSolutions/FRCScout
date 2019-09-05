@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.PitCardsRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
@@ -32,6 +33,7 @@ public class PitCardListFragment extends MasterFragment
 
     // TODO: Rename and change types of parameters
     private String teamJson;
+    private String eventJson;
 
     private OnFragmentInteractionListener mListener;
 
@@ -45,14 +47,16 @@ public class PitCardListFragment extends MasterFragment
      * this fragment using the provided parameters.
      *
      * @param teamJson team json.
+     * @param eventJson event json.
      * @return A new instance of fragment PitCardListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PitCardListFragment newInstance(String teamJson)
+    public static PitCardListFragment newInstance(String teamJson, String eventJson)
     {
         PitCardListFragment fragment = new PitCardListFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, teamJson);
+        args.putString(ARG_PARAM2, eventJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,14 +68,17 @@ public class PitCardListFragment extends MasterFragment
         if (getArguments() != null)
         {
             teamJson = getArguments().getString(ARG_PARAM1);
+            eventJson = getArguments().getString(ARG_PARAM2);
         }
 
         team = new Gson().fromJson(teamJson, Team.class);
+        event = new Gson().fromJson(eventJson, Event.class);
     }
 
     private RecyclerView pitCardListRecyclerView;
 
     private Team team;
+    private Event event;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,7 +89,7 @@ public class PitCardListFragment extends MasterFragment
 
         pitCardListRecyclerView = view.findViewById(R.id.PitCardListRecyclerView);
 
-        PitCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new PitCardsRecyclerViewAdapter(team, database.getPitCards(team, false), context);
+        PitCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new PitCardsRecyclerViewAdapter(team, eventJson, database.getPitCards(team, event,false), context);
         pitCardListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         pitCardListRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
 

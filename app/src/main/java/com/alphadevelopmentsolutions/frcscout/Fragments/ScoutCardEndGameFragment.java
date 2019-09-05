@@ -106,8 +106,11 @@ public class ScoutCardEndGameFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                endGameReturnedToHabitatTextView.setText(R.string.no);
-                returnedToHabLevel = 0;
+                if(scoutCard == null || scoutCard.isDraft())
+                {
+                    endGameReturnedToHabitatTextView.setText(R.string.no);
+                    returnedToHabLevel = 0;
+                }
             }
         });
 
@@ -116,8 +119,11 @@ public class ScoutCardEndGameFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                endGameReturnedToHabitatTextView.setText(R.string.level_1);
-                returnedToHabLevel = 1;
+                if(scoutCard == null || scoutCard.isDraft())
+                {
+                    endGameReturnedToHabitatTextView.setText(R.string.level_1);
+                    returnedToHabLevel = 1;
+                }
             }
         });
 
@@ -126,8 +132,11 @@ public class ScoutCardEndGameFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                endGameReturnedToHabitatTextView.setText(R.string.level_2);
-                returnedToHabLevel = 2;
+                if(scoutCard == null || scoutCard.isDraft())
+                {
+                    endGameReturnedToHabitatTextView.setText(R.string.level_2);
+                    returnedToHabLevel = 2;
+                }
             }
         });
 
@@ -136,8 +145,11 @@ public class ScoutCardEndGameFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                endGameReturnedToHabitatTextView.setText(R.string.level_3);
-                returnedToHabLevel = 3;
+                if(scoutCard == null || scoutCard.isDraft())
+                {
+                    endGameReturnedToHabitatTextView.setText(R.string.level_3);
+                    returnedToHabLevel = 3;
+                }
             }
         });
 
@@ -146,8 +158,11 @@ public class ScoutCardEndGameFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                endGameReturnedToHabitatAttemptsTextView.setText(R.string.no);
-                returnedToHabAttemptLevel = 0;
+                if(scoutCard == null || scoutCard.isDraft())
+                {
+                    endGameReturnedToHabitatAttemptsTextView.setText(R.string.no);
+                    returnedToHabAttemptLevel = 0;
+                }
             }
         });
 
@@ -156,8 +171,11 @@ public class ScoutCardEndGameFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                endGameReturnedToHabitatAttemptsTextView.setText(R.string.level_1);
-                returnedToHabAttemptLevel = 1;
+                if(scoutCard == null || scoutCard.isDraft())
+                {
+                    endGameReturnedToHabitatAttemptsTextView.setText(R.string.level_1);
+                    returnedToHabAttemptLevel = 1;
+                }
             }
         });
 
@@ -166,8 +184,11 @@ public class ScoutCardEndGameFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                endGameReturnedToHabitatAttemptsTextView.setText(R.string.level_2);
-                returnedToHabAttemptLevel = 2;
+                if (scoutCard == null || scoutCard.isDraft())
+                {
+                    endGameReturnedToHabitatAttemptsTextView.setText(R.string.level_2);
+                    returnedToHabAttemptLevel = 2;
+                }
             }
         });
 
@@ -176,8 +197,11 @@ public class ScoutCardEndGameFragment extends MasterFragment {
             @Override
             public void onClick(View v)
             {
-                endGameReturnedToHabitatAttemptsTextView.setText(R.string.level_3);
-                returnedToHabAttemptLevel = 3;
+                if(scoutCard == null || scoutCard.isDraft())
+                {
+                    endGameReturnedToHabitatAttemptsTextView.setText(R.string.level_3);
+                    returnedToHabAttemptLevel = 3;
+                }
             }
         });
 

@@ -32,12 +32,12 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/autonomous"
                 android:gravity="center">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/autonomous"
                     android:padding="@dimen/material_padding"
                     android:text="@string/exit_hab" />
             </TableRow>
@@ -45,78 +45,12 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/autonomous"
                 android:gravity="center">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/autonomous"
-                    android:padding="@dimen/material_padding"
-                    android:text="@string/hatches"/>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/autonomous"
-                    android:padding="@dimen/material_padding"
-                    android:text="@string/hatches_dropped"/>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/autonomous"
-                    android:padding="@dimen/material_padding"
-                    android:text="@string/cargo" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center">
-
-                <TextView
-                    android:id="@+id/textView16"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/autonomous"
-                    android:padding="@dimen/material_padding"
-                    android:text="@string/cargo_stored_attempts" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/teleop"
-                    android:padding="@dimen/material_padding"
-                    android:text="@string/hatches_dropped" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/teleop"
                     android:padding="@dimen/material_padding"
                     android:text="@string/hatches" />
             </TableRow>
@@ -124,12 +58,25 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/autonomous"
                 android:gravity="center">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/teleop"
+                    android:padding="@dimen/material_padding"
+                    android:text="@string/hatches_dropped" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/autonomous"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:padding="@dimen/material_padding"
                     android:text="@string/cargo" />
             </TableRow>
@@ -137,24 +84,78 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/autonomous"
                 android:gravity="center">
 
                 <TextView
+                    android:id="@+id/textView16"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/teleop"
                     android:padding="@dimen/material_padding"
                     android:text="@string/cargo_stored_attempts" />
             </TableRow>
+
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/teleop"
                 android:gravity="center">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/end_game"
+                    android:padding="@dimen/material_padding"
+                    android:text="@string/hatches" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/teleop"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/material_padding"
+                    android:text="@string/hatches_dropped" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/teleop"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/material_padding"
+                    android:text="@string/cargo" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/teleop"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/material_padding"
+                    android:text="@string/cargo_stored_attempts" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/end_game"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:padding="@dimen/material_padding"
                     android:text="@string/return_hab"
                     android:textColor="@android:color/white" />
@@ -163,12 +164,12 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/end_game"
                 android:gravity="center">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/end_game"
                     android:padding="@dimen/material_padding"
                     android:text="@string/return_hab_fail"
                     android:textColor="@android:color/white" />
@@ -177,25 +178,26 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/post_game"
                 android:gravity="center">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/post_game"
                     android:padding="@dimen/material_padding"
                     android:text="@string/defense_rating"
                     android:textColor="@android:color/white" />
             </TableRow>
+
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/post_game"
                 android:gravity="center">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/post_game"
                     android:padding="@dimen/material_padding"
                     android:text="@string/offense_rating"
                     android:textColor="@android:color/white" />
@@ -204,12 +206,12 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/post_game"
                 android:gravity="center">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/post_game"
                     android:padding="@dimen/material_padding"
                     android:text="@string/drive_rating"
                     android:textColor="@android:color/white" />

@@ -6,8 +6,8 @@ android {
         applicationId "com.alphadevelopmentsolutions.frcscout"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 7
-        versionName "1.4.1"
+        versionCode 17
+        versionName "v2019.2.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
