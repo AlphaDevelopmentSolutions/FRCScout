@@ -6,15 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
@@ -23,9 +22,6 @@ import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -90,13 +86,11 @@ public class RobotMediaFragment extends MasterFragment
 
     private ImageView robotMediaImageView;
 
-    private FloatingActionButton rotateLeftFloatingActionButton;
-    private FloatingActionButton rotateRightFloatingActionButton;
-    private FloatingActionButton saveRobotMediaFloatingActionButton;
+    private Button robotMediaSaveButton;
+
+//    private Bitmap robotThumbBitmap;
 
     private File mediaFile;
-
-    private Bitmap imageBitmap;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -105,16 +99,12 @@ public class RobotMediaFragment extends MasterFragment
         View view = inflater.inflate(R.layout.fragment_robot_media, container, false);
 
         robotMediaImageView = view.findViewById(R.id.RobotMediaImageView);
-        rotateLeftFloatingActionButton = view.findViewById(R.id.RotateLeftFloatingActionButton);
-        rotateRightFloatingActionButton = view.findViewById(R.id.RotateRightFloatingActionButton);
-        saveRobotMediaFloatingActionButton = view.findViewById(R.id.SaveRobotMediaFloatingActionButton);
+        robotMediaSaveButton = view.findViewById(R.id.RobotMediaSaveButton);
 
         //robot media loaded, load image
         if(robotMedia != null)
         {
-            saveRobotMediaFloatingActionButton.hide();
-            rotateLeftFloatingActionButton.hide();
-            rotateRightFloatingActionButton.hide();
+            robotMediaSaveButton.setVisibility(View.GONE);
 
             File robotImage = new File(robotMedia.getFileUri());
 
@@ -131,74 +121,46 @@ public class RobotMediaFragment extends MasterFragment
             mediaFile = new File(RobotMedia.generateFileUri().getAbsolutePath()); //get file URI
 
             //save the new image
-            saveRobotMediaFloatingActionButton.setOnClickListener(new View.OnClickListener()
+            robotMediaSaveButton.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
                 {
+//                    if(robotThumbBitmap != null)
+//                    {
+//                        try {
 
-                    robotMedia = new RobotMedia(
-                            -1,
-                            teamId,
-                            mediaFile.getAbsolutePath(),
-                            true);
+                            //code for thumbnails
+//                            FileOutputStream fileOutputStream = new FileOutputStream(mediaFile);
+//                            robotThumbBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream); //write data to file
 
-                    robotMedia.save(database);
+                            robotMedia = new RobotMedia(
+                                    -1,
+                                    teamId,
+                                    mediaFile.getAbsolutePath(),
+                                    true);
 
-                    //save update the file on the phone with a compressed jpeg image
-                    FileOutputStream out = null;
-                    try
-                    {
-                        out = new FileOutputStream(mediaFile);
+                            robotMedia.save(database);
 
-
-                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 15, out);
-                    out.flush();
-                    out.close();
-
-                    } catch (FileNotFoundException e)
-                    {
-                        e.printStackTrace();
-                    } catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-
-
-                    context.getSupportFragmentManager().popBackStackImmediate();
-                }
-            });
-
-            rotateLeftFloatingActionButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    Matrix matrix = new Matrix();
-
-                    matrix.postRotate(-90);
-                    imageBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
-                    robotMediaImageView.setImageBitmap(imageBitmap);
-                }
-            });
-
-            rotateRightFloatingActionButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    Matrix matrix = new Matrix();
-
-                    matrix.postRotate(90);
-                    imageBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
-                    robotMediaImageView.setImageBitmap(imageBitmap);
+                            context.getSupportFragmentManager().popBackStackImmediate();
+//                        }
+//                        catch (FileNotFoundException e)
+//                        {
+//                            e.printStackTrace();
+//                        }
+//                    }
                 }
             });
 
             //launch intent to take picture if none supplied
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(context, context.getPackageName() + ".provider", mediaFile));
-            startActivityForResult(takePictureIntent, Constants.ROBOT_MEDIA_REQUEST_CODE);
+//            if(robotThumbBitmap == null)
+//            {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(context, context.getPackageName() + ".provider", mediaFile));
+                startActivityForResult(takePictureIntent, Constants.ROBOT_MEDIA_REQUEST_CODE);
+
+//            }
+
 
         }
 
@@ -216,12 +178,12 @@ public class RobotMediaFragment extends MasterFragment
             case Constants.ROBOT_MEDIA_REQUEST_CODE:
                 if(resultCode == Activity.RESULT_OK)
                 {
-                    imageBitmap = BitmapFactory.decodeFile(mediaFile.getAbsolutePath());
+                    //code for thumbnails
+//                    Bundle extras = data.getExtras();
+//                    robotThumbBitmap = (Bitmap) extras.get("data");
 
-                    robotMediaImageView.setImageBitmap(imageBitmap);
-
+                    robotMediaImageView.setImageBitmap(BitmapFactory.decodeFile(mediaFile.getAbsolutePath()));
                 }
-
 
                 break;
         }

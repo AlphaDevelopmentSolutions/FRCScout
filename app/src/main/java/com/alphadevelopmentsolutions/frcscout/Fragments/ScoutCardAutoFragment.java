@@ -307,7 +307,7 @@ public class ScoutCardAutoFragment extends MasterFragment {
 
     public boolean getAutonomousExitHab()
     {
-        return autonomousExitHabitatTextView.getText().toString().equals(context.getResources().getString(R.string.yes));
+        return autonomousExitHabitatTextView.getText().toString().equals(context.getString(R.string.yes));
     }
 
     public int getAutonomousHatchPanelsSecured()

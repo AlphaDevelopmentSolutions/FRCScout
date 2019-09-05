@@ -9,6 +9,7 @@
     <string name="versus">VS</string>
     <string name="more_button">More Button</string>
     <string name="autonomous">Autonomous</string>
+    <string name="auto">Auto</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="teleop">Teleop</string>
@@ -91,5 +92,10 @@
     <string name="hatches_dropped">Hatch Dropped</string>
     <string name="view_event">view event</string>
     <string name="view_team">view team</string>
-    <string name="mkdir_fail">Could not create robot media directory.</string>
+    <string name="scout_cards">Scout Cards</string>
+    <string name="pit_cards">Pit Cards</string>
+    <string name="robot_images">Robot Images</string>
+    <string name="quick_stats">Quick Stats</string>
+    <string name="add_card">Add Card</string>
+    <string name="events">Events</string>
 </resources>

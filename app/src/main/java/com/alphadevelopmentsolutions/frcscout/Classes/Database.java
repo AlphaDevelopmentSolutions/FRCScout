@@ -146,6 +146,16 @@ public class Database
             db.execSQL("DELETE FROM " + tableName);
     }
 
+    public void clearMatches()
+    {
+        ArrayList<String> tableNames = new ArrayList<>();
+
+        tableNames.add(Match.TABLE_NAME);
+
+        for(String tableName : tableNames)
+            db.execSQL("DELETE FROM " + tableName);
+    }
+
     public void clearRobotMedia(boolean clearDrafts)
     {
         ArrayList<String> tableNames = new ArrayList<>();
@@ -155,6 +165,8 @@ public class Database
         for(String tableName : tableNames)
             db.execSQL("DELETE FROM " + tableName + ((clearDrafts) ? "" : " WHERE IsDraft = 0"));
     }
+
+
 
     //region Event Logic
 
@@ -731,6 +743,136 @@ public class Database
     //region Match Logic
 
     /**
+     * Returns all columns inside the match table in string array format
+     * @return string array of all columns
+     */
+    private String[] getMatchColumns()
+    {
+        return new String[]
+                {
+                        Match.COLUMN_NAME_ID,
+                        Match.COLUMN_NAME_DATE,
+                        Match.COLUMN_NAME_EVENT_ID,
+                        Match.COLUMN_NAME_KEY,
+                        Match.COLUMN_NAME_MATCH_TYPE,
+                        Match.COLUMN_NAME_SET_NUMBER,
+                        Match.COLUMN_NAME_MATCH_NUMBER,
+                        Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID,
+                        Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID,
+                        Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID,
+                        Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE,
+                        Match.COLUMN_NAME_RED_ALLIANCE_SCORE,
+                        Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID,
+                        Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID,
+                        Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID,
+                };
+    }
+
+    /**
+     * Takes in a cursor with info pulled from database and converts it into an object
+     * @param cursor info from database
+     * @return Match object converted data
+     */
+    private Match getMatchFromCursor(Cursor cursor)
+    {
+        int id = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_ID));
+        Date date = new Date(cursor.getLong(cursor.getColumnIndex(Match.COLUMN_NAME_DATE)));
+        String eventId = cursor.getString(cursor.getColumnIndex(Match.COLUMN_NAME_EVENT_ID));
+        String key = cursor.getString(cursor.getColumnIndex(Match.COLUMN_NAME_KEY));
+        Match.Type matchType = Match.Type.getTypeFromString(cursor.getString(cursor.getColumnIndex(Match.COLUMN_NAME_MATCH_TYPE)));
+        int setNumber = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_SET_NUMBER));
+        int matchNumber = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_MATCH_NUMBER));
+
+        int blueAllianceTeamOneId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID));
+        int blueAllianceTeamTwoId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID));
+        int blueAllianceTeamThreeId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID));
+
+        int redAllianceTeamOne = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID));
+        int redAllianceTeamTwo = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID));
+        int redAllianceTeamThree = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID));
+
+        int blueAllianceScore = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE));
+        int redAllianceScore = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_SCORE));
+
+        return new Match(
+                id,
+                date,
+                eventId,
+                key,
+                matchType,
+                setNumber,
+                matchNumber,
+
+                blueAllianceTeamOneId,
+                blueAllianceTeamTwoId,
+                blueAllianceTeamThreeId,
+
+                redAllianceTeamOne,
+                redAllianceTeamTwo,
+                redAllianceTeamThree,
+
+                blueAllianceScore,
+                redAllianceScore);
+    }
+
+    /**
+     * Gets all events in the database
+     * @return all events inside database
+     */
+    public ArrayList<Match> getMatches(Team team, Event event)
+    {
+        ArrayList<Match> matches = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns = getMatchColumns();
+
+        //where statement
+        String whereStatement = Match.COLUMN_NAME_EVENT_ID + " = ? AND (" +
+                Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID + " = ? OR " +
+                Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID + " = ? OR " +
+                Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID + " = ? OR " +
+
+                Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID + " = ? OR " +
+                Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID + " = ? OR " +
+                Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID + " = ? )";
+        String[] whereArgs = {event.getBlueAllianceId(),
+                String.valueOf(team.getId()),
+                String.valueOf(team.getId()),
+                String.valueOf(team.getId()),
+                String.valueOf(team.getId()),
+                String.valueOf(team.getId()),
+                String.valueOf(team.getId()),
+        };
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                Match.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                null);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while (cursor.moveToNext())
+            {
+
+                matches.add(getMatchFromCursor(cursor));
+            }
+
+            cursor.close();
+
+            return matches;
+        }
+
+
+        return null;
+    }
+
+    /**
      * Gets a specific match from the database and returns it
      *
      * @param match with specified ID
@@ -739,24 +881,8 @@ public class Database
     public Match getMatch(Match match)
     {
         //insert columns you are going to use here
-        String[] columns =
-                {
-                        Match.COLUMN_NAME_DATE,
-                        Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID,
-                        Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID,
-                        Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID,
-                        Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_SCOUT_CARD_ID,
-                        Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_SCOUT_CARD_ID,
-                        Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_SCOUT_CARD_ID,
-                        Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE,
-                        Match.COLUMN_NAME_RED_ALLIANCE_SCORE,
-                        Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID,
-                        Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID,
-                        Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID,
-                        Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_SCOUT_CARD_ID,
-                        Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_SCOUT_CARD_ID,
-                        Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_SCOUT_CARD_ID
-                };
+        String[] columns = getMatchColumns();
+
 
         //where statement
         String whereStatement = Match.COLUMN_NAME_ID + " = ?";
@@ -778,25 +904,11 @@ public class Database
             //move to the first result in the set
             cursor.moveToFirst();
 
-            Date date = new Date(cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_DATE)));
-            int blueAllianceTeamOneId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID));
-            int blueAllianceTeamTwoId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID));
-            int blueAllianceTeamThreeId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID));
-            int blueAllianceTeamOneScoutCardId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_SCOUT_CARD_ID));
-            int blueAllianceTeamTwoScoutCardId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_SCOUT_CARD_ID));
-            int blueAllianceTeamThreeScoutCardId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_SCOUT_CARD_ID));
-            int score = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE));
-            int opponentScore = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_SCORE));
-            int redAllianceTeamOne = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID));
-            int redAllianceTeamTwo = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID));
-            int redAllianceTeamThree = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID));
-            int redAllianceTeamOneScoutCardId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_SCOUT_CARD_ID));
-            int redAllianceTeamTwoScoutCardId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_SCOUT_CARD_ID));
-            int redAllianceTeamThreeScoutCardId = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_SCOUT_CARD_ID));
+            Match databaseMatch = getMatchFromCursor(cursor);
 
             cursor.close();
 
-            return new Match(match.getId(), date, blueAllianceTeamOneId, blueAllianceTeamTwoId, blueAllianceTeamThreeId, blueAllianceTeamOneScoutCardId, blueAllianceTeamTwoScoutCardId, blueAllianceTeamThreeScoutCardId, score, opponentScore, redAllianceTeamOne, redAllianceTeamTwo, redAllianceTeamThree, redAllianceTeamOneScoutCardId, redAllianceTeamTwoScoutCardId, redAllianceTeamThreeScoutCardId);
+            return databaseMatch;
         }
 
 
@@ -814,20 +926,23 @@ public class Database
         //set all the values
         ContentValues contentValues = new ContentValues();
         contentValues.put(Match.COLUMN_NAME_DATE, match.getDate().getTime());
+        contentValues.put(Match.COLUMN_NAME_EVENT_ID, match.getEventId());
+        contentValues.put(Match.COLUMN_NAME_KEY, match.getKey());
+        contentValues.put(Match.COLUMN_NAME_MATCH_TYPE, match.getMatchType().name());
+        contentValues.put(Match.COLUMN_NAME_SET_NUMBER, match.getSetNumber());
+        contentValues.put(Match.COLUMN_NAME_MATCH_NUMBER, match.getMatchNumber());
+
         contentValues.put(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID, match.getBlueAllianceTeamOneId());
         contentValues.put(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID, match.getBlueAllianceTeamTwoId());
         contentValues.put(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID, match.getBlueAllianceTeamThreeId());
-        contentValues.put(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_SCOUT_CARD_ID, match.getBlueAllianceTeamOneScoutCardId());
-        contentValues.put(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_SCOUT_CARD_ID, match.getBlueAllianceTeamTwoScoutCardId());
-        contentValues.put(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_SCOUT_CARD_ID, match.getBlueAllianceTeamThreeScoutCardId());
-        contentValues.put(Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE, match.getBlueAllianceScore());
-        contentValues.put(Match.COLUMN_NAME_RED_ALLIANCE_SCORE, match.getRedAllianceScore());
+
         contentValues.put(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID, match.getRedAllianceTeamOneId());
         contentValues.put(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID, match.getRedAllianceTeamTwoId());
         contentValues.put(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID, match.getRedAllianceTeamThreeId());
-        contentValues.put(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_SCOUT_CARD_ID, match.getRedAllianceTeamOneScoutCardId());
-        contentValues.put(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_SCOUT_CARD_ID, match.getRedAllianceTeamTwoScoutCardId());
-        contentValues.put(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_SCOUT_CARD_ID, match.getRedAllianceTeamThreeScoutCardId());
+
+        contentValues.put(Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE, match.getBlueAllianceScore());
+        contentValues.put(Match.COLUMN_NAME_RED_ALLIANCE_SCORE, match.getRedAllianceScore());
+
 
         //Match already exists in DB, update
         if (match.getId() > 0)
@@ -908,8 +1023,6 @@ public class Database
                     ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT,
                     ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS,
 
-                    ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE,
-                    ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE,
                     ScoutCard.COLUMN_NAME_DEFENSE_RATING,
                     ScoutCard.COLUMN_NAME_OFFENSE_RATING,
                     ScoutCard.COLUMN_NAME_DRIVE_RATING,
@@ -930,7 +1043,7 @@ public class Database
     private ScoutCard getScoutCardFromCursor(Cursor cursor)
     {
         int id = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ID));
-        int matchId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_MATCH_ID));
+        String matchId = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_MATCH_ID));
         int teamId = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_TEAM_ID));
         String eventId = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_EVENT_ID));
         String allianceColor = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_ALLIANCE_COLOR));
@@ -958,14 +1071,12 @@ public class Database
         int endGameReturnedToHabitat = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT));
         int endGameReturnedToHabitatAttempts = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS));
 
-        int blueAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE));
-        int redAllianceFinalScore = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE));
         int defenseRating = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_DEFENSE_RATING));
         int offenseRating = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_OFFENSE_RATING));
         int driveRating = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_DRIVE_RATING));
         String notes = cursor.getString(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_NOTES));
         
-        Date completedDate = new Date(cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)));
+        Date completedDate = new Date(cursor.getLong(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_COMPLETED_DATE)));
         boolean isDraft = cursor.getInt(cursor.getColumnIndex(ScoutCard.COLUMN_NAME_IS_DRAFT)) == 1;
 
         return new ScoutCard(
@@ -998,8 +1109,6 @@ public class Database
                 endGameReturnedToHabitat,
                 endGameReturnedToHabitatAttempts,
 
-                blueAllianceFinalScore,
-                redAllianceFinalScore,
                 defenseRating,
                 offenseRating,
                 driveRating,
@@ -1049,6 +1158,50 @@ public class Database
             return scoutCards;
         }
         
+        return null;
+    }
+
+    /**
+     * Gets all scout cards for a match at an event
+     * @param match with specified ID
+     * @param event with specified ID
+     * @return scoutcard based off given team ID
+     */
+    public ArrayList<ScoutCard> getScoutCards(Match match, Event event, boolean onlyDrafts)
+    {
+        ArrayList<ScoutCard> scoutCards = new ArrayList<>();
+
+        //insert columns you are going to use here
+        String[] columns = getScoutCardColumns();
+
+        //where statement
+        String whereStatement = ScoutCard.COLUMN_NAME_MATCH_ID + " = ? AND " + ScoutCard.COLUMN_NAME_EVENT_ID + " = ? " + ((onlyDrafts) ? " AND " + ScoutCard.COLUMN_NAME_IS_DRAFT + " = 1" : "");
+        String[] whereArgs = {match.getKey() + "", event.getBlueAllianceId()};
+        String orderBy = ScoutCard.COLUMN_NAME_MATCH_ID + " DESC";
+
+        //select the info from the db
+        Cursor cursor = db.query(
+                ScoutCard.TABLE_NAME,
+                columns,
+                whereStatement,
+                whereArgs,
+                null,
+                null,
+                orderBy);
+
+        //make sure the cursor isn't null, else we die
+        if (cursor != null)
+        {
+            while(cursor.moveToNext())
+            {
+                scoutCards.add(getScoutCardFromCursor(cursor));
+            }
+
+            cursor.close();
+
+            return scoutCards;
+        }
+
         return null;
     }
 
@@ -1132,8 +1285,6 @@ public class Database
         contentValues.put(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT, scoutCard.getEndGameReturnedToHabitat());
         contentValues.put(ScoutCard.COLUMN_NAME_END_GAME_RETURNED_TO_HABITAT_ATTEMPTS, scoutCard.getEndGameReturnedToHabitatAttempts());
 
-        contentValues.put(ScoutCard.COLUMN_NAME_BLUE_ALLIANCE_FINAL_SCORE, scoutCard.getBlueAllianceFinalScore());
-        contentValues.put(ScoutCard.COLUMN_NAME_RED_ALLIANCE_FINAL_SCORE, scoutCard.getRedAllianceFinalScore());
         contentValues.put(ScoutCard.COLUMN_NAME_DEFENSE_RATING, scoutCard.getDefenseRating());
         contentValues.put(ScoutCard.COLUMN_NAME_OFFENSE_RATING, scoutCard.getOffenseRating());
         contentValues.put(ScoutCard.COLUMN_NAME_DRIVE_RATING, scoutCard.getDriveRating());

@@ -48,8 +48,6 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
     {
 
         TextView matchIdTextView;
-        TextView blueAllianceScoreTextView;
-        TextView redAllianceScoreTextView;
         ImageView matchOptionsImageView;
         Button viewMatchButton;
 
@@ -58,8 +56,6 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
             super(view);
 
             matchIdTextView = view.findViewById(R.id.MatchIdTextView);
-            blueAllianceScoreTextView = view.findViewById(R.id.BlueAllianceScoreTextView);
-            redAllianceScoreTextView = view.findViewById(R.id.RedAllianceScoreTextView);
             matchOptionsImageView = view.findViewById(R.id.MatchOptionsImageView);
             viewMatchButton = view.findViewById(R.id.ViewMatchButton);
         }
@@ -82,8 +78,6 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
         ScoutCard scoutCard = scoutCards.get(viewHolder.getAdapterPosition());
 
         //set scores
-        viewHolder.blueAllianceScoreTextView.setText(String.valueOf(scoutCard.getBlueAllianceFinalScore()));
-        viewHolder.redAllianceScoreTextView.setText(String.valueOf(scoutCard.getRedAllianceFinalScore()));
         viewHolder.matchIdTextView.setText(String.valueOf(scoutCard.getMatchId()));
 
         //Opens an option menu for various options on that score card
@@ -104,7 +98,7 @@ public class ScoutCardsRecyclerViewAdapter extends RecyclerView.Adapter<ScoutCar
             public void onClick(View v)
             {
                 //swap fragments
-               context.changeFragment(ScoutCardFragment.newInstance(new Gson().toJson(scoutCards.get(viewHolder.getAdapterPosition())), eventJson, -1), true);
+               context.changeFragment(ScoutCardFragment.newInstance(eventJson, null, new Gson().toJson(scoutCards.get(viewHolder.getAdapterPosition())), -1), true);
             }
         });
     }

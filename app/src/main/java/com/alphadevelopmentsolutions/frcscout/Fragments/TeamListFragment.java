@@ -126,6 +126,8 @@ public class TeamListFragment extends MasterFragment
             e.printStackTrace();
         }
 
+        context.getSupportActionBar().setTitle(event.getName());
+
         final TeamListRecyclerViewAdapter teamListRecyclerViewAdapter = new TeamListRecyclerViewAdapter(searchedTeams, eventJson, context);
 
         teamsRecyclerView.setLayoutManager(new LinearLayoutManager(context));

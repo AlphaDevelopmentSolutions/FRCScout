@@ -15,7 +15,6 @@ import com.alphadevelopmentsolutions.frcscout.Adapters.TeamViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeIcon;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
-import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -151,7 +150,7 @@ public class TeamFragment extends MasterFragment
             @Override
             public void onClick(View v)
             {
-                context.changeFragment(ScoutCardFragment.newInstance(null, eventJson, team.getId()), true);
+                context.changeFragment(ScoutCardFragment.newInstance(eventJson,null, null, team.getId()), true);
             }
         });
 
@@ -169,19 +168,7 @@ public class TeamFragment extends MasterFragment
             @Override
             public void onClick(View v)
             {
-
-                //Ensure the robot media folder exists
-                File mediaFolder = new File(Constants.MEDIA_DIRECTORY);
-                if(!mediaFolder.isDirectory())
-                {
-                    if (!mediaFolder.mkdir())
-                        context.showSnackbar(getString(R.string.mkdir_fail));
-                    else
-                        context.changeFragment(RobotMediaFragment.newInstance(null, team.getId()), true);
-
-                }
-                else
-                    context.changeFragment(RobotMediaFragment.newInstance(null, team.getId()), true);
+                context.changeFragment(RobotMediaFragment.newInstance(null, team.getId()), true);
             }
         });
 
@@ -193,6 +180,9 @@ public class TeamFragment extends MasterFragment
         {
             e.printStackTrace();
         }
+
+        //update the app bar title to the team name
+        context.getSupportActionBar().setTitle(team.getId() + " - " + team.getName());
 
         //load the photo if the file exists
         if(!team.getImageFileURI().equals(""))
@@ -228,10 +218,10 @@ public class TeamFragment extends MasterFragment
 
         TeamViewPagerAdapter teamViewPagerAdapter = new TeamViewPagerAdapter(getChildFragmentManager());
 
-        teamViewPagerAdapter.addFragment(ScoutCardListFragment.newInstance(teamJson, eventJson), "Scout Cards");
-        teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(teamJson, eventJson), "Pit Cards");
-        teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(teamJson), "Robot Images");
-        teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(team.getId(), eventJson), "Quick Stats");
+        teamViewPagerAdapter.addFragment(MatchListFragment.newInstance(teamJson, eventJson), getString(R.string.scout_cards));
+        teamViewPagerAdapter.addFragment(PitCardListFragment.newInstance(teamJson, eventJson), getString(R.string.pit_cards));
+        teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(teamJson), getString(R.string.robot_images));
+        teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(team.getId(), eventJson), getString(R.string.quick_stats));
 
         teamViewPager.setAdapter(teamViewPagerAdapter);
         teamViewPager.setOffscreenPageLimit(5);

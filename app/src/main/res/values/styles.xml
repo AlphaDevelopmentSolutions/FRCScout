@@ -25,4 +25,9 @@
         <item name="titleTextColor">#FFF</item>
     </style>
 
+    <style name="CustomProgressDialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:textSize">@dimen/textSecondary</item>
+    </style>
+
 </resources>

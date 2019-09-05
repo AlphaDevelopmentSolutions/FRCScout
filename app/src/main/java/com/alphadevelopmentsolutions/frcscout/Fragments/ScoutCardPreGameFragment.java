@@ -98,9 +98,6 @@ public class ScoutCardPreGameFragment extends MasterFragment {
     private TextInputEditText teamNumberTextInputEditText;
     private AutoCompleteTextView scouterNameAutoCompleteTextView;
 
-    private TextInputEditText matchIdEditText;
-
-    private Spinner allianceColorSpinner;
     private Spinner startingPositionSpinner;
     private Spinner startingLevelSpinner;
     private Spinner startingPieceSpinner;
@@ -119,9 +116,6 @@ public class ScoutCardPreGameFragment extends MasterFragment {
         teamNumberTextInputEditText = view.findViewById(R.id.TeamNumberTextInputEditText);
         scouterNameAutoCompleteTextView = view.findViewById(R.id.ScouterNameAutoCompleteTextView);
 
-        matchIdEditText = view.findViewById(R.id.MatchIdEditText);
-
-        allianceColorSpinner = view.findViewById(R.id.AllianceColorSpinner);
         startingPositionSpinner = view.findViewById(R.id.StartingPositionSpinner);
         startingLevelSpinner = view.findViewById(R.id.StartingLevelSpinner);
         startingPieceSpinner = view.findViewById(R.id.StartingGamePieceSpinner);
@@ -160,9 +154,7 @@ public class ScoutCardPreGameFragment extends MasterFragment {
         {
             teamNumberTextInputEditText.setText(String.valueOf(scoutCard.getTeamId()));
             scouterNameAutoCompleteTextView.setText(scoutCard.getCompletedBy());
-            matchIdEditText.setText(String.valueOf(scoutCard.getMatchId()));
 
-            allianceColorSpinner.setSelection(scoutCard.getAllianceColor().equals(AllianceColor.RED.name()) ? 0 : 1);
             startingLevelSpinner.setSelection(scoutCard.getPreGameStartingLevel() - 1);
             startingPositionSpinner.setSelection(scoutCard.getPreGameStartingPosition().equals(StartingPosition.LEFT) ? 0 : (scoutCard.getPreGameStartingPosition().equals(StartingPosition.CENTER)) ? 1 : 2);
             startingPieceSpinner.setSelection(scoutCard.getPreGameStartingPiece().equals(StartingPiece.HATCH) ? 0 : 1);
@@ -173,10 +165,6 @@ public class ScoutCardPreGameFragment extends MasterFragment {
                 scouterNameAutoCompleteTextView.setFocusable(false);
                 scouterNameAutoCompleteTextView.setInputType(InputType.TYPE_NULL);
 
-                matchIdEditText.setFocusable(false);
-                matchIdEditText.setInputType(InputType.TYPE_NULL);
-
-                allianceColorSpinner.setEnabled(false);
                 startingLevelSpinner.setEnabled(false);
                 startingPositionSpinner.setEnabled(false);
                 startingPieceSpinner.setEnabled(false);
@@ -202,15 +190,6 @@ public class ScoutCardPreGameFragment extends MasterFragment {
         return scouterNameAutoCompleteTextView.getText().toString();
     }
 
-    public int getMatchNumber()
-    {
-        return Integer.parseInt(matchIdEditText.getText().toString());
-    }
-
-    public String getAllianceColor()
-    {
-        return allianceColorSpinner.getSelectedItem().toString();
-    }
 
     public StartingPosition getStartingPosition()
     {
@@ -241,13 +220,6 @@ public class ScoutCardPreGameFragment extends MasterFragment {
         if(scouterNameAutoCompleteTextView.getText().toString().equals(""))
         {
             context.showSnackbar("Invalid scouter name.");
-            return false;
-        }
-
-        if(!matchIdEditText.getText().toString().matches("^[-+]?\\d*$")
-            || matchIdEditText.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid match number.");
             return false;
         }
 

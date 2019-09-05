@@ -3,12 +3,12 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 
@@ -67,10 +67,10 @@ public class ScoutCardPostGameFragment extends MasterFragment {
 
     private ScoutCard scoutCard;
 
+    private Button scoutCardSaveButton;
+
     private View.OnClickListener onSaveButtonClickListener;
 
-    private TextInputEditText blueAllianceFinalScoreEditText;
-    private TextInputEditText redAllianceFinalScoreEditText;
     private EditText matchNotesEditText;
 
     private RatingBar offenseRatingBar;
@@ -83,18 +83,20 @@ public class ScoutCardPostGameFragment extends MasterFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_scout_card_post_game, container, false);
 
-        blueAllianceFinalScoreEditText = view.findViewById(R.id.BlueAllianceFinalScoreEditText);
-        redAllianceFinalScoreEditText = view.findViewById(R.id.RedAllianceFinalScoreEditText);
+        scoutCardSaveButton = view.findViewById(R.id.ScoutCardSaveButton);
+
         matchNotesEditText = view.findViewById(R.id.MatchNotesEditText);
 
         defenseRatingBar = view.findViewById(R.id.DefenseRatingBar);
         offenseRatingBar = view.findViewById(R.id.OffenseRatingBar);
         driveRatingBar = view.findViewById(R.id.DriveRatingBar);
 
+        if(onSaveButtonClickListener != null)
+            scoutCardSaveButton.setOnClickListener(onSaveButtonClickListener);
+
+
         if(scoutCard != null)
         {
-            blueAllianceFinalScoreEditText.setText(String.valueOf(scoutCard.getBlueAllianceFinalScore()));
-            redAllianceFinalScoreEditText.setText(String.valueOf(scoutCard.getRedAllianceFinalScore()));
 
             defenseRatingBar.setRating(scoutCard.getDefenseRating());
             offenseRatingBar.setRating(scoutCard.getOffenseRating());
@@ -105,11 +107,7 @@ public class ScoutCardPostGameFragment extends MasterFragment {
             //only disable if card is not draft
             if(!scoutCard.isDraft())
             {
-                blueAllianceFinalScoreEditText.setFocusable(false);
-                blueAllianceFinalScoreEditText.setInputType(InputType.TYPE_NULL);
-
-                redAllianceFinalScoreEditText.setFocusable(false);
-                redAllianceFinalScoreEditText.setInputType(InputType.TYPE_NULL);
+                scoutCardSaveButton.setVisibility(View.GONE);
 
                 defenseRatingBar.setEnabled(false);
                 offenseRatingBar.setEnabled(false);
@@ -125,16 +123,6 @@ public class ScoutCardPostGameFragment extends MasterFragment {
     }
 
     //region Getters
-
-    public int getBlueAllianceScore()
-    {
-        return Integer.parseInt(blueAllianceFinalScoreEditText.getText().toString());
-    }
-
-    public int getRedAllianceScore()
-    {
-        return Integer.parseInt(redAllianceFinalScoreEditText.getText().toString());
-    }
 
     public int getDefenseRating()
     {
@@ -159,27 +147,25 @@ public class ScoutCardPostGameFragment extends MasterFragment {
     //endregion
 
 
+
+
     /**
      * Validates all fields on the form for saving
      * @return boolean if fields valid
      */
     public boolean validateFields()
     {
-        if(!blueAllianceFinalScoreEditText.getText().toString().matches("^[-+]?\\d*$")
-                || blueAllianceFinalScoreEditText.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid blue alliance score.");
-            return false;
-        }
-
-        if(!redAllianceFinalScoreEditText.getText().toString().matches("^[-+]?\\d*$")
-                || redAllianceFinalScoreEditText.getText().toString().equals(""))
-        {
-            context.showSnackbar("Invalid red alliance score.");
-            return false;
-        }
 
         return true;
+    }
+
+    /**
+     * Stores the save button click listener used for calling upwards to the scoutcard frag
+     * @param onSaveButtonClickListener used to set scout card save button
+     */
+    public void setOnSaveButtonClickListener(View.OnClickListener onSaveButtonClickListener)
+    {
+        this.onSaveButtonClickListener = onSaveButtonClickListener;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
