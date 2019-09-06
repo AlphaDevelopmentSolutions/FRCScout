@@ -61,7 +61,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType)
     {
         //Inflate the event layout for the each item in the list
-        View view  = LayoutInflater.from(context).inflate(R.layout.layout_team_card, viewGroup, false);
+        View view  = LayoutInflater.from(context).inflate(R.layout.layout_card_team, viewGroup, false);
 
         return new TeamListRecyclerViewAdapter.ViewHolder(view);
     }
@@ -94,7 +94,7 @@ public class TeamListRecyclerViewAdapter extends RecyclerView.Adapter<TeamListRe
             @Override
             public void onClick(View v)
             {
-               context.changeFragment(TeamFragment.newInstance(new Gson().toJson(teamList.get(viewHolder.getAdapterPosition())), eventJson), true);
+               context.changeFragment(TeamFragment.newInstance(new Gson().toJson(teamList.get(viewHolder.getAdapterPosition()))), true);
             }
         });
     }

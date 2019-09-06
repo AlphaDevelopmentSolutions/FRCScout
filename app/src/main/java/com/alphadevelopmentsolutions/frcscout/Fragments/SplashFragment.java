@@ -3,26 +3,23 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
+import android.app.Fragment;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alphadevelopmentsolutions.frcscout.Adapters.EventViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.R;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link EventFragment.OnFragmentInteractionListener} interface
+ * {@link SplashFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link EventFragment#newInstance} factory method to
+ * Use the {@link SplashFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EventFragment extends MasterFragment
+public class SplashFragment extends MasterFragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,7 +32,7 @@ public class EventFragment extends MasterFragment
 
     private OnFragmentInteractionListener mListener;
 
-    public EventFragment()
+    public SplashFragment()
     {
         // Required empty public constructor
     }
@@ -46,12 +43,12 @@ public class EventFragment extends MasterFragment
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment EventFragment.
+     * @return A new instance of fragment SplashFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EventFragment newInstance(String param1, String param2)
+    public static SplashFragment newInstance(String param1, String param2)
     {
-        EventFragment fragment = new EventFragment();
+        SplashFragment fragment = new SplashFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -70,31 +67,11 @@ public class EventFragment extends MasterFragment
         }
     }
 
-    private ViewPager eventViewPager;
-
-    private TabLayout eventTabLayout;
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_event, container, false);
-
-        //gets rid of the shadow on the actionbar
-        ActionBar actionBar = context.getSupportActionBar();
-        actionBar.setElevation(0);
-
-        EventViewPagerAdapter eventViewPagerAdapter = new EventViewPagerAdapter(getChildFragmentManager());
-        eventViewPagerAdapter.addFragment(new TeamListFragment(), "Teams");
-
-        eventViewPager = view.findViewById(R.id.EventViewPager);
-        eventTabLayout = view.findViewById(R.id.EventTabLayout);
-
-        eventViewPager.setAdapter(eventViewPagerAdapter);
-        eventTabLayout.setupWithViewPager(eventViewPager);
-
-        return view;
+        context.getSupportActionBar().hide();
+        return inflater.inflate(R.layout.fragment_splash, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -123,6 +100,7 @@ public class EventFragment extends MasterFragment
     @Override
     public void onDetach()
     {
+        context.getSupportActionBar().show();
         super.onDetach();
         mListener = null;
     }

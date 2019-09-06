@@ -26,15 +26,6 @@ import com.google.gson.Gson;
  */
 public class PitCardListFragment extends MasterFragment
 {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String teamJson;
-    private String eventJson;
-
     private OnFragmentInteractionListener mListener;
 
     public PitCardListFragment()
@@ -47,16 +38,14 @@ public class PitCardListFragment extends MasterFragment
      * this fragment using the provided parameters.
      *
      * @param teamJson team json.
-     * @param eventJson event json.
      * @return A new instance of fragment PitCardListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PitCardListFragment newInstance(String teamJson, String eventJson)
+    public static PitCardListFragment newInstance(String teamJson)
     {
         PitCardListFragment fragment = new PitCardListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, teamJson);
-        args.putString(ARG_PARAM2, eventJson);
+        args.putString(ARG_TEAM_JSON, teamJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,18 +56,11 @@ public class PitCardListFragment extends MasterFragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            teamJson = getArguments().getString(ARG_PARAM1);
-            eventJson = getArguments().getString(ARG_PARAM2);
+            teamJson = getArguments().getString(ARG_TEAM_JSON);
         }
-
-        team = new Gson().fromJson(teamJson, Team.class);
-        event = new Gson().fromJson(eventJson, Event.class);
     }
 
     private RecyclerView pitCardListRecyclerView;
-
-    private Team team;
-    private Event event;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -89,7 +71,9 @@ public class PitCardListFragment extends MasterFragment
 
         pitCardListRecyclerView = view.findViewById(R.id.PitCardListRecyclerView);
 
-        PitCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new PitCardsRecyclerViewAdapter(team, eventJson, database.getPitCards(team, event,false), context);
+        joinLoadingThread();
+
+        PitCardsRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new PitCardsRecyclerViewAdapter(team, gson.toJson(event), database.getPitCards(team, event,false), context);
         pitCardListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         pitCardListRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
 

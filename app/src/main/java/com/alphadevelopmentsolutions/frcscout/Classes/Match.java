@@ -1,5 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -270,6 +272,15 @@ public class Match
         return database.getScoutCards(this, event,false);
     }
 
+    /**
+     * Converts the match object into a string title
+     * @return string title of match
+     */
+    public String toString()
+    {
+        return getMatchType().toString(this);
+    }
+
     //endregion
 
     //region Setters
@@ -401,15 +412,17 @@ public class Match
         int id = -1;
 
         //try to open the DB if it is not open
-        if(!database.isOpen()) database.open();
+        if(!database.isOpen())
+            database.open();
 
         if(database.isOpen())
-        {
             id = (int) database.setMatch(this);
 
-        }
+        //set the id if the save was successful
+        if(id > 0)
+            setId(id);
 
-        return id;
+        return getId();
     }
 
     /**

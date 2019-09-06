@@ -10,8 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alphadevelopmentsolutions.frcscout.Adapters.MatchesRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Adapters.MatchListRecyclerViewAdapter;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
+import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
@@ -26,15 +27,6 @@ import com.google.gson.Gson;
  */
 public class MatchListFragment extends MasterFragment
 {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String teamJson;
-    private String eventJson;
-
     private MatchListFragment.OnFragmentInteractionListener mListener;
 
     public MatchListFragment()
@@ -50,12 +42,11 @@ public class MatchListFragment extends MasterFragment
      * @return A new instance of fragment ScoutCardListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MatchListFragment newInstance(String teamJson, String eventJson)
+    public static MatchListFragment newInstance(String teamJson)
     {
         MatchListFragment fragment = new MatchListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, teamJson);
-        args.putString(ARG_PARAM2, eventJson);
+        args.putString(ARG_TEAM_JSON, teamJson);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,22 +57,11 @@ public class MatchListFragment extends MasterFragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
         {
-            teamJson = getArguments().getString(ARG_PARAM1);
-            eventJson = getArguments().getString(ARG_PARAM2);
+            teamJson = getArguments().getString(ARG_TEAM_JSON);
         }
-
-        gson = new Gson();
-
-        team = gson.fromJson(teamJson, Team.class);
-        event = gson.fromJson(eventJson, Event.class);
     }
 
     private RecyclerView matchListRecyclerView;
-
-    private Team team;
-    private Event event;
-
-    private Gson gson;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -92,7 +72,9 @@ public class MatchListFragment extends MasterFragment
 
         matchListRecyclerView = view.findViewById(R.id.MatchListRecyclerView);
 
-        MatchesRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new MatchesRecyclerViewAdapter(event, team, database.getMatches(team, event), context);
+        joinLoadingThread();
+
+        MatchListRecyclerViewAdapter scoutCardsRecyclerViewAdapter = new MatchListRecyclerViewAdapter(event, team, database.getMatches(team, event), context, ScoutCard.class);
         matchListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         matchListRecyclerView.setAdapter(scoutCardsRecyclerViewAdapter);
 

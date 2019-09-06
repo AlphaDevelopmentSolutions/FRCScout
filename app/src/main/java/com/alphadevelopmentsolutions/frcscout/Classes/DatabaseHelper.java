@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper
 {
 
-    private static final int DB_VERSION = 8;
+    private static final int DB_VERSION = 9;
     private static final String DB_NAME = "FRCScout.db";
 
 
@@ -145,6 +145,23 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     User.COLUMN_NAME_FIRST_NAME + " TEXT," +
                     User.COLUMN_NAME_LAST_NAME + " TEXT)";
 
+    private final String CREATE_CHECKLIST_ITEMS_TABLE =
+            "CREATE TABLE " + ChecklistItem.TABLE_NAME +" (" +
+                    ChecklistItem.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    ChecklistItem.COLUMN_NAME_SERVER_ID + " INTEGER," +
+                    ChecklistItem.COLUMN_NAME_TITLE + " TEXT," +
+                    ChecklistItem.COLUMN_NAME_DESCRIPTION + " TEXT)";
+
+    private final String CREATE_CHECKLIST_ITEM_RESULTS_TABLE =
+            "CREATE TABLE " + ChecklistItemResult.TABLE_NAME +" (" +
+                    ChecklistItemResult.COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID + " INTEGER," +
+                    ChecklistItemResult.COLUMN_NAME_MATCH_ID + " TEXT," +
+                    ChecklistItemResult.COLUMN_NAME_STATUS + " TEXT," +
+                    ChecklistItemResult.COLUMN_NAME_COMPLETED_BY + " TEXT," +
+                    ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE + " INTEGER," +
+                    ChecklistItemResult.COLUMN_NAME_IS_DRAFT + " INTEGER)";
+
     public DatabaseHelper(Context context)
     {
         super(context, DB_NAME, null, DB_VERSION);
@@ -162,6 +179,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL(CREATE_PIT_CARDS_TABLE);
         db.execSQL(CREATE_ROBOT_MEDIA_TABLE);
         db.execSQL(CREATE_EVENT_TEAM_LIST_TABLE);
+        db.execSQL(CREATE_CHECKLIST_ITEMS_TABLE);
+        db.execSQL(CREATE_CHECKLIST_ITEM_RESULTS_TABLE);
     }
 
     @Override
@@ -176,15 +195,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PitCard.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + RobotMedia.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + EventTeamList.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ChecklistItem.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ChecklistItemResult.TABLE_NAME);
 
-        sqLiteDatabase.execSQL(CREATE_EVENTS_TABLE);
-        sqLiteDatabase.execSQL(CREATE_TEAMS_TABLE);
-        sqLiteDatabase.execSQL(CREATE_ROBOTS_TABLE);
-        sqLiteDatabase.execSQL(CREATE_MATCHES_TABLE);
-        sqLiteDatabase.execSQL(CREATE_SCOUT_CARDS_TABLE);
-        sqLiteDatabase.execSQL(CREATE_USERS_TABLE);
-        sqLiteDatabase.execSQL(CREATE_PIT_CARDS_TABLE);
-        sqLiteDatabase.execSQL(CREATE_ROBOT_MEDIA_TABLE);
-        sqLiteDatabase.execSQL(CREATE_EVENT_TEAM_LIST_TABLE);
+        onCreate(sqLiteDatabase);
     }
 }

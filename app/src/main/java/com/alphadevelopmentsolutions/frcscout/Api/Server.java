@@ -1,16 +1,19 @@
 package com.alphadevelopmentsolutions.frcscout.Api;
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity;
+import com.alphadevelopmentsolutions.frcscout.Classes.ChecklistItem;
+import com.alphadevelopmentsolutions.frcscout.Classes.ChecklistItemResult;
 import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.PitCard;
 import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
-import com.alphadevelopmentsolutions.frcscout.Classes.StartingPiece;
-import com.alphadevelopmentsolutions.frcscout.Classes.StartingPosition;
+import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece;
+import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
-import com.alphadevelopmentsolutions.frcscout.Interfaces.Keys;
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
+import com.alphadevelopmentsolutions.frcscout.R;
 
 import org.json.JSONObject;
 
@@ -20,13 +23,108 @@ import java.util.HashMap;
 
 public abstract class Server extends Api
 {
-    Server(String URLExtension, HashMap<String, String> postData)
+    Server(String URL, String key, HashMap<String, String> postData)
     {
-        super(Keys.API_URL + URLExtension, postData);
+        super(URL, key, postData);
     }
 
     //region Getters
 
+    public static class Hello extends Server
+    {
+        private MainActivity context;
+
+        public Hello(final MainActivity context)
+        {
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
+            {{
+                put(API_PARAM_API_ACTION, "Hello");
+            }});
+            
+            this.context = context;
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception(context.getString(R.string.server_error));
+
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(context.getString(R.string.server_error));
+                
+                return true;
+            } catch (Exception e)
+            {
+                return false;
+            }
+        }
+    }
+
+    public static class GetServerConfig extends Server
+    {
+        private MainActivity context;
+
+        public GetServerConfig(final MainActivity context)
+        {
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
+            {{
+                put(API_PARAM_API_ACTION, "GetServerConfig");
+            }});
+
+            this.context = context;
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception(context.getString(R.string.server_error));
+
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
+
+                //get the json obj from the server
+                JSONObject serverConfigObject = response.getJSONObject(API_FIELD_NAME_RESPONSE);
+
+                String apiKey = serverConfigObject.getString("ApiKey");
+                int teamNumber = serverConfigObject.getInt("TeamNumber");
+                String teamName = serverConfigObject.getString("TeamName");
+
+                //store the configs into the shared prefs
+                context.setPreference(Constants.SharedPrefKeys.API_KEY_KEY, apiKey);
+                context.setPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, teamNumber);
+                context.setPreference(Constants.SharedPrefKeys.TEAM_NAME_KEY, teamName);
+
+                return true;
+            } catch (Exception e)
+            {
+                context.showSnackbar(e.getMessage());
+                return false;
+            }
+        }
+    }
+    
     public static class GetTeamsAtEvent extends Server
     {
         private ArrayList<Team> teams;
@@ -35,9 +133,9 @@ public abstract class Server extends Api
 
         public GetTeamsAtEvent(final MainActivity context, final Event event)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
-                put("action", "GetTeamsAtEvent");
+                put(API_PARAM_API_ACTION, "GetTeamsAtEvent");
                 put("EventId", event.getBlueAllianceId());
             }});
 
@@ -60,16 +158,16 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString("Status").toLowerCase().equals("success"))
-                    throw new Exception(response.getString("Response"));
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
                 //iterate through, create a new object and add it to the arraylist
-                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
+                for (int i = 0; i < response.getJSONArray(API_FIELD_NAME_RESPONSE).length(); i++)
                 {
-                    JSONObject teamObject = response.getJSONArray("Response").getJSONObject(i);
+                    JSONObject teamObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
 
                     int teamId = teamObject.getInt(Team.COLUMN_NAME_ID);
                     String name = teamObject.getString(Team.COLUMN_NAME_NAME);
@@ -125,9 +223,9 @@ public abstract class Server extends Api
 
         public GetUsers(final MainActivity context)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
-                put("action", "GetUsers");
+                put(API_PARAM_API_ACTION, "GetUsers");
             }});
 
             users = new ArrayList<>();
@@ -149,16 +247,16 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString("Status").toLowerCase().equals("success"))
-                    throw new Exception(response.getString("Response"));
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
                 //iterate through, create a new object and add it to the arraylist
-                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
+                for (int i = 0; i < response.getJSONArray(API_FIELD_NAME_RESPONSE).length(); i++)
                 {
-                    JSONObject teamObject = response.getJSONArray("Response").getJSONObject(i);
+                    JSONObject teamObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
 
                     String firstName = teamObject.getString(User.COLUMN_NAME_FIRST_NAME);
                     String lastName = teamObject.getString(User.COLUMN_NAME_LAST_NAME);
@@ -193,9 +291,9 @@ public abstract class Server extends Api
 
         public GetScoutCards(final MainActivity context, final Event event)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
-                put("action", "GetScoutCards");
+                put(API_PARAM_API_ACTION, "GetScoutCards");
                 put("EventId", event.getBlueAllianceId());
             }});
 
@@ -218,16 +316,16 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString("Status").toLowerCase().equals("success"))
-                    throw new Exception(response.getString("Response"));
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
                 //iterate through, create a new object and add it to the arraylist
-                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
+                for (int i = 0; i < response.getJSONArray(API_FIELD_NAME_RESPONSE).length(); i++)
                 {
-                    JSONObject scoutCardObject = response.getJSONArray("Response").getJSONObject(i);
+                    JSONObject scoutCardObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
 
                     String matchId = scoutCardObject.getString(ScoutCard.COLUMN_NAME_MATCH_ID);
                     int teamId = scoutCardObject.getInt(ScoutCard.COLUMN_NAME_TEAM_ID);
@@ -330,9 +428,9 @@ public abstract class Server extends Api
 
         public GetPitCards(final MainActivity context, final Event event)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
-                put("action", "GetPitCards");
+                put(API_PARAM_API_ACTION, "GetPitCards");
                 put("EventId", event.getBlueAllianceId());
             }});
 
@@ -355,16 +453,16 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString("Status").toLowerCase().equals("success"))
-                    throw new Exception(response.getString("Response"));
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
                 //iterate through, create a new object and add it to the arraylist
-                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
+                for (int i = 0; i < response.getJSONArray(API_FIELD_NAME_RESPONSE).length(); i++)
                 {
-                    JSONObject pitCardObject = response.getJSONArray("Response").getJSONObject(i);
+                    JSONObject pitCardObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
 
                     int teamId = pitCardObject.getInt(PitCard.COLUMN_NAME_TEAM_ID);
                     String eventId = pitCardObject.getString(PitCard.COLUMN_NAME_EVENT_ID);
@@ -441,9 +539,9 @@ public abstract class Server extends Api
 
         public GetMatches(final MainActivity context, final Event event)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
-                put("action", "GetMatches");
+                put(API_PARAM_API_ACTION, "GetMatches");
                 put("EventId", event.getBlueAllianceId());
             }});
 
@@ -466,16 +564,16 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString("Status").toLowerCase().equals("success"))
-                    throw new Exception(response.getString("Response"));
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
                 //iterate through, create a new object and add it to the arraylist
-                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
+                for (int i = 0; i < response.getJSONArray(API_FIELD_NAME_RESPONSE).length(); i++)
                 {
-                    JSONObject matchObject = response.getJSONArray("Response").getJSONObject(i);
+                    JSONObject matchObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
 
                     Date date = simpleDateFormat.parse(matchObject.getString(Match.COLUMN_NAME_DATE));
                     String eventId = matchObject.getString(Match.COLUMN_NAME_EVENT_ID);
@@ -545,9 +643,9 @@ public abstract class Server extends Api
 
         public GetRobotMedia(final MainActivity context, final int teamId)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
-                put("action", "GetRobotMedia");
+                put(API_PARAM_API_ACTION, "GetRobotMedia");
                 put("TeamId", String.valueOf(teamId));
             }});
 
@@ -570,19 +668,19 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString("Status").toLowerCase().equals("success"))
-                    throw new Exception(response.getString("Response"));
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
                 //iterate through, create a new object and add it to the arraylist
-                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
+                for (int i = 0; i < response.getJSONArray(API_FIELD_NAME_RESPONSE).length(); i++)
                 {
-                    JSONObject robotMediaJson = response.getJSONArray("Response").getJSONObject(i);
+                    JSONObject robotMediaJson = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
 
                     int teamId = robotMediaJson.getInt(RobotMedia.COLUMN_NAME_TEAM_ID);
-                    String fileUri = Keys.WEB_URL + "assets/robot-media/" + robotMediaJson.getString(RobotMedia.COLUMN_NAME_FILE_URI);
+                    String fileUri = context.getPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "").toString() + "/assets/robot-media/" + robotMediaJson.getString(RobotMedia.COLUMN_NAME_FILE_URI);
 
                     fileUri = apiParser.downloadImage(fileUri).getAbsolutePath();
 
@@ -614,7 +712,6 @@ public abstract class Server extends Api
         //endregion
     }
 
-
     public static class GetEvents extends Server
     {
         private ArrayList<Event> events;
@@ -623,9 +720,9 @@ public abstract class Server extends Api
 
         public GetEvents(final MainActivity context)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
-                put("action", "GetEvents");
+                put(API_PARAM_API_ACTION, "GetEvents");
             }});
 
             this.context = context;
@@ -646,15 +743,15 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString("Status").toLowerCase().equals("success"))
-                    throw new Exception(response.getString("Response"));
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
                 //iterate through, create a new object and add it to the arraylist
-                for (int i = 0; i < response.getJSONArray("Response").length(); i++)
+                for (int i = 0; i < response.getJSONArray(API_FIELD_NAME_RESPONSE).length(); i++)
                 {
-                    JSONObject eventObject = response.getJSONArray("Response").getJSONObject(i);
+                    JSONObject eventObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
 
                     String blueAllianceId = eventObject.getString(Event.COLUMN_NAME_BLUE_ALLIANCE_ID);
                     String name = eventObject.getString(Event.COLUMN_NAME_NAME);
@@ -690,6 +787,162 @@ public abstract class Server extends Api
         }
     }
 
+    public static class GetChecklistItems extends Server
+    {
+        private ArrayList<ChecklistItem> checklistItems;
+
+        private MainActivity context;
+
+        public GetChecklistItems(final MainActivity context)
+        {
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
+            {{
+                put(API_PARAM_API_ACTION, "GetChecklistItems");
+            }});
+
+            checklistItems = new ArrayList<>();
+
+            this.context = context;
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception(context.getString(R.string.server_error));
+
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
+
+
+                //iterate through, create a new object and add it to the arraylist
+                for (int i = 0; i < response.getJSONArray(API_FIELD_NAME_RESPONSE).length(); i++)
+                {
+                    JSONObject checklistItemObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
+
+                    int serverId = checklistItemObject.getInt(ChecklistItem.COLUMN_NAME_SERVER_ID);
+
+                    String title = checklistItemObject.getString(ChecklistItem.COLUMN_NAME_TITLE);
+                    String description = checklistItemObject.getString(ChecklistItem.COLUMN_NAME_DESCRIPTION);
+
+                    checklistItems.add(
+                            new ChecklistItem(
+                                    -1,
+                                    serverId,
+                                    title,
+                                    description));
+                }
+
+                return true;
+            } catch (Exception e)
+            {
+                context.showSnackbar(e.getMessage());
+                return false;
+            }
+        }
+
+        //region Getters
+
+        public ArrayList<ChecklistItem> getChecklistItems()
+        {
+            return checklistItems;
+        }
+
+        //endregion
+    }
+
+    public static class GetChecklistItemResults extends Server
+    {
+        private ArrayList<ChecklistItemResult> checklistItemResults;
+
+        private MainActivity context;
+
+        public GetChecklistItemResults(final MainActivity context)
+        {
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
+            {{
+                put(API_PARAM_API_ACTION, "GetChecklistItemResults");
+            }});
+
+            checklistItemResults = new ArrayList<>();
+
+            this.context = context;
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception(context.getString(R.string.server_error));
+
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
+
+
+                //iterate through, create a new object and add it to the arraylist
+                for (int i = 0; i < response.getJSONArray(API_FIELD_NAME_RESPONSE).length(); i++)
+                {
+                    JSONObject checklistItemResultObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i);
+
+                    int checklistItemId = checklistItemResultObject.getInt(ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID);
+
+                    String matchId = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_MATCH_ID);
+                    String status = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_STATUS);
+                    String completedBy = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY);
+
+                    Date completedDate = simpleDateFormat.parse(checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE));
+
+                    checklistItemResults.add(
+                            new ChecklistItemResult(
+                                    -1,
+                                    checklistItemId,
+                                    matchId,
+
+                                    status,
+                                    completedBy,
+
+                                    completedDate,
+                                    false
+                                    ));
+                }
+
+                return true;
+            } catch (Exception e)
+            {
+                context.showSnackbar(e.getMessage());
+                return false;
+            }
+        }
+
+        //region Getters
+
+        public ArrayList<ChecklistItemResult> getChecklistItemResults()
+        {
+            return checklistItemResults;
+        }
+
+        //endregion
+    }
 
     //endregion
 
@@ -701,9 +954,9 @@ public abstract class Server extends Api
 
         public SubmitScoutCard(final MainActivity context, final ScoutCard scoutCard)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
-                put("action", "SubmitScoutCard");
+                put(API_PARAM_API_ACTION, "SubmitScoutCard");
 
                 put(ScoutCard.COLUMN_NAME_MATCH_ID, String.valueOf(scoutCard.getMatchId()));
                 put(ScoutCard.COLUMN_NAME_TEAM_ID, String.valueOf(scoutCard.getTeamId()));
@@ -758,10 +1011,10 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString("Status").toLowerCase().equals("success"))
-                    throw new Exception(response.getString("Response"));
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
                 return true;
@@ -779,9 +1032,9 @@ public abstract class Server extends Api
 
         public SubmitPitCard(final MainActivity context, final PitCard pitCard)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
-                put("action", "SubmitPitCard");
+                put(API_PARAM_API_ACTION, "SubmitPitCard");
 
                 put(PitCard.COLUMN_NAME_TEAM_ID, String.valueOf(pitCard.getTeamId()));
                 put(PitCard.COLUMN_NAME_EVENT_ID, pitCard.getEventId());
@@ -822,10 +1075,10 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString("Status").toLowerCase().equals("success"))
-                    throw new Exception(response.getString("Response"));
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
 
                 return true;
@@ -843,9 +1096,9 @@ public abstract class Server extends Api
 
         public SubmitRobotMedia(final MainActivity context, final RobotMedia robotMedia)
         {
-            super("", new HashMap<String, String>()
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
             {{
-                put("action", "SubmitRobotMedia");
+                put(API_PARAM_API_ACTION, "SubmitRobotMedia");
 
                 put("TeamId", String.valueOf(robotMedia.getTeamId()));
                 put("Base64Image", robotMedia.getBase64Image());
@@ -868,11 +1121,61 @@ public abstract class Server extends Api
 
                 //could not connect to server
                 if (response == null)
-                    throw new Exception("Could not connect to the web server.");
+                    throw new Exception(context.getString(R.string.server_error));
 
-                if (!response.getString("Status").toLowerCase().equals("success"))
-                    throw new Exception(response.getString("Response"));
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
+
+                return true;
+            } catch (Exception e)
+            {
+                context.showSnackbar(e.getMessage());
+                return false;
+            }
+        }
+    }
+
+    public static class SubmitChecklistItemResult extends Server
+    {
+        private MainActivity context;
+
+        public SubmitChecklistItemResult(final MainActivity context, final ChecklistItemResult checklistItemResult)
+        {
+            super(context.getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").toString(), context.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), new HashMap<String, String>()
+            {{
+                put(API_PARAM_API_ACTION, "SubmitChecklistItemResult");
+
+                put(ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID, String.valueOf(checklistItemResult.getChecklistItemId()));
+                put(ChecklistItemResult.COLUMN_NAME_MATCH_ID, checklistItemResult.getMatchId());
+
+                put(ChecklistItemResult.COLUMN_NAME_STATUS, checklistItemResult.getStatus());
+                put(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY, checklistItemResult.getCompletedBy());
+
+                put(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE, checklistItemResult.getCompletedDateForSQL());
+            }});
+
+            this.context = context;
+
+        }
+
+        @Override
+        public boolean execute()
+        {
+            try
+            {
+                //parse the data from the server
+                ApiParser apiParser = new ApiParser(this);
+
+                //get the response from the server
+                JSONObject response = apiParser.parse();
+
+                //could not connect to server
+                if (response == null)
+                    throw new Exception(context.getString(R.string.server_error));
+
+                if (!response.getString(API_FIELD_NAME_STATUS).equals(API_FIELD_NAME_STATUS_SUCCESS))
+                    throw new Exception(response.getString(API_FIELD_NAME_RESPONSE));
 
                 return true;
             } catch (Exception e)

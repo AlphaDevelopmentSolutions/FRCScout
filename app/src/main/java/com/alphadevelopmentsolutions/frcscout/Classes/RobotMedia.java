@@ -182,15 +182,17 @@ public class RobotMedia
         int id = -1;
 
         //try to open the DB if it is not open
-        if(!database.isOpen()) database.open();
+        if(!database.isOpen())
+            database.open();
 
         if(database.isOpen())
-        {
             id = (int) database.setRobotMedia(this);
 
-        }
+        //set the id if the save was successful
+        if(id > 0)
+            setId(id);
 
-        return id;
+        return getId();
     }
 
     /**

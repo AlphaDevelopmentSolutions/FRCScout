@@ -1,4 +1,4 @@
-package com.alphadevelopmentsolutions.frcscout.Classes;
+package com.alphadevelopmentsolutions.frcscout.Enums;
 
 public enum  GameScoreStatus
 {

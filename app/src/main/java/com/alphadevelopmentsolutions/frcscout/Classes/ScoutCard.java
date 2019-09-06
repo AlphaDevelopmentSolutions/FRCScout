@@ -1,5 +1,8 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece;
+import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -554,15 +557,17 @@ public class ScoutCard
         int id = -1;
 
         //try to open the DB if it is not open
-        if(!database.isOpen()) database.open();
+        if(!database.isOpen())
+            database.open();
 
         if(database.isOpen())
-        {
             id = (int) database.setScoutCard(this);
 
-        }
+        //set the id if the save was successful
+        if(id > 0)
+            setId(id);
 
-        return id;
+        return getId();
     }
 
     /**

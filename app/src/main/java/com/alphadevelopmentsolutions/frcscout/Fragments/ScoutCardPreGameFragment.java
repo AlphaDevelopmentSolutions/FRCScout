@@ -13,11 +13,10 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Spinner;
 
-import com.alphadevelopmentsolutions.frcscout.Classes.AllianceColor;
 import com.alphadevelopmentsolutions.frcscout.Classes.ScoutCard;
-import com.alphadevelopmentsolutions.frcscout.Classes.StartingPiece;
-import com.alphadevelopmentsolutions.frcscout.Classes.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.Classes.User;
+import com.alphadevelopmentsolutions.frcscout.Enums.StartingPiece;
+import com.alphadevelopmentsolutions.frcscout.Enums.StartingPosition;
 import com.alphadevelopmentsolutions.frcscout.R;
 import com.google.gson.Gson;
 
@@ -66,6 +65,13 @@ public class ScoutCardPreGameFragment extends MasterFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
+        if (getArguments() != null) {
+            scoutCardJson = getArguments().getString(ARG_PARAM1);
+            teamId = getArguments().getInt(ARG_PARAM2);
+        }
+
         //load the user auto complete data on a new thread
         loadScouterNamesThread = new Thread(new Runnable()
         {
@@ -76,21 +82,16 @@ public class ScoutCardPreGameFragment extends MasterFragment {
                 scouterNames = new ArrayList<>();
 
                 for(User user : database.getUsers())
-                    scouterNames.add(user.getName());
+                    scouterNames.add(user.toString());
 
                 scouterNameAdapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, scouterNames);
+
+                //load the passed scout card
+                if(scoutCardJson != null && !scoutCardJson.equals(""))
+                    scoutCard = new Gson().fromJson(scoutCardJson, ScoutCard.class);
             }
         });
         loadScouterNamesThread.start();
-
-        if (getArguments() != null) {
-            scoutCardJson = getArguments().getString(ARG_PARAM1);
-            teamId = getArguments().getInt(ARG_PARAM2);
-        }
-
-        //load the passed scout card
-        if(scoutCardJson != null && !scoutCardJson.equals(""))
-           scoutCard = new Gson().fromJson(scoutCardJson, ScoutCard.class);
     }
 
     private ScoutCard scoutCard;
