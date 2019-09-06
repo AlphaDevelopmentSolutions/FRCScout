@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -7,13 +11,18 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 21
-        versionName "v2019.2.3.0"
+        versionName "v2019.3.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug
+        {
+            testCoverageEnabled = true
         }
     }
 
@@ -41,4 +50,5 @@ dependencies {
     implementation 'com.github.clans:fab:1.6.4'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 }
