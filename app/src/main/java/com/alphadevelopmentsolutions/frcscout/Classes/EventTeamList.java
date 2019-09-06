@@ -1,12 +1,23 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
-public class EventTeamList
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.util.ArrayList;
+
+public class EventTeamList extends Table
 {
 
     public static final String TABLE_NAME = "event_team_list";
     public static final String COLUMN_NAME_ID = "Id";
     public static final String COLUMN_NAME_TEAM_ID = "TeamId";
     public static final String COLUMN_NAME_EVENT_ID = "EventId";
+
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME + " (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_TEAM_ID + " INTEGER," +
+                    COLUMN_NAME_EVENT_ID + " TEXT)";
 
     private int id;
     private int teamId;
@@ -48,6 +59,12 @@ public class EventTeamList
         return eventId;
     }
 
+    @Override
+    public String toString()
+    {
+        return "";
+    }
+
 
     //endregion
 
@@ -85,8 +102,8 @@ public class EventTeamList
 
         if(database.isOpen())
         {
-            EventTeamList eventTeamList = database.getEventTeamList(this);
-
+            ArrayList<EventTeamList> eventTeamLists = getEventTeamList(this, null, database);
+            EventTeamList eventTeamList = (eventTeamLists.size() > 0 ) ? eventTeamLists.get(0) : null;
 
             if (eventTeamList != null)
             {
@@ -141,6 +158,27 @@ public class EventTeamList
         }
 
         return successful;
+    }
+
+    /**
+     * Clears all data from the classes table
+     * @param database used to clear table
+     */
+    public static void clearTable(Database database)
+    {
+        database.clearTable(TABLE_NAME);
+    }
+
+    /**
+     * Returns arraylist of event team list with specified filters from database
+     * @param eventTeamList if specified, filters event team list by eventTeamList id
+     * @param event if specified, filters event team list by event id
+     * @param database used to load event team list
+     * @return arraylist of event team list
+     */
+    public static ArrayList<EventTeamList> getEventTeamList(@Nullable EventTeamList eventTeamList, @Nullable Event event, @NonNull Database database)
+    {
+        return database.getEventTeamLists(eventTeamList, event);
     }
 
     //endregion

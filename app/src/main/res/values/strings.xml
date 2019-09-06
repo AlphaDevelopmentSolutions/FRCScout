@@ -118,4 +118,9 @@
     <string name="mark_incomplete">Mark Incomplete</string>
     <string name="mark_complete">Mark Complete</string>
     <string name="view_checklist">View Checklist</string>
+    <string name="matches">Matches</string>
+    <string name="view_match">View Match</string>
+    <string name="blue_alliance">Blue Alliance</string>
+    <string name="red_alliance">Red Alliance</string>
+    <string name="view_scout_card">View Scout Card</string>
 </resources>

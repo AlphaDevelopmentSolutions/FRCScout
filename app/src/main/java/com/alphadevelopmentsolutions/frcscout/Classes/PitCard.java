@@ -1,6 +1,11 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
-public class PitCard
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.util.ArrayList;
+
+public class PitCard extends Table
 {
 
     public static final String TABLE_NAME = "pit_cards";
@@ -27,6 +32,32 @@ public class PitCard
 
     public static final String COLUMN_NAME_COMPLETED_BY = "CompletedBy";
     public static final String COLUMN_NAME_IS_DRAFT = "IsDraft";
+
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME +" (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_TEAM_ID + " TEXT," +
+                    COLUMN_NAME_EVENT_ID + " TEXT," +
+
+                    COLUMN_NAME_DRIVE_STYLE + " TEXT," +
+                    COLUMN_NAME_ROBOT_WEIGHT + " TEXT," +
+                    COLUMN_NAME_ROBOT_LENGTH + " TEXT," +
+                    COLUMN_NAME_ROBOT_WIDTH + " TEXT," +
+                    COLUMN_NAME_ROBOT_HEIGHT + " TEXT," +
+
+                    COLUMN_NAME_AUTO_EXIT_HABITAT + " TEXT," +
+                    COLUMN_NAME_AUTO_HATCH + " TEXT," +
+                    COLUMN_NAME_AUTO_CARGO + " TEXT," +
+
+                    COLUMN_NAME_TELEOP_HATCH + " TEXT," +
+                    COLUMN_NAME_TELEOP_CARGO + " TEXT," +
+
+                    COLUMN_NAME_RETURN_TO_HABITAT + " TEXT," +
+
+                    COLUMN_NAME_NOTES + " TEXT," +
+
+                    COLUMN_NAME_COMPLETED_BY + " TEXT," +
+                    COLUMN_NAME_IS_DRAFT + " INTEGER)";
 
 
     private int id;
@@ -199,6 +230,12 @@ public class PitCard
         return isDraft;
     }
 
+    @Override
+    public String toString()
+    {
+        return "Team " + getTeamId() + " - Pit Card";
+    }
+
     //endregion
 
     //region Setters
@@ -304,8 +341,8 @@ public class PitCard
 
         if(database.isOpen())
         {
-            PitCard pitCard = database.getPitCard(this);
-
+            ArrayList<PitCard> pitCards = getPitCards(null, null, this, false, database);
+            PitCard pitCard = (pitCards.size() > 0 ) ? pitCards.get(0) : null;
 
             if (pitCard != null)
             {
@@ -380,6 +417,30 @@ public class PitCard
         }
 
         return successful;
+    }
+
+    /**
+     * Clears all data from the classes table
+     * @param database used to clear table
+     * @param clearDrafts boolean if you want to include drafts in the clear
+     */
+    public static void clearTable(Database database, boolean clearDrafts)
+    {
+        database.clearTable(TABLE_NAME, clearDrafts);
+    }
+
+    /**
+     * Returns arraylist of pit cards with specified filters from database
+     * @param event if specified, filters pit cards by event id
+     * @param team if specified, filters pit cards by team id
+     * @param pitCard if specified, filters pit cards by pitCard id
+     * @param onlyDrafts if true, filters pit cards by draft
+     * @param database used to load pit cards
+     * @return arraylist of teams
+     */
+    public static ArrayList<PitCard> getPitCards(@Nullable Event event, @Nullable Team team, @Nullable PitCard pitCard, boolean onlyDrafts, @NonNull Database database)
+    {
+        return database.getPitCards(event, team, pitCard, onlyDrafts);
     }
 
     //endregion

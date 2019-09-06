@@ -3,13 +3,10 @@ package com.alphadevelopmentsolutions.frcscout.Activities;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -98,32 +95,28 @@ public class MainActivity extends AppCompatActivity implements
         SplashFragment.OnFragmentInteractionListener,
         ChecklistFragment.OnFragmentInteractionListener
 {
+    private MainActivity context;
 
     private Database database;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor sharedPreferencesEditor;
 
     private FrameLayout mainFrame;
-
-    private MainActivity context;
+    private Toolbar toolbar;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
+    private AppBarLayout appBarLayout;
+    private TextView teamNumberTextView;
+    private TextView teamNameTextView;
 
     private Thread updateThread;
 
     private final int ACTION_BAR_ELEVATION = 11;
-    
     private int progressDialogProgess;
 
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor sharedPreferencesEditor;
+    private boolean isOnline;
 
-    private AppBarLayout appBarLayout;
-
-    private TextView teamNumberTextView;
-    private TextView teamNameTextView;
-
-    private NavigationView navigationView;
-
-    private Toolbar toolbar;
-
-    private DrawerLayout drawer;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -132,34 +125,38 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //open the database as soon as the app starts
-        database = new Database(this);
-        database.open();
-
+        //assign ass base layout vars
         mainFrame = findViewById(R.id.MainFrame);
         appBarLayout = findViewById(R.id.AppBarLayout);
-
-        context = this;
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
         toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
 
+        //set the action bar
+        setSupportActionBar(toolbar);
+
+        Button changeEventButton = findViewById(R.id.ChangeEventButton);
         View navHeader = navigationView.getHeaderView(0);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         teamNumberTextView = navHeader.findViewById(R.id.TeamNumberTextView);
         teamNameTextView = navHeader.findViewById(R.id.TeamNameTextView);
 
+        //set context
+        context = this;
+
+        //open the database as soon as the app starts
+        database = new Database(context);
+        database.open();
+
+        //add the listener for the drawer
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        //set the item selected listener
+        navigationView.setNavigationItemSelectedListener(this);
+
         //change event button logic
-        Button changeEventButton = findViewById(R.id.ChangeEventButton);
         changeEventButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -191,188 +188,103 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    //region Data Management Methods
+
     /**
-     * All view loading logic is stored here
-     * used for when the activity initially starts up
-     * @param savedInstanceState
+     * Returns the active database
+     * @return database instance
      */
-    private void loadView(Bundle savedInstanceState)
+    public Database getDatabase()
     {
-        //if not previous saved state, eg not rotation
-        if (savedInstanceState == null)
-        {
+        if(database == null)
+            database = new Database(this);
 
-            //default to the splash frag until changed
-            changeFragment(new SplashFragment(), false);
+        if(!database.isOpen())
+            database.open();
 
-            navigationView.setCheckedItem(R.id.nav_teams);
-
-            //validate the app config to ensure all properties are filled
-            if (validateConfig())
-            {
-                //check any teams are on device and if the device is online
-                //if no teams, update data
-                if (getDatabase().getTeams().size() == 0 && isOnline())
-                    downloadApplicationData(false);
-
-                //join back up with the update thread if it is not null
-                if (updateThread != null)
-                {
-                    try
-                    {
-                        updateThread.join();
-                    } catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-
-                //event previously selected, switch to team list
-                if((Integer) getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) > 0)
-                    changeFragment(TeamListFragment.newInstance(), false);
-
-                else
-                    //change the frag to the eventlist
-                    changeFragment(new EventListFragment(), false);
-            } else
-            {
-                changeFragment(new ConfigFragment(), false);
-            }
-        }
+        return database;
     }
 
-    @Override
-    public void onBackPressed()
+
+    /**
+     * Sets or adds a preference into the shared preferences
+     * @param key sharedpref key
+     * @param value sharedpref value
+     */
+    public void setPreference(String key, Object value)
     {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START))
-        {
-            drawer.closeDrawer(GravityCompat.START);
-        } else
-        {
-            super.onBackPressed();
-        }
+        sharedPreferencesEditor = sharedPreferences.edit();
+
+        if(value instanceof String)
+            sharedPreferencesEditor.putString(key, (String) value);
+
+        else if(value instanceof Integer)
+            sharedPreferencesEditor.putInt(key, (Integer) value);
+
+        else if(value instanceof Boolean)
+            sharedPreferencesEditor.putBoolean(key, (Boolean) value);
+
+        else if(value instanceof Long)
+            sharedPreferencesEditor.putLong(key, (Long) value);
+
+        else if(value instanceof Float)
+            sharedPreferencesEditor.putFloat(key, (Float) value);
+
+        sharedPreferencesEditor.apply();
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item)
+    /**
+     * Sets or adds a preference into the shared preferences
+     * @param key sharedpref key
+     * @param defaultValue sharedpref defaultVal
+     */
+    public Object getPreference(String key, Object defaultValue)
     {
-        int id = item.getItemId();
+        if(sharedPreferences == null)
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (id == R.id.nav_teams)
-        {
-            changeFragment(TeamListFragment.newInstance(), false);
-        }
-        else if(id == R.id.nav_checklist)
-        {
-            changeFragment(ChecklistFragment.newInstance("", ""), false);
-        }
+        if(defaultValue instanceof String)
+            return sharedPreferences.getString(key, (String) defaultValue);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        else if(defaultValue instanceof Integer)
+            return sharedPreferences.getInt(key, (Integer) defaultValue);
+
+        else if(defaultValue instanceof Boolean)
+            return sharedPreferences.getBoolean(key, (Boolean) defaultValue);
+
+        else if(defaultValue instanceof Long)
+            return sharedPreferences.getLong(key, (Long) defaultValue);
+
+        else if(defaultValue instanceof Float)
+            return sharedPreferences.getFloat(key, (Float) defaultValue);
+
+        else return null;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    /**
+     * Clears all api configs from the phone
+     */
+    public void clearApiConfig()
     {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 5885);
-            }
-            else
-            {
-                Intent intent = getIntent();
-                finish();
-                startActivity(intent);
-            }
-        }
+        setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "");
+        setPreference(Constants.SharedPrefKeys.API_URL_KEY, "");
+        setPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "");
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    /**
+     * Check all the shared pref settings to validate the app is setup with the required info
+     * @return boolean if config is valid
+     */
+    private boolean validateConfig()
     {
-        super.onActivityResult(requestCode, resultCode, data);
+        return !getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").equals("") &&
+                !getPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "").equals("") &&
+                !getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").equals("");
     }
 
-    public void dropActionBar()
-    {
-        appBarLayout.setElevation(0);
-    }
+    //endregion
 
-    public void elevateActionBar()
-    {
-        appBarLayout.setElevation(ACTION_BAR_ELEVATION);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId()) {
-            case R.id.UploadDataItem:
-                if(isOnline())
-                {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle(R.string.upload_scout_cards)
-                            .setMessage(R.string.upload_scout_cards_warning)
-                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    uploadApplicationData();
-
-                                }
-                            })
-                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-                }
-                else
-                {
-                    showSnackbar(getString(R.string.no_internet));
-                }
-
-                return true;
-
-            case R.id.RefreshDataItem:
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle(R.string.download_media)
-                        .setMessage(R.string.download_media_desc)
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                downloadApplicationData(true);
-                            }
-                        })
-                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                downloadApplicationData(false);
-
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-
-                return true;
-        }
-
-        return false;
-    }
+    //region Internet Methods
 
     /**
      * Downloads all app data from the server
@@ -383,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements
         //update all app data
         if(isOnline())
         {
-            final ProgressDialog progressDialog = new ProgressDialog(this, R.style.CustomProgressDialog);
+            progressDialog = new ProgressDialog(this, R.style.CustomProgressDialog);
             progressDialog.setTitle("Downloading data...");
             progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             progressDialog.setMax(100);
@@ -396,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements
                 {
 
                     progressDialogProgess = 10;
-                    
+
                     context.runOnUiThread(new Runnable()
                     {
                         @Override
@@ -406,14 +318,14 @@ public class MainActivity extends AppCompatActivity implements
                             progressDialog.setProgress(progressDialogProgess);
                         }
                     });
-                    
+
 
                     //update users
                     Server.GetUsers getUsers = new Server.GetUsers(context);
 
                     if (getUsers.execute())
                     {
-                        getDatabase().clearUsers();
+                        User.clearTable(getDatabase());
                         for (User user : getUsers.getUsers())
                         {
                             user.save(getDatabase());
@@ -437,19 +349,19 @@ public class MainActivity extends AppCompatActivity implements
                     Server.GetEvents getEvents = new Server.GetEvents(context);
                     if (getEvents.execute())
                     {
-                        getDatabase().clearEvents();
+                        Event.clearTable(getDatabase());
                         for (Event event : getEvents.getEvents())
                             event.save(getDatabase());
                     }
 
                     //clear the saved data
-                    getDatabase().clearEventTeamList();
-                    getDatabase().clearTeams();
-                    getDatabase().clearScoutCards(false);
-                    getDatabase().clearPitCards(false);
-                    getDatabase().clearMatches();
-                    getDatabase().clearChecklistItems();
-                    getDatabase().clearChecklistItemResults(false);
+                    EventTeamList.clearTable(getDatabase());
+                    Team.clearTable(getDatabase());
+                    ScoutCard.clearTable(getDatabase(), false);
+                    PitCard.clearTable(getDatabase(), false);
+                    Match.clearTable(getDatabase());
+                    ChecklistItem.clearTable(getDatabase());
+                    ChecklistItemResult.clearTable(getDatabase(), false);
 
                     progressDialogProgess = 20;
                     context.runOnUiThread(new Runnable()
@@ -479,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     final int remainingPercent = (downloadMedia) ? 90 : 100 - progressDialogProgess; //max amount of percentage we have before we can't add anymore to the progress dialog
 
-                    final ArrayList<Event> events = getDatabase().getEvents();
+                    final ArrayList<Event> events = Event.getEvents(null, getDatabase());
 
                     //iterate through each event and get its data
                     for (int i = 0; i < events.size(); i++)
@@ -607,10 +519,10 @@ public class MainActivity extends AppCompatActivity implements
                             for (File child : mediaFolder.listFiles())
                                 child.delete();
 
-                        getDatabase().clearRobotMedia(false);
+                        RobotMedia.clearTable(getDatabase(), false);
                         Server.GetRobotMedia getRobotMedia;
 
-                        for (final Team team : getDatabase().getTeams())
+                        for (final Team team : Team.getTeams(null, null, null, getDatabase()))
                         {
                             context.runOnUiThread(new Runnable()
                             {
@@ -664,9 +576,9 @@ public class MainActivity extends AppCompatActivity implements
      */
     private void uploadApplicationData()
     {
-        final ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog = new ProgressDialog(context);
 
-        final ArrayList<Team> teams = getDatabase().getTeams();
+        final ArrayList<Team> teams = Team.getTeams(null, null, null, getDatabase());
         final int totalTeams = teams.size();
 
         progressDialog.setMax(totalTeams);
@@ -682,13 +594,13 @@ public class MainActivity extends AppCompatActivity implements
 
                 boolean success = true;
 
-                for(Event event : getDatabase().getEvents())
+                for(Event event : Event.getEvents(null, getDatabase()))
                 {
 
                     //upload team specific data
                     for (Team team : teams)
                     {
-                        for (ScoutCard scoutCard : getDatabase().getScoutCards(team, event,true))
+                        for (ScoutCard scoutCard : ScoutCard.getScoutCards(event, null, team, null,true, getDatabase()))
                         {
                             Server.SubmitScoutCard submitScoutCard = new Server.SubmitScoutCard(context, scoutCard);
                             if (submitScoutCard.execute())
@@ -699,7 +611,7 @@ public class MainActivity extends AppCompatActivity implements
                                 success = false;
                         }
 
-                        for (PitCard pitCard : getDatabase().getPitCards(team, event, true))
+                        for (PitCard pitCard : PitCard.getPitCards(event, team, null, true, getDatabase()))
                         {
                             Server.SubmitPitCard submitScoutCard = new Server.SubmitPitCard(context, pitCard);
                             if (submitScoutCard.execute())
@@ -710,7 +622,7 @@ public class MainActivity extends AppCompatActivity implements
                                 success = false;
                         }
 
-                        for (RobotMedia robotMedia : getDatabase().getRobotMedia(team, true))
+                        for (RobotMedia robotMedia : RobotMedia.getRobotMedia(null, team, true, getDatabase()))
                         {
                             Server.SubmitRobotMedia submitRobotMedia = new Server.SubmitRobotMedia(context, robotMedia);
                             if (submitRobotMedia.execute())
@@ -723,9 +635,9 @@ public class MainActivity extends AppCompatActivity implements
                     }
 
                     //Checklist item results
-                    for(ChecklistItem checklistItem : getDatabase().getChecklistItems())
+                    for(ChecklistItem checklistItem : ChecklistItem.getChecklistItems(null, getDatabase()))
                     {
-                        for(ChecklistItemResult checklistItemResult : checklistItem.getResults(getDatabase(), true))
+                        for(ChecklistItemResult checklistItemResult : checklistItem.getResults(null,true, getDatabase()))
                         {
                             Server.SubmitChecklistItemResult submitChecklistItemResult = new Server.SubmitChecklistItemResult(context, checklistItemResult);
                             if(submitChecklistItemResult.execute())
@@ -759,14 +671,171 @@ public class MainActivity extends AppCompatActivity implements
         uploadThread.start();
     }
 
-    private boolean isOnline()
+
+    /**
+     * Attempts to ping the server with a hello request to verify connection state
+     * @return boolean true if connection valid
+     */
+    public boolean isOnline()
     {
+        isOnline = false;
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        Thread isOnlineThread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Server.Hello hello = new Server.Hello(context);
 
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+                if(hello.execute())
+                    isOnline = true;
+            }
+        });
 
+        isOnlineThread.start();
+
+        try
+        {
+            isOnlineThread.join();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
+        return isOnline;
+    }
+
+    //endregion
+
+    //region Overrides
+
+    @Override
+    public void onBackPressed()
+    {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START))
+        {
+            drawer.closeDrawer(GravityCompat.START);
+        } else
+        {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();
+
+        switch(id)
+        {
+            case R.id.nav_matches:
+                changeFragment(MatchListFragment.newInstance(null), false);
+                break;
+
+            case R.id.nav_teams:
+                changeFragment(TeamListFragment.newInstance(null, null), false);
+                break;
+
+            case R.id.nav_checklist:
+                changeFragment(ChecklistFragment.newInstance(new Team((Integer) context.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1), database), null), false);
+                break;
+        }
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 5885);
+            }
+            else
+            {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId()) {
+            case R.id.UploadDataItem:
+                if(isOnline())
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle(R.string.upload_scout_cards)
+                            .setMessage(R.string.upload_scout_cards_warning)
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    uploadApplicationData();
+
+                                }
+                            })
+                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+                else
+                {
+                    showSnackbar(getString(R.string.no_internet));
+                }
+
+                return true;
+
+            case R.id.RefreshDataItem:
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(R.string.download_media)
+                        .setMessage(R.string.download_media_desc)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                downloadApplicationData(true);
+                            }
+                        })
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                downloadApplicationData(false);
+
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+                return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -775,19 +844,54 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    //endregion
+
+    //region Layout Methods
+
     /**
-     * Returns the active database
-     * @return database instance
+     * Sets the title of the nav bar
+     * @param title to set the nav bar title to
      */
-    public Database getDatabase()
+    public void setTitle(String title)
     {
-        if(database == null)
-            database = new Database(this);
+        getSupportActionBar().setTitle(title);
+    }
 
-        if(!database.isOpen())
-            database.open();
+    /**
+     * Sets the title of the nav bar
+     * @param titleId to set the nav bar title to
+     */
+    public void setTitle(int titleId)
+    {
+        getSupportActionBar().setTitle(titleId);
+    }
 
-        return database;
+    /**
+     * Updates the nav bar text for team name and number
+     */
+    public void updateNavText()
+    {
+        teamNumberTextView.setText(String.valueOf(getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1)));
+        teamNameTextView.setText(getPreference(Constants.SharedPrefKeys.TEAM_NAME_KEY, "").toString());
+    }
+
+    /**
+     * Locks the drawer layout
+     */
+    public void lockDrawerLayout()
+    {
+        toolbar.setNavigationIcon(null);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    /**
+     * Unlocks the drawer layout
+     */
+    public void unlockDrawerLayout()
+    {
+        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_dehaze_white_24dp, null));
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+
     }
 
     /**
@@ -829,123 +933,72 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Sets or adds a preference into the shared preferences
-     * @param key sharedpref key
-     * @param value sharedpref value
+     * All view loading logic is stored here
+     * used for when the activity initially starts up
+     * @param savedInstanceState
      */
-    public void setPreference(String key, Object value)
+    private void loadView(Bundle savedInstanceState)
     {
-        sharedPreferencesEditor = sharedPreferences.edit();
+        //if not previous saved state, eg not rotation
+        if (savedInstanceState == null)
+        {
 
-        if(value instanceof String)
-            sharedPreferencesEditor.putString(key, (String) value);
+            //default to the splash frag until changed
+            changeFragment(new SplashFragment(), false);
 
-        else if(value instanceof Integer)
-            sharedPreferencesEditor.putInt(key, (Integer) value);
+            //validate the app config to ensure all properties are filled
+            if (validateConfig())
+            {
+                //check any teams are on device and if the device is online
+                //if no teams, update data
+                if (Team.getTeams(null, null, null, getDatabase()).size() == 0 && isOnline())
+                    downloadApplicationData(false);
 
-        else if(value instanceof Boolean)
-            sharedPreferencesEditor.putBoolean(key, (Boolean) value);
+                //join back up with the update thread if it is not null
+                if (updateThread != null)
+                {
+                    try
+                    {
+                        updateThread.join();
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
 
-        else if(value instanceof Long)
-            sharedPreferencesEditor.putLong(key, (Long) value);
+                //event previously selected, switch to team list
+                if((Integer) getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) > 0)
+                {
+                    navigationView.setCheckedItem(R.id.nav_matches);
+                    changeFragment(MatchListFragment.newInstance(null), false);
+                }
 
-        else if(value instanceof Float)
-            sharedPreferencesEditor.putFloat(key, (Float) value);
-
-        sharedPreferencesEditor.apply();
+                else
+                    //change the frag to the eventlist
+                    changeFragment(new EventListFragment(), false);
+            } else
+            {
+                changeFragment(new ConfigFragment(), false);
+            }
+        }
     }
 
     /**
-     * Sets or adds a preference into the shared preferences
-     * @param key sharedpref key
-     * @param defaultValue sharedpref defaultVal
+     * Drops the elevation of the actionbar so that specific pages don't have a shadow
      */
-    public Object getPreference(String key, Object defaultValue)
+    public void dropActionBar()
     {
-        if(defaultValue instanceof String)
-            return sharedPreferences.getString(key, (String) defaultValue);
-
-        else if(defaultValue instanceof Integer)
-            return sharedPreferences.getInt(key, (Integer) defaultValue);
-
-        else if(defaultValue instanceof Boolean)
-            return sharedPreferences.getBoolean(key, (Boolean) defaultValue);
-
-        else if(defaultValue instanceof Long)
-            return sharedPreferences.getLong(key, (Long) defaultValue);
-
-        else if(defaultValue instanceof Float)
-            return sharedPreferences.getFloat(key, (Float) defaultValue);
-
-        else return null;
+        appBarLayout.setElevation(0);
     }
 
     /**
-     * Clears all api configs from the phone
+     * Elevates the action bar after dropping to preserve the shadow
      */
-    public void clearApiConfig()
+    public void elevateActionBar()
     {
-        setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "");
-        setPreference(Constants.SharedPrefKeys.API_URL_KEY, "");
-        setPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "");
+        appBarLayout.setElevation(ACTION_BAR_ELEVATION);
     }
 
-    /**
-     * Check all the shared pref settings to validate the app is setup with the required info
-     * @return boolean if config is valid
-     */
-    private boolean validateConfig()
-    {
-        return !getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").equals("") &&
-                !getPreference(Constants.SharedPrefKeys.WEB_URL_KEY, "").equals("") &&
-                !getPreference(Constants.SharedPrefKeys.API_URL_KEY, "").equals("");
-    }
-
-    /**
-     * Updates the nav bar text for team name and number
-     */
-    public void updateNavText()
-    {
-        teamNumberTextView.setText(String.valueOf(getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1)));
-        teamNameTextView.setText(getPreference(Constants.SharedPrefKeys.TEAM_NAME_KEY, "").toString());
-    }
-
-    /**
-     * Locks the drawer layout
-     */
-    public void lockDrawerLayout()
-    {
-        toolbar.setNavigationIcon(null);
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-    }
-
-    /**
-     * Unlocks the drawer layout
-     */
-    public void unlockDrawerLayout()
-    {
-        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_dehaze_white_24dp, null));
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-
-    }
-
-    /**
-     * Sets the title of the nav bar
-     * @param title to set the nav bar title to
-     */
-    public void setTitle(String title)
-    {
-        getSupportActionBar().setTitle(title);
-    }
-
-    /**
-     * Sets the title of the nav bar
-     * @param titleId to set the nav bar title to
-     */
-    public void setTitle(int titleId)
-    {
-        getSupportActionBar().setTitle(titleId);
-    }
-
+    //endregion
 
 }

@@ -3,22 +3,27 @@ package com.alphadevelopmentsolutions.frcscout.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
+import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter;
 import com.alphadevelopmentsolutions.frcscout.Adapters.TeamListRecyclerViewAdapter;
-import com.alphadevelopmentsolutions.frcscout.Classes.Event;
-import com.alphadevelopmentsolutions.frcscout.Classes.EventTeamList;
+import com.alphadevelopmentsolutions.frcscout.Classes.Match;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
+import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor;
 import com.alphadevelopmentsolutions.frcscout.R;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -32,10 +37,9 @@ import java.util.ArrayList;
  */
 public class TeamListFragment extends MasterFragment
 {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    static final String ARG_ALLIANCE_COLOR = "ALLIANCE_COLOR";
 
-    // TODO: Rename and change types of parameters
+    private String allianceColorString;
 
     private OnFragmentInteractionListener mListener;
 
@@ -51,10 +55,12 @@ public class TeamListFragment extends MasterFragment
      * @return A new instance of fragment TeamListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TeamListFragment newInstance()
+    public static TeamListFragment newInstance(@Nullable Match match, @Nullable AllianceColor allianceColor)
     {
         TeamListFragment fragment = new TeamListFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_MATCH_JSON, toJson(match));
+        args.putString(ARG_ALLIANCE_COLOR, (allianceColor == null) ? AllianceColor.NONE.name() : allianceColor.name());
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,6 +70,13 @@ public class TeamListFragment extends MasterFragment
     {
         super.onCreate(savedInstanceState);
 
+        //check if any args were passed, specifically for team and match json
+        if (getArguments() != null)
+        {
+            matchJson = getArguments().getString(ARG_MATCH_JSON);
+            allianceColorString = getArguments().getString(ARG_ALLIANCE_COLOR);
+        }
+
         loadTeamsThread = new Thread(new Runnable()
         {
             @Override
@@ -71,12 +84,29 @@ public class TeamListFragment extends MasterFragment
             {
                 joinLoadingThread();
 
-                //load all the event team lists from the database
-                ArrayList<EventTeamList> eventTeamList = database.getEventTeamLists(event);
+                if(match != null && allianceColorString != null && !allianceColorString.equals(""))
+                    allianceColor = AllianceColor.getColorFromString(allianceColorString);
 
-                //load all the teams at this specific event
-                teams = database.getTeamsAtEvent(eventTeamList);
-                searchedTeams = new ArrayList<>(teams);
+                //get all teams at event
+                teams = event.getTeams(null, null, database);
+
+                //if a match and alliance color was specified,
+                //remove any teams that are not in that match or alliance color
+                if(match != null && allianceColor != null)
+                {
+                    for(Team team : new ArrayList<>(teams))
+                    {
+                        //team not in match / alliance color
+                        if(match.getTeamAllianceColor(team) != allianceColor)
+                            teams.remove(team);
+                    }
+
+                    //add all the teams to the searchedTeams arraylist
+                    searchedTeams = new ArrayList<>(teams);
+                }
+                else
+                    //add all the teams to the searchedTeams arraylist
+                    searchedTeams = new ArrayList<>(teams);
             }
         });
 
@@ -92,6 +122,14 @@ public class TeamListFragment extends MasterFragment
 
     private Thread loadTeamsThread;
 
+    private AllianceColor allianceColor;
+
+    private LinearLayout allianceViewPagerLinearLayout;
+    private TabLayout allianceTabLayout;
+    private ViewPager allianceViewPager;
+
+    private Toolbar searchTeamsToolbar;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -104,6 +142,12 @@ public class TeamListFragment extends MasterFragment
 
         teamsRecyclerView = view.findViewById(R.id.TeamsRecyclerView);
         teamSearchEditText = view.findViewById(R.id.TeamSearchEditText);
+        allianceViewPagerLinearLayout = view.findViewById(R.id.AllianceViewPagerLinearLayout);
+        allianceTabLayout = view.findViewById(R.id.AllianceTabLayout);
+        allianceViewPager = view.findViewById(R.id.AllianceViewPager);
+        searchTeamsToolbar = view.findViewById(R.id.SearchTeamsToolbar);
+
+
 
         //join back up with the load teams thread
         try
@@ -115,71 +159,93 @@ public class TeamListFragment extends MasterFragment
             e.printStackTrace();
         }
 
-        context.getSupportActionBar().setTitle(event.getName());
+        context.setTitle((match == null) ? event.getName() : match.toString());
 
-        final TeamListRecyclerViewAdapter teamListRecyclerViewAdapter = new TeamListRecyclerViewAdapter(searchedTeams, new Gson().toJson(event), context);
+        //hide search bar if match is specified
+        if(match != null)
+            searchTeamsToolbar.setVisibility(View.GONE);
 
-        teamsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-        teamsRecyclerView.setAdapter(teamListRecyclerViewAdapter);
-
-        teamSearchEditText.addTextChangedListener(new TextWatcher()
+        if(match == null || (allianceColor == AllianceColor.BLUE || allianceColor == AllianceColor.RED))
         {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
-            {
+            final TeamListRecyclerViewAdapter teamListRecyclerViewAdapter = new TeamListRecyclerViewAdapter(match, searchedTeams, context);
 
-            }
+            teamsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+            teamsRecyclerView.setAdapter(teamListRecyclerViewAdapter);
 
-            @Override
-            public void onTextChanged(CharSequence searchText, int start, int before, int count)
+            teamSearchEditText.addTextChangedListener(new TextWatcher()
             {
-                //You only need to reset the list if you are removing from your search, adding the objects back
-                if(count < before)
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
                 {
-                    //Reset the list
-                    for (int i = 0; i < teams.size(); i++)
-                    {
-                        Team team = teams.get(i);
 
-                        //check if the contact doesn't exist in the viewable list
-                        if (!searchedTeams.contains(team))
+                }
+
+                @Override
+                public void onTextChanged(CharSequence searchText, int start, int before, int count)
+                {
+                    //You only need to reset the list if you are removing from your search, adding the objects back
+                    if (count < before)
+                    {
+                        //Reset the list
+                        for (int i = 0; i < teams.size(); i++)
                         {
-                            //add it and notify the recyclerview
-                            searchedTeams.add(i, team);
-                            teamListRecyclerViewAdapter.notifyItemInserted(i);
-                            teamListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedTeams.size());
+                            Team team = teams.get(i);
+
+                            //check if the contact doesn't exist in the viewable list
+                            if (!searchedTeams.contains(team))
+                            {
+                                //add it and notify the recyclerview
+                                searchedTeams.add(i, team);
+                                teamListRecyclerViewAdapter.notifyItemInserted(i);
+                                teamListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedTeams.size());
+                            }
+
                         }
-
                     }
-                }
 
-                //Delete from the list
-                for (int i = 0; i < searchedTeams.size(); i++)
-                {
-                    Team team = searchedTeams.get(i);
-                    String name = team.getId() + " - " + team.getName();
-
-                    //If the contacts name doesn't equal the searched name
-                    if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
+                    //Delete from the list
+                    for (int i = 0; i < searchedTeams.size(); i++)
                     {
-                        //remove it from the list and notify the recyclerview
-                        searchedTeams.remove(i);
-                        teamListRecyclerViewAdapter.notifyItemRemoved(i);
-                        teamListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedTeams.size());
+                        Team team = searchedTeams.get(i);
+                        String name = team.getId() + " - " + team.getName();
 
-                        //this prevents the index from passing the size of the list,
-                        //stays on the same index until you NEED to move to the next one
-                        i--;
+                        //If the contacts name doesn't equal the searched name
+                        if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
+                        {
+                            //remove it from the list and notify the recyclerview
+                            searchedTeams.remove(i);
+                            teamListRecyclerViewAdapter.notifyItemRemoved(i);
+                            teamListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedTeams.size());
+
+                            //this prevents the index from passing the size of the list,
+                            //stays on the same index until you NEED to move to the next one
+                            i--;
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void afterTextChanged(Editable editable)
-            {
+                @Override
+                public void afterTextChanged(Editable editable)
+                {
 
-            }
-        });
+                }
+            });
+        }
+
+        //if match specified, setup the viewpager and hide the recyclerview
+        else
+        {
+            allianceViewPagerLinearLayout.setVisibility(View.VISIBLE);
+            teamsRecyclerView.setVisibility(View.GONE);
+
+            FragmentViewPagerAdapter viewPagerAdapter = new FragmentViewPagerAdapter(getChildFragmentManager());
+
+            viewPagerAdapter.addFragment(TeamListFragment.newInstance(match, AllianceColor.BLUE), getString(R.string.blue_alliance));
+            viewPagerAdapter.addFragment(TeamListFragment.newInstance(match, AllianceColor.RED), getString(R.string.red_alliance));
+
+            allianceViewPager.setAdapter(viewPagerAdapter);
+            allianceTabLayout.setupWithViewPager(allianceViewPager);
+        }
 
         return view;
     }

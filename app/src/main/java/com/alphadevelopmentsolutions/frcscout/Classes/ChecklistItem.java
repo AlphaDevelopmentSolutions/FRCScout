@@ -1,8 +1,11 @@
 package com.alphadevelopmentsolutions.frcscout.Classes;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 
-public class ChecklistItem
+public class ChecklistItem extends Table
 {
 
     public static final String TABLE_NAME = "checklist_items";
@@ -10,6 +13,13 @@ public class ChecklistItem
     public static final String COLUMN_NAME_SERVER_ID = "Id";
     public static final String COLUMN_NAME_TITLE = "Title";
     public static final String COLUMN_NAME_DESCRIPTION = "Description";
+
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME +" (" +
+                    COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_NAME_SERVER_ID + " INTEGER," +
+                    COLUMN_NAME_TITLE + " TEXT," +
+                    COLUMN_NAME_DESCRIPTION + " TEXT)";
 
     private int id;
     private int serverId;
@@ -24,6 +34,7 @@ public class ChecklistItem
             String title,
             String description)
     {
+        super();
         this.id = id;
         this.serverId = serverId;
 
@@ -64,13 +75,21 @@ public class ChecklistItem
 
     /**
      * Gets the checklist item results from the database, sorted from newest to oldest
+     * @param checklistItemResult if specified, filters checklist item results by checklist item result id
      * @param database used to load object
+     * @param onlyDrafts if true, filters by draft
      * @return arraylist of results
      */
-    public ArrayList<ChecklistItemResult> getResults(Database database, boolean onlyDrafts)
+    public ArrayList<ChecklistItemResult> getResults(@Nullable ChecklistItemResult checklistItemResult, boolean onlyDrafts, @NonNull Database database)
     {
         //get results from database
-        return database.getChecklistItemResults(this, onlyDrafts);
+        return ChecklistItemResult.getChecklistItemResults(this, checklistItemResult, onlyDrafts, database);
+    }
+
+    @Override
+    public String toString()
+    {
+        return getTitle();
     }
 
     //endregion
@@ -113,7 +132,8 @@ public class ChecklistItem
 
         if(database.isOpen())
         {
-            ChecklistItem checklistItem = database.getChecklistItem(this);
+            ArrayList<ChecklistItem> checklistItems = getChecklistItems(this, database);
+            ChecklistItem checklistItem = (checklistItems.size() > 0 ) ? checklistItems.get(0) : null;
 
             if (checklistItem != null)
             {
@@ -168,6 +188,26 @@ public class ChecklistItem
         }
 
         return successful;
+    }
+
+    /**
+     * Clears all data from the classes table
+     * @param database used to clear table
+     */
+    public static void clearTable(Database database)
+    {
+        database.clearTable(TABLE_NAME);
+    }
+
+    /**
+     * Returns arraylist of checklist items with specified filters from database
+     * @param checklistItem if specified, filters checklist items by checklistitem id
+     * @param database used to load checklist items
+     * @return arraylist of checklist items
+     */
+    public static ArrayList<ChecklistItem> getChecklistItems(@Nullable ChecklistItem checklistItem, @NonNull Database database)
+    {
+        return database.getChecklistItems(checklistItem);
     }
 
     //endregion

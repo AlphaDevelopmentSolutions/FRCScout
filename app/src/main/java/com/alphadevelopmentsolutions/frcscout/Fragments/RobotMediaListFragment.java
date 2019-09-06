@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,9 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.RobotMediaListRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Classes.RobotMedia;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.R;
-import com.google.gson.Gson;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,14 +37,14 @@ public class RobotMediaListFragment extends MasterFragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param teamJson json for a team.
+     * @param team
      * @return A new instance of fragment RobotMediaListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RobotMediaListFragment newInstance(String teamJson) {
+    public static RobotMediaListFragment newInstance(@NonNull Team team) {
         RobotMediaListFragment fragment = new RobotMediaListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_TEAM_JSON, teamJson);
+        args.putString(ARG_TEAM_JSON, toJson(team));
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,9 +52,6 @@ public class RobotMediaListFragment extends MasterFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            teamJson = getArguments().getString(ARG_TEAM_JSON);
-        }
     }
 
     private RecyclerView robotMediaRecyclerView;
@@ -72,7 +70,7 @@ public class RobotMediaListFragment extends MasterFragment
 
                 joinLoadingThread();
 
-                final RobotMediaListRecyclerViewAdapter robotMediaListRecyclerViewAdapter = new RobotMediaListRecyclerViewAdapter(team, database.getRobotMedia(team, false), context);
+                final RobotMediaListRecyclerViewAdapter robotMediaListRecyclerViewAdapter = new RobotMediaListRecyclerViewAdapter(team, team.getRobotMedia(null, false, database), context);
 
                 context.runOnUiThread(new Runnable() {
                     @Override

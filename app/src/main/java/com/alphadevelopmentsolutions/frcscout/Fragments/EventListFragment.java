@@ -1,9 +1,9 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alphadevelopmentsolutions.frcscout.Adapters.EventListRecyclerViewAdapter;
+import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants;
 import com.alphadevelopmentsolutions.frcscout.R;
 
@@ -87,7 +88,7 @@ public class EventListFragment extends MasterFragment
 
         eventListRecyclerView = view.findViewById(R.id.EventListRecyclerView);
 
-        EventListRecyclerViewAdapter eventListRecyclerViewAdapter = new EventListRecyclerViewAdapter(database.getEvents(), context, TeamListFragment.class);
+        EventListRecyclerViewAdapter eventListRecyclerViewAdapter = new EventListRecyclerViewAdapter(Event.getEvents(null, database), context);
         eventListRecyclerView.setAdapter(eventListRecyclerViewAdapter);
         eventListRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 

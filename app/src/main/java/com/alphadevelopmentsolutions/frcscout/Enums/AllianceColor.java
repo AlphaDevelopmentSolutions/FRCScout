@@ -6,7 +6,8 @@ package com.alphadevelopmentsolutions.frcscout.Enums;
 public enum  AllianceColor
 {
     RED,
-    BLUE;
+    BLUE,
+    NONE;
 
     /**
      * Converts a string value to enum
@@ -15,9 +16,11 @@ public enum  AllianceColor
      */
     public static AllianceColor getColorFromString(String allianceColor)
     {
-        if(allianceColor.toLowerCase().equals(AllianceColor.RED.name().toLowerCase()))
-            return AllianceColor.RED;
+        if(allianceColor.toLowerCase().equals(RED.name().toLowerCase()))
+            return RED;
+        else if (allianceColor.toLowerCase().equals(BLUE.name().toLowerCase()))
+            return BLUE;
         else
-            return AllianceColor.BLUE;
+            return NONE;
     }
 }

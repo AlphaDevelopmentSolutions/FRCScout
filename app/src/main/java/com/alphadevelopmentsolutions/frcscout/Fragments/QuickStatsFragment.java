@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +13,9 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.alphadevelopmentsolutions.frcscout.Classes.Event;
 import com.alphadevelopmentsolutions.frcscout.Classes.Team;
 import com.alphadevelopmentsolutions.frcscout.Interfaces.StatsKeys;
 import com.alphadevelopmentsolutions.frcscout.R;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,15 +42,15 @@ public class QuickStatsFragment extends MasterFragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param teamJson
+     * @param team
      * @return A new instance of fragment QuickStatsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static QuickStatsFragment newInstance(String teamJson)
+    public static QuickStatsFragment newInstance(@NonNull Team team)
     {
         QuickStatsFragment fragment = new QuickStatsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_TEAM_JSON, teamJson);
+        args.putString(ARG_TEAM_JSON, toJson(team));
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,10 +59,6 @@ public class QuickStatsFragment extends MasterFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            teamJson = getArguments().getString(ARG_TEAM_JSON);
-        }
 
         loadStatsThread = new Thread(new Runnable()
         {
