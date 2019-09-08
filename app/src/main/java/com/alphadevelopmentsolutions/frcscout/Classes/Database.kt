@@ -27,6 +27,12 @@ class Database(private val context: MainActivity)
     val isOpen: Boolean
         get() = if (db != null) db!!.isOpen else false
 
+    enum class SortDirection
+    {
+        ASC,
+        DESC
+    }
+
     /**
      * Gets the class that called this thread
      * If the class that called this thread is not a child of
@@ -657,7 +663,7 @@ class Database(private val context: MainActivity)
      * @param team if specified, filters matches by team id
      * @return all events inside database
      */
-    fun getMatches(event: Event?, match: Match?, team: Team?): ArrayList<Match>?
+    fun getMatches(event: Event?, match: Match?, team: Team?, sortDirection: SortDirection = SortDirection.DESC): ArrayList<Match>?
     {
         val matches = ArrayList<Match>()
 
@@ -716,7 +722,7 @@ class Database(private val context: MainActivity)
                     Arrays.copyOf(Objects.requireNonNull<Array<Any>>(whereArgs.toTypedArray()), whereArgs.size, Array<String>::class.java),
                     null,
                     null,
-                    "${Match.COLUMN_NAME_MATCH_NUMBER} DESC")
+                    "${Match.COLUMN_NAME_MATCH_NUMBER} ${sortDirection.name}")
 
             //make sure the cursor isn't null, else we die
             if (cursor != null)
