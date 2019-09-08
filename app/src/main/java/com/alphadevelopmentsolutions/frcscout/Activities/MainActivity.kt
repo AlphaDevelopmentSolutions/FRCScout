@@ -821,7 +821,7 @@ class MainActivity : AppCompatActivity(),
     var buttonRipple: ColorStateList? = null
         get()
         {
-            if(field == null)
+            if(field == null || field!!.defaultColor != primaryColorDark)
             {
                 val states = arrayOf(
                         intArrayOf(android.R.attr.state_enabled),
