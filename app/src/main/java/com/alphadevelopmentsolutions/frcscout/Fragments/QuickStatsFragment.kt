@@ -280,13 +280,18 @@ class QuickStatsFragment : MasterFragment()
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_quick_stats, container, false)
 
-
         Thread(Runnable {
             loadStatsThread.join()
 
             context.runOnUiThread{
                 for(statChart in statCharts)
+                {
+                    val chartParent = if(statChart.parent != null) statChart.parent as LinearLayout else null
+                    if(chartParent != null && chartParent.childCount > 0)
+                        chartParent.removeAllViews()
+
                     view.StatChartsLinearLayout.addView(statChart)
+                }
             }
         }).start()
 
