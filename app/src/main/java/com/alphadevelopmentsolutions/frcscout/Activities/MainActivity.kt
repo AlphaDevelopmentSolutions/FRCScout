@@ -217,9 +217,10 @@ class MainActivity : AppCompatActivity(),
 
     /**
      * Downloads all app data from the server
-     * @param downloadMedia whether or not the app should download robot media from server
+     * @param downloadMedia [Boolean] whether or not the app should download core objects
+     * @param downloadMedia [Boolean ] whether or not the app should download robot media from server
      */
-    fun downloadApplicationData(downloadMedia: Boolean)
+    fun downloadApplicationData(downloadCore: Boolean, downloadMedia: Boolean)
     {
         //update all app data
         if (isOnline())
@@ -270,6 +271,103 @@ class MainActivity : AppCompatActivity(),
                     }
                 }
 
+                if(downloadCore)
+                {
+                    context!!.runOnUiThread {
+                        progressDialog!!.setTitle("Downloading Years...")
+                        progressDialog!!.progress = progressDialogProgess
+                    }
+
+                    //Purge Year Media
+                    val mediaFolder = File(Constants.YEAR_MEDIA_DIRECTORY)
+                    if (mediaFolder.isDirectory)
+                        for (child in mediaFolder.listFiles())
+                            child.delete()
+
+                    //Update Years
+                    val getYears = Server.GetYears(context!!)
+                    if (getYears.execute())
+                    {
+                        Year.clearTable(getDatabase())
+
+                        for (year in getYears.years)
+                            year.save(getDatabase())
+                    }
+
+                    progressDialogProgess += increaseFactor
+                    context!!.runOnUiThread {
+                        progressDialog!!.setTitle("Downloading Events...")
+                        progressDialog!!.progress = progressDialogProgess
+                    }
+
+                    //Update Events
+                    val getEvents = Server.GetEvents(context!!)
+                    if (getEvents.execute())
+                    {
+                        Event.clearTable(getDatabase())
+
+                        for (event in getEvents.events)
+                            event.save(getDatabase())
+                    }
+
+                    progressDialogProgess += increaseFactor
+                    context!!.runOnUiThread {
+                        progressDialog!!.setTitle("Downloading Matches...")
+                        progressDialog!!.progress = progressDialogProgess
+                    }
+
+                    //Update Matches
+                    val getMatches = Server.GetMatches(context!!)
+                    if (getMatches.execute())
+                    {
+                        Match.clearTable(getDatabase())
+
+                        for (match in getMatches.matches)
+                            match.save(getDatabase())
+                    }
+
+                    progressDialogProgess += increaseFactor
+                    context!!.runOnUiThread {
+                        progressDialog!!.setTitle("Downloading Teams...")
+                        progressDialog!!.progress = progressDialogProgess
+                    }
+
+                    //Update Teams
+                    val getTeams = Server.GetTeams(context!!)
+                    if (getTeams.execute())
+                    {
+                        Team.clearTable(getDatabase())
+
+                        for (team in getTeams.teams)
+                            team.save(getDatabase())
+                    }
+
+                    progressDialogProgess += increaseFactor
+                    context!!.runOnUiThread {
+                        progressDialog!!.setTitle("Downloading Event Metadata...")
+                        progressDialog!!.progress = progressDialogProgess
+                    }
+
+                    //Update Event Team List
+                    val getEventTeamList = Server.GetEventTeamList(context!!)
+                    if (getEventTeamList.execute())
+                    {
+                        EventTeamList.clearTable(getDatabase())
+
+                        for (eventTeamListItem in getEventTeamList.eventTeamList)
+                            eventTeamListItem.save(getDatabase())
+                    }
+                }
+
+                else
+                    progressDialogProgess = increaseFactor * 5
+
+                progressDialogProgess += increaseFactor
+                context!!.runOnUiThread {
+                    progressDialog!!.setTitle("Downloading Users...")
+                    progressDialog!!.progress = progressDialogProgess
+                }
+
                 //Update Users
                 val getUsers = Server.GetUsers(context!!)
                 if (getUsers.execute())
@@ -278,92 +376,6 @@ class MainActivity : AppCompatActivity(),
 
                     for (user in getUsers.users)
                         user.save(getDatabase())
-                }
-
-                progressDialogProgess += increaseFactor
-                context!!.runOnUiThread {
-                    progressDialog!!.setTitle("Downloading Years...")
-                    progressDialog!!.progress = progressDialogProgess
-                }
-
-                //Purge Year Media
-                val mediaFolder = File(Constants.YEAR_MEDIA_DIRECTORY)
-                if (mediaFolder.isDirectory)
-                    for (child in mediaFolder.listFiles())
-                        child.delete()
-
-                //Update Years
-                val getYears = Server.GetYears(context!!)
-                if (getYears.execute())
-                {
-                    Year.clearTable(getDatabase())
-
-                    for (year in getYears.years)
-                        year.save(getDatabase())
-                }
-
-                progressDialogProgess += increaseFactor
-                context!!.runOnUiThread {
-                    progressDialog!!.setTitle("Downloading Events...")
-                    progressDialog!!.progress = progressDialogProgess
-                }
-
-                //Update Events
-                val getEvents = Server.GetEvents(context!!)
-                if (getEvents.execute())
-                {
-                    Event.clearTable(getDatabase())
-
-                    for (event in getEvents.events)
-                        event.save(getDatabase())
-                }
-
-                progressDialogProgess += increaseFactor
-                context!!.runOnUiThread {
-                    progressDialog!!.setTitle("Downloading Matches...")
-                    progressDialog!!.progress = progressDialogProgess
-                }
-
-                //Update Matches
-                val getMatches = Server.GetMatches(context!!)
-                if (getMatches.execute())
-                {
-                    Match.clearTable(getDatabase())
-
-                    for (match in getMatches.matches)
-                        match.save(getDatabase())
-                }
-
-                progressDialogProgess += increaseFactor
-                context!!.runOnUiThread {
-                    progressDialog!!.setTitle("Downloading Teams...")
-                    progressDialog!!.progress = progressDialogProgess
-                }
-
-                //Update Teams
-                val getTeams = Server.GetTeams(context!!)
-                if (getTeams.execute())
-                {
-                    Team.clearTable(getDatabase())
-
-                    for (team in getTeams.teams)
-                        team.save(getDatabase())
-                }
-
-                progressDialogProgess += increaseFactor
-                context!!.runOnUiThread {
-                    progressDialog!!.setTitle("Downloading Event Metadata...")
-                    progressDialog!!.progress = progressDialogProgess
-                }
-
-                //Update Event Team List
-                val getEventTeamList = Server.GetEventTeamList(context!!)
-                if (getEventTeamList.execute())
-                {
-                    EventTeamList.clearTable(getDatabase())
-
-                    for (eventTeamListItem in getEventTeamList.eventTeamList)
-                        eventTeamListItem.save(getDatabase())
                 }
 
                 progressDialogProgess += increaseFactor
@@ -383,6 +395,9 @@ class MainActivity : AppCompatActivity(),
                 }
 
                 progressDialogProgess += increaseFactor
+                context!!.runOnUiThread {
+                    progressDialog!!.progress = progressDialogProgess
+                }
 
                 //Update Robot Info
                 val getRobotInfo = Server.GetRobotInfo(context!!)
@@ -411,6 +426,9 @@ class MainActivity : AppCompatActivity(),
                 }
 
                 progressDialogProgess += increaseFactor
+                context!!.runOnUiThread {
+                    progressDialog!!.progress = progressDialogProgess
+                }
 
                 //Update Scout Card Info
                 val getScoutCardInfo = Server.GetScoutCardInfo(context!!)
@@ -420,8 +438,6 @@ class MainActivity : AppCompatActivity(),
 
                     for (scoutCardInfo in getScoutCardInfo.scoutCardInfos)
                         scoutCardInfo.save(getDatabase())
-
-                    getDatabase().finishTransaction()
                 }
 
                 progressDialogProgess += increaseFactor
@@ -441,6 +457,9 @@ class MainActivity : AppCompatActivity(),
                 }
 
                 progressDialogProgess += increaseFactor
+                context!!.runOnUiThread {
+                    progressDialog!!.progress = progressDialogProgess
+                }
 
                 //Update Checklist Items Results
                 val getChecklistItemResults = Server.GetChecklistItemResults(context!!)
@@ -484,6 +503,8 @@ class MainActivity : AppCompatActivity(),
 
                     }
                 }
+
+                getDatabase().finishTransaction()
 
                 runOnUiThread {
                     val year = Year((getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!, getDatabase())
@@ -695,40 +716,51 @@ class MainActivity : AppCompatActivity(),
 
             R.id.RefreshDataItem ->
             {
+                var downloadCore = false
 
-                val builder = AlertDialog.Builder(context!!)
-                builder.setTitle(R.string.download_media)
+                val robotMediaBuilder = AlertDialog.Builder(context!!)
+                robotMediaBuilder.setTitle(R.string.download_media)
                         .setMessage(R.string.download_media_desc)
-                        .setPositiveButton(R.string.yes) { _, _ -> downloadApplicationData(true) }
-                        .setNegativeButton(R.string.no) { _, _ -> downloadApplicationData(false) }
+                        .setPositiveButton(R.string.yes) { _, _ -> downloadApplicationData(downloadCore, true) }
+                        .setNegativeButton(R.string.no) { _, _ -> downloadApplicationData(downloadCore, false) }
                         .setIcon(android.R.drawable.ic_dialog_alert)
 
-                val dialog = builder.create()
+                val robotMediaDialog = robotMediaBuilder.create()
 
-                val states = arrayOf(
-                        intArrayOf(android.R.attr.state_enabled),
-                        intArrayOf(-android.R.attr.state_enabled),
-                        intArrayOf(-android.R.attr.state_checked),
-                        intArrayOf(android.R.attr.state_pressed)
-                )
-
-                val colors = intArrayOf(
-                        primaryColorDark,
-                        primaryColorDark,
-                        primaryColorDark,
-                        primaryColorDark
-                )
-
-                val stateList = ColorStateList(states, colors)
-
-                dialog.setOnShowListener {
-                    (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) as MaterialButton).setTextColor(primaryColor)
-                    (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) as MaterialButton).rippleColor = stateList
-                    (dialog.getButton(AlertDialog.BUTTON_POSITIVE) as MaterialButton).setTextColor(primaryColor)
-                    (dialog.getButton(AlertDialog.BUTTON_POSITIVE) as MaterialButton).rippleColor = stateList
+                robotMediaDialog.setOnShowListener {
+                    (robotMediaDialog.getButton(AlertDialog.BUTTON_NEGATIVE) as MaterialButton).setTextColor(primaryColor)
+                    (robotMediaDialog.getButton(AlertDialog.BUTTON_NEGATIVE) as MaterialButton).rippleColor = buttonRipple
+                    (robotMediaDialog.getButton(AlertDialog.BUTTON_POSITIVE) as MaterialButton).setTextColor(primaryColor)
+                    (robotMediaDialog.getButton(AlertDialog.BUTTON_POSITIVE) as MaterialButton).rippleColor = buttonRipple
                 }
 
-                dialog.show()
+                val coreBuilder = AlertDialog.Builder(context!!)
+                coreBuilder.setTitle(getString(R.string.download_core))
+                        .setMessage(getString(R.string.download_core_desc))
+                        .setPositiveButton(R.string.yes) { _, _ ->
+
+                            downloadCore = true
+
+                            robotMediaDialog.show()
+                        }
+                        .setNegativeButton(R.string.no) { _, _ ->
+
+                            downloadCore = false
+
+                            robotMediaDialog.show()
+                        }
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+
+                val coreDialog = coreBuilder.create()
+
+                coreDialog.setOnShowListener {
+                    (coreDialog.getButton(AlertDialog.BUTTON_NEGATIVE) as MaterialButton).setTextColor(primaryColor)
+                    (coreDialog.getButton(AlertDialog.BUTTON_NEGATIVE) as MaterialButton).rippleColor = buttonRipple
+                    (coreDialog.getButton(AlertDialog.BUTTON_POSITIVE) as MaterialButton).setTextColor(primaryColor)
+                    (coreDialog.getButton(AlertDialog.BUTTON_POSITIVE) as MaterialButton).rippleColor = buttonRipple
+                }
+
+                coreDialog.show()
 
                 return true
             }
@@ -962,7 +994,7 @@ class MainActivity : AppCompatActivity(),
                 //check any teams are on device and if the device is online
                 //if no teams, update data
                 if (Team.getObjects(null, null, null, getDatabase())!!.size == 0 && isOnline())
-                    downloadApplicationData(false)
+                    downloadApplicationData(true, false)
 
                 //join back up with the update thread if it is not null
                 if (updateThread != null)

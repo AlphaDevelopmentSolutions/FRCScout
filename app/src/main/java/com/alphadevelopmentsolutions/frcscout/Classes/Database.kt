@@ -130,6 +130,14 @@ class Database(private val context: MainActivity)
     }
 
     /**
+     * Returns if the database is currently in a transaction
+     */
+    fun inTransaction(): Boolean
+    {
+        return db!!.inTransaction()
+    }
+
+    /**
      * Opens the database for usage
      *
      * @return boolean if database was opened successfully

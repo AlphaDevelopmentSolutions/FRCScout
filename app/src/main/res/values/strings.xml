@@ -141,4 +141,6 @@
     <string name="no_account">No account? Sign up</string>
     <string name="next">Next</string>
     <string name="back">Back</string>
+    <string name="download_core_desc">Would you like to download event, team and match lists?</string>
+    <string name="download_core">Download Core?</string>
 </resources>

@@ -121,7 +121,7 @@ class ConfigFragment : MasterFragment()
                 {
                     context.runOnUiThread {
                         context.updateNavText()
-                        context.downloadApplicationData(false)
+                        context.downloadApplicationData(true, false)
                     }
                 } else
                 {
