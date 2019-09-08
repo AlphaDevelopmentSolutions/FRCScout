@@ -77,6 +77,7 @@ class TeamFragment : MasterFragment()
 
         headerConstraintLayout!!.setBackgroundColor(context.primaryColor)
         teamTabLayout!!.setBackgroundColor(context.primaryColor)
+        teamTabLayout!!.setSelectedTabIndicatorColor(context.primaryColorDark)
         teamFloatingActionMenu!!.menuButtonColorNormal = context.primaryColor
         teamFloatingActionMenu!!.menuButtonColorPressed = context.primaryColorDark
         addRobotPhotoFloatingActionButton!!.colorNormal = context.primaryColor

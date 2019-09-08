@@ -1,5 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters
 
+import android.support.design.button.MaterialButton
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +32,7 @@ internal class ScoutCardsRecyclerViewAdapter(private val team: Team, private val
             matchOptionsImageView = view.findViewById(R.id.MatchOptionsImageView)
             viewMatchButton = view.findViewById(R.id.ViewMatchButton)
             viewMatchButton.setTextColor(context.primaryColor)
+            (viewMatchButton as MaterialButton).rippleColor = context.buttonRipple
         }
     }
 
@@ -39,10 +41,10 @@ internal class ScoutCardsRecyclerViewAdapter(private val team: Team, private val
         //Inflate the event layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_match, viewGroup, false)
 
-        return ScoutCardsRecyclerViewAdapter.ViewHolder(view, context)
+        return ViewHolder(view, context)
     }
 
-    override fun onBindViewHolder(viewHolder: ScoutCardsRecyclerViewAdapter.ViewHolder, position: Int)
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
     {
 
         val scoutCard = scoutCards[viewHolder.adapterPosition]

@@ -70,6 +70,7 @@ class ScoutCardFragment : MasterFragment()
         scoutCardViewPager = view.findViewById(R.id.ScoutCardViewPager)
 
         scoutCardTabLayout!!.setBackgroundColor(context.primaryColor)
+        scoutCardTabLayout!!.setSelectedTabIndicatorColor(context.primaryColorDark)
 
         val scoutCardViewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
 

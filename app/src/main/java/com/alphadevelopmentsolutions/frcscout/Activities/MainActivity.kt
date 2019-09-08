@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.constraint.ConstraintLayout
+import android.support.design.button.MaterialButton
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
@@ -672,7 +673,18 @@ class MainActivity : AppCompatActivity(),
                             .setPositiveButton(R.string.yes) { _, _ -> uploadApplicationData() }
                             .setNegativeButton(R.string.cancel) { _, _ -> }
                             .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show()
+
+                    val dialog = builder.create()
+
+                    dialog.setOnShowListener {
+                        (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) as MaterialButton).setTextColor(primaryColor)
+                        (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) as MaterialButton).rippleColor = buttonRipple
+                        (dialog.getButton(AlertDialog.BUTTON_POSITIVE) as MaterialButton).setTextColor(primaryColor)
+                        (dialog.getButton(AlertDialog.BUTTON_POSITIVE) as MaterialButton).rippleColor = buttonRipple
+                    }
+
+                    dialog.show()
+
                 } else
                 {
                     showSnackbar(getString(R.string.no_internet))
@@ -690,7 +702,33 @@ class MainActivity : AppCompatActivity(),
                         .setPositiveButton(R.string.yes) { _, _ -> downloadApplicationData(true) }
                         .setNegativeButton(R.string.no) { _, _ -> downloadApplicationData(false) }
                         .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show()
+
+                val dialog = builder.create()
+
+                val states = arrayOf(
+                        intArrayOf(android.R.attr.state_enabled),
+                        intArrayOf(-android.R.attr.state_enabled),
+                        intArrayOf(-android.R.attr.state_checked),
+                        intArrayOf(android.R.attr.state_pressed)
+                )
+
+                val colors = intArrayOf(
+                        primaryColorDark,
+                        primaryColorDark,
+                        primaryColorDark,
+                        primaryColorDark
+                )
+
+                val stateList = ColorStateList(states, colors)
+
+                dialog.setOnShowListener {
+                    (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) as MaterialButton).setTextColor(primaryColor)
+                    (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) as MaterialButton).rippleColor = stateList
+                    (dialog.getButton(AlertDialog.BUTTON_POSITIVE) as MaterialButton).setTextColor(primaryColor)
+                    (dialog.getButton(AlertDialog.BUTTON_POSITIVE) as MaterialButton).rippleColor = stateList
+                }
+
+                dialog.show()
 
                 return true
             }
@@ -747,6 +785,31 @@ class MainActivity : AppCompatActivity(),
 
                 return field
             }
+
+    var buttonRipple: ColorStateList? = null
+        get()
+        {
+            if(field == null)
+            {
+                val states = arrayOf(
+                        intArrayOf(android.R.attr.state_enabled),
+                        intArrayOf(-android.R.attr.state_enabled),
+                        intArrayOf(-android.R.attr.state_checked),
+                        intArrayOf(android.R.attr.state_pressed)
+                )
+
+                val colors = intArrayOf(
+                        primaryColorDark,
+                        primaryColorDark,
+                        primaryColorDark,
+                        primaryColorDark
+                )
+
+                field = ColorStateList(states, colors)
+            }
+
+            return field
+        }
 
     /**
      * Updates the apps colors to the specified ones in the shared preferences

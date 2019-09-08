@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters
 
 import android.net.Uri
+import android.support.design.button.MaterialButton
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,7 @@ internal class YearListRecyclerViewAdapter(private val yearList: ArrayList<Year>
             yearLogoImageView = view.findViewById(R.id.YearLogoImageView)
             viewButton = view.findViewById(R.id.ViewButton)
             viewButton.setTextColor(context.primaryColor)
+            (viewButton as MaterialButton).rippleColor = context.buttonRipple
         }
     }
 

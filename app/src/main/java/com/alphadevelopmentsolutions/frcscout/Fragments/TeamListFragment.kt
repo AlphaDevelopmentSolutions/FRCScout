@@ -199,6 +199,7 @@ class TeamListFragment : MasterFragment()
 
             allianceViewPager!!.adapter = viewPagerAdapter
             allianceTabLayout!!.setupWithViewPager(allianceViewPager)
+            allianceTabLayout!!.setSelectedTabIndicatorColor(context.primaryColorDark)
 
             context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
         }//if match specified, setup the viewpager and hide the recyclerview

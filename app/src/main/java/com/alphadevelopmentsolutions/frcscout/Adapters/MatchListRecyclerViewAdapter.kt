@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters
 
 import android.graphics.Typeface
+import android.support.design.button.MaterialButton
 import android.support.v7.widget.RecyclerView
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
@@ -86,9 +87,11 @@ internal class MatchListRecyclerViewAdapter(event: Event, private val team: Team
 
             viewMatchButton = view.findViewById(R.id.ViewMatchButton)
             viewMatchButton.setTextColor(context.primaryColor)
+            (viewMatchButton as MaterialButton).rippleColor = context.buttonRipple
 
             addCardButton = view.findViewById(R.id.AddCardButton)
             addCardButton.setTextColor(context.primaryColor)
+            (addCardButton as MaterialButton).rippleColor = context.buttonRipple
         }
     }
 

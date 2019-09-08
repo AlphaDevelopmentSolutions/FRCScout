@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters
 
 import android.net.Uri
+import android.support.design.button.MaterialButton
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +37,7 @@ internal class TeamListRecyclerViewAdapter(private val match: Match?, private va
             teamLogoImageView = view.findViewById(R.id.TeamLogoImageView)
             viewTeamButton = view.findViewById(R.id.ViewTeamButton)
             viewTeamButton.setTextColor(context.primaryColor)
+            (viewTeamButton as MaterialButton).rippleColor = context.buttonRipple
         }
     }
 
@@ -44,10 +46,10 @@ internal class TeamListRecyclerViewAdapter(private val match: Match?, private va
         //Inflate the event layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_team, viewGroup, false)
 
-        return TeamListRecyclerViewAdapter.ViewHolder(view, context)
+        return ViewHolder(view, context)
     }
 
-    override fun onBindViewHolder(viewHolder: TeamListRecyclerViewAdapter.ViewHolder, position: Int)
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
     {
         val team = teamList[viewHolder.adapterPosition]
         //Set the content on the card

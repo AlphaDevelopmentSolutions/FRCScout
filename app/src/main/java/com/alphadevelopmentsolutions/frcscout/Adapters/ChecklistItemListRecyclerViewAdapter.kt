@@ -1,6 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters
 
-import android.content.res.ColorStateList
+import android.support.design.button.MaterialButton
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -63,6 +63,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
 
             toggleStatusButton = view.findViewById(R.id.ToggleStatusButton)
             toggleStatusButton.setTextColor(context.primaryColor)
+            (toggleStatusButton as MaterialButton).rippleColor = context.buttonRipple
         }
     }
 
@@ -72,13 +73,13 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_checklist_item, viewGroup, false)
 
 
-        val viewHolder = ChecklistItemListRecyclerViewAdapter.ViewHolder(view, context)
+        val viewHolder = ViewHolder(view, context)
         viewHolder.completedByAutoCompleteTextView.setAdapter(userNamesAdapter)
 
         return viewHolder
     }
 
-    override fun onBindViewHolder(viewHolder: ChecklistItemListRecyclerViewAdapter.ViewHolder, position: Int)
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
     {
 
         val checklistItem = checklistItems[viewHolder.adapterPosition]

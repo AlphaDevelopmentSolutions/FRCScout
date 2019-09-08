@@ -1,5 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters
 
+import android.support.design.button.MaterialButton
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +40,7 @@ internal class EventListRecyclerViewAdapter(private val eventList: ArrayList<Eve
             eventDateTextView = view.findViewById(R.id.EventDateTextView)
             viewEventButton = view.findViewById(R.id.ViewEventButton)
             viewEventButton.setTextColor(context.primaryColor)
+            (viewEventButton as MaterialButton).rippleColor = context.buttonRipple
         }
     }
 
@@ -47,10 +49,10 @@ internal class EventListRecyclerViewAdapter(private val eventList: ArrayList<Eve
         //Inflate the event layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_event, viewGroup, false)
 
-        return EventListRecyclerViewAdapter.ViewHolder(view, context)
+        return ViewHolder(view, context)
     }
 
-    override fun onBindViewHolder(viewHolder: EventListRecyclerViewAdapter.ViewHolder, position: Int)
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
     {
         val event = eventList[viewHolder.adapterPosition]
 
