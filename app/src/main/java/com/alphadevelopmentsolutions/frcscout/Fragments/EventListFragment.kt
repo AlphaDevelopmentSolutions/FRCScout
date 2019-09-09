@@ -80,12 +80,6 @@ class EventListFragment : MasterFragment()
 
         return view
     }
-
-    override fun onStop()
-    {
-        context.unlockDrawerLayout()
-        super.onStop()
-    }
     
     companion object
     {

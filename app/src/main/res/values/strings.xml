@@ -144,4 +144,7 @@
     <string name="download_core_desc">Would you like to download event, team and match lists?</string>
     <string name="download_core">Download Core?</string>
     <string name="logout">Logout</string>
+    <string name="team_average">Team Average</string>
+    <string name="match_average">Match Average</string>
+    <string name="event_average">Event Average</string>
 </resources>

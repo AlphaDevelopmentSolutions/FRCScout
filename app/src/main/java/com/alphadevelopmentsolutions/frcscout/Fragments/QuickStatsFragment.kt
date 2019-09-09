@@ -161,7 +161,7 @@ class QuickStatsFragment : MasterFragment()
                         
                     }
 
-                    val teamDataSet = LineDataSet(ArrayList<Entry>(), "Team Average").apply{
+                    val teamDataSet = LineDataSet(ArrayList<Entry>(), getString(R.string.team_average)).apply{
                         formatDataSets(this)
                         color = Color.parseColor("#03A9F4")
                         setCircleColor(Color.parseColor("#03A9F4"))
@@ -169,7 +169,7 @@ class QuickStatsFragment : MasterFragment()
                     }
                     
 
-                    val matchDataSet = LineDataSet(ArrayList<Entry>(), "Match Average").apply{
+                    val matchDataSet = LineDataSet(ArrayList<Entry>(), getString(R.string.match_average)).apply{
                         formatDataSets(this)
                         color = Color.parseColor("#FF0000")
                         setCircleColor(Color.parseColor("#FF0000"))
@@ -177,7 +177,7 @@ class QuickStatsFragment : MasterFragment()
                     }
                     
 
-                    val eventAvgDataSet = LineDataSet(ArrayList<Entry>(), "Event Avg").apply{
+                    val eventAvgDataSet = LineDataSet(ArrayList<Entry>(), getString(R.string.event_average)).apply{
                         formatDataSets(this)
                         color = Color.parseColor("#005685")
                         setDrawCircles(false)
