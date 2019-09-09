@@ -117,12 +117,10 @@ class MainActivity : AppCompatActivity(),
         //updates the nav text to the current team saved in shared pref
         updateNavText()
 
-        setChangeButtonOnClickListener(View.OnClickListener{
-            val year = Year(getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int, getDatabase())
-
-            //send to eventlist frag
-            changeFragment(EventListFragment.newInstance(year), false)
-        }, getString(R.string.change_event))
+        changeButton!!.setOnClickListener{
+            clearApiConfig()
+            changeFragment(ConfigViewPagerFragment.newInstance(), false)
+        }
 
         loadView(savedInstanceState)//permission granted, continue
 
@@ -864,6 +862,7 @@ class MainActivity : AppCompatActivity(),
         navigationView!!.itemIconTintList = ColorStateList(states, colors)
 
         changeButton!!.setTextColor(primaryColor)
+        (changeButton!! as MaterialButton).rippleColor = buttonRipple
     }
 
     /**
@@ -1043,24 +1042,6 @@ class MainActivity : AppCompatActivity(),
     fun elevateActionBar()
     {
         appBarLayout!!.elevation = ACTION_BAR_ELEVATION.toFloat()
-    }
-
-    fun setChangeButtonOnClickListener(onClickListener: View.OnClickListener, buttonText: String, showMenuItems: Boolean? = null)
-    {
-        //change event button logic
-        changeButton!!.setOnClickListener(onClickListener)
-        changeButton!!.text = buttonText
-
-        if(showMenuItems != null)
-        {
-            if (!showMenuItems)
-                navigationView!!.menu.clear()
-            else
-            {
-                navigationView!!.menu.clear()
-                navigationView!!.inflateMenu(R.menu.activity_main_drawer)
-            }
-        }
     }
 
     /**

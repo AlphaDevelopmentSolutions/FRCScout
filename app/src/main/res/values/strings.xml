@@ -143,4 +143,5 @@
     <string name="back">Back</string>
     <string name="download_core_desc">Would you like to download event, team and match lists?</string>
     <string name="download_core">Download Core?</string>
+    <string name="logout">Logout</string>
 </resources>

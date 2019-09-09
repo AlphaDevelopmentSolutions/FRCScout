@@ -83,7 +83,6 @@ class ConfigViewPagerFragment : MasterFragment()
     {
         /**
          * Creates a new instance
-         * @param index of the config activity for the viewpager
          * @return A new instance of fragment [ConfigViewPagerFragment].
          */
         fun newInstance(): ConfigViewPagerFragment

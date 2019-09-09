@@ -14,6 +14,8 @@ import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.gson.Gson
 
+
+
 class EventListFragment : MasterFragment()
 {
     override fun onBackPressed(): Boolean
