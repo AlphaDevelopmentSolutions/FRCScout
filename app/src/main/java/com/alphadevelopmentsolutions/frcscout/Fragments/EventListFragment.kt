@@ -80,6 +80,12 @@ class EventListFragment : MasterFragment()
 
         return view
     }
+
+    override fun onDestroy()
+    {
+        super.onDestroy()
+        context.unlockDrawerLayout()
+    }
     
     companion object
     {
