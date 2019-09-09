@@ -14,6 +14,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfoKey
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.R
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
@@ -259,7 +260,7 @@ class QuickStatsFragment : MasterFragment()
 
                                                     statChart.data = data
                                                     statChart.axisLeft.axisMinimum = Collections.min(chartPoints)
-                                                    statChart.invalidate()
+                                                    statChart.animateY(750, Easing.EaseOutQuart)
                                                 }
                                             }
                                         }
