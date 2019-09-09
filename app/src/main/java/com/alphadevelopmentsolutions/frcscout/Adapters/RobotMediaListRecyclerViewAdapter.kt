@@ -31,10 +31,10 @@ internal class RobotMediaListRecyclerViewAdapter(private val team: Team, private
         //Inflate the event layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_robot_media, viewGroup, false)
 
-        return RobotMediaListRecyclerViewAdapter.ViewHolder(view)
+        return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(viewHolder: RobotMediaListRecyclerViewAdapter.ViewHolder, position: Int)
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
     {
         //set scores
         viewHolder.robotImageView.setImageBitmap(robotMedia[viewHolder.adapterPosition].imageBitmap)
