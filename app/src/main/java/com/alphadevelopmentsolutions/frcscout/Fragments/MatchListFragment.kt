@@ -30,7 +30,7 @@ class MatchListFragment : MasterFragment()
         loadingThread.join()
 
         if (team == null)
-            context.setTitle(event.toString())
+            context.setToolbarTitle(event.toString())
 
         val scoutCardsRecyclerViewAdapter = MatchListRecyclerViewAdapter(event!!, team, context, if (team == null) TeamListFragment::class.java else ScoutCardFragment::class.java)
         matchListRecyclerView!!.layoutManager = LinearLayoutManager(activity)

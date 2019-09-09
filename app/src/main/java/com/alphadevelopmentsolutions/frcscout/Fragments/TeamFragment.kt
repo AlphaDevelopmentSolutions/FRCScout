@@ -88,7 +88,7 @@ class TeamFragment : MasterFragment()
         addRobotPhotoFloatingActionButton!!.setOnClickListener { context.changeFragment(RobotMediaFragment.newInstance(null, team!!), true) }
 
         //update the app bar title to the team name
-        context.supportActionBar!!.title = team!!.id.toString() + " - " + team!!.name
+        context.setToolbarTitle(team!!.id.toString() + " - " + team!!.name)
 
         //load the photo if the file exists
         if (team!!.imageFileURI != "")

@@ -67,7 +67,7 @@ class EventListFragment : MasterFragment()
             e.printStackTrace()
         }
 
-        context.setTitle(year!!.toString())
+        context.setToolbarTitle(year!!.toString())
 
         //showing this view means the user has not selected an event, clear the shared pref
         context.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1)

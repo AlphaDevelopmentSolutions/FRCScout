@@ -41,7 +41,7 @@ class ChecklistFragment : MasterFragment()
             recyclerView.adapter = matchListRecyclerViewAdapter
             recyclerView.layoutManager = LinearLayoutManager(context)
 
-            context.setTitle(event!!.name)
+            context.setToolbarTitle(event!!.name!!)
         }
         else
         {
@@ -54,7 +54,7 @@ class ChecklistFragment : MasterFragment()
             recyclerView.adapter = checklistItemListRecyclerViewAdapter
             recyclerView.layoutManager = LinearLayoutManager(context)
 
-            context.setTitle(match.toString())
+            context.setToolbarTitle(match.toString())
         }//match and event selected, show the checklist
 
 
@@ -66,6 +66,8 @@ class ChecklistFragment : MasterFragment()
     {
         if (match != null)
             context.unlockDrawerLayout()
+
+        context.setToolbarTitle(event.toString())
 
         super.onDetach()
     }

@@ -25,6 +25,7 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
@@ -73,6 +74,8 @@ class MainActivity : AppCompatActivity(),
     private var progressDialog: ProgressDialog? = null
 
     private var changeButton: Button? = null
+
+    private lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -675,6 +678,11 @@ class MainActivity : AppCompatActivity(),
     override fun onCreateOptionsMenu(menu: Menu): Boolean
     {
         menuInflater.inflate(R.menu.main, menu)
+
+        val searchItem = menu.findItem(R.id.SearchItem)
+        searchView = searchItem.actionView as SearchView
+        searchItem.isVisible = false
+
         return true
     }
 
@@ -869,7 +877,7 @@ class MainActivity : AppCompatActivity(),
      * Sets the title of the nav bar
      * @param title to set the nav bar title to
      */
-    fun setTitle(title: String)
+    fun setToolbarTitle(title: String)
     {
         supportActionBar!!.title = title
     }
@@ -878,7 +886,7 @@ class MainActivity : AppCompatActivity(),
      * Sets the title of the nav bar
      * @param titleId to set the nav bar title to
      */
-    override fun setTitle(titleId: Int)
+    fun setToolbarTitle(titleId: Int)
     {
         supportActionBar!!.setTitle(titleId)
     }
@@ -1050,6 +1058,25 @@ class MainActivity : AppCompatActivity(),
     fun setCheckedMenuItem(menuItem: Int)
     {
         navigationView!!.menu.getItem(menuItem).isChecked = true
+    }
+
+    /**
+     * Sets the listener for text being changed for the search view on the toolbar
+     * @param listener [SearchView.OnQueryTextListener] listener for the searchview
+     */
+    fun setSearchViewOnTextChangeListener(listener: SearchView.OnQueryTextListener)
+    {
+        searchView.setOnQueryTextListener(listener)
+    }
+
+    /**
+     * Gets / Sets the visibility of the searchview
+     */
+    var isSearchViewVisible = false
+    set(value)
+    {
+        toolbar!!.menu.findItem(R.id.SearchItem).isVisible = value
+        field = value
     }
 
     //endregion

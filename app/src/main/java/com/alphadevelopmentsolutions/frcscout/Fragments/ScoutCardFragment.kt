@@ -91,7 +91,7 @@ class ScoutCardFragment : MasterFragment()
         }
 
         //update the title of the page to display the match
-        context.setTitle(match!!.matchType.toString(match!!))
+        context.setToolbarTitle(match!!.matchType.toString(match!!))
 
 
         scoutCardViewPager!!.adapter = scoutCardViewPagerAdapter

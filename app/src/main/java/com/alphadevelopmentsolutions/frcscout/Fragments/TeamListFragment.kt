@@ -5,13 +5,10 @@ import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
-import android.text.Editable
-import android.text.TextWatcher
+import android.support.v7.widget.SearchView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.LinearLayout
 import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter
 import com.alphadevelopmentsolutions.frcscout.Adapters.TeamListRecyclerViewAdapter
@@ -32,8 +29,6 @@ class TeamListFragment : MasterFragment()
     
     private var teamsRecyclerView: RecyclerView? = null
 
-    private var teamSearchEditText: EditText? = null
-
     private var teams: ArrayList<Team>? = null
     private var searchedTeams: ArrayList<Team>? = null
 
@@ -45,7 +40,7 @@ class TeamListFragment : MasterFragment()
     private var allianceTabLayout: TabLayout? = null
     private var allianceViewPager: ViewPager? = null
 
-    private var searchTeamsToolbar: Toolbar? = null
+    private var previousSearchLength: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -98,29 +93,17 @@ class TeamListFragment : MasterFragment()
         context.dropActionBar()
 
         teamsRecyclerView = view.findViewById(R.id.TeamsRecyclerView)
-        teamSearchEditText = view.findViewById(R.id.TeamSearchEditText)
         allianceViewPagerLinearLayout = view.findViewById(R.id.AllianceViewPagerLinearLayout)
         allianceTabLayout = view.findViewById(R.id.AllianceTabLayout)
         allianceViewPager = view.findViewById(R.id.AllianceViewPager)
-        searchTeamsToolbar = view.findViewById(R.id.SearchTeamsToolbar)
 
-        searchTeamsToolbar!!.setBackgroundColor(context.primaryColor)
         allianceTabLayout!!.setBackgroundColor(context.primaryColor)
 
-        //join back up with the load teams thread
-        try
-        {
-            loadTeamsThread!!.join()
-        } catch (e: InterruptedException)
-        {
-            e.printStackTrace()
-        }
+        //join back up with the load thread
+        loadTeamsThread!!.join()
 
-        context.title = if (match == null) event!!.name else match.toString()
+        context.setToolbarTitle(if (match == null) event!!.name!! else match.toString())
 
-        //hide search bar if match is specified
-        if (match != null)
-            searchTeamsToolbar!!.visibility = View.GONE
 
         if (match == null || allianceColor == AllianceColor.BLUE || allianceColor == AllianceColor.RED)
         {
@@ -129,66 +112,72 @@ class TeamListFragment : MasterFragment()
             teamsRecyclerView!!.layoutManager = LinearLayoutManager(context)
             teamsRecyclerView!!.adapter = teamListRecyclerViewAdapter
 
-            teamSearchEditText!!.addTextChangedListener(object : TextWatcher
+            if(match == null)
             {
-                override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int)
-                {
+                context.isSearchViewVisible = true
 
-                }
-
-                override fun onTextChanged(searchText: CharSequence, start: Int, before: Int, count: Int)
-                {
-                    //You only need to reset the list if you are removing from your search, adding the objects back
-                    if (count < before)
+                context.setSearchViewOnTextChangeListener(object: SearchView.OnQueryTextListener{
+                    override fun onQueryTextSubmit(p0: String?): Boolean
                     {
-                        //Reset the list
-                        for (i in teams!!.indices)
-                        {
-                            val team = teams!![i]
+                        return false
+                    }
 
-                            //check if the contact doesn't exist in the viewable list
-                            if (!searchedTeams!!.contains(team))
+                    override fun onQueryTextChange(searchText: String?): Boolean
+                    {
+                        val searchLength = searchText?.length ?: 0
+                        //You only need to reset the list if you are removing from your search, adding the objects back
+                        if (searchLength < previousSearchLength)
+                        {
+                            //Reset the list
+                            for (i in teams!!.indices)
                             {
-                                //add it and notify the recyclerview
-                                searchedTeams!!.add(i, team)
-                                teamListRecyclerViewAdapter.notifyItemInserted(i)
-                                teamListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedTeams!!.size)
+                                val team = teams!![i]
+
+                                //check if the contact doesn't exist in the viewable list
+                                if (!searchedTeams!!.contains(team))
+                                {
+                                    //add it and notify the recyclerview
+                                    searchedTeams!!.add(i, team)
+                                    teamListRecyclerViewAdapter.notifyItemInserted(i)
+                                    teamListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedTeams!!.size)
+                                }
+
                             }
-
                         }
-                    }
 
-                    //Delete from the list
-                    var i = 0
-                    while (i < searchedTeams!!.size)
-                    {
-                        val team = searchedTeams!![i]
-                        val name = team.id.toString() + " - " + team.name
-
-                        //If the contacts name doesn't equal the searched name
-                        if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
+                        //Delete from the list
+                        var i = 0
+                        while (i < searchedTeams!!.size)
                         {
-                            //remove it from the list and notify the recyclerview
-                            searchedTeams!!.removeAt(i)
-                            teamListRecyclerViewAdapter.notifyItemRemoved(i)
-                            teamListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedTeams!!.size)
+                            val team = searchedTeams!![i]
+                            val name = team.id.toString() + " - " + team.name
 
-                            //this prevents the index from passing the size of the list,
-                            //stays on the same index until you NEED to move to the next one
-                            i--
+                            //If the contacts name doesn't equal the searched name
+                            if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
+                            {
+                                //remove it from the list and notify the recyclerview
+                                searchedTeams!!.removeAt(i)
+                                teamListRecyclerViewAdapter.notifyItemRemoved(i)
+                                teamListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedTeams!!.size)
+
+                                //this prevents the index from passing the size of the list,
+                                //stays on the same index until you NEED to move to the next one
+                                i--
+                            }
+                            i++
                         }
-                        i++
+
+                        previousSearchLength = searchLength
+
+                        return false
                     }
-                }
 
-                override fun afterTextChanged(editable: Editable)
-                {
+                })
+            }
 
-                }
-            })
         } else
         {
-            context.supportActionBar!!.title = match.toString()
+            context.setToolbarTitle(match.toString())
             allianceViewPagerLinearLayout!!.visibility = View.VISIBLE
             teamsRecyclerView!!.visibility = View.GONE
 
@@ -207,11 +196,27 @@ class TeamListFragment : MasterFragment()
         return view
     }
 
+    override fun onPause()
+    {
+        super.onPause()
+        if(context.isSearchViewVisible)
+            context.isSearchViewVisible = false
+    }
+
+    override fun onResume()
+    {
+        super.onResume()
+        if(!context.isSearchViewVisible && match == null)
+            context.isSearchViewVisible = true
+    }
 
     override fun onDetach()
     {
         if (match != null)
             context.unlockDrawerLayout()
+
+        if(context.isSearchViewVisible)
+            context.isSearchViewVisible = false
 
         super.onDetach()
     }

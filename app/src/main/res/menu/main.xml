@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/SearchItem"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="Search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView" />
+
+    <item
         android:id="@+id/UploadDataItem"
         android:icon="@drawable/ic_cloud_upload_white_24dp"
         android:title="@string/upload_data"
