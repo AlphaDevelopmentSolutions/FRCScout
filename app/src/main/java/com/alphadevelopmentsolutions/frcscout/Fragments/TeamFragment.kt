@@ -101,10 +101,10 @@ class TeamFragment : MasterFragment()
 
             val teamViewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
 
-            teamViewPagerAdapter.addFragment(MatchListFragment.newInstance(team!!), getString(R.string.scout_cards))
+            teamViewPagerAdapter.addFragment(MatchListFragment.newInstance(team!!), getString(R.string.matches))
             teamViewPagerAdapter.addFragment(RobotInfoFragment.newInstance(team!!), getString(R.string.robot_info))
-            teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(team!!), getString(R.string.robot_images))
-            teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(team!!), getString(R.string.quick_stats))
+            teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(team!!), getString(R.string.robot_media))
+            teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(team!!), getString(R.string.stats))
 
             TeamViewPager.adapter = teamViewPagerAdapter
             TeamViewPager.offscreenPageLimit = 5

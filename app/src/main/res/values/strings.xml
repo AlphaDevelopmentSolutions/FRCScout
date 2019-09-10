@@ -150,4 +150,5 @@
     <string name="download">Download</string>
     <string name="robot_media">Robot Media</string>
     <string name="upload">Upload</string>
+    <string name="stats">Stats</string>
 </resources>
