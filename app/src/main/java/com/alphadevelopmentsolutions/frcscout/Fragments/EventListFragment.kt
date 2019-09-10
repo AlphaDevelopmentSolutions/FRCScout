@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.Fragments
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SearchView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.gson.Gson
-
+import java.util.*
 
 
 class EventListFragment : MasterFragment()
@@ -28,7 +29,12 @@ class EventListFragment : MasterFragment()
 
     private var eventListRecyclerView: RecyclerView? = null
 
-    private var loadYearThread: Thread? = null
+    private lateinit var loadYearThread: Thread
+
+    private lateinit var events: ArrayList<Event>
+    private lateinit var searchedEvents: ArrayList<Event>
+
+    private var previousSearchLength: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -41,12 +47,17 @@ class EventListFragment : MasterFragment()
 
         //create and start the thread to load the json vars
         loadYearThread = Thread(Runnable {
+            loadingThread.join()
+
             //load the scout card from json, if available
             if (yearJson != null && yearJson != "")
                 year = Gson().fromJson(yearJson, Year::class.java)
+
+            events = Event.getObjects(year, null, Team(context.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Int, database), database)
+            searchedEvents = ArrayList(events)
         })
 
-        loadYearThread!!.start()
+        loadYearThread.start()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -57,16 +68,7 @@ class EventListFragment : MasterFragment()
         context.lockDrawerLayout(true, View.OnClickListener { context.changeFragment(YearListFragment.newInstance(), false) })
         context.isToolbarScrollable = true
 
-        loadingThread.join()
-
-        //join back up with the load year thread
-        try
-        {
-            loadYearThread!!.join()
-        } catch (e: InterruptedException)
-        {
-            e.printStackTrace()
-        }
+        loadYearThread.join()
 
         context.setToolbarTitle(year!!.toString())
 
@@ -75,9 +77,69 @@ class EventListFragment : MasterFragment()
 
         eventListRecyclerView = view.findViewById(R.id.EventListRecyclerView)
 
-        val eventListRecyclerViewAdapter = EventListRecyclerViewAdapter(Event.getObjects(year, null, Team(context.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Int, database), database)!!, context)
+        val eventListRecyclerViewAdapter = EventListRecyclerViewAdapter(searchedEvents, context)
         eventListRecyclerView!!.adapter = eventListRecyclerViewAdapter
         eventListRecyclerView!!.layoutManager = LinearLayoutManager(context)
+
+        context.isToolbarScrollable = true
+        context.isSearchViewVisible = true
+
+        context.setSearchViewOnTextChangeListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(p0: String?): Boolean
+            {
+                return false
+            }
+
+            override fun onQueryTextChange(searchText: String?): Boolean
+            {
+                val searchLength = searchText?.length ?: 0
+
+                //You only need to reset the list if you are removing from your search, adding the objects back
+                if (searchLength < previousSearchLength)
+                {
+                    //Reset the list
+                    for (i in events.indices)
+                    {
+                        val event = events[i]
+
+                        //check if the contact doesn't exist in the viewable list
+                        if (!searchedEvents.contains(event))
+                        {
+                            //add it and notify the recyclerview
+                            searchedEvents.add(i, event)
+                            eventListRecyclerViewAdapter.notifyItemInserted(i)
+                            eventListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedEvents.size)
+                        }
+                    }
+                }
+
+                //Delete from the list
+                var i = 0
+                while (i < searchedEvents.size)
+                {
+                    val event = searchedEvents[i]
+                    val name = event.toString()
+
+                    //If the contacts name doesn't equal the searched name
+                    if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
+                    {
+                        //remove it from the list and notify the recyclerview
+                        searchedEvents.removeAt(i)
+                        eventListRecyclerViewAdapter.notifyItemRemoved(i)
+                        eventListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedEvents.size)
+
+                        //this prevents the index from passing the size of the list,
+                        //stays on the same index until you NEED to move to the next one
+                        i--
+                    }
+                    i++
+                }
+
+                previousSearchLength = searchLength
+
+                return false
+            }
+        })
 
         return view
     }

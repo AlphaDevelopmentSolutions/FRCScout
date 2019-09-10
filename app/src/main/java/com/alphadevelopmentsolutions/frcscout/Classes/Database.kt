@@ -221,7 +221,7 @@ class Database(private val context: MainActivity)
      * @param event if specified, filters events by event id
      * @return event based off given ID
      */
-    fun getEvents(year: Year?, event: Event?, team: Team?): ArrayList<Event>?
+    fun getEvents(year: Year?, event: Event?, team: Team?): ArrayList<Event>
     {
         val events = ArrayList<Event>()
 
@@ -275,7 +275,7 @@ class Database(private val context: MainActivity)
         }
 
 
-        return null
+        return events
     }
 
     /**

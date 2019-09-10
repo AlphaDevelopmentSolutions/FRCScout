@@ -93,7 +93,7 @@ class Event : Table
          * @param database used to load events
          * @return arraylist of events
          */
-        fun getObjects(year: Year?, event: Event?, team: Team?, database: Database): ArrayList<Event>?
+        fun getObjects(year: Year?, event: Event?, team: Team?, database: Database): ArrayList<Event>
         {
             return database.getEvents(year, event, team)
         }
