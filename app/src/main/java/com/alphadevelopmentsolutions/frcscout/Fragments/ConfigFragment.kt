@@ -11,10 +11,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.alphadevelopmentsolutions.frcscout.Api.Server
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import kotlinx.android.synthetic.main.fragment_config.view.*
 import kotlinx.android.synthetic.main.layout_permission.view.*
+import java.util.*
 
 class ConfigFragment : MasterFragment()
 {
@@ -119,23 +121,29 @@ class ConfigFragment : MasterFragment()
                 //valid config
                 if (getServerConfig.execute())
                 {
-                    context.runOnUiThread {
-                        context.updateNavText()
+                    with(context)
+                    {
+                        runOnUiThread {
+                            updateNavText()
 
-                        context.setPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, true)
-                        context.setPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, true)
-                        context.setPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, true)
-                        context.setPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, true)
-                        context.setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, true)
-                        context.setPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, true)
-                        context.setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, true)
+                            setPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, true)
+                            setPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, true)
+                            setPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, true)
+                            setPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, true)
+                            setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, true)
+                            setPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, true)
+                            setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false)
 
-                        context.setPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, true)
-                        context.setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, true)
-                        context.setPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, true)
-                        context.setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, true)
+                            setPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, true)
+                            setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, true)
+                            setPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, true)
+                            setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, false)
 
-                        context.downloadApplicationData(false)
+                            downloadApplicationData(false, false)?.join()
+
+                            changeFragment(EventListFragment.newInstance(Year((getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!, getDatabase())), false)
+                    }
+                    
                     }
                 } else
                 {
@@ -161,7 +169,7 @@ class ConfigFragment : MasterFragment()
 
     companion object
     {
-        private const val ARG_FRAGMENT_NUMBER = "fragment_number"
+        private const val ARG_FRAGMENT_NUMBER = "FRAGMENT_NUMBER"
 
         /**
          * Creates a new instance

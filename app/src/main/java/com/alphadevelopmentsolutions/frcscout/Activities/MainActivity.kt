@@ -226,9 +226,10 @@ class MainActivity : AppCompatActivity(),
 
     /**
      * Downloads app data from the server
-     * @param withFilters [Boolean] wether or not the app should apply download filters
+     * @param withFilters [Boolean] whether or not the app should apply download filters
+     * @param refreshActivity [Boolean] whether or not the app recreate the activity on download complete
      */
-    fun downloadApplicationData(withFilters: Boolean = true)
+    fun downloadApplicationData(withFilters: Boolean = true, refreshActivity: Boolean = true): Thread?
     {
         //update app data
         if (isOnline())
@@ -327,7 +328,7 @@ class MainActivity : AppCompatActivity(),
                 /**
                  * EVENTS
                  */
-                if(getPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, false) as Boolean)
+                if(!withFilters || (getPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, false) as Boolean && withFilters))
                 {
 
                     progressDialogProgess += increaseFactor
@@ -368,7 +369,7 @@ class MainActivity : AppCompatActivity(),
                 /**
                  * MATCHES
                  */
-                if(getPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, false) as Boolean)
+                if(!withFilters || (getPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, false) as Boolean && withFilters))
                 {
 
                     progressDialogProgess += increaseFactor
@@ -393,7 +394,7 @@ class MainActivity : AppCompatActivity(),
                 /**
                  * TEAMS
                  */
-                if(getPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, false) as Boolean)
+                if(!withFilters || (getPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, false) as Boolean && withFilters))
                 {
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
@@ -417,7 +418,7 @@ class MainActivity : AppCompatActivity(),
                 /**
                  * CHECKLISTS
                  */
-                if(getPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, false) as Boolean)
+                if(!withFilters || (getPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, false) as Boolean && withFilters))
                 {
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
@@ -456,7 +457,7 @@ class MainActivity : AppCompatActivity(),
                 /**
                  * ROBOT INFO
                  */
-                if(getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, false) as Boolean)
+                if(!withFilters || (getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, false) as Boolean && withFilters))
                 {
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
@@ -495,7 +496,7 @@ class MainActivity : AppCompatActivity(),
                 /**
                  * SCOUT CARDS
                  */
-                if(getPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean)
+                if(!withFilters || (getPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean && withFilters))
                 {
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
@@ -534,7 +535,7 @@ class MainActivity : AppCompatActivity(),
                 /**
                  * ROBOT MEDIA
                  */
-                if(getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false) as Boolean)
+                if(!withFilters || (getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false) as Boolean && withFilters))
                 {
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
@@ -575,7 +576,9 @@ class MainActivity : AppCompatActivity(),
                     setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, year.serverId!!)
 
                     progressDialog!!.dismiss()
-                    context!!.recreate()
+
+                    if(refreshActivity)
+                        context!!.recreate()
                 }
             })
 
@@ -584,6 +587,8 @@ class MainActivity : AppCompatActivity(),
         {
             showSnackbar(getString(R.string.no_internet))
         }
+
+        return updateThread
     }
 
     /**
