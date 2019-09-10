@@ -147,4 +147,6 @@
     <string name="team_average">Team Average</string>
     <string name="match_average">Match Average</string>
     <string name="event_average">Event Average</string>
+    <string name="download">Download</string>
+    <string name="robot_media">Robot Media</string>
 </resources>

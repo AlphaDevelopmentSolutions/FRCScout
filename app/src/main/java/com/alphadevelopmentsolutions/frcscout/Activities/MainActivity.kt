@@ -27,6 +27,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -40,6 +41,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Fragments.*
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
+import kotlinx.android.synthetic.main.layout_upload.view.*
 import java.io.File
 import java.util.*
 
@@ -217,16 +219,15 @@ class MainActivity : AppCompatActivity(),
     //region Internet Methods
 
     /**
-     * Downloads all app data from the server
-     * @param downloadMedia [Boolean] whether or not the app should download core objects
-     * @param downloadMedia [Boolean ] whether or not the app should download robot media from server
+     * Downloads app data from the server
+     * @param withFilters [Boolean] wether or not the app should apply download filters
      */
-    fun downloadApplicationData(downloadCore: Boolean, downloadMedia: Boolean)
+    fun downloadApplicationData(withFilters: Boolean = true)
     {
-        //update all app data
+        //update app data
         if (isOnline())
         {
-            val increaseFactor = if(downloadMedia) 8 else 9
+            val increaseFactor = 8
             progressDialog = ProgressDialog(this, R.style.CustomProgressDialog)
             progressDialog!!.setTitle("Downloading data...")
             progressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
@@ -246,6 +247,9 @@ class MainActivity : AppCompatActivity(),
                     progressDialog!!.progress = progressDialogProgess
                 }
 
+                /**
+                 * SERVER CONFIG
+                 */
                 //Update Server Config
                 val getServerConfig = Server.GetServerConfig(context!!)
                 if(getServerConfig.execute())
@@ -272,28 +276,53 @@ class MainActivity : AppCompatActivity(),
                     }
                 }
 
-                if(downloadCore)
+                context!!.runOnUiThread {
+                    progressDialog!!.setTitle("Downloading Years...")
+                    progressDialog!!.progress = progressDialogProgess
+                }
+
+                /**
+                 * YEARS
+                 */
+                //Purge Year Media
+                val mediaFolder = File(Constants.YEAR_MEDIA_DIRECTORY)
+                if (mediaFolder.isDirectory)
+                    for (child in mediaFolder.listFiles())
+                        child.delete()
+
+                //Update Years
+                val getYears = Server.GetYears(context!!)
+                if (getYears.execute())
                 {
-                    context!!.runOnUiThread {
-                        progressDialog!!.setTitle("Downloading Years...")
-                        progressDialog!!.progress = progressDialogProgess
-                    }
+                    Year.clearTable(getDatabase())
 
-                    //Purge Year Media
-                    val mediaFolder = File(Constants.YEAR_MEDIA_DIRECTORY)
-                    if (mediaFolder.isDirectory)
-                        for (child in mediaFolder.listFiles())
-                            child.delete()
+                    for (year in getYears.years)
+                        year.save(getDatabase())
+                }
 
-                    //Update Years
-                    val getYears = Server.GetYears(context!!)
-                    if (getYears.execute())
-                    {
-                        Year.clearTable(getDatabase())
+                progressDialogProgess += increaseFactor
+                context!!.runOnUiThread {
+                    progressDialog!!.setTitle("Downloading Users...")
+                    progressDialog!!.progress = progressDialogProgess
+                }
 
-                        for (year in getYears.years)
-                            year.save(getDatabase())
-                    }
+                /**
+                 * USERS
+                 */
+                val getUsers = Server.GetUsers(context!!)
+                if (getUsers.execute())
+                {
+                    User.clearTable(getDatabase())
+
+                    for (user in getUsers.users)
+                        user.save(getDatabase())
+                }
+
+                /**
+                 * EVENTS
+                 */
+                if(getPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, false) as Boolean)
+                {
 
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
@@ -313,6 +342,31 @@ class MainActivity : AppCompatActivity(),
 
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
+                        progressDialog!!.setTitle("Downloading Event Metadata...")
+                        progressDialog!!.progress = progressDialogProgess
+                    }
+
+                    //Update Event Team List
+                    val getEventTeamList = Server.GetEventTeamList(context!!)
+                    if (getEventTeamList.execute())
+                    {
+                        EventTeamList.clearTable(getDatabase())
+
+                        for (eventTeamListItem in getEventTeamList.eventTeamList)
+                            eventTeamListItem.save(getDatabase())
+                    }
+                }
+                else
+                    progressDialogProgess += increaseFactor * 2
+
+                /**
+                 * MATCHES
+                 */
+                if(getPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, false) as Boolean)
+                {
+
+                    progressDialogProgess += increaseFactor
+                    context!!.runOnUiThread {
                         progressDialog!!.setTitle("Downloading Matches...")
                         progressDialog!!.progress = progressDialogProgess
                     }
@@ -326,7 +380,15 @@ class MainActivity : AppCompatActivity(),
                         for (match in getMatches.matches)
                             match.save(getDatabase())
                     }
+                }
+                else
+                    progressDialogProgess += increaseFactor
 
+                /**
+                 * TEAMS
+                 */
+                if(getPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, false) as Boolean)
+                {
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
                         progressDialog!!.setTitle("Downloading Teams...")
@@ -342,138 +404,131 @@ class MainActivity : AppCompatActivity(),
                         for (team in getTeams.teams)
                             team.save(getDatabase())
                     }
+                }
+                else
+                    progressDialogProgess += increaseFactor
 
+                /**
+                 * CHECKLISTS
+                 */
+                if(getPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, false) as Boolean)
+                {
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
-                        progressDialog!!.setTitle("Downloading Event Metadata...")
+                        progressDialog!!.setTitle("Downloading Checklist...")
                         progressDialog!!.progress = progressDialogProgess
                     }
 
-                    //Update Event Team List
-                    val getEventTeamList = Server.GetEventTeamList(context!!)
-                    if (getEventTeamList.execute())
+                    //Update Checklist Items
+                    val getChecklistItems = Server.GetChecklistItems(context!!)
+                    if (getChecklistItems.execute())
                     {
-                        EventTeamList.clearTable(getDatabase())
+                        ChecklistItem.clearTable(getDatabase())
 
-                        for (eventTeamListItem in getEventTeamList.eventTeamList)
-                            eventTeamListItem.save(getDatabase())
+                        for (checklistItem in getChecklistItems.checklistItems)
+                            checklistItem.save(getDatabase())
+                    }
+
+                    progressDialogProgess += increaseFactor
+                    context!!.runOnUiThread {
+                        progressDialog!!.progress = progressDialogProgess
+                    }
+
+                    //Update Checklist Items Results
+                    val getChecklistItemResults = Server.GetChecklistItemResults(context!!)
+                    if (getChecklistItemResults.execute())
+                    {
+                        ChecklistItemResult.clearTable(getDatabase())
+
+                        for (checklistItemResult in getChecklistItemResults.checklistItemResults)
+                            checklistItemResult.save(getDatabase())
                     }
                 }
-
                 else
-                    progressDialogProgess = increaseFactor * 5
+                    progressDialogProgess += increaseFactor * 2
 
-                progressDialogProgess += increaseFactor
-                context!!.runOnUiThread {
-                    progressDialog!!.setTitle("Downloading Users...")
-                    progressDialog!!.progress = progressDialogProgess
-                }
-
-                //Update Users
-                val getUsers = Server.GetUsers(context!!)
-                if (getUsers.execute())
+                /**
+                 * ROBOT INFO
+                 */
+                if(getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, false) as Boolean)
                 {
-                    User.clearTable(getDatabase())
+                    progressDialogProgess += increaseFactor
+                    context!!.runOnUiThread {
+                        progressDialog!!.setTitle("Downloading Robot Info...")
+                        progressDialog!!.progress = progressDialogProgess
+                    }
 
-                    for (user in getUsers.users)
-                        user.save(getDatabase())
+                    //Update Robot Info Keys
+                    val getRobotInfoKeys = Server.GetRobotInfoKeys(context!!)
+                    if (getRobotInfoKeys.execute())
+                    {
+                        RobotInfoKey.clearTable(getDatabase())
+
+                        for (robotInfoKey in getRobotInfoKeys.robotInfoKeyList)
+                            robotInfoKey.save(getDatabase())
+                    }
+
+                    progressDialogProgess += increaseFactor
+                    context!!.runOnUiThread {
+                        progressDialog!!.progress = progressDialogProgess
+                    }
+
+                    //Update Robot Info
+                    val getRobotInfo = Server.GetRobotInfo(context!!)
+                    if (getRobotInfo.execute())
+                    {
+                        RobotInfo.clearTable(getDatabase())
+
+                        for (robotInfo in getRobotInfo.robotInfoList)
+                            robotInfo.save(getDatabase())
+                    }
                 }
+                else
+                    progressDialogProgess += increaseFactor * 2
 
-                progressDialogProgess += increaseFactor
-                context!!.runOnUiThread {
-                    progressDialog!!.setTitle("Downloading Robot Info...")
-                    progressDialog!!.progress = progressDialogProgess
-                }
-
-                //Update Robot Info Keys
-                val getRobotInfoKeys = Server.GetRobotInfoKeys(context!!)
-                if (getRobotInfoKeys.execute())
+                /**
+                 * SCOUT CARDS
+                 */
+                if(getPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean)
                 {
-                    RobotInfoKey.clearTable(getDatabase())
+                    progressDialogProgess += increaseFactor
+                    context!!.runOnUiThread {
+                        progressDialog!!.setTitle("Downloading Scout Cards...")
+                        progressDialog!!.progress = progressDialogProgess
+                    }
 
-                    for (robotInfoKey in getRobotInfoKeys.robotInfoKeyList)
-                        robotInfoKey.save(getDatabase())
+                    //Update Scout Card Info Keys
+                    val getScoutCardInfoKeys = Server.GetScoutCardInfoKeys(context!!)
+                    if (getScoutCardInfoKeys.execute())
+                    {
+                        ScoutCardInfoKey.clearTable(getDatabase())
+
+                        for (scoutCardInfoKey in getScoutCardInfoKeys.scoutCardInfoKeys)
+                            scoutCardInfoKey.save(getDatabase())
+                    }
+
+                    progressDialogProgess += increaseFactor
+                    context!!.runOnUiThread {
+                        progressDialog!!.progress = progressDialogProgess
+                    }
+
+                    //Update Scout Card Info
+                    val getScoutCardInfo = Server.GetScoutCardInfo(context!!)
+                    if (getScoutCardInfo.execute())
+                    {
+                        ScoutCardInfo.clearTable(getDatabase())
+
+                        for (scoutCardInfo in getScoutCardInfo.scoutCardInfos)
+                            scoutCardInfo.save(getDatabase())
+                    }
                 }
+                else
+                    progressDialogProgess += increaseFactor * 2
 
-                progressDialogProgess += increaseFactor
-                context!!.runOnUiThread {
-                    progressDialog!!.progress = progressDialogProgess
-                }
-
-                //Update Robot Info
-                val getRobotInfo = Server.GetRobotInfo(context!!)
-                if (getRobotInfo.execute())
-                {
-                    RobotInfo.clearTable(getDatabase())
-
-                    for (robotInfo in getRobotInfo.robotInfoList)
-                        robotInfo.save(getDatabase())
-                }
-
-                progressDialogProgess += increaseFactor
-                context!!.runOnUiThread {
-                    progressDialog!!.setTitle("Downloading Scout Cards...")
-                    progressDialog!!.progress = progressDialogProgess
-                }
-
-                //Update Scout Card Info Keys
-                val getScoutCardInfoKeys = Server.GetScoutCardInfoKeys(context!!)
-                if (getScoutCardInfoKeys.execute())
-                {
-                    ScoutCardInfoKey.clearTable(getDatabase())
-
-                    for (scoutCardInfoKey in getScoutCardInfoKeys.scoutCardInfoKeys)
-                        scoutCardInfoKey.save(getDatabase())
-                }
-
-                progressDialogProgess += increaseFactor
-                context!!.runOnUiThread {
-                    progressDialog!!.progress = progressDialogProgess
-                }
-
-                //Update Scout Card Info
-                val getScoutCardInfo = Server.GetScoutCardInfo(context!!)
-                if (getScoutCardInfo.execute())
-                {
-                    ScoutCardInfo.clearTable(getDatabase())
-
-                    for (scoutCardInfo in getScoutCardInfo.scoutCardInfos)
-                        scoutCardInfo.save(getDatabase())
-                }
-
-                progressDialogProgess += increaseFactor
-                context!!.runOnUiThread {
-                    progressDialog!!.setTitle("Downloading Checklist...")
-                    progressDialog!!.progress = progressDialogProgess
-                }
-
-                //Update Checklist Items
-                val getChecklistItems = Server.GetChecklistItems(context!!)
-                if (getChecklistItems.execute())
-                {
-                    ChecklistItem.clearTable(getDatabase())
-
-                    for (checklistItem in getChecklistItems.checklistItems)
-                        checklistItem.save(getDatabase())
-                }
-
-                progressDialogProgess += increaseFactor
-                context!!.runOnUiThread {
-                    progressDialog!!.progress = progressDialogProgess
-                }
-
-                //Update Checklist Items Results
-                val getChecklistItemResults = Server.GetChecklistItemResults(context!!)
-                if (getChecklistItemResults.execute())
-                {
-                    ChecklistItemResult.clearTable(getDatabase())
-
-                    for (checklistItemResult in getChecklistItemResults.checklistItemResults)
-                        checklistItemResult.save(getDatabase())
-                }
-                
-                //Update Robot Media
-                if (downloadMedia)
+                /**
+                 * ROBOT MEDIA
+                 */
+                if(getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false) as Boolean)
                 {
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
@@ -722,51 +777,64 @@ class MainActivity : AppCompatActivity(),
 
             R.id.RefreshDataItem ->
             {
-                var downloadCore = false
+                val downloadAppDataDialogBuilder = AlertDialog.Builder(context!!)
+                var downloadAppDataDialog: AlertDialog? = null
 
-                val robotMediaBuilder = AlertDialog.Builder(context!!)
-                robotMediaBuilder.setTitle(R.string.download_media)
-                        .setMessage(R.string.download_media_desc)
-                        .setPositiveButton(R.string.yes) { _, _ -> downloadApplicationData(downloadCore, true) }
-                        .setNegativeButton(R.string.no) { _, _ -> downloadApplicationData(downloadCore, false) }
-                        .setIcon(android.R.drawable.ic_dialog_alert)
+                val layout = LayoutInflater.from(context!!).inflate(R.layout.layout_upload, null)
 
-                val robotMediaDialog = robotMediaBuilder.create()
+                with(layout)
+                {
 
-                robotMediaDialog.setOnShowListener {
-                    (robotMediaDialog.getButton(AlertDialog.BUTTON_NEGATIVE) as MaterialButton).setTextColor(primaryColor)
-                    (robotMediaDialog.getButton(AlertDialog.BUTTON_NEGATIVE) as MaterialButton).rippleColor = buttonRipple
-                    (robotMediaDialog.getButton(AlertDialog.BUTTON_POSITIVE) as MaterialButton).setTextColor(primaryColor)
-                    (robotMediaDialog.getButton(AlertDialog.BUTTON_POSITIVE) as MaterialButton).rippleColor = buttonRipple
+                    EventsCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, false) as Boolean)
+                    MatchesCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, false) as Boolean)
+                    TeamsCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, false) as Boolean)
+                    ChecklistCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, false) as Boolean)
+                    RobotInfoCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, false) as Boolean)
+                    ScoutCardInfoCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean)
+                    RobotMediaCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false) as Boolean)
+
+                    EventsCheckBox.setOnCheckedChangeListener { _, b ->
+                        setPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, b)
+                    }
+
+                    MatchesCheckBox.setOnCheckedChangeListener { _, b ->
+                        setPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, b)
+                    }
+
+                    TeamsCheckBox.setOnCheckedChangeListener { _, b ->
+                        setPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, b)
+                    }
+
+                    ChecklistCheckBox.setOnCheckedChangeListener { _, b ->
+                        setPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, b)
+                    }
+
+                    RobotInfoCheckBox.setOnCheckedChangeListener { _, b ->
+                        setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, b)
+                    }
+
+                    ScoutCardInfoCheckBox.setOnCheckedChangeListener { _, b ->
+                        setPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, b)
+                    }
+
+                    RobotMediaCheckBox.setOnCheckedChangeListener { _, b ->
+                        setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, b)
+                    }
+
+                    CancelButton.setOnClickListener {
+                        downloadAppDataDialog!!.dismiss()
+                    }
+
+                    DownloadButton.setOnClickListener {
+                        downloadAppDataDialog!!.dismiss()
+                        downloadApplicationData(true)
+                    }
                 }
 
-                val coreBuilder = AlertDialog.Builder(context!!)
-                coreBuilder.setTitle(getString(R.string.download_core))
-                        .setMessage(getString(R.string.download_core_desc))
-                        .setPositiveButton(R.string.yes) { _, _ ->
+                downloadAppDataDialogBuilder.setView(layout)
 
-                            downloadCore = true
-
-                            robotMediaDialog.show()
-                        }
-                        .setNegativeButton(R.string.no) { _, _ ->
-
-                            downloadCore = false
-
-                            robotMediaDialog.show()
-                        }
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-
-                val coreDialog = coreBuilder.create()
-
-                coreDialog.setOnShowListener {
-                    (coreDialog.getButton(AlertDialog.BUTTON_NEGATIVE) as MaterialButton).setTextColor(primaryColor)
-                    (coreDialog.getButton(AlertDialog.BUTTON_NEGATIVE) as MaterialButton).rippleColor = buttonRipple
-                    (coreDialog.getButton(AlertDialog.BUTTON_POSITIVE) as MaterialButton).setTextColor(primaryColor)
-                    (coreDialog.getButton(AlertDialog.BUTTON_POSITIVE) as MaterialButton).rippleColor = buttonRipple
-                }
-
-                coreDialog.show()
+                downloadAppDataDialog = downloadAppDataDialogBuilder.create()
+                downloadAppDataDialog.show()
 
                 return true
             }
@@ -1001,7 +1069,7 @@ class MainActivity : AppCompatActivity(),
                 //check any teams are on device and if the device is online
                 //if no teams, update data
                 if (Team.getObjects(null, null, null, getDatabase())!!.size == 0 && isOnline())
-                    downloadApplicationData(true, false)
+                    downloadApplicationData(false)
 
                 //join back up with the update thread if it is not null
                 if (updateThread != null)
