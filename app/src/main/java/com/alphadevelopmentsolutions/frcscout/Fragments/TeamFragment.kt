@@ -25,6 +25,12 @@ class TeamFragment : MasterFragment()
     {
         return false
     }
+
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
+        super.onCreate(savedInstanceState)
+
+    }
     
     private var headerConstraintLayout: ConstraintLayout? = null
 
@@ -50,6 +56,7 @@ class TeamFragment : MasterFragment()
     {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_team, container, false)
+        context.isToolbarScrollable = false
 
         //gets rid of the shadow on the actionbar
         context.dropActionBar()

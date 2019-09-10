@@ -29,6 +29,7 @@ class YearListFragment : MasterFragment()
 
         context.setToolbarTitle(R.string.years)
         context.lockDrawerLayout()
+        context.isToolbarScrollable = true
 
         loadingThread.join()
 
@@ -46,9 +47,9 @@ class YearListFragment : MasterFragment()
         return view
     }
 
-    override fun onDetach()
+    override fun onDestroy()
     {
-        super.onDetach()
+        super.onDestroy()
         context.unlockDrawerLayout()
     }
 

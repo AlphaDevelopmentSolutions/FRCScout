@@ -103,6 +103,8 @@ class TeamListFragment : MasterFragment()
         loadTeamsThread!!.join()
 
         context.setToolbarTitle(if (match == null) event!!.name!! else match.toString())
+        context.isSearchViewVisible = match == null
+        context.isToolbarScrollable = match == null
 
 
         if (match == null || allianceColor == AllianceColor.BLUE || allianceColor == AllianceColor.RED)
@@ -114,8 +116,6 @@ class TeamListFragment : MasterFragment()
 
             if(match == null)
             {
-                context.isSearchViewVisible = true
-
                 context.setSearchViewOnTextChangeListener(object: SearchView.OnQueryTextListener{
                     override fun onQueryTextSubmit(p0: String?): Boolean
                     {

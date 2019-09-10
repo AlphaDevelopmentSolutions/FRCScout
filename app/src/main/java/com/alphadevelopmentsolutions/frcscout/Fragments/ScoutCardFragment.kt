@@ -65,6 +65,7 @@ class ScoutCardFragment : MasterFragment()
 
         //gets rid of the shadow on the actionbar
         context.dropActionBar()
+        context.isToolbarScrollable = false
 
         scoutCardTabLayout = view.findViewById(R.id.ScoutCardTabLayout)
         scoutCardViewPager = view.findViewById(R.id.ScoutCardViewPager)

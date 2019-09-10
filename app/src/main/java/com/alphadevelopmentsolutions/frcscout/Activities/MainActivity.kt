@@ -1075,8 +1075,27 @@ class MainActivity : AppCompatActivity(),
     var isSearchViewVisible = false
     set(value)
     {
-        toolbar!!.menu.findItem(R.id.SearchItem).isVisible = value
-        field = value
+        if(field != value)
+        {
+            toolbar!!.menu.findItem(R.id.SearchItem).isVisible = value
+            field = value
+        }
+    }
+
+    /**
+     * Allows or disallows the toolbar the ability to collapse when scrolling
+     */
+    var isToolbarScrollable = false
+    set(value)
+    {
+        if(field != value)
+        {
+            if (value)
+                (toolbar!!.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
+            else
+                (toolbar!!.layoutParams as AppBarLayout.LayoutParams).scrollFlags = 0
+            field = value
+        }
     }
 
     //endregion

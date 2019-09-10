@@ -30,13 +30,25 @@ class MatchListFragment : MasterFragment()
         loadingThread.join()
 
         if (team == null)
+        {
+            context.isToolbarScrollable = true
             context.setToolbarTitle(event.toString())
+        }
+        else
+            context.isToolbarScrollable = false
 
         val scoutCardsRecyclerViewAdapter = MatchListRecyclerViewAdapter(event!!, team, context, if (team == null) TeamListFragment::class.java else ScoutCardFragment::class.java)
         matchListRecyclerView!!.layoutManager = LinearLayoutManager(activity)
         matchListRecyclerView!!.adapter = scoutCardsRecyclerViewAdapter
 
         return view
+    }
+
+    override fun onPause()
+    {
+        super.onPause()
+//        context.isToolbarScrollable = false
+
     }
 
     companion object

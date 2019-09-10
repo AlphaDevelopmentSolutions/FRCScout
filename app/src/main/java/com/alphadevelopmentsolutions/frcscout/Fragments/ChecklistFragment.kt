@@ -28,6 +28,8 @@ class ChecklistFragment : MasterFragment()
 
         val recyclerView: RecyclerView
 
+        context.isToolbarScrollable = true
+
         loadingThread.join()
 
         //no match selected, show match list
