@@ -39,7 +39,7 @@ class ChecklistFragment : MasterFragment()
 
             recyclerView = view.findViewById(R.id.MatchListRecyclerView)
 
-            val matchListRecyclerViewAdapter = MatchListRecyclerViewAdapter(event!!, team, context, this.javaClass)
+            val matchListRecyclerViewAdapter = MatchListRecyclerViewAdapter(event!!, team, Match.getObjects(event, null, team, database), context, this.javaClass)
             recyclerView.adapter = matchListRecyclerViewAdapter
             recyclerView.layoutManager = LinearLayoutManager(context)
 

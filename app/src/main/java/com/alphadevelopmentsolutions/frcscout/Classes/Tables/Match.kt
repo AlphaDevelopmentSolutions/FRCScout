@@ -78,7 +78,7 @@ class Match(
          * @param database used to load teams
          * @return arraylist of teams
          */
-        fun getObjects(event: Event?, match: Match?, team: Team?, database: Database, sortDirection: Database.SortDirection = Database.SortDirection.DESC): ArrayList<Match>?
+        fun getObjects(event: Event?, match: Match?, team: Team?, database: Database, sortDirection: Database.SortDirection = Database.SortDirection.DESC): ArrayList<Match>
         {
             return database.getMatches(event, match, team, sortDirection)
         }
@@ -334,7 +334,7 @@ class Match(
         if (database.isOpen)
         {
             val matches = getObjects(null, this, null, database)
-            val match = if (matches!!.size > 0) matches[0] else null
+            val match = if (matches.size > 0) matches[0] else null
 
             if (match != null)
             {

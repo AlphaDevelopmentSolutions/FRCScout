@@ -125,6 +125,7 @@ class TeamListFragment : MasterFragment()
                     override fun onQueryTextChange(searchText: String?): Boolean
                     {
                         val searchLength = searchText?.length ?: 0
+
                         //You only need to reset the list if you are removing from your search, adding the objects back
                         if (searchLength < previousSearchLength)
                         {
@@ -219,6 +220,12 @@ class TeamListFragment : MasterFragment()
             context.isSearchViewVisible = false
 
         super.onDetach()
+    }
+
+    override fun onDestroy()
+    {
+        super.onDestroy()
+        context.setSearchViewOnTextChangeListener(null)
     }
 
     companion object

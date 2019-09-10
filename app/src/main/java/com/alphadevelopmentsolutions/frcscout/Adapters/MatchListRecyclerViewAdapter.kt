@@ -26,11 +26,8 @@ import com.alphadevelopmentsolutions.frcscout.R
 import java.lang.reflect.Type
 import java.util.*
 
-internal class MatchListRecyclerViewAdapter(event: Event, private val team: Team?, private val context: MainActivity, private val fragmentOnClick: Type) : RecyclerView.Adapter<MatchListRecyclerViewAdapter.ViewHolder>()
+internal class MatchListRecyclerViewAdapter(event: Event, private val team: Team?, private val matches: ArrayList<Match>, private val context: MainActivity, private val fragmentOnClick: Type) : RecyclerView.Adapter<MatchListRecyclerViewAdapter.ViewHolder>()
 {
-
-    //get all matches for a specific team (if specified), at the specified event
-    private val matches: ArrayList<Match>? = event.getMatches(null, team, context.getDatabase())
 
     private val scoutCards: HashMap<Match, ArrayList<ScoutCardInfo>> = HashMap()
 
@@ -39,10 +36,13 @@ internal class MatchListRecyclerViewAdapter(event: Event, private val team: Team
         //load all scout cards for specific team from specific match
         if (fragmentOnClick == ScoutCardFragment::class.java)
         {
+            context.getDatabase().beginTransaction()
             //load all the scout cards for a match
-            for (match in matches!!)
+            for (match in matches)
             //get the scout card from the match
-                scoutCards[match] = match.getScoutCards(event, team, null, false, context.getDatabase())!!
+                scoutCards[match] = ScoutCardInfo.getObjects(event, match, team, null, null, false, context.getDatabase())
+
+            context.getDatabase().finishTransaction()
         }
     }
 
@@ -100,13 +100,13 @@ internal class MatchListRecyclerViewAdapter(event: Event, private val team: Team
         //Inflate the event layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_match, viewGroup, false)
 
-        return MatchListRecyclerViewAdapter.ViewHolder(view, context)
+        return ViewHolder(view, context)
     }
 
-    override fun onBindViewHolder(viewHolder: MatchListRecyclerViewAdapter.ViewHolder, position: Int)
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
     {
 
-        val match = matches!![viewHolder.adapterPosition]
+        val match = matches[viewHolder.adapterPosition]
 
         //set match numbers
         viewHolder.matchIdTextView.text = match.toString()
@@ -327,6 +327,6 @@ internal class MatchListRecyclerViewAdapter(event: Event, private val team: Team
 
     override fun getItemCount(): Int
     {
-        return matches!!.size
+        return matches.size
     }
 }

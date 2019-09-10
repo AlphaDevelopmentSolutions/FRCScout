@@ -671,7 +671,7 @@ class Database(private val context: MainActivity)
      * @param team if specified, filters matches by team id
      * @return all events inside database
      */
-    fun getMatches(event: Event?, match: Match?, team: Team?, sortDirection: SortDirection = SortDirection.DESC): ArrayList<Match>?
+    fun getMatches(event: Event?, match: Match?, team: Team?, sortDirection: SortDirection = SortDirection.DESC): ArrayList<Match>
     {
         val matches = ArrayList<Match>()
 
@@ -863,7 +863,7 @@ class Database(private val context: MainActivity)
      * @param onlyDrafts  if true, filters scout cards by draft
      * @return scoutcard based off given info
      */
-    fun getScoutCardInfo(event: Event?, match: Match?, team: Team?, scoutCardInfoKey: ScoutCardInfoKey?, scoutCardInfo: ScoutCardInfo?, onlyDrafts: Boolean): ArrayList<ScoutCardInfo>?
+    fun getScoutCardInfo(event: Event?, match: Match?, team: Team?, scoutCardInfoKey: ScoutCardInfoKey?, scoutCardInfo: ScoutCardInfo?, onlyDrafts: Boolean): ArrayList<ScoutCardInfo>
     {
         val scoutCardInfos = ArrayList<ScoutCardInfo>()
 
@@ -932,7 +932,7 @@ class Database(private val context: MainActivity)
             return scoutCardInfos
         }
 
-        return null
+        return scoutCardInfos
     }
 
     /**

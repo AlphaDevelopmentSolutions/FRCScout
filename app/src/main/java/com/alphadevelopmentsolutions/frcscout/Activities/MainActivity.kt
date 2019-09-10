@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity(),
 
     private var changeButton: Button? = null
 
-    private lateinit var searchView: SearchView
+    private var searchView: SearchView? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -787,7 +787,8 @@ class MainActivity : AppCompatActivity(),
 
         val searchItem = menu.findItem(R.id.SearchItem)
         searchView = searchItem.actionView as SearchView
-        searchItem.isVisible = false
+        searchItem.isVisible = isSearchViewVisible
+        searchView!!.setOnQueryTextListener(searchViewOnTextChangeListener)
 
         return true
     }
@@ -1209,10 +1210,13 @@ class MainActivity : AppCompatActivity(),
      * Sets the listener for text being changed for the search view on the toolbar
      * @param listener [SearchView.OnQueryTextListener] listener for the searchview
      */
-    fun setSearchViewOnTextChangeListener(listener: SearchView.OnQueryTextListener)
+    fun setSearchViewOnTextChangeListener(listener: SearchView.OnQueryTextListener?)
     {
-        searchView.setOnQueryTextListener(listener)
+        searchView?.setOnQueryTextListener(listener)
+        searchViewOnTextChangeListener = listener
     }
+
+    private var searchViewOnTextChangeListener: SearchView.OnQueryTextListener? = null
 
     /**
      * Gets / Sets the visibility of the searchview
@@ -1222,7 +1226,11 @@ class MainActivity : AppCompatActivity(),
     {
         if(field != value)
         {
-            toolbar!!.menu.findItem(R.id.SearchItem).isVisible = value
+            val item = toolbar!!.menu.findItem(R.id.SearchItem)
+
+            if(item != null)
+                item.isVisible = value
+
             field = value
         }
     }

@@ -65,7 +65,7 @@ class ScoutCardInfo(
          * @param database used to load scout cards
          * @return arraylist of scout cards
          */
-        fun getObjects(event: Event?, match: Match?, team: Team?, scoutCardInfoKey: ScoutCardInfoKey?, scoutCardInfo: ScoutCardInfo?, onlyDrafts: Boolean, database: Database): ArrayList<ScoutCardInfo>?
+        fun getObjects(event: Event?, match: Match?, team: Team?, scoutCardInfoKey: ScoutCardInfoKey?, scoutCardInfo: ScoutCardInfo?, onlyDrafts: Boolean, database: Database): ArrayList<ScoutCardInfo>
         {
             return database.getScoutCardInfo(event, match, team, scoutCardInfoKey, scoutCardInfo, onlyDrafts)
         }
@@ -92,7 +92,7 @@ class ScoutCardInfo(
         if (database.isOpen)
         {
             val scoutCardInfos = getObjects(null, null, null, null,this, false, database)
-            val scoutCardInfo = if (scoutCardInfos!!.size > 0) scoutCardInfos[0] else null
+            val scoutCardInfo = if (scoutCardInfos.size > 0) scoutCardInfos[0] else null
 
             if (scoutCardInfo != null)
             {
