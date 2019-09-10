@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.Fragments
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SearchView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,27 @@ class YearListFragment : MasterFragment()
     {
         return false
     }
+
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
+        super.onCreate(savedInstanceState)
+
+        loadMatchesThread = Thread(Runnable {
+            loadingThread.join()
+
+            years = Year.getObjects(null, database)
+            searchedYears = ArrayList(years)
+        })
+
+        loadMatchesThread.start()
+    }
+
+    private lateinit var years: ArrayList<Year>
+    private lateinit var searchedYears: ArrayList<Year>
+
+    private lateinit var loadMatchesThread: Thread
+
+    private var previousSearchLength: Int = 0
 
     private var yearListRecyclerView: RecyclerView? = null
 
@@ -39,9 +61,69 @@ class YearListFragment : MasterFragment()
 
         yearListRecyclerView = view.findViewById(R.id.YearListRecyclerView)
 
-        val yearListRecyclerViewAdapter = YearListRecyclerViewAdapter(Year.getObjects(null, database)!!, context)
+        val yearListRecyclerViewAdapter = YearListRecyclerViewAdapter(searchedYears, context)
         yearListRecyclerView!!.adapter = yearListRecyclerViewAdapter
         yearListRecyclerView!!.layoutManager = LinearLayoutManager(context)
+
+        context.isToolbarScrollable = true
+        context.isSearchViewVisible = true
+
+        context.setSearchViewOnTextChangeListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(p0: String?): Boolean
+            {
+                return false
+            }
+
+            override fun onQueryTextChange(searchText: String?): Boolean
+            {
+                val searchLength = searchText?.length ?: 0
+
+                //You only need to reset the list if you are removing from your search, adding the objects back
+                if (searchLength < previousSearchLength)
+                {
+                    //Reset the list
+                    for (i in years.indices)
+                    {
+                        val year = years[i]
+
+                        //check if the contact doesn't exist in the viewable list
+                        if (!searchedYears.contains(year))
+                        {
+                            //add it and notify the recyclerview
+                            searchedYears.add(i, year)
+                            yearListRecyclerViewAdapter.notifyItemInserted(i)
+                            yearListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedYears.size)
+                        }
+                    }
+                }
+
+                //Delete from the list
+                var i = 0
+                while (i < searchedYears.size)
+                {
+                    val match = searchedYears[i]
+                    val name = match.toString()
+
+                    //If the contacts name doesn't equal the searched name
+                    if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
+                    {
+                        //remove it from the list and notify the recyclerview
+                        searchedYears.removeAt(i)
+                        yearListRecyclerViewAdapter.notifyItemRemoved(i)
+                        yearListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedYears.size)
+
+                        //this prevents the index from passing the size of the list,
+                        //stays on the same index until you NEED to move to the next one
+                        i--
+                    }
+                    i++
+                }
+
+                previousSearchLength = searchLength
+
+                return false
+            }
+        })
 
 
         return view

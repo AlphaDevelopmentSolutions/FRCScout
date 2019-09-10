@@ -70,7 +70,7 @@ class Year: Table
          * @param database used to load robot media
          * @return ArrayList of years
          */
-        fun getObjects(year: Year?, database: Database): ArrayList<Year>?
+        fun getObjects(year: Year?, database: Database): ArrayList<Year>
         {
             return database.getYears(year)
         }

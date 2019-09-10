@@ -1750,7 +1750,7 @@ class Database(private val context: MainActivity)
      * @param year if specified, object filters by year id
      * @return year based off given team ID
      */
-    fun getYears(year: Year?): ArrayList<Year>?
+    fun getYears(year: Year?): ArrayList<Year>
     {
         val yearList = ArrayList<Year>()
 
@@ -1786,7 +1786,7 @@ class Database(private val context: MainActivity)
             return yearList
         }
 
-        return null
+        return yearList
     }
 
     /**
