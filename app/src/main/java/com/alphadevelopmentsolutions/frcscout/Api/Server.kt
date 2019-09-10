@@ -666,7 +666,7 @@ abstract class Server internal constructor(
                     val teamId = robotMediaJson.getInt(RobotMedia.COLUMN_NAME_TEAM_ID)
                     var fileUri = Constants.WEB_URL + "/assets/robot-media/" + robotMediaJson.getString(RobotMedia.COLUMN_NAME_FILE_URI)
 
-                    fileUri = apiParser.downloadImage(fileUri, Constants.ROBOT_MEDIA_DIRECTORY).absolutePath
+                    fileUri = apiParser.downloadImage(fileUri, Constants.ROBOT_MEDIA_DIRECTORY, context).absolutePath
 
                     robotMedia.add(RobotMedia(
                             -1,
@@ -726,7 +726,7 @@ abstract class Server internal constructor(
                     val endDate = simpleDateFormat.parse(yearsJson.getString(Year.COLUMN_NAME_END_DATE))
                     var fileUri = Constants.WEB_URL + "/assets/year-media/" + yearsJson.getString(Year.COLUMN_NAME_IMAGE_URI)
 
-                    fileUri = apiParser.downloadImage(fileUri, Constants.YEAR_MEDIA_DIRECTORY).absolutePath
+                    fileUri = apiParser.downloadImage(fileUri, Constants.YEAR_MEDIA_DIRECTORY, context).absolutePath
 
                     years.add(Year(
                             -1,

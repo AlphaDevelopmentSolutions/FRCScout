@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Api
 
 import android.util.Log
+import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Image
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import org.json.JSONException
@@ -83,7 +84,7 @@ class ApiParser(private val api: Api)
      * @throws IOException
      */
     @Throws(IOException::class)
-    fun downloadImage(fileUri: String, directory: String): File
+    fun downloadImage(fileUri: String, directory: String, context: MainActivity): File
     {
         //create the url based on the app URL and specified file
         val url = URL(fileUri)
@@ -91,20 +92,14 @@ class ApiParser(private val api: Api)
         //create a new connection to the server
         val httpURLConnection = url.openConnection() as HttpURLConnection
 
-        val baseDir = File(Constants.BASE_FILE_DIRECTORY)
-        if (!baseDir.isDirectory)
-            if (!baseDir.mkdir())
-                throw IOException("Failed to make base file directory")
-
         //Create the folder
-        val mediaFolder = File(directory)
+        val mediaFolder = Constants.getFileDirectory(context, directory)
         if (!mediaFolder.isDirectory)
             if (!mediaFolder.mkdir())
                 throw IOException("Failed to make directory")
 
-
         //Create the file
-        val mediaFile = File(Image.generateFileUri(directory).absolutePath)
+        val mediaFile = File(Image.generateFileUri(mediaFolder.path).absolutePath)
         if (!mediaFile.createNewFile())
             throw IOException("Failed to create file")
 
@@ -122,10 +117,7 @@ class ApiParser(private val api: Api)
                 fileOutputStream.write(buffer, 0, bufferLength)
 
             bufferLength = inputStream.read(buffer)
-
         }
-
-
 
         //close and disconnect from the web server
         fileOutputStream.close()

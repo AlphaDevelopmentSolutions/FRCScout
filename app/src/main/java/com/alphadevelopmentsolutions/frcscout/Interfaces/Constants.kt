@@ -1,7 +1,11 @@
 package com.alphadevelopmentsolutions.frcscout.Interfaces
 
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Environment
+import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.BuildConfig
+import java.io.File
 
 interface Constants
 {
@@ -43,9 +47,18 @@ interface Constants
 
     companion object
     {
-        val BASE_FILE_DIRECTORY = Environment.getExternalStorageDirectory().toString() + "/frcscout/"
-        val ROBOT_MEDIA_DIRECTORY = BASE_FILE_DIRECTORY + "robot-media/"
-        val YEAR_MEDIA_DIRECTORY = BASE_FILE_DIRECTORY + "year-media/"
+        /**
+         * Gets the directory for the file system
+         * @param context [MainActivity] used to get the apps data dir
+         * @param dir [String] directory to save retrieve
+         */
+        fun getFileDirectory(context: MainActivity, dir: String): File
+        {
+            return ContextWrapper(context).getDir(dir, Context.MODE_PRIVATE)
+        }
+
+        const val ROBOT_MEDIA_DIRECTORY = "robot-media"
+        const val YEAR_MEDIA_DIRECTORY = "year-media"
 
         const val ROBOT_MEDIA_REQUEST_CODE = 5885
 
