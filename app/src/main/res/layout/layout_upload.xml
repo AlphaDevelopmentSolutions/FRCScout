@@ -8,7 +8,7 @@
     tools:context=".Fragments.ConfigFragment">
 
     <android.support.v7.widget.CardView
-        android:layout_width="@dimen/basic_card_width"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
