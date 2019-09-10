@@ -1231,6 +1231,9 @@ class MainActivity : AppCompatActivity(),
             if(item != null)
                 item.isVisible = value
 
+            if(!value)
+                setSearchViewOnTextChangeListener(null)
+
             field = value
         }
     }
