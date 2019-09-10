@@ -41,6 +41,12 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Fragments.*
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
+import kotlinx.android.synthetic.main.layout_download.view.*
+import kotlinx.android.synthetic.main.layout_download.view.CancelButton
+import kotlinx.android.synthetic.main.layout_download.view.ChecklistCheckBox
+import kotlinx.android.synthetic.main.layout_download.view.RobotInfoCheckBox
+import kotlinx.android.synthetic.main.layout_download.view.RobotMediaCheckBox
+import kotlinx.android.synthetic.main.layout_download.view.ScoutCardInfoCheckBox
 import kotlinx.android.synthetic.main.layout_upload.view.*
 import java.io.File
 import java.util.*
@@ -569,7 +575,7 @@ class MainActivity : AppCompatActivity(),
                     setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, year.serverId!!)
 
                     progressDialog!!.dismiss()
-                    changeFragment(EventListFragment.newInstance(year), false)
+                    context!!.recreate()
                 }
             })
 
@@ -583,71 +589,116 @@ class MainActivity : AppCompatActivity(),
     /**
      * Uploads all stored app data to server
      */
-    private fun uploadApplicationData()
+    private fun uploadApplicationData(withFilters: Boolean = false)
     {
         progressDialog = ProgressDialog(context)
-
-        val teams = Team.getObjects(null, null, null, getDatabase())
-        val totalTeams = teams!!.size
-
-        progressDialog!!.max = totalTeams
+        progressDialog!!.max = 100
         progressDialog!!.progress = 0
         progressDialog!!.setTitle("Uploading data...")
+        progressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+        progressDialog!!.setCancelable(false)
+        progressDialog!!.setCanceledOnTouchOutside(false)
         progressDialog!!.show()
+
+        val increaseFactor = 25
 
         val uploadThread = Thread(Runnable {
             var success = true
 
-            //Robot Media
-            for (robotMedia in RobotMedia.getObjects(null, null, true, getDatabase())!!)
-            {
-                val submitRobotMedia = Server.SubmitRobotMedia(context!!, robotMedia)
-                if (submitRobotMedia.execute())
-                {
-                    robotMedia.isDraft = false
-                    robotMedia.save(getDatabase())
-                } else
-                    success = false
+            context!!.runOnUiThread {
+                progressDialog!!.setTitle("Uploading Checklists...")
+                progressDialog!!.progress = progressDialogProgess
             }
 
-
-            //Robot Info
-            for (robotInfo in RobotInfo.getObjects(null, null, null, null, null, true, getDatabase())!!)
+            /**
+             * CHECKLIST ITEM RESULTS
+             */
+            if(getPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, false) as Boolean)
             {
-                val submitRobotInfo = Server.SubmitRobotInfo(context!!, robotInfo)
-                if (submitRobotInfo.execute())
+                for (checklistItemResult in ChecklistItemResult.getObjects(null, null, true, getDatabase())!!)
                 {
-                    robotInfo.isDraft = false
-                    robotInfo.save(getDatabase())
-                } else
-                    success = false
-            }
+                    val submitChecklistItemResult = Server.SubmitChecklistItemResult(context!!, checklistItemResult)
+                    if (submitChecklistItemResult.execute())
+                    {
+                        checklistItemResult.isDraft = false
+                        checklistItemResult.save(getDatabase())
+                    }
+                    else
+                        success = false
 
-            //Scout Card Info
-            for (scoutCardInfo in ScoutCardInfo.getObjects(null, null, null, null, null, true, getDatabase())!!)
-            {
-                val submitScoutCardInfo = Server.SubmitScoutCardInfo(context!!, scoutCardInfo)
-                if (submitScoutCardInfo.execute())
-                {
-                    scoutCardInfo.isDraft = false
-                    scoutCardInfo.save(getDatabase())
                 }
-                else
-                    success = false
             }
 
+            progressDialogProgess += increaseFactor
+            context!!.runOnUiThread {
+                progressDialog!!.setTitle("Uploading Robot Info...")
+                progressDialog!!.progress = progressDialogProgess
+            }
 
-            //Checklist item results
-            for (checklistItemResult in ChecklistItemResult.getObjects(null, null, true, getDatabase())!!)
+            /**
+             * ROBOT INFO
+             */
+            if(getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, false) as Boolean)
             {
-                val submitChecklistItemResult = Server.SubmitChecklistItemResult(context!!, checklistItemResult)
-                if (submitChecklistItemResult.execute())
+                for (robotInfo in RobotInfo.getObjects(null, null, null, null, null, true, getDatabase())!!)
                 {
-                    checklistItemResult.isDraft = false
-                    checklistItemResult.save(getDatabase())
-                } else
-                    success = false
+                    val submitRobotInfo = Server.SubmitRobotInfo(context!!, robotInfo)
+                    if (submitRobotInfo.execute())
+                    {
+                        robotInfo.isDraft = false
+                        robotInfo.save(getDatabase())
+                    }
+                    else
+                        success = false
+                }
+            }
 
+            progressDialogProgess += increaseFactor
+            context!!.runOnUiThread {
+                progressDialog!!.setTitle("Uploading Scout Cards...")
+                progressDialog!!.progress = progressDialogProgess
+            }
+
+            /**
+             * SCOUT CARD INFO
+             */
+            if(getPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean)
+            {
+                for (scoutCardInfo in ScoutCardInfo.getObjects(null, null, null, null, null, true, getDatabase())!!)
+                {
+                    val submitScoutCardInfo = Server.SubmitScoutCardInfo(context!!, scoutCardInfo)
+                    if (submitScoutCardInfo.execute())
+                    {
+                        scoutCardInfo.isDraft = false
+                        scoutCardInfo.save(getDatabase())
+                    }
+                    else
+                        success = false
+                }
+            }
+
+            progressDialogProgess += increaseFactor
+            context!!.runOnUiThread {
+                progressDialog!!.setTitle("Uploading Robot Media...")
+                progressDialog!!.progress = progressDialogProgess
+            }
+
+            /**
+             * ROBOT MEDIA
+             */
+            if(getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, false) as Boolean)
+            {
+                for (robotMedia in RobotMedia.getObjects(null, null, true, getDatabase())!!)
+                {
+                    val submitRobotMedia = Server.SubmitRobotMedia(context!!, robotMedia)
+                    if (submitRobotMedia.execute())
+                    {
+                        robotMedia.isDraft = false
+                        robotMedia.save(getDatabase())
+                    }
+                    else
+                        success = false
+                }
             }
 
             val finalSuccess = success
@@ -749,23 +800,49 @@ class MainActivity : AppCompatActivity(),
             {
                 if (isOnline())
                 {
-                    val builder = AlertDialog.Builder(this)
-                    builder.setTitle(R.string.upload_data)
-                            .setMessage(R.string.upload_data_desc)
-                            .setPositiveButton(R.string.yes) { _, _ -> uploadApplicationData() }
-                            .setNegativeButton(R.string.cancel) { _, _ -> }
-                            .setIcon(android.R.drawable.ic_dialog_alert)
+                    val uploadAppDataAlertDialogBuilder = AlertDialog.Builder(context!!)
+                    var uploadAppDataDialog: AlertDialog? = null
 
-                    val dialog = builder.create()
+                    val layout = LayoutInflater.from(context!!).inflate(R.layout.layout_upload, null)
 
-                    dialog.setOnShowListener {
-                        (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) as MaterialButton).setTextColor(primaryColor)
-                        (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) as MaterialButton).rippleColor = buttonRipple
-                        (dialog.getButton(AlertDialog.BUTTON_POSITIVE) as MaterialButton).setTextColor(primaryColor)
-                        (dialog.getButton(AlertDialog.BUTTON_POSITIVE) as MaterialButton).rippleColor = buttonRipple
+                    with(layout)
+                    {
+
+                        ChecklistCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, false) as Boolean)
+                        RobotInfoCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, false) as Boolean)
+                        ScoutCardInfoCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean)
+                        RobotMediaCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, false) as Boolean)
+                        
+                        ChecklistCheckBox.setOnCheckedChangeListener { _, b ->
+                            setPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, b)
+                        }
+
+                        RobotInfoCheckBox.setOnCheckedChangeListener { _, b ->
+                            setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, b)
+                        }
+
+                        ScoutCardInfoCheckBox.setOnCheckedChangeListener { _, b ->
+                            setPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, b)
+                        }
+
+                        RobotMediaCheckBox.setOnCheckedChangeListener { _, b ->
+                            setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, b)
+                        }
+
+                        CancelButton.setOnClickListener {
+                            uploadAppDataDialog!!.dismiss()
+                        }
+
+                        UploadButton.setOnClickListener {
+                            uploadAppDataDialog!!.dismiss()
+                            uploadApplicationData(true)
+                        }
                     }
 
-                    dialog.show()
+                    uploadAppDataAlertDialogBuilder.setView(layout)
+
+                    uploadAppDataDialog = uploadAppDataAlertDialogBuilder.create()
+                    uploadAppDataDialog.show()
 
                 } else
                 {
@@ -780,7 +857,7 @@ class MainActivity : AppCompatActivity(),
                 val downloadAppDataDialogBuilder = AlertDialog.Builder(context!!)
                 var downloadAppDataDialog: AlertDialog? = null
 
-                val layout = LayoutInflater.from(context!!).inflate(R.layout.layout_upload, null)
+                val layout = LayoutInflater.from(context!!).inflate(R.layout.layout_download, null)
 
                 with(layout)
                 {

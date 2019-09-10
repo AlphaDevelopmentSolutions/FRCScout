@@ -39,18 +39,18 @@
                     android:orientation="horizontal">
 
                     <CheckBox
-                        android:id="@+id/ChecklistCheckBox"
+                        android:id="@+id/EventsCheckBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/checklist" />
+                        android:text="@string/events" />
 
                     <CheckBox
-                        android:id="@+id/RobotInfoCheckBox"
+                        android:id="@+id/MatchesCheckBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/robot_info" />
+                        android:text="@string/matches" />
 
                 </LinearLayout>
 
@@ -60,19 +60,52 @@
                     android:orientation="horizontal">
 
                     <CheckBox
+                        android:id="@+id/TeamsCheckBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/teams" />
+
+                    <CheckBox
+                        android:id="@+id/ChecklistCheckBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/checklist" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/RobotInfoCheckBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/robot_info" />
+
+                    <CheckBox
                         android:id="@+id/ScoutCardInfoCheckBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/scout_cards" />
 
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
                     <CheckBox
                         android:id="@+id/RobotMediaCheckBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:text="@string/robot_media" />
-
                 </LinearLayout>
 
             </LinearLayout>
@@ -95,10 +128,10 @@
                     android:text="@string/cancel" />
 
                 <Button
-                    android:id="@+id/UploadButton"
+                    android:id="@+id/DownloadButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/upload" />
+                    android:text="@string/download" />
             </LinearLayout>
 
         </android.support.constraint.ConstraintLayout>

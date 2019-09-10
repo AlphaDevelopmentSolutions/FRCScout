@@ -121,6 +121,20 @@ class ConfigFragment : MasterFragment()
                 {
                     context.runOnUiThread {
                         context.updateNavText()
+
+                        context.setPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, true)
+                        context.setPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, true)
+                        context.setPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, true)
+                        context.setPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, true)
+                        context.setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, true)
+                        context.setPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, true)
+                        context.setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, true)
+
+                        context.setPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, true)
+                        context.setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, true)
+                        context.setPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, true)
+                        context.setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, true)
+
                         context.downloadApplicationData(false)
                     }
                 } else

@@ -149,4 +149,5 @@
     <string name="event_average">Event Average</string>
     <string name="download">Download</string>
     <string name="robot_media">Robot Media</string>
+    <string name="upload">Upload</string>
 </resources>
