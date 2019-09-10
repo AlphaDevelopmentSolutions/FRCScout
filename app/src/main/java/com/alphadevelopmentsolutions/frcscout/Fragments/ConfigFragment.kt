@@ -139,10 +139,8 @@ class ConfigFragment : MasterFragment()
                             setPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, true)
                             setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, false)
 
-                            downloadApplicationData(false, false)?.join()
-
-                            changeFragment(EventListFragment.newInstance(Year((getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!, getDatabase())), false)
-                    }
+                            downloadApplicationData(false, false)
+                        }
                     
                     }
                 } else

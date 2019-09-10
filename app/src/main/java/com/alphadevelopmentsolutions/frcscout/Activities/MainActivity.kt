@@ -579,6 +579,9 @@ class MainActivity : AppCompatActivity(),
 
                     if(refreshActivity)
                         context!!.recreate()
+
+                    else
+                        changeFragment(EventListFragment.newInstance(Year((getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!, getDatabase())), false)
                 }
             })
 
