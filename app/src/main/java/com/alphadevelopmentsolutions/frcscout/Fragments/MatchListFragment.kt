@@ -44,13 +44,6 @@ class MatchListFragment : MasterFragment()
         return view
     }
 
-    override fun onPause()
-    {
-        super.onPause()
-//        context.isToolbarScrollable = false
-
-    }
-
     companion object
     {
 
