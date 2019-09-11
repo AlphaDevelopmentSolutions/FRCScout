@@ -37,6 +37,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import com.alphadevelopmentsolutions.frcscout.Api.Server
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
+import com.alphadevelopmentsolutions.frcscout.Classes.LoadingDialog
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Fragments.*
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
@@ -79,7 +80,7 @@ class MainActivity : AppCompatActivity(),
 
     private var isOnline: Boolean = false
 
-    private var progressDialog: ProgressDialog? = null
+    private lateinit var loadingDialog: LoadingDialog
 
     private var changeButton: Button? = null
 
@@ -235,13 +236,10 @@ class MainActivity : AppCompatActivity(),
         if (isOnline())
         {
             val increaseFactor = 8
-            progressDialog = ProgressDialog(this, R.style.CustomProgressDialog)
-            progressDialog!!.setTitle("Downloading data...")
-            progressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
-            progressDialog!!.max = 100
-            progressDialog!!.setCancelable(false)
-            progressDialog!!.setCanceledOnTouchOutside(false)
-            progressDialog!!.show()
+
+            loadingDialog = LoadingDialog(context!!, LoadingDialog.Style.PROGRESS)
+            loadingDialog.message = "Downloading data..."
+            loadingDialog.show()
 
             updateThread = Thread(Runnable {
 
@@ -250,8 +248,8 @@ class MainActivity : AppCompatActivity(),
                 progressDialogProgess = 0
 
                 context!!.runOnUiThread {
-                    progressDialog!!.setTitle("Downloading Users...")
-                    progressDialog!!.progress = progressDialogProgess
+                    loadingDialog.message = "Downloading Users..."
+                    loadingDialog.progress = progressDialogProgess
                 }
 
                 /**
@@ -284,8 +282,8 @@ class MainActivity : AppCompatActivity(),
                 }
 
                 context!!.runOnUiThread {
-                    progressDialog!!.setTitle("Downloading Years...")
-                    progressDialog!!.progress = progressDialogProgess
+                    loadingDialog.message = "Downloading Years..."
+                    loadingDialog.progress = progressDialogProgess
                 }
 
                 /**
@@ -309,8 +307,8 @@ class MainActivity : AppCompatActivity(),
 
                 progressDialogProgess += increaseFactor
                 context!!.runOnUiThread {
-                    progressDialog!!.setTitle("Downloading Users...")
-                    progressDialog!!.progress = progressDialogProgess
+                    loadingDialog.message = "Downloading Users..."
+                    loadingDialog.progress = progressDialogProgess
                 }
 
                 /**
@@ -333,8 +331,8 @@ class MainActivity : AppCompatActivity(),
 
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
-                        progressDialog!!.setTitle("Downloading Events...")
-                        progressDialog!!.progress = progressDialogProgess
+                        loadingDialog.message = "Downloading Events..."
+                        loadingDialog.progress = progressDialogProgess
                     }
 
                     //Update Events
@@ -349,8 +347,8 @@ class MainActivity : AppCompatActivity(),
 
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
-                        progressDialog!!.setTitle("Downloading Event Metadata...")
-                        progressDialog!!.progress = progressDialogProgess
+                        loadingDialog.message = "Downloading Event Metadata..."
+                        loadingDialog.progress = progressDialogProgess
                     }
 
                     //Update Event Team List
@@ -374,8 +372,8 @@ class MainActivity : AppCompatActivity(),
 
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
-                        progressDialog!!.setTitle("Downloading Matches...")
-                        progressDialog!!.progress = progressDialogProgess
+                        loadingDialog.message = "Downloading Matches..."
+                        loadingDialog.progress = progressDialogProgess
                     }
 
                     //Update Matches
@@ -398,8 +396,8 @@ class MainActivity : AppCompatActivity(),
                 {
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
-                        progressDialog!!.setTitle("Downloading Teams...")
-                        progressDialog!!.progress = progressDialogProgess
+                        loadingDialog.message = "Downloading Teams..."
+                        loadingDialog.progress = progressDialogProgess
                     }
 
                     //Update Teams
@@ -422,8 +420,8 @@ class MainActivity : AppCompatActivity(),
                 {
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
-                        progressDialog!!.setTitle("Downloading Checklist...")
-                        progressDialog!!.progress = progressDialogProgess
+                        loadingDialog.message = "Downloading Checklist..."
+                        loadingDialog.progress = progressDialogProgess
                     }
 
                     //Update Checklist Items
@@ -438,7 +436,7 @@ class MainActivity : AppCompatActivity(),
 
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
-                        progressDialog!!.progress = progressDialogProgess
+                        loadingDialog.progress = progressDialogProgess
                     }
 
                     //Update Checklist Items Results
@@ -461,8 +459,8 @@ class MainActivity : AppCompatActivity(),
                 {
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
-                        progressDialog!!.setTitle("Downloading Robot Info...")
-                        progressDialog!!.progress = progressDialogProgess
+                        loadingDialog.message = "Downloading Robot Info..."
+                        loadingDialog.progress = progressDialogProgess
                     }
 
                     //Update Robot Info Keys
@@ -477,7 +475,7 @@ class MainActivity : AppCompatActivity(),
 
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
-                        progressDialog!!.progress = progressDialogProgess
+                        loadingDialog.progress = progressDialogProgess
                     }
 
                     //Update Robot Info
@@ -500,8 +498,8 @@ class MainActivity : AppCompatActivity(),
                 {
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
-                        progressDialog!!.setTitle("Downloading Scout Cards...")
-                        progressDialog!!.progress = progressDialogProgess
+                        loadingDialog.message = "Downloading Scout Cards..."
+                        loadingDialog.progress = progressDialogProgess
                     }
 
                     //Update Scout Card Info Keys
@@ -516,7 +514,7 @@ class MainActivity : AppCompatActivity(),
 
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
-                        progressDialog!!.progress = progressDialogProgess
+                        loadingDialog.progress = progressDialogProgess
                     }
 
                     //Update Scout Card Info
@@ -539,8 +537,8 @@ class MainActivity : AppCompatActivity(),
                 {
                     progressDialogProgess += increaseFactor
                     context!!.runOnUiThread {
-                        progressDialog!!.setTitle("Downloading Robot Media...")
-                        progressDialog!!.progress = progressDialogProgess
+                        loadingDialog.message = "Downloading Robot Media..."
+                        loadingDialog.progress = progressDialogProgess
                     }
 
                     //Get the folder and purge all files
@@ -575,7 +573,7 @@ class MainActivity : AppCompatActivity(),
                     //set the year when showing the event list frag
                     setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, year.serverId!!)
 
-                    progressDialog!!.dismiss()
+                    loadingDialog!!.dismiss()
 
                     if(refreshActivity)
                         context!!.recreate()
@@ -599,14 +597,9 @@ class MainActivity : AppCompatActivity(),
      */
     private fun uploadApplicationData(withFilters: Boolean = false)
     {
-        progressDialog = ProgressDialog(context)
-        progressDialog!!.max = 100
-        progressDialog!!.progress = 0
-        progressDialog!!.setTitle("Uploading data...")
-        progressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
-        progressDialog!!.setCancelable(false)
-        progressDialog!!.setCanceledOnTouchOutside(false)
-        progressDialog!!.show()
+        loadingDialog = LoadingDialog(context!!, LoadingDialog.Style.PROGRESS)
+        loadingDialog.message = "Uploading data..."
+        loadingDialog.show()
 
         val increaseFactor = 25
 
@@ -614,8 +607,8 @@ class MainActivity : AppCompatActivity(),
             var success = true
 
             context!!.runOnUiThread {
-                progressDialog!!.setTitle("Uploading Checklists...")
-                progressDialog!!.progress = progressDialogProgess
+                loadingDialog.message = "Uploading Checklists..."
+                loadingDialog.progress = progressDialogProgess
             }
 
             /**
@@ -639,8 +632,8 @@ class MainActivity : AppCompatActivity(),
 
             progressDialogProgess += increaseFactor
             context!!.runOnUiThread {
-                progressDialog!!.setTitle("Uploading Robot Info...")
-                progressDialog!!.progress = progressDialogProgess
+                loadingDialog.message = "Uploading Robot Info..."
+                loadingDialog.progress = progressDialogProgess
             }
 
             /**
@@ -663,8 +656,8 @@ class MainActivity : AppCompatActivity(),
 
             progressDialogProgess += increaseFactor
             context!!.runOnUiThread {
-                progressDialog!!.setTitle("Uploading Scout Cards...")
-                progressDialog!!.progress = progressDialogProgess
+                loadingDialog.message = "Uploading Scout Cards..."
+                loadingDialog.progress = progressDialogProgess
             }
 
             /**
@@ -687,8 +680,8 @@ class MainActivity : AppCompatActivity(),
 
             progressDialogProgess += increaseFactor
             context!!.runOnUiThread {
-                progressDialog!!.setTitle("Uploading Robot Media...")
-                progressDialog!!.progress = progressDialogProgess
+                loadingDialog.message = "Uploading Robot Media..."
+                loadingDialog.progress = progressDialogProgess
             }
 
             /**
@@ -711,7 +704,7 @@ class MainActivity : AppCompatActivity(),
 
             val finalSuccess = success
             runOnUiThread {
-                progressDialog!!.hide()
+                loadingDialog.dismiss()
 
                 if (finalSuccess)
                     context!!.recreate()

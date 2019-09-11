@@ -1,7 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
 import android.Manifest
-import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -13,12 +12,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.alphadevelopmentsolutions.frcscout.Api.Server
 import com.alphadevelopmentsolutions.frcscout.Classes.LoadingDialog
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import kotlinx.android.synthetic.main.fragment_config.view.*
 import kotlinx.android.synthetic.main.layout_permission.view.*
-import java.util.*
 
 class ConfigFragment : MasterFragment()
 {
@@ -118,8 +115,8 @@ class ConfigFragment : MasterFragment()
         context.setPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, password)
         context.setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "TEMP")
 
-        val loadingDialog = LoadingDialog(context)
-        loadingDialog.messageText = "Logging in please wait..."
+        val loadingDialog = LoadingDialog(context, LoadingDialog.Style.SPINNER)
+        loadingDialog.message = "Logging in please wait..."
         loadingDialog.show()
 
         Thread(Runnable {

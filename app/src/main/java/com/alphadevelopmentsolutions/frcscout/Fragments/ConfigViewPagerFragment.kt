@@ -11,7 +11,7 @@ import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter
 import com.alphadevelopmentsolutions.frcscout.Classes.LoadingDialog
 import com.alphadevelopmentsolutions.frcscout.R
 import kotlinx.android.synthetic.main.fragment_config_view_pager.view.*
-import kotlinx.android.synthetic.main.layout_dialog_loading.view.*
+import kotlinx.android.synthetic.main.layout_dialog_loading_spinner.view.*
 
 class ConfigViewPagerFragment : MasterFragment()
 {

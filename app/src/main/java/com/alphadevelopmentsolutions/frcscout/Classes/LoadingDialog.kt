@@ -5,14 +5,16 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import com.alphadevelopmentsolutions.frcscout.R
-import kotlinx.android.synthetic.main.layout_dialog_loading.view.*
+import kotlinx.android.synthetic.main.layout_dialog_loading_progress.view.*
+import kotlinx.android.synthetic.main.layout_dialog_loading_spinner.view.*
+import kotlinx.android.synthetic.main.layout_dialog_loading_spinner.view.MessageTextView
 
-class LoadingDialog(context: Context) : AlertDialog.Builder(context)
+class LoadingDialog(context: Context, style: Style) : AlertDialog.Builder(context)
 {
-    private var view: View = LayoutInflater.from(context).inflate(R.layout.layout_dialog_loading, null)
+    private var view: View = LayoutInflater.from(context).inflate(if(style == Style.SPINNER) R.layout.layout_dialog_loading_spinner else R.layout.layout_dialog_loading_progress, null)
     private lateinit var alertDialog: AlertDialog
 
-    var messageText: String = context.getString(R.string.placeholder)
+    var message: String = context.getString(R.string.placeholder)
     set(value)
     {
         view.MessageTextView.text = value
@@ -20,8 +22,21 @@ class LoadingDialog(context: Context) : AlertDialog.Builder(context)
         field = value
     }
 
+    var progress: Int = 0
+    set(value)
+    {
+        view.ProgressBar.progress = value
+
+        field = value
+    }
+
     init
     {
+        if(style == Style.PROGRESS)
+        {
+            view.ProgressBar.max = 100
+        }
+
         setCancelable(false)
     }
 
@@ -37,5 +52,11 @@ class LoadingDialog(context: Context) : AlertDialog.Builder(context)
     fun dismiss()
     {
         alertDialog.dismiss()
+    }
+
+    enum class Style
+    {
+        SPINNER,
+        PROGRESS
     }
 }
