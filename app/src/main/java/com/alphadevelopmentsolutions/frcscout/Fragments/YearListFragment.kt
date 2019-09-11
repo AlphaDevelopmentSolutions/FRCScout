@@ -24,20 +24,20 @@ class YearListFragment : MasterFragment()
     {
         super.onCreate(savedInstanceState)
 
-        loadMatchesThread = Thread(Runnable {
+        loadYearsThread = Thread(Runnable {
             loadingThread.join()
 
             years = Year.getObjects(null, database)
             searchedYears = ArrayList(years)
         })
 
-        loadMatchesThread.start()
+        loadYearsThread.start()
     }
 
     private lateinit var years: ArrayList<Year>
     private lateinit var searchedYears: ArrayList<Year>
 
-    private lateinit var loadMatchesThread: Thread
+    private lateinit var loadYearsThread: Thread
 
     private var previousSearchLength: Int = 0
 
@@ -53,13 +53,13 @@ class YearListFragment : MasterFragment()
         context.lockDrawerLayout()
         context.isToolbarScrollable = true
 
-        loadingThread.join()
-
         //showing this view means the user has not selected an event or year, clear the shared pref
         context.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1)
         context.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) //default to current calendar year
 
         yearListRecyclerView = view.findViewById(R.id.YearListRecyclerView)
+
+        loadYearsThread.join()
 
         val yearListRecyclerViewAdapter = YearListRecyclerViewAdapter(searchedYears, context)
         yearListRecyclerView!!.adapter = yearListRecyclerViewAdapter

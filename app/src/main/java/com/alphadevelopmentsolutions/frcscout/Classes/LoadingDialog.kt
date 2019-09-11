@@ -1,15 +1,16 @@
 package com.alphadevelopmentsolutions.frcscout.Classes
 
 import android.app.AlertDialog
-import android.content.Context
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
+import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.R
 import kotlinx.android.synthetic.main.layout_dialog_loading_progress.view.*
 import kotlinx.android.synthetic.main.layout_dialog_loading_spinner.view.*
 import kotlinx.android.synthetic.main.layout_dialog_loading_spinner.view.MessageTextView
 
-class LoadingDialog(context: Context, style: Style) : AlertDialog.Builder(context)
+class LoadingDialog(context: MainActivity, style: Style) : AlertDialog.Builder(context)
 {
     private var view: View = LayoutInflater.from(context).inflate(if(style == Style.SPINNER) R.layout.layout_dialog_loading_spinner else R.layout.layout_dialog_loading_progress, null)
     private lateinit var alertDialog: AlertDialog
@@ -35,7 +36,11 @@ class LoadingDialog(context: Context, style: Style) : AlertDialog.Builder(contex
         if(style == Style.PROGRESS)
         {
             view.ProgressBar.max = 100
+            view.ProgressBar.progressDrawable.setColorFilter(context.primaryColor, PorterDuff.Mode.SRC_IN)
         }
+        else
+            view.Spinner.indeterminateDrawable.setColorFilter(context.primaryColor, PorterDuff.Mode.SRC_IN)
+
 
         setCancelable(false)
     }
