@@ -151,4 +151,6 @@
     <string name="robot_media">Robot Media</string>
     <string name="upload">Upload</string>
     <string name="stats">Stats</string>
+    <string name="info">Info</string>
+    <string name="media">Media</string>
 </resources>

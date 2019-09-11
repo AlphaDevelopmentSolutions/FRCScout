@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.R
@@ -102,13 +103,27 @@ class TeamFragment : MasterFragment()
             val teamViewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
 
             teamViewPagerAdapter.addFragment(MatchListFragment.newInstance(team!!), getString(R.string.matches))
-            teamViewPagerAdapter.addFragment(RobotInfoFragment.newInstance(team!!), getString(R.string.robot_info))
-            teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(team!!), getString(R.string.robot_media))
+            teamViewPagerAdapter.addFragment(RobotInfoFragment.newInstance(team!!), getString(R.string.info))
+            teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(team!!), getString(R.string.media))
             teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(team!!), getString(R.string.stats))
 
             TeamViewPager.adapter = teamViewPagerAdapter
             TeamViewPager.offscreenPageLimit = 5
             TeamTabLayout.setupWithViewPager(TeamViewPager)
+
+            val child = TeamTabLayout.getChildAt(0) as ViewGroup
+
+            for(i in 0 until child.childCount)
+            {
+                with(child.getChildAt(i))
+                {
+                    layoutParams = (layoutParams as LinearLayout.LayoutParams).apply {
+                        weight = 1f
+                        width = LinearLayout.LayoutParams.MATCH_PARENT
+                    }
+                }
+            }
+
 
             TeamViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener
             {
