@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
 import android.Manifest
+import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -11,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.alphadevelopmentsolutions.frcscout.Api.Server
+import com.alphadevelopmentsolutions.frcscout.Classes.LoadingDialog
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
@@ -105,11 +107,20 @@ class ConfigFragment : MasterFragment()
         return view
     }
 
+    /**
+     * Attempts to log into the web server
+     * @param username [String] username to send to the web server
+     * @param password [String] password to send to the web server
+     */
     private fun login(username: String, password: String)
     {
         context.setPreference(Constants.SharedPrefKeys.API_CORE_USERNAME, username)
         context.setPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, password)
         context.setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "TEMP")
+
+        val loadingDialog = LoadingDialog(context)
+        loadingDialog.messageText = "Logging in please wait..."
+        loadingDialog.show()
 
         Thread(Runnable {
             //validate connection
@@ -139,19 +150,35 @@ class ConfigFragment : MasterFragment()
                             setPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, true)
                             setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, false)
 
+                            loadingDialog.dismiss()
+
                             downloadApplicationData(false, false)
                         }
                     
                     }
                 } else
                 {
-                    context.clearApiConfig()
-                    context.showSnackbar(getString(R.string.invalid_url))
+                    with(context)
+                    {
+                        runOnUiThread {
+                            loadingDialog.dismiss()
+                        }
+
+                        clearApiConfig()
+                        showSnackbar(getString(R.string.invalid_url))
+                    }
                 }//invalid config
             } else
             {
-                context.clearApiConfig()
-                context.showSnackbar(getString(R.string.invalid_url))
+                with(context)
+                {
+                    runOnUiThread {
+                        loadingDialog.dismiss()
+                    }
+
+                    clearApiConfig()
+                    showSnackbar(getString(R.string.invalid_url))
+                }
             }//invalid connection
         }).start()
     }

@@ -1,13 +1,17 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
+import android.app.AlertDialog
+
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter
+import com.alphadevelopmentsolutions.frcscout.Classes.LoadingDialog
 import com.alphadevelopmentsolutions.frcscout.R
 import kotlinx.android.synthetic.main.fragment_config_view_pager.view.*
+import kotlinx.android.synthetic.main.layout_dialog_loading.view.*
 
 class ConfigViewPagerFragment : MasterFragment()
 {
@@ -22,6 +26,7 @@ class ConfigViewPagerFragment : MasterFragment()
         //hide the actionbar while connecting
         context.supportActionBar!!.hide()
         context.lockDrawerLayout()
+        context.isToolbarScrollable = false
 
         val view = inflater.inflate(R.layout.fragment_config_view_pager, container, false)
 

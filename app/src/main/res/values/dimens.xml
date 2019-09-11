@@ -24,4 +24,5 @@
     <dimen name="nav_header_height">120dp</dimen>
     <dimen name="text_header">30sp</dimen>
     <dimen name="text_header_support">22sp</dimen>
+    <dimen name="basic_dialog_height">100dp</dimen>
 </resources>

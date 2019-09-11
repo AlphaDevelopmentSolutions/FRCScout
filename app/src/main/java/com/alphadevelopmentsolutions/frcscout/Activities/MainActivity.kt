@@ -41,13 +41,13 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Fragments.*
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
-import kotlinx.android.synthetic.main.layout_download.view.*
-import kotlinx.android.synthetic.main.layout_download.view.CancelButton
-import kotlinx.android.synthetic.main.layout_download.view.ChecklistCheckBox
-import kotlinx.android.synthetic.main.layout_download.view.RobotInfoCheckBox
-import kotlinx.android.synthetic.main.layout_download.view.RobotMediaCheckBox
-import kotlinx.android.synthetic.main.layout_download.view.ScoutCardInfoCheckBox
-import kotlinx.android.synthetic.main.layout_upload.view.*
+import kotlinx.android.synthetic.main.layout_dialog_download.view.*
+import kotlinx.android.synthetic.main.layout_dialog_download.view.CancelButton
+import kotlinx.android.synthetic.main.layout_dialog_download.view.ChecklistCheckBox
+import kotlinx.android.synthetic.main.layout_dialog_download.view.RobotInfoCheckBox
+import kotlinx.android.synthetic.main.layout_dialog_download.view.RobotMediaCheckBox
+import kotlinx.android.synthetic.main.layout_dialog_download.view.ScoutCardInfoCheckBox
+import kotlinx.android.synthetic.main.layout_dialog_upload.view.*
 import java.io.File
 import java.util.*
 
@@ -812,7 +812,7 @@ class MainActivity : AppCompatActivity(),
                     val uploadAppDataAlertDialogBuilder = AlertDialog.Builder(context!!)
                     var uploadAppDataDialog: AlertDialog? = null
 
-                    val layout = LayoutInflater.from(context!!).inflate(R.layout.layout_upload, null)
+                    val layout = LayoutInflater.from(context!!).inflate(R.layout.layout_dialog_upload, null)
 
                     with(layout)
                     {
@@ -866,7 +866,7 @@ class MainActivity : AppCompatActivity(),
                 val downloadAppDataDialogBuilder = AlertDialog.Builder(context!!)
                 var downloadAppDataDialog: AlertDialog? = null
 
-                val layout = LayoutInflater.from(context!!).inflate(R.layout.layout_download, null)
+                val layout = LayoutInflater.from(context!!).inflate(R.layout.layout_dialog_download, null)
 
                 with(layout)
                 {
