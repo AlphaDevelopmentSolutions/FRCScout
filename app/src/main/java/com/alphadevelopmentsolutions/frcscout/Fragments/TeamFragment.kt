@@ -8,18 +8,44 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter
+import com.alphadevelopmentsolutions.frcscout.Adapters.MatchListRecyclerViewAdapter
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_team.view.*
 import java.io.File
+import java.util.ArrayList
 
 class TeamFragment : MasterFragment()
 {
+
     override fun onBackPressed(): Boolean
     {
         return false
     }
+
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
+        super.onCreate(savedInstanceState)
+
+        loadFragmentsThread = Thread(Runnable {
+            loadingThread.join()
+
+            teamViewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
+            teamViewPagerAdapter.addFragment(MatchListFragment.newInstance(team!!), getString(R.string.matches))
+            teamViewPagerAdapter.addFragment(RobotInfoFragment.newInstance(team!!), getString(R.string.info))
+            teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(team!!), getString(R.string.media))
+            teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(team!!), getString(R.string.stats))
+
+        })
+
+        loadFragmentsThread.start()
+    }
+
+    private lateinit var teamViewPagerAdapter: FragmentViewPagerAdapter
+
+    private lateinit var loadFragmentsThread: Thread
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
@@ -47,14 +73,13 @@ class TeamFragment : MasterFragment()
                 AddRobotPhotoFloatingActionButton.colorPressed = primaryColorDark
             }
         }
-            
 
-        loadingThread.join()
+        loadFragmentsThread.join()
 
         view.AddRobotPhotoFloatingActionButton.setOnClickListener { context.changeFragment(RobotMediaFragment.newInstance(null, team!!), true) }
 
         //update the app bar title to the team name
-        context.setToolbarTitle(team!!.id.toString() + " - " + team!!.name)
+        context.setToolbarTitle(team!!.toString())
 
         with(view)
         {
@@ -101,13 +126,6 @@ class TeamFragment : MasterFragment()
 
             TeamNumberNameTextView.text = "${team!!.id.toString()} - ${team!!.name}"
             TeamLocationTextView.text = "${team!!.city}, ${team!!.stateProvince}, ${team!!.country}"
-
-            val teamViewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
-
-            teamViewPagerAdapter.addFragment(MatchListFragment.newInstance(team!!), getString(R.string.matches))
-            teamViewPagerAdapter.addFragment(RobotInfoFragment.newInstance(team!!), getString(R.string.info))
-            teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(team!!), getString(R.string.media))
-            teamViewPagerAdapter.addFragment(QuickStatsFragment.newInstance(team!!), getString(R.string.stats))
 
             TeamViewPager.adapter = teamViewPagerAdapter
             TeamViewPager.offscreenPageLimit = 5

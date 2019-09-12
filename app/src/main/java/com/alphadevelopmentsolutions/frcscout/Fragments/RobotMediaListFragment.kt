@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.alphadevelopmentsolutions.frcscout.Adapters.RobotMediaListRecyclerViewAdapter
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.R
+import kotlinx.android.synthetic.main.fragment_robot_media_list.view.*
 
 class RobotMediaListFragment : MasterFragment()
 {
@@ -16,8 +17,24 @@ class RobotMediaListFragment : MasterFragment()
     {
         return false
     }
-    
-    private var robotMediaRecyclerView: RecyclerView? = null
+
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
+        super.onCreate(savedInstanceState)
+
+        loadMediaThread = Thread(Runnable {
+            loadingThread.join()
+
+            robotMediaListRecyclerViewAdapter = RobotMediaListRecyclerViewAdapter(team!!, team!!.getRobotMedia(null, false, database)!!, context)
+
+        })
+
+        loadMediaThread.start()
+    }
+
+    private lateinit var loadMediaThread: Thread
+
+    private lateinit var robotMediaListRecyclerViewAdapter: RobotMediaListRecyclerViewAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
@@ -25,16 +42,13 @@ class RobotMediaListFragment : MasterFragment()
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_robot_media_list, container, false)
 
-        robotMediaRecyclerView = view.findViewById(R.id.RobotMediaRecyclerView)
-
         Thread(Runnable {
-            loadingThread.join()
+            loadMediaThread.join()
 
-            val robotMediaListRecyclerViewAdapter = RobotMediaListRecyclerViewAdapter(team!!, team!!.getRobotMedia(null, false, database)!!, context)
 
             context.runOnUiThread {
-                robotMediaRecyclerView!!.layoutManager = LinearLayoutManager(activity)
-                robotMediaRecyclerView!!.adapter = robotMediaListRecyclerViewAdapter
+                view.RobotMediaRecyclerView.layoutManager = LinearLayoutManager(activity)
+                view.RobotMediaRecyclerView.adapter = robotMediaListRecyclerViewAdapter
             }
         }).start()
 
