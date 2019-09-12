@@ -79,7 +79,7 @@ internal class YearListRecyclerViewAdapter(private val yearList: ArrayList<Year>
 
         //Sends you to the event list fragment
         viewHolder.viewButton.setOnClickListener {
-            context.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, yearList[viewHolder.adapterPosition].serverId!!)
+            context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, yearList[viewHolder.adapterPosition].serverId!!)
             context.changeFragment(EventListFragment.newInstance(yearList[viewHolder.adapterPosition]), false)
         }
 

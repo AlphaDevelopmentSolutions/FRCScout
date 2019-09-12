@@ -36,13 +36,13 @@ internal class MatchListRecyclerViewAdapter(event: Event, private val team: Team
         //load all scout cards for specific team from specific match
         if (fragmentOnClick == ScoutCardFragment::class.java)
         {
-            context.getDatabase().beginTransaction()
+            context.database.beginTransaction()
             //load all the scout cards for a match
             for (match in matches)
             //get the scout card from the match
-                scoutCards[match] = ScoutCardInfo.getObjects(event, match, team, null, null, false, context.getDatabase())
+                scoutCards[match] = ScoutCardInfo.getObjects(event, match, team, null, null, false, context.database)
 
-            context.getDatabase().finishTransaction()
+            context.database.finishTransaction()
         }
     }
 
@@ -125,32 +125,32 @@ internal class MatchListRecyclerViewAdapter(event: Event, private val team: Team
         //clicking their number will bring you to their team page
         if (team == null || team.id != Integer.parseInt(viewHolder.blueAllianceTeamOneIdTextView.text.toString()))
         {
-            (viewHolder.blueAllianceTeamOneIdTextView.parent as TableRow).setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(Integer.valueOf(viewHolder.blueAllianceTeamOneIdTextView.text.toString()), context.getDatabase())), true) }
+            (viewHolder.blueAllianceTeamOneIdTextView.parent as TableRow).setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(Integer.valueOf(viewHolder.blueAllianceTeamOneIdTextView.text.toString()), context.database)), true) }
         }
 
         if (team == null || team.id != Integer.parseInt(viewHolder.blueAllianceTeamTwoIdTextView.text.toString()))
         {
-            (viewHolder.blueAllianceTeamTwoIdTextView.parent as TableRow).setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(Integer.valueOf(viewHolder.blueAllianceTeamTwoIdTextView.text.toString()), context.getDatabase())), true) }
+            (viewHolder.blueAllianceTeamTwoIdTextView.parent as TableRow).setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(Integer.valueOf(viewHolder.blueAllianceTeamTwoIdTextView.text.toString()), context.database)), true) }
         }
 
         if (team == null || team.id != Integer.parseInt(viewHolder.blueAllianceTeamThreeIdTextView.text.toString()))
         {
-            (viewHolder.blueAllianceTeamThreeIdTextView.parent as TableRow).setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(Integer.valueOf(viewHolder.blueAllianceTeamThreeIdTextView.text.toString()), context.getDatabase())), true) }
+            (viewHolder.blueAllianceTeamThreeIdTextView.parent as TableRow).setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(Integer.valueOf(viewHolder.blueAllianceTeamThreeIdTextView.text.toString()), context.database)), true) }
         }
 
         if (team == null || team.id != Integer.parseInt(viewHolder.redAllianceTeamOneIdTextView.text.toString()))
         {
-            (viewHolder.redAllianceTeamOneIdTextView.parent as TableRow).setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(Integer.valueOf(viewHolder.redAllianceTeamOneIdTextView.text.toString()), context.getDatabase())), true) }
+            (viewHolder.redAllianceTeamOneIdTextView.parent as TableRow).setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(Integer.valueOf(viewHolder.redAllianceTeamOneIdTextView.text.toString()), context.database)), true) }
         }
 
         if (team == null || team.id != Integer.parseInt(viewHolder.redAllianceTeamTwoIdTextView.text.toString()))
         {
-            (viewHolder.redAllianceTeamTwoIdTextView.parent as TableRow).setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(Integer.valueOf(viewHolder.redAllianceTeamTwoIdTextView.text.toString()), context.getDatabase())), true) }
+            (viewHolder.redAllianceTeamTwoIdTextView.parent as TableRow).setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(Integer.valueOf(viewHolder.redAllianceTeamTwoIdTextView.text.toString()), context.database)), true) }
         }
 
         if (team == null || team.id != Integer.parseInt(viewHolder.redAllianceTeamThreeIdTextView.text.toString()))
         {
-            (viewHolder.redAllianceTeamThreeIdTextView.parent as TableRow).setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(Integer.valueOf(viewHolder.redAllianceTeamThreeIdTextView.text.toString()), context.getDatabase())), true) }
+            (viewHolder.redAllianceTeamThreeIdTextView.parent as TableRow).setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(Integer.valueOf(viewHolder.redAllianceTeamThreeIdTextView.text.toString()), context.database)), true) }
         }
 
         //set score

@@ -2,22 +2,17 @@ package com.alphadevelopmentsolutions.frcscout.Activities
 
 import android.Manifest
 import android.app.Activity
-import android.app.ProgressDialog
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
-import android.support.constraint.ConstraintLayout
 import android.support.design.button.MaterialButton
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v4.view.GravityCompat
@@ -26,22 +21,22 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
-import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.TextView
 import com.alphadevelopmentsolutions.frcscout.Api.Server
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
+import com.alphadevelopmentsolutions.frcscout.Classes.KeyStore
 import com.alphadevelopmentsolutions.frcscout.Classes.LoadingDialog
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Fragments.*
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.layout_dialog_download.view.*
 import kotlinx.android.synthetic.main.layout_dialog_download.view.CancelButton
 import kotlinx.android.synthetic.main.layout_dialog_download.view.ChecklistCheckBox
@@ -49,6 +44,7 @@ import kotlinx.android.synthetic.main.layout_dialog_download.view.RobotInfoCheck
 import kotlinx.android.synthetic.main.layout_dialog_download.view.RobotMediaCheckBox
 import kotlinx.android.synthetic.main.layout_dialog_download.view.ScoutCardInfoCheckBox
 import kotlinx.android.synthetic.main.layout_dialog_upload.view.*
+import kotlinx.android.synthetic.main.nav_header_main.view.*
 import java.io.File
 import java.util.*
 
@@ -56,35 +52,48 @@ class MainActivity : AppCompatActivity(),
         NavigationView.OnNavigationItemSelectedListener,
         MasterFragment.OnFragmentInteractionListener
 {
-    private var context: MainActivity? = null
+    private lateinit var context: MainActivity
+    var database: Database = Database(this)
+    get()
+    {
+        if (!field.isOpen)
+            field.open()
 
-    private var database: Database? = null
+        return field
+    }
 
-    private var sharedPreferences: SharedPreferences? = null
-    private var sharedPreferencesEditor: SharedPreferences.Editor? = null
+    lateinit var keyStore: KeyStore
 
-    private var mainFrame: FrameLayout? = null
-    private var toolbar: Toolbar? = null
-    private var actionBarToggle: ActionBarDrawerToggle? = null
-    private var drawer: DrawerLayout? = null
-    private var navigationView: NavigationView? = null
-    private var appBarLayout: AppBarLayout? = null
-    private var teamNumberTextView: TextView? = null
-    private var teamNameTextView: TextView? = null
-    private var headerConstraintLayout: ConstraintLayout? = null
+    private lateinit var actionBarToggle: ActionBarDrawerToggle
 
-    private var updateThread: Thread? = null
-
-    private val ACTION_BAR_ELEVATION = 11
-    private var progressDialogProgess: Int = 0
-
-    private var isOnline: Boolean = false
+    private lateinit var navHeader: View
 
     private lateinit var loadingDialog: LoadingDialog
 
-    private var changeButton: Button? = null
-
     private var searchView: SearchView? = null
+
+    private val ACTION_BAR_ELEVATION = 11f
+    private var progressDialogProgress: Int = 0
+    var isOnline: Boolean = false
+    get()
+    {
+        field = false
+
+        with(
+            Thread(Runnable {
+                val hello = Server.Hello(context)
+
+                if (hello.execute())
+                    field = true
+            })
+        )
+        {
+            start()
+            join()
+        }
+
+        return field
+    }
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -92,133 +101,65 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //assign as base layout vars
-        mainFrame = findViewById(R.id.MainFrame)
-        appBarLayout = findViewById(R.id.AppBarLayout)
-        toolbar = findViewById(R.id.toolbar)
-        drawer = findViewById(R.id.drawer_layout)
-        navigationView = findViewById(R.id.nav_view)
-
-        //set context
         context = this
+        keyStore = KeyStore(context)
+        database = Database(context)
 
-        //set the action bar
-        setSupportActionBar(toolbar)
-
-        changeButton = findViewById(R.id.ChangeButton)
-        val navHeader = navigationView!!.getHeaderView(0)
-        actionBarToggle = ActionBarDrawerToggle(context, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-
-        teamNumberTextView = navHeader.findViewById(R.id.TeamNumberTextView)
-        teamNameTextView = navHeader.findViewById(R.id.TeamNameTextView)
-        headerConstraintLayout = navHeader.findViewById(R.id.HeaderConstraintLayout)
-
-        updateAppColors()
-
-        //open the database as soon as the app starts
-        database = Database(context!!)
-        database!!.open()
-
-        //add the listener for the drawer
-        drawer!!.addDrawerListener(actionBarToggle!!)
-        actionBarToggle!!.syncState()
-
-        //set the item selected listener
-        navigationView!!.setNavigationItemSelectedListener(this)
-
-        //updates the nav text to the current team saved in shared pref
-        updateNavText()
-
-        changeButton!!.setOnClickListener{
+        ChangeButton.setOnClickListener{
             clearApiConfig()
             changeFragment(ConfigViewPagerFragment.newInstance(), false)
         }
 
-        loadView(savedInstanceState)//permission granted, continue
+        database.open()
+
+        setSupportActionBar(MainToolbar)
+
+        navHeader = NavigationView.getHeaderView(0)
+        actionBarToggle = ActionBarDrawerToggle(context, MainDrawerLayout, MainToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        MainDrawerLayout.addDrawerListener(actionBarToggle)
+        actionBarToggle.syncState()
+
+        NavigationView.setNavigationItemSelectedListener(this)
+
+        //Update app colors
+        updateAppColors()
+
+        //Update nav text
+        updateNavText()
+
+        //Load the view for the fragments
+        loadView(savedInstanceState)
 
     }
 
     //region Data Management Methods
 
     /**
-     * Returns the active database
-     * @return database instance
-     */
-    fun getDatabase(): Database
-    {
-        if (database == null)
-            database = Database(this)
-
-        if (!database!!.isOpen)
-            database!!.open()
-
-        return database!!
-    }
-
-
-    /**
-     * Sets or adds a preference into the shared preferences
-     * @param key sharedpref key
-     * @param value sharedpref value
-     */
-    fun setPreference(key: String, value: Any)
-    {
-        sharedPreferencesEditor = sharedPreferences!!.edit()
-
-        if (value is String)
-            sharedPreferencesEditor!!.putString(key, value)
-        else if (value is Int)
-            sharedPreferencesEditor!!.putInt(key, value)
-        else if (value is Boolean)
-            sharedPreferencesEditor!!.putBoolean(key, value)
-        else if (value is Long)
-            sharedPreferencesEditor!!.putLong(key, value)
-        else if (value is Float)
-            sharedPreferencesEditor!!.putFloat(key, value)
-
-        sharedPreferencesEditor!!.apply()
-    }
-
-    /**
-     * Sets or adds a preference into the shared preferences
-     * @param key sharedpref key
-     * @param defaultValue sharedpref defaultVal
-     */
-    fun getPreference(key: String, defaultValue: Any): Any?
-    {
-        if (sharedPreferences == null)
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-
-        return when (defaultValue)
-        {
-            is String -> sharedPreferences!!.getString(key, defaultValue)
-            is Int -> sharedPreferences!!.getInt(key, defaultValue)
-            is Boolean -> sharedPreferences!!.getBoolean(key, defaultValue)
-            is Long -> sharedPreferences!!.getLong(key, defaultValue)
-            is Float -> sharedPreferences!!.getFloat(key, defaultValue)
-            else -> null
-        }
-    }
-
-    /**
      * Clears all api configs from the phone
      */
     fun clearApiConfig()
     {
-        setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")
-        setPreference(Constants.SharedPrefKeys.API_CORE_USERNAME, "")
-        setPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, "")
+        with(Constants.SharedPrefKeys)
+        {
+            keyStore.setPreference(API_KEY_KEY, "")
+            keyStore.setPreference(API_CORE_USERNAME, "")
+            keyStore.setPreference(API_CORE_PASSWORD, "")
+        }
+        
     }
 
     /**
      * Check all the shared pref settings to validate the app is setup with the required info
      * @return boolean if config is valid
      */
-    private fun validateConfig(): Boolean
+    private fun validateApiConfig(): Boolean
     {
-        return getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "") != "" &&
-                getPreference(Constants.SharedPrefKeys.API_CORE_USERNAME, "") != "" &&
-                getPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, "") != ""
+        return with(Constants.SharedPrefKeys)
+        {
+            keyStore.getPreference(API_KEY_KEY, "") != "" &&
+            keyStore.getPreference(API_CORE_USERNAME, "") != "" &&
+            keyStore.getPreference(API_CORE_PASSWORD, "") != ""
+        }
     }
 
     //endregion
@@ -229,39 +170,39 @@ class MainActivity : AppCompatActivity(),
      * Downloads app data from the server
      * @param withFilters [Boolean] whether or not the app should apply download filters
      * @param refreshActivity [Boolean] whether or not the app recreate the activity on download complete
+     * @return [Thread] download thread
      */
     fun downloadApplicationData(withFilters: Boolean = true, refreshActivity: Boolean = true): Thread?
     {
-        //update app data
-        if (isOnline())
+        if (isOnline)
         {
             val increaseFactor = 8
 
-            loadingDialog = LoadingDialog(context!!, LoadingDialog.Style.PROGRESS)
+            loadingDialog = LoadingDialog(context, LoadingDialog.Style.PROGRESS)
             loadingDialog.message = "Downloading data..."
             loadingDialog.show()
 
-            updateThread = Thread(Runnable {
+            val updateThread = Thread(Runnable {
 
-                getDatabase().beginTransaction()
+                database.beginTransaction()
 
-                progressDialogProgess = 0
+                progressDialogProgress = 0
 
-                context!!.runOnUiThread {
+                context.runOnUiThread {
                     loadingDialog.message = "Downloading Users..."
-                    loadingDialog.progress = progressDialogProgess
+                    loadingDialog.progress = progressDialogProgress
                 }
 
                 /**
                  * SERVER CONFIG
                  */
                 //Update Server Config
-                val getServerConfig = Server.GetServerConfig(context!!)
+                val getServerConfig = Server.GetServerConfig(context)
                 if(getServerConfig.execute())
                 {
                     runOnUiThread{
 
-                        var color = getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, "")
+                        var color = keyStore.getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, "")
 
                         primaryColor =
                             if(color != "")
@@ -269,7 +210,7 @@ class MainActivity : AppCompatActivity(),
                             else
                                 ResourcesCompat.getColor(resources, R.color.primary, null)
 
-                        color = getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_DARK_KEY, "")
+                        color = keyStore.getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_DARK_KEY, "")
 
                         primaryColorDark =
                                 if(color != "")
@@ -281,9 +222,9 @@ class MainActivity : AppCompatActivity(),
                     }
                 }
 
-                context!!.runOnUiThread {
+                context.runOnUiThread {
                     loadingDialog.message = "Downloading Years..."
-                    loadingDialog.progress = progressDialogProgess
+                    loadingDialog.progress = progressDialogProgress
                 }
 
                 /**
@@ -296,249 +237,249 @@ class MainActivity : AppCompatActivity(),
                         child.delete()
 
                 //Update Years
-                val getYears = Server.GetYears(context!!)
+                val getYears = Server.GetYears(context)
                 if (getYears.execute())
                 {
-                    Year.clearTable(getDatabase())
+                    Year.clearTable(database)
 
                     for (year in getYears.years)
-                        year.save(getDatabase())
+                        year.save(database)
                 }
 
-                progressDialogProgess += increaseFactor
-                context!!.runOnUiThread {
+                progressDialogProgress += increaseFactor
+                context.runOnUiThread {
                     loadingDialog.message = "Downloading Users..."
-                    loadingDialog.progress = progressDialogProgess
+                    loadingDialog.progress = progressDialogProgress
                 }
 
                 /**
                  * USERS
                  */
-                val getUsers = Server.GetUsers(context!!)
+                val getUsers = Server.GetUsers(context)
                 if (getUsers.execute())
                 {
-                    User.clearTable(getDatabase())
+                    User.clearTable(database)
 
                     for (user in getUsers.users)
-                        user.save(getDatabase())
+                        user.save(database)
                 }
 
                 /**
                  * EVENTS
                  */
-                if(!withFilters || (getPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, false) as Boolean && withFilters))
+                if(!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, false) as Boolean && withFilters))
                 {
 
-                    progressDialogProgess += increaseFactor
-                    context!!.runOnUiThread {
+                    progressDialogProgress += increaseFactor
+                    context.runOnUiThread {
                         loadingDialog.message = "Downloading Events..."
-                        loadingDialog.progress = progressDialogProgess
+                        loadingDialog.progress = progressDialogProgress
                     }
 
                     //Update Events
-                    val getEvents = Server.GetEvents(context!!)
+                    val getEvents = Server.GetEvents(context)
                     if (getEvents.execute())
                     {
-                        Event.clearTable(getDatabase())
+                        Event.clearTable(database)
 
                         for (event in getEvents.events)
-                            event.save(getDatabase())
+                            event.save(database)
                     }
 
-                    progressDialogProgess += increaseFactor
-                    context!!.runOnUiThread {
+                    progressDialogProgress += increaseFactor
+                    context.runOnUiThread {
                         loadingDialog.message = "Downloading Event Metadata..."
-                        loadingDialog.progress = progressDialogProgess
+                        loadingDialog.progress = progressDialogProgress
                     }
 
                     //Update Event Team List
-                    val getEventTeamList = Server.GetEventTeamList(context!!)
+                    val getEventTeamList = Server.GetEventTeamList(context)
                     if (getEventTeamList.execute())
                     {
-                        EventTeamList.clearTable(getDatabase())
+                        EventTeamList.clearTable(database)
 
                         for (eventTeamListItem in getEventTeamList.eventTeamList)
-                            eventTeamListItem.save(getDatabase())
+                            eventTeamListItem.save(database)
                     }
                 }
                 else
-                    progressDialogProgess += increaseFactor * 2
+                    progressDialogProgress += increaseFactor * 2
 
                 /**
                  * MATCHES
                  */
-                if(!withFilters || (getPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, false) as Boolean && withFilters))
+                if(!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, false) as Boolean && withFilters))
                 {
 
-                    progressDialogProgess += increaseFactor
-                    context!!.runOnUiThread {
+                    progressDialogProgress += increaseFactor
+                    context.runOnUiThread {
                         loadingDialog.message = "Downloading Matches..."
-                        loadingDialog.progress = progressDialogProgess
+                        loadingDialog.progress = progressDialogProgress
                     }
 
                     //Update Matches
-                    val getMatches = Server.GetMatches(context!!)
+                    val getMatches = Server.GetMatches(context)
                     if (getMatches.execute())
                     {
-                        Match.clearTable(getDatabase())
+                        Match.clearTable(database)
 
                         for (match in getMatches.matches)
-                            match.save(getDatabase())
+                            match.save(database)
                     }
                 }
                 else
-                    progressDialogProgess += increaseFactor
+                    progressDialogProgress += increaseFactor
 
                 /**
                  * TEAMS
                  */
-                if(!withFilters || (getPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, false) as Boolean && withFilters))
+                if(!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, false) as Boolean && withFilters))
                 {
-                    progressDialogProgess += increaseFactor
-                    context!!.runOnUiThread {
+                    progressDialogProgress += increaseFactor
+                    context.runOnUiThread {
                         loadingDialog.message = "Downloading Teams..."
-                        loadingDialog.progress = progressDialogProgess
+                        loadingDialog.progress = progressDialogProgress
                     }
 
                     //Update Teams
-                    val getTeams = Server.GetTeams(context!!)
+                    val getTeams = Server.GetTeams(context)
                     if (getTeams.execute())
                     {
-                        Team.clearTable(getDatabase())
+                        Team.clearTable(database)
 
                         for (team in getTeams.teams)
-                            team.save(getDatabase())
+                            team.save(database)
                     }
                 }
                 else
-                    progressDialogProgess += increaseFactor
+                    progressDialogProgress += increaseFactor
 
                 /**
                  * CHECKLISTS
                  */
-                if(!withFilters || (getPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, false) as Boolean && withFilters))
+                if(!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, false) as Boolean && withFilters))
                 {
-                    progressDialogProgess += increaseFactor
-                    context!!.runOnUiThread {
+                    progressDialogProgress += increaseFactor
+                    context.runOnUiThread {
                         loadingDialog.message = "Downloading Checklist..."
-                        loadingDialog.progress = progressDialogProgess
+                        loadingDialog.progress = progressDialogProgress
                     }
 
                     //Update Checklist Items
-                    val getChecklistItems = Server.GetChecklistItems(context!!)
+                    val getChecklistItems = Server.GetChecklistItems(context)
                     if (getChecklistItems.execute())
                     {
-                        ChecklistItem.clearTable(getDatabase())
+                        ChecklistItem.clearTable(database)
 
                         for (checklistItem in getChecklistItems.checklistItems)
-                            checklistItem.save(getDatabase())
+                            checklistItem.save(database)
                     }
 
-                    progressDialogProgess += increaseFactor
-                    context!!.runOnUiThread {
-                        loadingDialog.progress = progressDialogProgess
+                    progressDialogProgress += increaseFactor
+                    context.runOnUiThread {
+                        loadingDialog.progress = progressDialogProgress
                     }
 
                     //Update Checklist Items Results
-                    val getChecklistItemResults = Server.GetChecklistItemResults(context!!)
+                    val getChecklistItemResults = Server.GetChecklistItemResults(context)
                     if (getChecklistItemResults.execute())
                     {
-                        ChecklistItemResult.clearTable(getDatabase())
+                        ChecklistItemResult.clearTable(database)
 
                         for (checklistItemResult in getChecklistItemResults.checklistItemResults)
-                            checklistItemResult.save(getDatabase())
+                            checklistItemResult.save(database)
                     }
                 }
                 else
-                    progressDialogProgess += increaseFactor * 2
+                    progressDialogProgress += increaseFactor * 2
 
                 /**
                  * ROBOT INFO
                  */
-                if(!withFilters || (getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, false) as Boolean && withFilters))
+                if(!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, false) as Boolean && withFilters))
                 {
-                    progressDialogProgess += increaseFactor
-                    context!!.runOnUiThread {
+                    progressDialogProgress += increaseFactor
+                    context.runOnUiThread {
                         loadingDialog.message = "Downloading Robot Info..."
-                        loadingDialog.progress = progressDialogProgess
+                        loadingDialog.progress = progressDialogProgress
                     }
 
                     //Update Robot Info Keys
-                    val getRobotInfoKeys = Server.GetRobotInfoKeys(context!!)
+                    val getRobotInfoKeys = Server.GetRobotInfoKeys(context)
                     if (getRobotInfoKeys.execute())
                     {
-                        RobotInfoKey.clearTable(getDatabase())
+                        RobotInfoKey.clearTable(database)
 
                         for (robotInfoKey in getRobotInfoKeys.robotInfoKeyList)
-                            robotInfoKey.save(getDatabase())
+                            robotInfoKey.save(database)
                     }
 
-                    progressDialogProgess += increaseFactor
-                    context!!.runOnUiThread {
-                        loadingDialog.progress = progressDialogProgess
+                    progressDialogProgress += increaseFactor
+                    context.runOnUiThread {
+                        loadingDialog.progress = progressDialogProgress
                     }
 
                     //Update Robot Info
-                    val getRobotInfo = Server.GetRobotInfo(context!!)
+                    val getRobotInfo = Server.GetRobotInfo(context)
                     if (getRobotInfo.execute())
                     {
-                        RobotInfo.clearTable(getDatabase())
+                        RobotInfo.clearTable(database)
 
                         for (robotInfo in getRobotInfo.robotInfoList)
-                            robotInfo.save(getDatabase())
+                            robotInfo.save(database)
                     }
                 }
                 else
-                    progressDialogProgess += increaseFactor * 2
+                    progressDialogProgress += increaseFactor * 2
 
                 /**
                  * SCOUT CARDS
                  */
-                if(!withFilters || (getPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean && withFilters))
+                if(!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean && withFilters))
                 {
-                    progressDialogProgess += increaseFactor
-                    context!!.runOnUiThread {
+                    progressDialogProgress += increaseFactor
+                    context.runOnUiThread {
                         loadingDialog.message = "Downloading Scout Cards..."
-                        loadingDialog.progress = progressDialogProgess
+                        loadingDialog.progress = progressDialogProgress
                     }
 
                     //Update Scout Card Info Keys
-                    val getScoutCardInfoKeys = Server.GetScoutCardInfoKeys(context!!)
+                    val getScoutCardInfoKeys = Server.GetScoutCardInfoKeys(context)
                     if (getScoutCardInfoKeys.execute())
                     {
-                        ScoutCardInfoKey.clearTable(getDatabase())
+                        ScoutCardInfoKey.clearTable(database)
 
                         for (scoutCardInfoKey in getScoutCardInfoKeys.scoutCardInfoKeys)
-                            scoutCardInfoKey.save(getDatabase())
+                            scoutCardInfoKey.save(database)
                     }
 
-                    progressDialogProgess += increaseFactor
-                    context!!.runOnUiThread {
-                        loadingDialog.progress = progressDialogProgess
+                    progressDialogProgress += increaseFactor
+                    context.runOnUiThread {
+                        loadingDialog.progress = progressDialogProgress
                     }
 
                     //Update Scout Card Info
-                    val getScoutCardInfo = Server.GetScoutCardInfo(context!!)
+                    val getScoutCardInfo = Server.GetScoutCardInfo(context)
                     if (getScoutCardInfo.execute())
                     {
-                        ScoutCardInfo.clearTable(getDatabase())
+                        ScoutCardInfo.clearTable(database)
 
                         for (scoutCardInfo in getScoutCardInfo.scoutCardInfos)
-                            scoutCardInfo.save(getDatabase())
+                            scoutCardInfo.save(database)
                     }
                 }
                 else
-                    progressDialogProgess += increaseFactor * 2
+                    progressDialogProgress += increaseFactor * 2
 
                 /**
                  * ROBOT MEDIA
                  */
-                if(!withFilters || (getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false) as Boolean && withFilters))
+                if(!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false) as Boolean && withFilters))
                 {
-                    progressDialogProgess += increaseFactor
-                    context!!.runOnUiThread {
+                    progressDialogProgress += increaseFactor
+                    context.runOnUiThread {
                         loadingDialog.message = "Downloading Robot Media..."
-                        loadingDialog.progress = progressDialogProgess
+                        loadingDialog.progress = progressDialogProgress
                     }
 
                     //Get the folder and purge all files
@@ -547,200 +488,182 @@ class MainActivity : AppCompatActivity(),
                         for (child in mediaFolder.listFiles())
                             child.delete()
 
-                    val getRobotMedia = Server.GetRobotMedia(context!!)
+                    val getRobotMedia = Server.GetRobotMedia(context)
                     if (getRobotMedia.execute())
                     {
-                        RobotMedia.clearTable(getDatabase(), true)
+                        RobotMedia.clearTable(database, true)
 
                         for (robotMedia in getRobotMedia.robotMedia)
                         {
-                            if(robotMedia.save(getDatabase()) > 0)
+                            if(robotMedia.save(database) > 0)
                             {
-                                val team = Team(robotMedia.teamId, getDatabase())
+                                val team = Team(robotMedia.teamId, database)
                                 team.imageFileURI = robotMedia.fileUri
-                                team.save(getDatabase())
+                                team.save(database)
                             }
                         }
 
                     }
                 }
 
-                getDatabase().finishTransaction()
+                database.finishTransaction()
 
                 runOnUiThread {
-                    val year = Year((getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!, getDatabase())
+                    val year = Year((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!, database)
 
                     //set the year when showing the event list frag
-                    setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, year.serverId!!)
+                    keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, year.serverId!!)
 
-                    loadingDialog!!.dismiss()
+                    loadingDialog.dismiss()
 
                     if(refreshActivity)
-                        context!!.recreate()
+                        context.recreate()
 
                     else
-                        changeFragment(EventListFragment.newInstance(Year((getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!, getDatabase())), false)
+                        changeFragment(EventListFragment.newInstance(Year((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!, database)), false)
                 }
             })
 
-            updateThread!!.start()
-        } else
-        {
-            showSnackbar(getString(R.string.no_internet))
-        }
+            updateThread.start()
 
-        return updateThread
+            return updateThread
+        } else
+            showSnackbar(getString(R.string.no_internet))
+
+        return null
     }
 
     /**
      * Uploads all stored app data to server
+     * @param withFilters [Boolean] whether or not to apply filters to upload
+     * @return [Thread] upload thread
      */
-    private fun uploadApplicationData(withFilters: Boolean = false)
+    private fun uploadApplicationData(withFilters: Boolean = false): Thread?
     {
-        loadingDialog = LoadingDialog(context!!, LoadingDialog.Style.PROGRESS)
-        loadingDialog.message = "Uploading data..."
-        loadingDialog.show()
-
-        val increaseFactor = 25
-
-        val uploadThread = Thread(Runnable {
-            var success = true
-
-            context!!.runOnUiThread {
-                loadingDialog.message = "Uploading Checklists..."
-                loadingDialog.progress = progressDialogProgess
-            }
-
-            /**
-             * CHECKLIST ITEM RESULTS
-             */
-            if(getPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, false) as Boolean)
-            {
-                for (checklistItemResult in ChecklistItemResult.getObjects(null, null, true, getDatabase())!!)
-                {
-                    val submitChecklistItemResult = Server.SubmitChecklistItemResult(context!!, checklistItemResult)
-                    if (submitChecklistItemResult.execute())
-                    {
-                        checklistItemResult.isDraft = false
-                        checklistItemResult.save(getDatabase())
-                    }
-                    else
-                        success = false
-
-                }
-            }
-
-            progressDialogProgess += increaseFactor
-            context!!.runOnUiThread {
-                loadingDialog.message = "Uploading Robot Info..."
-                loadingDialog.progress = progressDialogProgess
-            }
-
-            /**
-             * ROBOT INFO
-             */
-            if(getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, false) as Boolean)
-            {
-                for (robotInfo in RobotInfo.getObjects(null, null, null, null, null, true, getDatabase())!!)
-                {
-                    val submitRobotInfo = Server.SubmitRobotInfo(context!!, robotInfo)
-                    if (submitRobotInfo.execute())
-                    {
-                        robotInfo.isDraft = false
-                        robotInfo.save(getDatabase())
-                    }
-                    else
-                        success = false
-                }
-            }
-
-            progressDialogProgess += increaseFactor
-            context!!.runOnUiThread {
-                loadingDialog.message = "Uploading Scout Cards..."
-                loadingDialog.progress = progressDialogProgess
-            }
-
-            /**
-             * SCOUT CARD INFO
-             */
-            if(getPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean)
-            {
-                for (scoutCardInfo in ScoutCardInfo.getObjects(null, null, null, null, null, true, getDatabase())!!)
-                {
-                    val submitScoutCardInfo = Server.SubmitScoutCardInfo(context!!, scoutCardInfo)
-                    if (submitScoutCardInfo.execute())
-                    {
-                        scoutCardInfo.isDraft = false
-                        scoutCardInfo.save(getDatabase())
-                    }
-                    else
-                        success = false
-                }
-            }
-
-            progressDialogProgess += increaseFactor
-            context!!.runOnUiThread {
-                loadingDialog.message = "Uploading Robot Media..."
-                loadingDialog.progress = progressDialogProgess
-            }
-
-            /**
-             * ROBOT MEDIA
-             */
-            if(getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, false) as Boolean)
-            {
-                for (robotMedia in RobotMedia.getObjects(null, null, true, getDatabase())!!)
-                {
-                    val submitRobotMedia = Server.SubmitRobotMedia(context!!, robotMedia)
-                    if (submitRobotMedia.execute())
-                    {
-                        robotMedia.isDraft = false
-                        robotMedia.save(getDatabase())
-                    }
-                    else
-                        success = false
-                }
-            }
-
-            val finalSuccess = success
-            runOnUiThread {
-                loadingDialog.dismiss()
-
-                if (finalSuccess)
-                    context!!.recreate()
-            }
-        })
-
-        uploadThread.start()
-    }
-
-
-    /**
-     * Attempts to ping the server with a hello request to verify connection state
-     * @return boolean true if connection valid
-     */
-    fun isOnline(): Boolean
-    {
-        isOnline = false
-
-        val isOnlineThread = Thread(Runnable {
-            val hello = Server.Hello(context!!)
-
-            if (hello.execute())
-                isOnline = true
-        })
-
-        isOnlineThread.start()
-
-        try
+        if(isOnline)
         {
-            isOnlineThread.join()
-        } catch (e: InterruptedException)
-        {
-            e.printStackTrace()
+            loadingDialog = LoadingDialog(context, LoadingDialog.Style.PROGRESS)
+            loadingDialog.message = "Uploading data..."
+            loadingDialog.show()
+
+            val increaseFactor = 25
+
+            val uploadThread = Thread(Runnable {
+                var success = true
+
+                context.runOnUiThread {
+                    loadingDialog.message = "Uploading Checklists..."
+                    loadingDialog.progress = progressDialogProgress
+                }
+
+                /**
+                 * CHECKLIST ITEM RESULTS
+                 */
+                if (!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, false) as Boolean && withFilters))
+                {
+                    for (checklistItemResult in ChecklistItemResult.getObjects(null, null, true, database)!!)
+                    {
+                        val submitChecklistItemResult = Server.SubmitChecklistItemResult(context, checklistItemResult)
+                        if (submitChecklistItemResult.execute())
+                        {
+                            checklistItemResult.isDraft = false
+                            checklistItemResult.save(database)
+                        }
+                        else
+                            success = false
+
+                    }
+                }
+
+                progressDialogProgress += increaseFactor
+                context.runOnUiThread {
+                    loadingDialog.message = "Uploading Robot Info..."
+                    loadingDialog.progress = progressDialogProgress
+                }
+
+                /**
+                 * ROBOT INFO
+                 */
+                if (!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, false) as Boolean && withFilters))
+                {
+                    for (robotInfo in RobotInfo.getObjects(null, null, null, null, null, true, database)!!)
+                    {
+                        val submitRobotInfo = Server.SubmitRobotInfo(context, robotInfo)
+                        if (submitRobotInfo.execute())
+                        {
+                            robotInfo.isDraft = false
+                            robotInfo.save(database)
+                        }
+                        else
+                            success = false
+                    }
+                }
+
+                progressDialogProgress += increaseFactor
+                context.runOnUiThread {
+                    loadingDialog.message = "Uploading Scout Cards..."
+                    loadingDialog.progress = progressDialogProgress
+                }
+
+                /**
+                 * SCOUT CARD INFO
+                 */
+                if (!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean && withFilters))
+                {
+                    for (scoutCardInfo in ScoutCardInfo.getObjects(null, null, null, null, null, true, database))
+                    {
+                        val submitScoutCardInfo = Server.SubmitScoutCardInfo(context, scoutCardInfo)
+                        if (submitScoutCardInfo.execute())
+                        {
+                            scoutCardInfo.isDraft = false
+                            scoutCardInfo.save(database)
+                        }
+                        else
+                            success = false
+                    }
+                }
+
+                progressDialogProgress += increaseFactor
+                context.runOnUiThread {
+                    loadingDialog.message = "Uploading Robot Media..."
+                    loadingDialog.progress = progressDialogProgress
+                }
+
+                /**
+                 * ROBOT MEDIA
+                 */
+                if (!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, false) as Boolean && withFilters))
+                {
+                    for (robotMedia in RobotMedia.getObjects(null, null, true, database)!!)
+                    {
+                        val submitRobotMedia = Server.SubmitRobotMedia(context, robotMedia)
+                        if (submitRobotMedia.execute())
+                        {
+                            robotMedia.isDraft = false
+                            robotMedia.save(database)
+                        }
+                        else
+                            success = false
+                    }
+                }
+
+                val finalSuccess = success
+                runOnUiThread {
+                    loadingDialog.dismiss()
+
+                    if (finalSuccess)
+                        context.recreate()
+                }
+            })
+
+            uploadThread.start()
+
+            return uploadThread
         }
+        else
+            showSnackbar(getString(R.string.no_internet))
 
-        return isOnline
+        return null
     }
 
     //endregion
@@ -749,11 +672,10 @@ class MainActivity : AppCompatActivity(),
 
     override fun onBackPressed()
     {
-        val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
-        if (drawer.isDrawerOpen(GravityCompat.START))
-        {
-            drawer.closeDrawer(GravityCompat.START)
-        } else
+        if (MainDrawerLayout.isDrawerOpen(GravityCompat.START))
+            MainDrawerLayout.closeDrawer(GravityCompat.START)
+
+        else
         {
             //gets the highest fragment being shown
             val masterFragment = supportFragmentManager.fragments[supportFragmentManager.fragments.size - 1] as MasterFragment
@@ -772,13 +694,13 @@ class MainActivity : AppCompatActivity(),
 
             R.id.nav_teams -> changeFragment(TeamListFragment.newInstance(null, null), false)
 
-            R.id.nav_checklist -> changeFragment(ChecklistFragment.newInstance(Team((getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Int?)!!, database!!), null), false)
+            R.id.nav_checklist -> changeFragment(ChecklistFragment.newInstance(Team((keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Int), database), null), false)
 
-            R.id.nav_events -> changeFragment(EventListFragment.newInstance(Year(getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int, getDatabase())), false)
+            R.id.nav_events -> changeFragment(EventListFragment.newInstance(Year(keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int, database)), false)
         }
 
-        val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
-        drawer.closeDrawer(GravityCompat.START)
+        MainDrawerLayout.closeDrawer(GravityCompat.START)
+
         return true
     }
 
@@ -786,10 +708,12 @@ class MainActivity : AppCompatActivity(),
     {
         menuInflater.inflate(R.menu.main, menu)
 
-        val searchItem = menu.findItem(R.id.SearchItem)
-        searchView = searchItem.actionView as SearchView
-        searchItem.isVisible = isSearchViewVisible
-        searchView!!.setOnQueryTextListener(searchViewOnTextChangeListener)
+        with(menu.findItem(R.id.SearchItem))
+        {
+            searchView = this.actionView as SearchView
+            this.isVisible = isSearchViewVisible
+            searchView?.setOnQueryTextListener(searchViewOnTextChangeListener)
+        }
 
         return true
     }
@@ -800,35 +724,36 @@ class MainActivity : AppCompatActivity(),
         {
             R.id.UploadDataItem ->
             {
-                if (isOnline())
+                if (isOnline)
                 {
-                    val uploadAppDataAlertDialogBuilder = AlertDialog.Builder(context!!)
+                    val uploadAppDataAlertDialogBuilder = AlertDialog.Builder(context)
                     var uploadAppDataDialog: AlertDialog? = null
 
-                    val layout = LayoutInflater.from(context!!).inflate(R.layout.layout_dialog_upload, null)
+                    val layout = LayoutInflater.from(context).inflate(R.layout.layout_dialog_upload, null)
 
+                    //Update the checkboxes and set check listeners
                     with(layout)
                     {
 
-                        ChecklistCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, false) as Boolean)
-                        RobotInfoCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, false) as Boolean)
-                        ScoutCardInfoCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean)
-                        RobotMediaCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, false) as Boolean)
+                        ChecklistCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, false) as Boolean)
+                        RobotInfoCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, false) as Boolean)
+                        ScoutCardInfoCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean)
+                        RobotMediaCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, false) as Boolean)
                         
                         ChecklistCheckBox.setOnCheckedChangeListener { _, b ->
-                            setPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, b)
+                            keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, b)
                         }
 
                         RobotInfoCheckBox.setOnCheckedChangeListener { _, b ->
-                            setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, b)
+                            keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, b)
                         }
 
                         ScoutCardInfoCheckBox.setOnCheckedChangeListener { _, b ->
-                            setPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, b)
+                            keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, b)
                         }
 
                         RobotMediaCheckBox.setOnCheckedChangeListener { _, b ->
-                            setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, b)
+                            keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, b)
                         }
 
                         CancelButton.setOnClickListener {
@@ -856,48 +781,49 @@ class MainActivity : AppCompatActivity(),
 
             R.id.RefreshDataItem ->
             {
-                val downloadAppDataDialogBuilder = AlertDialog.Builder(context!!)
+                val downloadAppDataDialogBuilder = AlertDialog.Builder(context)
                 var downloadAppDataDialog: AlertDialog? = null
 
-                val layout = LayoutInflater.from(context!!).inflate(R.layout.layout_dialog_download, null)
+                val layout = LayoutInflater.from(context).inflate(R.layout.layout_dialog_download, null)
 
+                //Update checkboxes and set check listeners
                 with(layout)
                 {
 
-                    EventsCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, false) as Boolean)
-                    MatchesCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, false) as Boolean)
-                    TeamsCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, false) as Boolean)
-                    ChecklistCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, false) as Boolean)
-                    RobotInfoCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, false) as Boolean)
-                    ScoutCardInfoCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean)
-                    RobotMediaCheckBox.isChecked = (getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false) as Boolean)
+                    EventsCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, false) as Boolean)
+                    MatchesCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, false) as Boolean)
+                    TeamsCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, false) as Boolean)
+                    ChecklistCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, false) as Boolean)
+                    RobotInfoCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, false) as Boolean)
+                    ScoutCardInfoCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean)
+                    RobotMediaCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false) as Boolean)
 
                     EventsCheckBox.setOnCheckedChangeListener { _, b ->
-                        setPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, b)
+                        keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, b)
                     }
 
                     MatchesCheckBox.setOnCheckedChangeListener { _, b ->
-                        setPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, b)
+                        keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, b)
                     }
 
                     TeamsCheckBox.setOnCheckedChangeListener { _, b ->
-                        setPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, b)
+                        keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, b)
                     }
 
                     ChecklistCheckBox.setOnCheckedChangeListener { _, b ->
-                        setPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, b)
+                        keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, b)
                     }
 
                     RobotInfoCheckBox.setOnCheckedChangeListener { _, b ->
-                        setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, b)
+                        keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, b)
                     }
 
                     ScoutCardInfoCheckBox.setOnCheckedChangeListener { _, b ->
-                        setPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, b)
+                        keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, b)
                     }
 
                     RobotMediaCheckBox.setOnCheckedChangeListener { _, b ->
-                        setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, b)
+                        keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, b)
                     }
 
                     CancelButton.setOnClickListener {
@@ -922,10 +848,7 @@ class MainActivity : AppCompatActivity(),
         return false
     }
 
-    override fun onFragmentInteraction(uri: Uri)
-    {
-
-    }
+    override fun onFragmentInteraction(uri: Uri){}
 
     //endregion
 
@@ -939,7 +862,7 @@ class MainActivity : AppCompatActivity(),
             {
                 if(field == 0)
                 {
-                    val color = getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, "")
+                    val color = keyStore.getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, "")
 
                     field =
                     if(color != "")
@@ -959,7 +882,7 @@ class MainActivity : AppCompatActivity(),
             {
                 if(field == 0)
                 {
-                    val color = getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_DARK_KEY, "")
+                    val color = keyStore.getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_DARK_KEY, "")
 
                     field =
                     if(color != "")
@@ -997,13 +920,13 @@ class MainActivity : AppCompatActivity(),
         }
 
     /**
-     * Updates the apps colors to the specified ones in the shared preferences
+     * Updates the apps colors to the specified ones in [KeyStore]
      */
-    fun updateAppColors()
+    private fun updateAppColors()
     {
-        this.window.statusBarColor = primaryColorDark
-        toolbar!!.setBackgroundColor(primaryColor)
-        headerConstraintLayout!!.setBackgroundColor(primaryColor)
+        window.statusBarColor = primaryColorDark
+        MainToolbar.setBackgroundColor(primaryColor)
+        navHeader.HeaderConstraintLayout.setBackgroundColor(primaryColor)
 
         val states: Array<IntArray> = arrayOf(
                 intArrayOf(android.R.attr.state_checked),
@@ -1013,16 +936,16 @@ class MainActivity : AppCompatActivity(),
                 primaryColor,
                 Color.DKGRAY)
 
-        navigationView!!.itemTextColor = ColorStateList(states, colors)
-        navigationView!!.itemIconTintList = ColorStateList(states, colors)
+        NavigationView.itemTextColor = ColorStateList(states, colors)
+        NavigationView.itemIconTintList = ColorStateList(states, colors)
 
-        changeButton!!.setTextColor(primaryColor)
-        (changeButton!! as MaterialButton).rippleColor = buttonRipple
+        ChangeButton.setTextColor(primaryColor)
+        (ChangeButton as MaterialButton).rippleColor = buttonRipple
     }
 
     /**
      * Sets the title of the nav bar
-     * @param title to set the nav bar title to
+     * @param title [String] to set the nav bar title to
      */
     fun setToolbarTitle(title: String)
     {
@@ -1031,7 +954,7 @@ class MainActivity : AppCompatActivity(),
 
     /**
      * Sets the title of the nav bar
-     * @param titleId to set the nav bar title to
+     * @param titleId [Int] res id to set the nav bar title to
      */
     fun setToolbarTitle(titleId: Int)
     {
@@ -1043,24 +966,32 @@ class MainActivity : AppCompatActivity(),
      */
     fun updateNavText()
     {
-        teamNumberTextView!!.text = getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1).toString()
-        teamNameTextView!!.text = getPreference(Constants.SharedPrefKeys.TEAM_NAME_KEY, "")!!.toString()
+        navHeader.TeamNumberTextView.text = keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1).toString()
+        navHeader.TeamNameTextView.text = keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NAME_KEY, "").toString()
     }
 
     /**
      * Locks the drawer layout
+     * @param setBackIcon [Boolean] to set the icon as the back arrow
+     * @param backIconClickListener [View.OnClickListener] to preform when the back button is clicked
      */
     fun lockDrawerLayout(setBackIcon: Boolean = false, backIconClickListener: View.OnClickListener? = null)
     {
-        drawer!!.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        MainDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
         if(setBackIcon)
         {
-            toolbar!!.navigationIcon = resources.getDrawable(R.drawable.ic_arrow_back_white_24dp, null)
-            toolbar!!.setNavigationOnClickListener(backIconClickListener)
+            MainToolbar.navigationIcon = resources.getDrawable(R.drawable.ic_arrow_back_white_24dp, null)
+            MainToolbar.setNavigationOnClickListener(backIconClickListener)
         }
         else
-            toolbar!!.navigationIcon = null
+        {
+            MainToolbar.navigationIcon = null
+            MainToolbar.setNavigationOnClickListener{
+                MainDrawerLayout.openDrawer(GravityCompat.START)
+            }
+        }
+
     }
 
     /**
@@ -1068,22 +999,21 @@ class MainActivity : AppCompatActivity(),
      */
     fun unlockDrawerLayout()
     {
-        toolbar!!.navigationIcon = resources.getDrawable(R.drawable.ic_dehaze_white_24dp, null)
-        drawer!!.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-        toolbar!!.setNavigationOnClickListener {
-            drawer!!.openDrawer(GravityCompat.START)
+        MainToolbar.navigationIcon = resources.getDrawable(R.drawable.ic_dehaze_white_24dp, null)
+        MainDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        MainToolbar.setNavigationOnClickListener {
+            MainDrawerLayout.openDrawer(GravityCompat.START)
         }
-
     }
 
     /**
      * Displays the snackbar
-     * @param message to be displayed
+     * @param message [String] to be displayed
      */
     fun showSnackbar(message: String)
     {
         hideKeyboard()
-        Snackbar.make(mainFrame!!, message, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(MainFrame, message, Snackbar.LENGTH_SHORT).show()
     }
 
     /**
@@ -1098,31 +1028,31 @@ class MainActivity : AppCompatActivity(),
 
     /**
      * Changes the current fragment to the specified one
-     * @param fragment to change to
-     * @param addToBackstack if frag should be added to backstack, if false all frags pop and specified one is shown
+     * @param fragment [MasterFragment] to change to
+     * @param addToBackstack [Boolean] if [fragment] should be added to backstack, if false all frags pop and [fragment] is shown
      */
-    fun changeFragment(fragment: Fragment, addToBackstack: Boolean)
+    fun changeFragment(fragment: MasterFragment, addToBackstack: Boolean)
     {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.MainFrame, fragment)
+
         if (addToBackstack)
             fragmentTransaction.addToBackStack(null) //add to the backstack
         else
             supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE) //pop all backstacks
+
         fragmentTransaction.commit()
 
-        if (drawer!!.isDrawerOpen(GravityCompat.START))
-            drawer!!.closeDrawer(GravityCompat.START)
+        if (MainDrawerLayout.isDrawerOpen(GravityCompat.START))
+            MainDrawerLayout.closeDrawer(GravityCompat.START)
 
         hideKeyboard()
-
-        //        elevateActionBar();
     }
 
     /**
      * All view loading logic is stored here
      * used for when the activity initially starts up
-     * @param savedInstanceState
+     * @param savedInstanceState [Bundle]
      */
     private fun loadView(savedInstanceState: Bundle?)
     {
@@ -1132,10 +1062,8 @@ class MainActivity : AppCompatActivity(),
             //default to the splash frag until changed
             changeFragment(SplashFragment(), false)
 
-
-
             //validate the app config to ensure all properties are filled
-            if (validateConfig())
+            if (validateApiConfig())
             {
                 //android >= marshmallow, permission needed
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -1145,41 +1073,31 @@ class MainActivity : AppCompatActivity(),
                         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 5885)
                 }
 
-                //check any teams are on device and if the device is online
-                //if no teams, update data
-                if (Team.getObjects(null, null, null, getDatabase())!!.size == 0 && isOnline())
-                    downloadApplicationData(false)
+                //Check if any events are on the device, if not download data
+                if (Event.getObjects(null, null, null, database).size == 0)
+                    downloadApplicationData(false)?.join()
 
-                //join back up with the update thread if it is not null
-                if (updateThread != null)
+                //Event previously selected, switch to match list
+                if ((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int) > 0)
                 {
-                    try
-                    {
-                        updateThread!!.join()
-                    } catch (e: InterruptedException)
-                    {
-                        e.printStackTrace()
-                    }
+                    NavigationView.setCheckedItem(R.id.nav_matches)
+                    changeFragment(MatchListFragment.newInstance(null), false)
 
                 }
 
-                //event previously selected, switch to team list
-                if ((getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int?)!! > 0)
+                //No event selected, default to yar list
+                else
                 {
-                    navigationView!!.setCheckedItem(R.id.nav_matches)
-                    changeFragment(MatchListFragment.newInstance(null), false)
-                } else
-                {
-                    val year = Year((getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!, getDatabase())
-
-                    //send to eventlist frag
+                    val year = Year((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int), database)
                     changeFragment(EventListFragment.newInstance(year), false)
                 }
 
-            } else
-            {
-                changeFragment(ConfigViewPagerFragment(), false)
             }
+
+            //Not yet configured, go to config frag
+            else
+                changeFragment(ConfigViewPagerFragment(), false)
+
         }
     }
 
@@ -1188,7 +1106,7 @@ class MainActivity : AppCompatActivity(),
      */
     fun dropActionBar()
     {
-        appBarLayout!!.elevation = 0f
+        MainAppBarLayout.elevation = 0f
     }
 
     /**
@@ -1196,20 +1114,23 @@ class MainActivity : AppCompatActivity(),
      */
     fun elevateActionBar()
     {
-        appBarLayout!!.elevation = ACTION_BAR_ELEVATION.toFloat()
+        MainAppBarLayout.elevation = ACTION_BAR_ELEVATION
     }
 
     /**
      * Sets the menu item to be checked
+     * @param menuItem [Int] to be marked as checked
      */
     fun setCheckedMenuItem(menuItem: Int)
     {
-        navigationView!!.menu.getItem(menuItem).isChecked = true
+        NavigationView.menu.getItem(menuItem).isChecked = true
     }
+
+    private var searchViewOnTextChangeListener: SearchView.OnQueryTextListener? = null
 
     /**
      * Sets the listener for text being changed for the search view on the toolbar
-     * @param listener [SearchView.OnQueryTextListener] listener for the searchview
+     * @param listener [SearchView.OnQueryTextListener] listener for [searchView]
      */
     fun setSearchViewOnTextChangeListener(listener: SearchView.OnQueryTextListener?)
     {
@@ -1217,17 +1138,15 @@ class MainActivity : AppCompatActivity(),
         searchViewOnTextChangeListener = listener
     }
 
-    private var searchViewOnTextChangeListener: SearchView.OnQueryTextListener? = null
-
     /**
-     * Gets / Sets the visibility of the searchview
+     * Gets / Sets the visibility of [searchView]
      */
     var isSearchViewVisible = false
     set(value)
     {
         if(field != value)
         {
-            val item = toolbar!!.menu.findItem(R.id.SearchItem)
+            val item = MainToolbar.menu.findItem(R.id.SearchItem)
 
             if(item != null)
                 item.isVisible = value
@@ -1248,13 +1167,12 @@ class MainActivity : AppCompatActivity(),
         if(field != value)
         {
             if (value)
-                (toolbar!!.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
+                (MainToolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
             else
-                (toolbar!!.layoutParams as AppBarLayout.LayoutParams).scrollFlags = 0
+                (MainToolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = 0
             field = value
         }
     }
 
     //endregion
-
 }

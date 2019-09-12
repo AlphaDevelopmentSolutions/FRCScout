@@ -14,7 +14,7 @@ import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.javaField
 import kotlin.reflect.jvm.jvmName
 
-class Database(private val context: MainActivity)
+class Database(context: MainActivity)
 {
     private val databaseHelper: DatabaseHelper
     private var db: SQLiteDatabase? = null

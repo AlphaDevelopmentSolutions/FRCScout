@@ -111,9 +111,9 @@ class ConfigFragment : MasterFragment()
      */
     private fun login(username: String, password: String)
     {
-        context.setPreference(Constants.SharedPrefKeys.API_CORE_USERNAME, username)
-        context.setPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, password)
-        context.setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "TEMP")
+        context.keyStore.setPreference(Constants.SharedPrefKeys.API_CORE_USERNAME, username)
+        context.keyStore.setPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, password)
+        context.keyStore.setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "TEMP")
 
         val loadingDialog = LoadingDialog(context, LoadingDialog.Style.SPINNER)
         loadingDialog.message = "Logging in please wait..."
@@ -121,7 +121,7 @@ class ConfigFragment : MasterFragment()
 
         Thread(Runnable {
             //validate connection
-            if (context.isOnline())
+            if (context.isOnline)
             {
                 //gather server configs
                 val getServerConfig = Server.GetServerConfig(context)
@@ -134,18 +134,18 @@ class ConfigFragment : MasterFragment()
                         runOnUiThread {
                             updateNavText()
 
-                            setPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, true)
-                            setPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, true)
-                            setPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, true)
-                            setPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, true)
-                            setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, true)
-                            setPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, true)
-                            setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false)
+                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, true)
+                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, true)
+                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, true)
+                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, true)
+                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, true)
+                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, true)
+                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false)
 
-                            setPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, true)
-                            setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, true)
-                            setPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, true)
-                            setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, false)
+                            keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, true)
+                            keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, true)
+                            keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, true)
+                            keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, false)
 
                             loadingDialog.dismiss()
 

@@ -54,8 +54,8 @@ class YearListFragment : MasterFragment()
         context.isToolbarScrollable = true
 
         //showing this view means the user has not selected an event or year, clear the shared pref
-        context.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1)
-        context.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) //default to current calendar year
+        context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1)
+        context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) //default to current calendar year
 
         yearListRecyclerView = view.findViewById(R.id.YearListRecyclerView)
 

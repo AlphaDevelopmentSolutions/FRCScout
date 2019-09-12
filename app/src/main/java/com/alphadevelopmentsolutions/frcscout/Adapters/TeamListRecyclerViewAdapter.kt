@@ -74,7 +74,7 @@ internal class TeamListRecyclerViewAdapter(private val match: Match?, private va
             viewHolder.viewTeamButton.setOnClickListener { context.changeFragment(TeamFragment.newInstance(teamList[viewHolder.adapterPosition]), true) }
         } else
         {
-            val scoutCards = team.getScoutCards(null, match, null, false, context.getDatabase())
+            val scoutCards = team.getScoutCards(null, match, null, false, context.database)
 
             //scout card found, show that one
             if (scoutCards!!.size > 0)

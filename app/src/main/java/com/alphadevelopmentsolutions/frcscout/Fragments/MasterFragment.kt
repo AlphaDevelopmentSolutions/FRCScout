@@ -66,7 +66,7 @@ abstract class MasterFragment : Fragment()
 
         //assign context and database vars
         context = activity as MainActivity
-        database = context.getDatabase()
+        database = context.database
         gson = Gson()
 
         //check if any args were passed, specifically for team and match json
@@ -81,9 +81,9 @@ abstract class MasterFragment : Fragment()
         //create and start the thread to load the json vars
         loadingThread = Thread(Runnable {
 
-            year = Year(context.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int, database)
+            year = Year(context.keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int, database)
 
-            val eventId = context.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int
+            val eventId = context.keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int
             if (eventId > 0)
                 event = Event(eventId, database)
 

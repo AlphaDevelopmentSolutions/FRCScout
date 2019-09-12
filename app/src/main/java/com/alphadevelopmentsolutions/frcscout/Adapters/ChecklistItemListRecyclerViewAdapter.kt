@@ -31,7 +31,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
         val userNames = ArrayList<String>()
 
         //get all users
-        for (user in User.getObjects(null, context.getDatabase())!!)
+        for (user in User.getObjects(null, context.database)!!)
         {
             userNames.add(user.toString())
         }
@@ -87,7 +87,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
         var checklistItemResult: ChecklistItemResult? = null
 
         //filter by match id
-        for (storedChecklistItemResult in checklistItem.getResults(null, false, context.getDatabase())!!)
+        for (storedChecklistItemResult in checklistItem.getResults(null, false, context.database)!!)
         {
             if (storedChecklistItemResult.matchId == match.key)
             {
@@ -152,7 +152,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
                     }
 
                     finalChecklistItemResult.completedBy = viewHolder.completedByAutoCompleteTextView.text.toString()
-                    finalChecklistItemResult.save(context.getDatabase())
+                    finalChecklistItemResult.save(context.database)
                 } else
                     context.showSnackbar("Please enter completed by.")
             }

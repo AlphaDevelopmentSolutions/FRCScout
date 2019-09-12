@@ -23,8 +23,8 @@ abstract class Api internal constructor(
 
     init
     {
-        postData["CoreUsername"] = context.getPreference(Constants.SharedPrefKeys.API_CORE_USERNAME, "").toString()
-        postData["CorePassword"] = context.getPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, "").toString()
+        postData["CoreUsername"] = context.keyStore.getPreference(Constants.SharedPrefKeys.API_CORE_USERNAME, "").toString()
+        postData["CorePassword"] = context.keyStore.getPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, "").toString()
 
         simpleDateFormat = SimpleDateFormat(MYSQL_DATE_FORMAT)
     }
