@@ -111,11 +111,10 @@ class MainActivity : AppCompatActivity(),
         setContentView(R.layout.activity_main)
 
         context = this
-//        keyStore = KeyStore(context)
         database = Database(context)
 
         ChangeButton.setOnClickListener{
-            clearApiConfig()
+            keyStore.resetData()
             changeFragment(ConfigViewPagerFragment.newInstance(), false, false)
         }
 
@@ -140,38 +139,6 @@ class MainActivity : AppCompatActivity(),
         loadView(savedInstanceState)
 
     }
-
-    //region Data Management Methods
-
-    /**
-     * Clears all api configs from the phone
-     */
-    fun clearApiConfig()
-    {
-        with(Constants.SharedPrefKeys)
-        {
-            keyStore.setPreference(API_KEY_KEY, "")
-            keyStore.setPreference(API_CORE_USERNAME, "")
-            keyStore.setPreference(API_CORE_PASSWORD, "")
-        }
-        
-    }
-
-    /**
-     * Check all the shared pref settings to validate the app is setup with the required info
-     * @return boolean if config is valid
-     */
-    private fun validateApiConfig(): Boolean
-    {
-        return with(Constants.SharedPrefKeys)
-        {
-            keyStore.getPreference(API_KEY_KEY, "") != "" &&
-            keyStore.getPreference(API_CORE_USERNAME, "") != "" &&
-            keyStore.getPreference(API_CORE_PASSWORD, "") != ""
-        }
-    }
-
-    //endregion
 
     //region Internet Methods
 
@@ -405,7 +372,7 @@ class MainActivity : AppCompatActivity(),
                 /**
                  * ROBOT INFO
                  */
-                if(!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, false) as Boolean && withFilters))
+                if(keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, false) as Boolean)
                 {
                     progressDialogProgress += increaseFactor
                     context.runOnUiThread {
@@ -1090,7 +1057,7 @@ class MainActivity : AppCompatActivity(),
             changeFragment(SplashFragment(), false, false)
 
             //validate the app config to ensure all properties are filled
-            if (validateApiConfig())
+            if (keyStore.validateApiConfig())
             {
                 //android >= marshmallow, permission needed
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -1101,7 +1068,7 @@ class MainActivity : AppCompatActivity(),
                 }
 
                 //Check if any events are on the device, if not download data
-                if (Event.getObjects(null, null, null, database).size == 0)
+                if (Year.getObjects(null, database).size == 0)
                     downloadApplicationData(false)?.join()
 
                 //Event previously selected, switch to match list

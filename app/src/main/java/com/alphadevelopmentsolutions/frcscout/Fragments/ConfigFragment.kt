@@ -134,19 +134,6 @@ class ConfigFragment : MasterFragment()
                         runOnUiThread {
                             updateNavText()
 
-                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, true)
-                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, true)
-                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, true)
-                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, true)
-                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, true)
-                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, true)
-                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false)
-
-                            keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, true)
-                            keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, true)
-                            keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, true)
-                            keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, false)
-
                             loadingDialog.dismiss()
 
                             downloadApplicationData(false, false)
@@ -161,7 +148,7 @@ class ConfigFragment : MasterFragment()
                             loadingDialog.dismiss()
                         }
 
-                        clearApiConfig()
+                        keyStore.resetData()
                         showSnackbar(getString(R.string.invalid_url))
                     }
                 }//invalid config
@@ -173,20 +160,11 @@ class ConfigFragment : MasterFragment()
                         loadingDialog.dismiss()
                     }
 
-                    clearApiConfig()
+                    keyStore.resetData()
                     showSnackbar(getString(R.string.invalid_url))
                 }
             }//invalid connection
         }).start()
-    }
-
-
-
-    override fun onDestroyView()
-    {
-        context.supportActionBar!!.show()
-        context.unlockDrawerLayout()
-        super.onDestroyView()
     }
 
     companion object

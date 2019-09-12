@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.Classes
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
+import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 
 class KeyStore(val context: MainActivity? = null)
 {
@@ -36,9 +37,7 @@ class KeyStore(val context: MainActivity? = null)
             apply()
         }
     }
-
-
-
+    
     /**
      * Gets the shared preference value
      * @param key [String] pref key
@@ -57,6 +56,52 @@ class KeyStore(val context: MainActivity? = null)
                 is Float -> getFloat(key, defaultValue)
                 else -> defaultValue
             }
+        }
+    }
+
+    /**
+     * Rests all default field vals
+     */
+    fun resetData()
+    {
+        with(Constants.SharedPrefKeys)
+        {
+            setPreference(API_KEY_KEY, "")
+            setPreference(API_CORE_USERNAME, "")
+            setPreference(API_CORE_PASSWORD, "")
+
+            setPreference(PRIMARY_COLOR_KEY, "")
+            setPreference(PRIMARY_COLOR_DARK_KEY, "")
+
+            setPreference(SELECTED_EVENT_KEY, -1)
+            setPreference(SELECTED_YEAR_KEY, -1)
+
+            setPreference(DOWNLOAD_EVENTS_KEY, true)
+            setPreference(DOWNLOAD_MATCHES_KEY, true)
+            setPreference(DOWNLOAD_TEAMS_KEY, true)
+            setPreference(DOWNLOAD_CHECKLISTS_KEY, true)
+            setPreference(DOWNLOAD_ROBOT_INFO_KEY, true)
+            setPreference(DOWNLOAD_SCOUT_CARD_INFO_KEY, true)
+            setPreference(DOWNLOAD_ROBOT_MEDIA_KEY, false)
+
+            setPreference(UPLOAD_CHECKLISTS_KEY, true)
+            setPreference(UPLOAD_ROBOT_INFO_KEY, true)
+            setPreference(UPLOAD_SCOUT_CARD_INFO_KEY, true)
+            setPreference(UPLOAD_ROBOT_MEDIA_KEY, false)
+        }
+    }
+
+    /**
+     * Check all the shared pref settings to validate the app is setup with the required info
+     * @return [Boolean] if config is valid
+     */
+    fun validateApiConfig(): Boolean
+    {
+        return with(Constants.SharedPrefKeys)
+        {
+            getPreference(API_KEY_KEY, "") != "" &&
+            getPreference(API_CORE_USERNAME, "") != "" &&
+            getPreference(API_CORE_PASSWORD, "") != ""
         }
     }
 

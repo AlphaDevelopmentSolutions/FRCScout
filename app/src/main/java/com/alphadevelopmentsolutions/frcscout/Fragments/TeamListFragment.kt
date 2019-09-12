@@ -16,6 +16,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor
 import com.alphadevelopmentsolutions.frcscout.R
+import kotlinx.android.synthetic.main.fragment_team_list.view.*
 import java.util.*
 
 class TeamListFragment : MasterFragment()
@@ -26,8 +27,6 @@ class TeamListFragment : MasterFragment()
     }
 
     private var allianceColorString: String? = null
-    
-    private var teamsRecyclerView: RecyclerView? = null
 
     private var teams: ArrayList<Team>? = null
     private var searchedTeams: ArrayList<Team>? = null
@@ -35,10 +34,6 @@ class TeamListFragment : MasterFragment()
     private var loadTeamsThread: Thread? = null
 
     private var allianceColor: AllianceColor? = null
-
-    private var allianceViewPagerLinearLayout: LinearLayout? = null
-    private var allianceTabLayout: TabLayout? = null
-    private var allianceViewPager: ViewPager? = null
 
     private var previousSearchLength: Int = 0
 
@@ -92,12 +87,7 @@ class TeamListFragment : MasterFragment()
         //gets rid of the shadow on the actionbar
         context.dropActionBar()
 
-        teamsRecyclerView = view.findViewById(R.id.TeamsRecyclerView)
-        allianceViewPagerLinearLayout = view.findViewById(R.id.AllianceViewPagerLinearLayout)
-        allianceTabLayout = view.findViewById(R.id.AllianceTabLayout)
-        allianceViewPager = view.findViewById(R.id.AllianceViewPager)
-
-        allianceTabLayout!!.setBackgroundColor(context.primaryColor)
+        view.AllianceTabLayout.setBackgroundColor(context.primaryColor)
 
         //join back up with the load thread
         loadTeamsThread!!.join()
@@ -111,8 +101,8 @@ class TeamListFragment : MasterFragment()
         {
             val teamListRecyclerViewAdapter = TeamListRecyclerViewAdapter(match, searchedTeams!!, context)
 
-            teamsRecyclerView!!.layoutManager = LinearLayoutManager(context)
-            teamsRecyclerView!!.adapter = teamListRecyclerViewAdapter
+            view.TeamsRecyclerView.layoutManager = LinearLayoutManager(context)
+            view.TeamsRecyclerView.adapter = teamListRecyclerViewAdapter
 
             if(match == null)
             {
@@ -180,17 +170,17 @@ class TeamListFragment : MasterFragment()
         {
             view.z = zIndex
             context.setToolbarTitle(match.toString())
-            allianceViewPagerLinearLayout!!.visibility = View.VISIBLE
-            teamsRecyclerView!!.visibility = View.GONE
+            view.AllianceViewPagerLinearLayout.visibility = View.VISIBLE
+            view.TeamsRecyclerView.visibility = View.GONE
 
             val viewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
 
             viewPagerAdapter.addFragment(newInstance(match, AllianceColor.BLUE), getString(R.string.blue_alliance))
             viewPagerAdapter.addFragment(newInstance(match, AllianceColor.RED), getString(R.string.red_alliance))
 
-            allianceViewPager!!.adapter = viewPagerAdapter
-            allianceTabLayout!!.setupWithViewPager(allianceViewPager)
-            allianceTabLayout!!.setSelectedTabIndicatorColor(context.primaryColorDark)
+            view.AllianceViewPager.adapter = viewPagerAdapter
+            view.AllianceTabLayout.setupWithViewPager(view.AllianceViewPager)
+            view.AllianceTabLayout.setSelectedTabIndicatorColor(context.primaryColorDark)
 
             context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
         }//if match specified, setup the viewpager and hide the recyclerview

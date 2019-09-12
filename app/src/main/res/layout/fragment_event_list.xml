@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/background"
     android:orientation="vertical"
+    android:scrollbars="vertical"
     tools:context=".Fragments.EventListFragment">
 
 </android.support.v7.widget.RecyclerView>
