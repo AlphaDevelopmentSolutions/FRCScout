@@ -62,10 +62,12 @@ class ScoutCardFragment : MasterFragment()
     {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_scout_card, container, false)
+        view.z = zIndex
 
         //gets rid of the shadow on the actionbar
         context.dropActionBar()
         context.isToolbarScrollable = false
+        context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
 
         scoutCardTabLayout = view.findViewById(R.id.ScoutCardTabLayout)
         scoutCardViewPager = view.findViewById(R.id.ScoutCardViewPager)
@@ -75,14 +77,7 @@ class ScoutCardFragment : MasterFragment()
 
         val scoutCardViewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
 
-        //join back with the frag creation thread
-        try
-        {
-            fragCreationThread!!.join()
-        } catch (e: InterruptedException)
-        {
-            e.printStackTrace()
-        }
+        fragCreationThread!!.join()
 
         //add all the dynamic form frags to the viewpager
         for(map in scoutCardInfoFormFragments)
@@ -100,6 +95,17 @@ class ScoutCardFragment : MasterFragment()
         scoutCardTabLayout!!.setupWithViewPager(scoutCardViewPager)
 
         return view
+    }
+
+    override fun onResume()
+    {
+        super.onResume()
+    }
+
+    override fun onDestroyView()
+    {
+        context.unlockDrawerLayout()
+        super.onDestroyView()
     }
 
     companion object

@@ -26,7 +26,9 @@ class TeamFragment : MasterFragment()
     {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_team, container, false)
-        
+        context.currentZIndex++
+        view.z = zIndex
+
         with(context)
         {
             
@@ -152,9 +154,15 @@ class TeamFragment : MasterFragment()
         return view
     }
 
-    override fun onDetach()
+    override fun onDestroyView()
     {
         context.unlockDrawerLayout()
+        super.onDestroyView()
+    }
+
+    override fun onDetach()
+    {
+        context.currentZIndex--
         super.onDetach()
     }
 

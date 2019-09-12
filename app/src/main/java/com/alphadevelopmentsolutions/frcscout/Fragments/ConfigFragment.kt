@@ -182,11 +182,11 @@ class ConfigFragment : MasterFragment()
 
 
 
-    override fun onDetach()
+    override fun onDestroyView()
     {
         context.supportActionBar!!.show()
         context.unlockDrawerLayout()
-        super.onDetach()
+        super.onDestroyView()
     }
 
     companion object

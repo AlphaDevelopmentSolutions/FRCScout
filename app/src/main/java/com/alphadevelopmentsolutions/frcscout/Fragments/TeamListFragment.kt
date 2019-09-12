@@ -178,6 +178,7 @@ class TeamListFragment : MasterFragment()
 
         } else
         {
+            view.z = zIndex
             context.setToolbarTitle(match.toString())
             allianceViewPagerLinearLayout!!.visibility = View.VISIBLE
             teamsRecyclerView!!.visibility = View.GONE
@@ -211,7 +212,7 @@ class TeamListFragment : MasterFragment()
             context.isSearchViewVisible = true
     }
 
-    override fun onDetach()
+    override fun onDestroyView()
     {
         if (match != null)
             context.unlockDrawerLayout()
@@ -219,7 +220,7 @@ class TeamListFragment : MasterFragment()
         if(context.isSearchViewVisible)
             context.isSearchViewVisible = false
 
-        super.onDetach()
+        super.onDestroyView()
     }
 
     override fun onDestroy()

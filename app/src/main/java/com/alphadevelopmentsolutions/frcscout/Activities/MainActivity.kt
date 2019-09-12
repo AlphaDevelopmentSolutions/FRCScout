@@ -62,7 +62,14 @@ class MainActivity : AppCompatActivity(),
         return field
     }
 
-    lateinit var keyStore: KeyStore
+    var keyStore = KeyStore()
+    get()
+    {
+        if(field.context == null)
+            field = KeyStore(this)
+
+        return field
+    }
 
     private lateinit var actionBarToggle: ActionBarDrawerToggle
 
@@ -95,6 +102,8 @@ class MainActivity : AppCompatActivity(),
         return field
     }
 
+    var currentZIndex = 0
+
     override fun onCreate(savedInstanceState: Bundle?)
     {
         setTheme(R.style.AppTheme)
@@ -102,12 +111,12 @@ class MainActivity : AppCompatActivity(),
         setContentView(R.layout.activity_main)
 
         context = this
-        keyStore = KeyStore(context)
+//        keyStore = KeyStore(context)
         database = Database(context)
 
         ChangeButton.setOnClickListener{
             clearApiConfig()
-            changeFragment(ConfigViewPagerFragment.newInstance(), false)
+            changeFragment(ConfigViewPagerFragment.newInstance(), false, false)
         }
 
         database.open()
@@ -520,7 +529,7 @@ class MainActivity : AppCompatActivity(),
                         context.recreate()
 
                     else
-                        changeFragment(EventListFragment.newInstance(Year((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!, database)), false)
+                        changeFragment(EventListFragment.newInstance(Year((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!, database)), false, false)
                 }
             })
 
@@ -690,13 +699,13 @@ class MainActivity : AppCompatActivity(),
     {
         when (item.itemId)
         {
-            R.id.nav_matches -> changeFragment(MatchListFragment.newInstance(null), false)
+            R.id.nav_matches -> changeFragment(MatchListFragment.newInstance(null), false, false)
 
-            R.id.nav_teams -> changeFragment(TeamListFragment.newInstance(null, null), false)
+            R.id.nav_teams -> changeFragment(TeamListFragment.newInstance(null, null), false, false)
 
-            R.id.nav_checklist -> changeFragment(ChecklistFragment.newInstance(Team((keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Int), database), null), false)
+            R.id.nav_checklist -> changeFragment(ChecklistFragment.newInstance(Team((keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Int), database), null), false, false)
 
-            R.id.nav_events -> changeFragment(EventListFragment.newInstance(Year(keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int, database)), false)
+            R.id.nav_events -> changeFragment(EventListFragment.newInstance(Year(keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int, database)), false, false)
         }
 
         MainDrawerLayout.closeDrawer(GravityCompat.START)
@@ -1029,19 +1038,37 @@ class MainActivity : AppCompatActivity(),
     /**
      * Changes the current fragment to the specified one
      * @param fragment [MasterFragment] to change to
-     * @param addToBackstack [Boolean] if [fragment] should be added to backstack, if false all frags pop and [fragment] is shown
+     * @param addToBackStack [Boolean] if [fragment] should be added to back stack, if false all frags pop and [fragment] is shown
+     * @param animate [Boolean] if frag should animate or not
+     * @param reverseAnimation [Boolean] if frag should reverse animation order
      */
-    fun changeFragment(fragment: MasterFragment, addToBackstack: Boolean)
+    fun changeFragment(fragment: MasterFragment, addToBackStack: Boolean, animate: Boolean = true, reverseAnimation: Boolean = false)
     {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.MainFrame, fragment)
+        with(supportFragmentManager.beginTransaction())
+        {
+            if(animate)
+            {
+                if(!reverseAnimation)
+                    setCustomAnimations(R.anim.slide_in_from_right, R.anim.zoom_out, R.anim.zoom_in, R.anim.slide_out_to_right)
+                else
+                    setCustomAnimations(R.anim.zoom_in, R.anim.slide_out_to_right)
 
-        if (addToBackstack)
-            fragmentTransaction.addToBackStack(null) //add to the backstack
-        else
-            supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE) //pop all backstacks
+            }
 
-        fragmentTransaction.commit()
+
+            if (addToBackStack)
+                addToBackStack(null) //add to the back stack
+
+            else
+                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE) //pop all backstacks
+
+            replace(R.id.MainFrame, fragment)
+
+            commit()
+        }
+
+
+
 
         if (MainDrawerLayout.isDrawerOpen(GravityCompat.START))
             MainDrawerLayout.closeDrawer(GravityCompat.START)
@@ -1060,7 +1087,7 @@ class MainActivity : AppCompatActivity(),
         if (savedInstanceState == null)
         {
             //default to the splash frag until changed
-            changeFragment(SplashFragment(), false)
+            changeFragment(SplashFragment(), false, false)
 
             //validate the app config to ensure all properties are filled
             if (validateApiConfig())
@@ -1081,7 +1108,7 @@ class MainActivity : AppCompatActivity(),
                 if ((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int) > 0)
                 {
                     NavigationView.setCheckedItem(R.id.nav_matches)
-                    changeFragment(MatchListFragment.newInstance(null), false)
+                    changeFragment(MatchListFragment.newInstance(null), false, false)
 
                 }
 
@@ -1089,14 +1116,14 @@ class MainActivity : AppCompatActivity(),
                 else
                 {
                     val year = Year((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int), database)
-                    changeFragment(EventListFragment.newInstance(year), false)
+                    changeFragment(EventListFragment.newInstance(year), false, false)
                 }
 
             }
 
             //Not yet configured, go to config frag
             else
-                changeFragment(ConfigViewPagerFragment(), false)
+                changeFragment(ConfigViewPagerFragment(), false, false)
 
         }
     }

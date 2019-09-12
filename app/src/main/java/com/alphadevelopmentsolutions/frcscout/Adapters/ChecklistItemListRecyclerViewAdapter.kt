@@ -154,7 +154,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
                     finalChecklistItemResult.completedBy = viewHolder.completedByAutoCompleteTextView.text.toString()
                     finalChecklistItemResult.save(context.database)
                 } else
-                    context.showSnackbar("Please enter completed by.")
+                    context.showSnackbar("Please enter_secondary completed by.")
             }
         } else
         {

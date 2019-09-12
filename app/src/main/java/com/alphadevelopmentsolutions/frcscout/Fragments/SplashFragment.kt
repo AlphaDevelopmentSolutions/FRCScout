@@ -21,10 +21,10 @@ class SplashFragment : MasterFragment()
 
 
 
-    override fun onDetach()
+    override fun onDestroyView()
     {
         context.supportActionBar!!.show()
-        super.onDetach()
+        super.onDestroyView()
     }
 
 

@@ -11,6 +11,7 @@
     <color name="text_link">@color/primary_dark</color>
     <color name="divider">#0C000000</color>
     <color name="ripple">#dcdcdc</color>
+    <color name="background">#FAFAFA</color>
 
     <!--Stats colors-->
     <color name="autonomous">#FFD966</color>

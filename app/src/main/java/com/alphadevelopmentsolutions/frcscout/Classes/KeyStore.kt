@@ -4,9 +4,15 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 
-class KeyStore(context: MainActivity)
+class KeyStore(val context: MainActivity? = null)
 {
-    private var sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    private var sharedPreferences: SharedPreferences? = null
+
+    init
+    {
+        if(context != null)
+            sharedPreferences= PreferenceManager.getDefaultSharedPreferences(context)
+    }
 
     /**
      * Sets or adds a preference into the shared prefs
@@ -15,7 +21,7 @@ class KeyStore(context: MainActivity)
      */
     fun setPreference(key: String, value: Any)
     {
-        with(sharedPreferences.edit())
+        with(sharedPreferences!!.edit())
         {
 
             when (value)
@@ -40,7 +46,7 @@ class KeyStore(context: MainActivity)
      */
     fun getPreference(key: String, defaultValue: Any): Any
     {
-        return with(sharedPreferences)
+        return with(sharedPreferences!!)
         {
             when (defaultValue)
             {

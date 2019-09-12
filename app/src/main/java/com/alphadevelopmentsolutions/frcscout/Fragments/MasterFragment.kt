@@ -36,6 +36,8 @@ abstract class MasterFragment : Fragment()
 
     private var mListener: OnFragmentInteractionListener? = null
 
+    protected var zIndex: Float = -1f
+
     override fun onAttach(context: Context?)
     {
         super.onAttach(context)
@@ -53,6 +55,8 @@ abstract class MasterFragment : Fragment()
     {
         super.onDetach()
         mListener = null
+        context.currentZIndex--
+        context.currentZIndex--
     }
 
     interface OnFragmentInteractionListener
@@ -68,6 +72,10 @@ abstract class MasterFragment : Fragment()
         context = activity as MainActivity
         database = context.database
         gson = Gson()
+        context.currentZIndex++
+        context.currentZIndex++
+
+        zIndex = context.currentZIndex.toFloat()
 
         //check if any args were passed, specifically for team and match json
         if (arguments != null)

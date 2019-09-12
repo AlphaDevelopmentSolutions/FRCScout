@@ -55,6 +55,8 @@ class RobotMediaFragment : MasterFragment()
     {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_robot_media, container, false)
+        context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
+        view.z = zIndex
 
         robotMediaImageView = view.findViewById(R.id.RobotMediaImageView)
         robotMediaSaveButton = view.findViewById(R.id.RobotMediaSaveButton)
@@ -103,7 +105,7 @@ class RobotMediaFragment : MasterFragment()
                 //                    }
             }
 
-            //launch intent to take picture if none supplied
+            //launch intent to take picture if exit_main supplied
             //            if(robotThumbBitmap == null)
             //            {
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -137,14 +139,16 @@ class RobotMediaFragment : MasterFragment()
     }
 
 
-    override fun onDetach()
+    override fun onDestroyView()
     {
         //robot media never saved, delete image
         if (robotMedia == null)
             if (mediaFile!!.exists())
                 mediaFile!!.delete()
 
-        super.onDetach()
+        context.unlockDrawerLayout()
+
+        super.onDestroyView()
     }
 
     companion object
