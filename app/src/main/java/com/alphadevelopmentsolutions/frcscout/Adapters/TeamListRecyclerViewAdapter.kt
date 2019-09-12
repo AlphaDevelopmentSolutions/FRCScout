@@ -72,7 +72,9 @@ internal class TeamListRecyclerViewAdapter(private val match: Match?, private va
         {
             //Sends you to the team fragment
             viewHolder.viewTeamButton.setOnClickListener { context.changeFragment(TeamFragment.newInstance(teamList[viewHolder.adapterPosition]), true) }
-        } else
+        }
+
+        else
         {
             val scoutCards = team.getScoutCards(null, match, null, false, context.database)
 
@@ -81,12 +83,12 @@ internal class TeamListRecyclerViewAdapter(private val match: Match?, private va
             {
                 viewHolder.viewTeamButton.text = context.getString(R.string.view_scout_card)
                 //Sends you to the scout card fragment
-                viewHolder.viewTeamButton.setOnClickListener { context.changeFragment(ScoutCardFragment.newInstance(match, scoutCards[scoutCards.size - 1], teamList[viewHolder.adapterPosition]), true) }
+                viewHolder.viewTeamButton.setOnClickListener { context.changeFragment(ScoutCardFragment.newInstance(match, teamList[viewHolder.adapterPosition]), true) }
             } else
             {
                 viewHolder.viewTeamButton.text = context.getString(R.string.add_scout_card)
                 //Sends you to the scout card fragment
-                viewHolder.viewTeamButton.setOnClickListener { context.changeFragment(ScoutCardFragment.newInstance(match, null, teamList[viewHolder.adapterPosition]), true) }
+                viewHolder.viewTeamButton.setOnClickListener { context.changeFragment(ScoutCardFragment.newInstance(match, teamList[viewHolder.adapterPosition]), true) }
             }//no scout card found, add new one
 
             //Add a listener to the name of the team that when clicked will send you to the team page

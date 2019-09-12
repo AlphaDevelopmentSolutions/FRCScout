@@ -29,6 +29,9 @@ class MatchListFragment : MasterFragment()
 
             matches = Match.getObjects(event, null, team, database)
             searchedMatches = ArrayList(matches)
+
+            matchListRecyclerViewAdapter = MatchListRecyclerViewAdapter(event!!, team, searchedMatches, context, if (team == null) TeamListFragment::class.java else ScoutCardFragment::class.java)
+
         })
 
         loadMatchesThread.start()
@@ -41,6 +44,8 @@ class MatchListFragment : MasterFragment()
 
     private var previousSearchLength: Int = 0
 
+    private lateinit var matchListRecyclerViewAdapter: MatchListRecyclerViewAdapter
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
     {
@@ -49,7 +54,6 @@ class MatchListFragment : MasterFragment()
 
         loadMatchesThread.join()
 
-        val matchListRecyclerViewAdapter = MatchListRecyclerViewAdapter(event!!, team, searchedMatches, context, if (team == null) TeamListFragment::class.java else ScoutCardFragment::class.java)
         view.MatchListRecyclerView.layoutManager = LinearLayoutManager(activity)
         view.MatchListRecyclerView.adapter = matchListRecyclerViewAdapter
 

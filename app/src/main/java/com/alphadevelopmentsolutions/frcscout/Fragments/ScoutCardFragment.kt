@@ -97,11 +97,6 @@ class ScoutCardFragment : MasterFragment()
         return view
     }
 
-    override fun onResume()
-    {
-        super.onResume()
-    }
-
     override fun onDestroyView()
     {
         context.unlockDrawerLayout()
@@ -114,16 +109,14 @@ class ScoutCardFragment : MasterFragment()
         /**
          * Creates a new instance
          * @param match to get scout cards from
-         * @param scoutCardInfo to display on the fragment
          * @param team to get scout cards from
          * @return A new instance of fragment [ScoutCardFragment].
          */
-        fun newInstance(match: Match, scoutCardInfo: ScoutCardInfo?, team: Team): ScoutCardFragment
+        fun newInstance(match: Match, team: Team): ScoutCardFragment
         {
             val fragment = ScoutCardFragment()
             val args = Bundle()
             args.putString(ARG_MATCH_JSON, toJson(match))
-            args.putString(ARG_PARAM_SCOUT_CARD_JSON, toJson(scoutCardInfo))
             args.putString(ARG_TEAM_JSON, toJson(team))
             fragment.arguments = args
             return fragment
