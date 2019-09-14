@@ -4,7 +4,8 @@ interface Status
 {
     companion object
     {
-        val COMPLETE = "COMPLETE"
-        val INCOMPLETE = "INCOMPLETE"
+        const val COMPLETE = "COMPLETE"
+        const val INCOMPLETE = "INCOMPLETE"
+        const val UNSET = "UNSET"
     }
 }

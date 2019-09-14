@@ -7,9 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Button
-import android.widget.TextView
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItem
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItemResult
@@ -17,6 +14,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Status
 import com.alphadevelopmentsolutions.frcscout.R
+import kotlinx.android.synthetic.main.layout_card_checklist_item.view.*
 import java.util.*
 
 internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, private val checklistItems: ArrayList<ChecklistItem>, private val context: MainActivity) : RecyclerView.Adapter<ChecklistItemListRecyclerViewAdapter.ViewHolder>()
@@ -26,8 +24,6 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
 
     init
     {
-
-
         val userNames = ArrayList<String>()
 
         //get all users
@@ -40,30 +36,15 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
 
     }
 
-    internal class ViewHolder(view: View, context: MainActivity) : RecyclerView.ViewHolder(view)
+    internal class ViewHolder(val view: View, context: MainActivity) : RecyclerView.ViewHolder(view)
     {
-
-        var titleTextView: TextView
-        var statusTextView: TextView
-        var descriptionTextView: TextView
-
-        var completedByAutoCompleteTextView: AutoCompleteTextView
-
-        var toggleStatusButton: Button
-
         init
         {
+            view.CompleteButton.setTextColor(context.primaryColor)
+            (view.CompleteButton as MaterialButton).rippleColor = context.buttonRipple
 
-            titleTextView = view.findViewById(R.id.TitleTextView)
-
-            statusTextView = view.findViewById(R.id.StatusTextView)
-            descriptionTextView = view.findViewById(R.id.DescriptionTextView)
-
-            completedByAutoCompleteTextView = view.findViewById(R.id.CompletedByAutoCompleteTextView)
-
-            toggleStatusButton = view.findViewById(R.id.ToggleStatusButton)
-            toggleStatusButton.setTextColor(context.primaryColor)
-            (toggleStatusButton as MaterialButton).rippleColor = context.buttonRipple
+            view.IncompleteButton.setTextColor(context.primaryColor)
+            (view.IncompleteButton as MaterialButton).rippleColor = context.buttonRipple
         }
     }
 
@@ -72,16 +53,13 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
         //Inflate the event layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_checklist_item, viewGroup, false)
 
+        view.CompletedByAutoCompleteTextView.setAdapter(userNamesAdapter)
 
-        val viewHolder = ViewHolder(view, context)
-        viewHolder.completedByAutoCompleteTextView.setAdapter(userNamesAdapter)
-
-        return viewHolder
+        return ViewHolder(view, context)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
     {
-
         val checklistItem = checklistItems[viewHolder.adapterPosition]
 
         var checklistItemResult: ChecklistItemResult? = null
@@ -103,7 +81,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
                     checklistItem.serverId,
                     match.key,
 
-                    Status.INCOMPLETE,
+                    Status.UNSET,
 
                     "",
                     Date(),
@@ -112,54 +90,67 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
 
         val finalChecklistItemResult = checklistItemResult
 
-        viewHolder.titleTextView.text = checklistItem.title
-        viewHolder.descriptionTextView.text = checklistItem.description
-        viewHolder.statusTextView.text = finalChecklistItemResult.status
+        viewHolder.view.TitleTextView.text = checklistItem.title
+        viewHolder.view.DescriptionTextView.text = checklistItem.description
+        viewHolder.view.StatusTextView.text = finalChecklistItemResult.status
 
-        viewHolder.completedByAutoCompleteTextView.setText(finalChecklistItemResult.completedBy)
+        viewHolder.view.CompletedByAutoCompleteTextView.setText(finalChecklistItemResult.completedBy)
 
-        if (finalChecklistItemResult.status == Status.INCOMPLETE)
+        when(finalChecklistItemResult.status)
         {
-            viewHolder.statusTextView.text = Status.INCOMPLETE
-            viewHolder.statusTextView.setTextColor(ContextCompat.getColor(context, R.color.bad))
-            viewHolder.toggleStatusButton.setText(R.string.mark_complete)
-        } else
-        {
-            viewHolder.statusTextView.text = Status.COMPLETE
-            viewHolder.statusTextView.setTextColor(ContextCompat.getColor(context, R.color.good))
-            viewHolder.toggleStatusButton.setText(R.string.mark_incomplete)
+            Status.INCOMPLETE ->
+            {
+                viewHolder.view.StatusTextView.text = Status.INCOMPLETE
+                viewHolder.view.StatusTextView.setTextColor(ContextCompat.getColor(context, R.color.bad))
+            }
+
+            Status.COMPLETE ->
+            {
+                viewHolder.view.StatusTextView.text = Status.COMPLETE
+                viewHolder.view.StatusTextView.setTextColor(ContextCompat.getColor(context, R.color.good))
+            }
+
+            Status.UNSET ->
+            {
+                viewHolder.view.StatusTextView.text = Status.UNSET
+                viewHolder.view.StatusTextView.setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
+            }
         }
 
         //disable the editing of non draft results
         if (finalChecklistItemResult.isDraft)
         {
-            //update the status and save the item to the database
-            viewHolder.toggleStatusButton.setOnClickListener {
-                if (viewHolder.completedByAutoCompleteTextView.text.toString() != "")
+            viewHolder.view.IncompleteButton.setOnClickListener{
+                if (viewHolder.view.CompletedByAutoCompleteTextView.text.toString() != "")
                 {
-                    if (finalChecklistItemResult.status == Status.COMPLETE)
-                    {
-                        finalChecklistItemResult.status = Status.INCOMPLETE
-                        viewHolder.statusTextView.text = Status.INCOMPLETE
-                        viewHolder.statusTextView.setTextColor(ContextCompat.getColor(context, R.color.bad))
-                        viewHolder.toggleStatusButton.setText(R.string.mark_complete)
-                    } else
-                    {
-                        finalChecklistItemResult.status = Status.COMPLETE
-                        viewHolder.statusTextView.text = Status.COMPLETE
-                        viewHolder.statusTextView.setTextColor(ContextCompat.getColor(context, R.color.good))
-                        viewHolder.toggleStatusButton.setText(R.string.mark_incomplete)
-                    }
+                    viewHolder.view.StatusTextView.text = Status.INCOMPLETE
+                    viewHolder.view.StatusTextView.setTextColor(ContextCompat.getColor(context, R.color.bad))
 
-                    finalChecklistItemResult.completedBy = viewHolder.completedByAutoCompleteTextView.text.toString()
+                    finalChecklistItemResult.completedBy = viewHolder.view.CompletedByAutoCompleteTextView.text.toString()
                     finalChecklistItemResult.save(context.database)
+
                 } else
-                    context.showSnackbar("Please enter_secondary completed by.")
+                    context.showSnackbar("Please enter completed by.")
             }
-        } else
+
+            viewHolder.view.CompleteButton.setOnClickListener{
+                if (viewHolder.view.CompletedByAutoCompleteTextView.text.toString() != "")
+                {
+                    viewHolder.view.StatusTextView.text = Status.COMPLETE
+                    viewHolder.view.StatusTextView.setTextColor(ContextCompat.getColor(context, R.color.good))
+
+                    finalChecklistItemResult.completedBy = viewHolder.view.CompletedByAutoCompleteTextView.text.toString()
+                    finalChecklistItemResult.save(context.database)
+
+                } else
+                    context.showSnackbar("Please enter completed by.")
+            }
+        }
+        else
         {
-            viewHolder.completedByAutoCompleteTextView.isEnabled = false
-            viewHolder.toggleStatusButton.isEnabled = false
+            viewHolder.view.CompletedByAutoCompleteTextView.isEnabled = false
+            viewHolder.view.CompleteButton.isEnabled = false
+            viewHolder.view.IncompleteButton.isEnabled = false
         }
     }
 

@@ -76,8 +76,6 @@ class ChecklistItemResult(
         return ""
     }
 
-    //endregion
-
     //region Load, Save & Delete
 
     /**
