@@ -1,5 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.view.ViewPager
@@ -64,16 +65,14 @@ class TeamFragment : MasterFragment()
                 HeaderConstraintLayout.setBackgroundColor(primaryColor)
                 TeamTabLayout.setBackgroundColor(primaryColor)
                 TeamTabLayout.setSelectedTabIndicatorColor(primaryColorDark)
-                TeamFloatingActionMenu.menuButtonColorNormal = primaryColor
-                TeamFloatingActionMenu.menuButtonColorPressed = primaryColorDark
-                AddRobotPhotoFloatingActionButton.colorNormal = primaryColor
-                AddRobotPhotoFloatingActionButton.colorPressed = primaryColorDark
+                AddPhotoFab.backgroundTintList = ColorStateList.valueOf(primaryColor)
+                AddPhotoFab.rippleColor = primaryColorDark
             }
         }
 
         loadFragmentsThread.join()
 
-        view.AddRobotPhotoFloatingActionButton.setOnClickListener { context.changeFragment(RobotMediaFragment.newInstance(null, team!!), true) }
+        view.AddPhotoFab.setOnClickListener { context.changeFragment(RobotMediaFragment.newInstance(null, team!!), true) }
 
         //update the app bar title to the team name
         context.setToolbarTitle(team!!.toString())
@@ -141,7 +140,6 @@ class TeamFragment : MasterFragment()
                 }
             }
 
-
             TeamViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener
             {
                 override fun onPageScrolled(i: Int, v: Float, i1: Int)
@@ -151,12 +149,10 @@ class TeamFragment : MasterFragment()
 
                 override fun onPageSelected(i: Int)
                 {
-                    if (i == 3)
-                        TeamFloatingActionMenu.hideMenu(true)
-                    else if (TeamFloatingActionMenu.isMenuHidden)
-                        TeamFloatingActionMenu.showMenu(true)
-
-
+                    if (i == 2)
+                        AddPhotoFab.show()
+                    else if (AddPhotoFab.isShown)
+                        AddPhotoFab.hide()
                 }
 
                 override fun onPageScrollStateChanged(i: Int)
