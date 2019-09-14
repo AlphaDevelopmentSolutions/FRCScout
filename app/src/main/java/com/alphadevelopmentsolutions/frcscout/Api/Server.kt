@@ -664,7 +664,7 @@ abstract class Server internal constructor(
                     val robotMediaJson = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i)
 
                     val teamId = robotMediaJson.getInt(RobotMedia.COLUMN_NAME_TEAM_ID)
-                    var fileUri = Constants.WEB_URL + "/assets/robot-media/" + robotMediaJson.getString(RobotMedia.COLUMN_NAME_FILE_URI)
+                    var fileUri = Constants.WEB_URL + "/assets/robot-media/originals/" + robotMediaJson.getString(RobotMedia.COLUMN_NAME_FILE_URI)
 
                     fileUri = apiParser.downloadImage(fileUri, Constants.ROBOT_MEDIA_DIRECTORY, context).absolutePath
 
