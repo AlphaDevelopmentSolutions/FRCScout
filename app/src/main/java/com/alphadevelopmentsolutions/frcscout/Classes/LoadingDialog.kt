@@ -1,9 +1,11 @@
 package com.alphadevelopmentsolutions.frcscout.Classes
 
+import android.animation.ObjectAnimator
 import android.app.AlertDialog
 import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.R
 import kotlinx.android.synthetic.main.layout_dialog_loading_progress.view.*
@@ -26,7 +28,10 @@ class LoadingDialog(context: MainActivity, style: Style) : AlertDialog.Builder(c
     var progress: Int = 0
     set(value)
     {
-        view.ProgressBar.progress = value
+        val animator = ObjectAnimator.ofInt(view.ProgressBar, "progress", field, value)
+        animator.duration = 500
+        animator.interpolator = DecelerateInterpolator()
+        animator.start()
 
         field = value
     }

@@ -57,12 +57,6 @@ class QuickStatsFragment : MasterFragment()
             val scoutCardInfoKeys = ScoutCardInfoKey.getObjects(year!!, null, database) //scout card info keys for this year
             val scoutCardInfos = ScoutCardInfo.getObjects(event, null, null, null, null, false, database) //scout card infos for this event
 
-            //gets the height in DP to display
-            val dp = fun(height: Int): Int
-            {
-                return (height * context.resources.displayMetrics.density + 0.5f).toInt()
-            }
-
             if (!scoutCardInfoKeys.isNullOrEmpty() && !matches.isNullOrEmpty() && !scoutCardInfos.isNullOrEmpty())
             {
                 val eventStatsHashMap = event!!.getStats(year, scoutCardInfoKeys, scoutCardInfos, database) //get event avg data
@@ -108,7 +102,7 @@ class QuickStatsFragment : MasterFragment()
                     with(statChart)
                     {
                         layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                        layoutParams.height = dp(250)
+                        layoutParams.height = this@QuickStatsFragment.context.dp(250)
                         setTouchEnabled(false)
                         setDrawGridBackground(true)
                         isDragEnabled = false
@@ -194,7 +188,7 @@ class QuickStatsFragment : MasterFragment()
                             LinearLayout(context).apply{
                                 orientation = LinearLayout.VERTICAL
                                 layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                                setPadding(0, 0, 0, dp(8))
+                                setPadding(0, 0, 0, this@QuickStatsFragment.context.dp(8))
 
                                 //add the textview with the title to the linear layout
                                 addView(

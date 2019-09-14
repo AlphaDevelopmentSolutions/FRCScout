@@ -74,9 +74,11 @@ class ConfigViewPagerFragment : MasterFragment()
         return view
     }
 
+
     override fun onDestroyView()
     {
         context.supportActionBar!!.show()
+        context.unlockDrawerLayout()
         super.onDestroyView()
     }
 

@@ -79,6 +79,11 @@ class MainActivity : AppCompatActivity(),
 
     private var searchView: SearchView? = null
 
+    public val dp = fun(height: Int): Int
+    {
+        return (height * context.resources.displayMetrics.density + 0.5f).toInt()
+    }
+
     private val ACTION_BAR_ELEVATION = 11f
     private var progressDialogProgress: Int = 0
     var isOnline: Boolean = false
@@ -450,7 +455,7 @@ class MainActivity : AppCompatActivity(),
                 /**
                  * ROBOT MEDIA
                  */
-                if(!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false) as Boolean && withFilters))
+                if(keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false) as Boolean && withFilters)
                 {
                     progressDialogProgress += increaseFactor
                     context.runOnUiThread {
