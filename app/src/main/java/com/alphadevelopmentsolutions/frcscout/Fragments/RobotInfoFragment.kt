@@ -124,9 +124,22 @@ class RobotInfoFragment : MasterFragment()
 
             context.runOnUiThread{
 
+                if(layoutFields.size > 0)
+                    with(layoutFields[0].parent)
+                    {
+                        if(this != null)
+                        {
+                            if((this as ViewGroup).childCount > 0)
+                                this.removeAllViews()
+                        }
+                    }
+
                 //add all the dynamic form frags to the viewpager
                 for(layoutField in layoutFields)
+                {
                     view.RobotInfoFormListLinearLayout.addView(layoutField)
+                }
+
             }
 
         }).start()

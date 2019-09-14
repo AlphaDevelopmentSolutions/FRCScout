@@ -39,7 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:layout_constraintBottom_toTopOf="@+id/ViewMatchButton"
+                    app:layout_constraintBottom_toTopOf="@+id/ViewScoutCardButton"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/MatchOutcomeScoreLinearLayout">
 
@@ -78,7 +78,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:layout_constraintBottom_toTopOf="@+id/ViewMatchButton"
+                    app:layout_constraintBottom_toTopOf="@+id/ViewScoutCardButton"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/MatchOutcomeScoreLinearLayout">
 
@@ -117,7 +117,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:layout_constraintBottom_toTopOf="@+id/ViewMatchButton"
+                    app:layout_constraintBottom_toTopOf="@+id/ViewScoutCardButton"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/MatchOutcomeScoreLinearLayout">
 
@@ -156,7 +156,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:layout_constraintBottom_toTopOf="@+id/ViewMatchButton"
+                    app:layout_constraintBottom_toTopOf="@+id/ViewScoutCardButton"
                     app:layout_constraintStart_toEndOf="@+id/tableLayout"
                     app:layout_constraintTop_toBottomOf="@+id/MatchOutcomeScoreLinearLayout">
 
@@ -218,17 +218,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="1dp"
-                android:text="@string/view_card"
+                android:text="@string/view_match"
                 android:textAllCaps="true"
                 android:textColor="@color/text_link"
                 android:textSize="@dimen/text_secondary"
                 android:textStyle="bold"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
             <Button
-                android:id="@+id/AddCardButton"
+                android:id="@+id/ViewScoutCardButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="1dp"
+                android:text="@string/view_scout_card"
+                android:textAllCaps="true"
+                android:textColor="@color/text_link"
+                android:textSize="@dimen/text_secondary"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ViewMatchButton"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+            <Button
+                android:id="@+id/AddScoutCardButton"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -239,9 +256,25 @@
                 android:textStyle="bold"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ViewMatchButton"
+                app:layout_constraintStart_toEndOf="@+id/ViewScoutCardButton"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout"
                 app:layout_constraintVertical_bias="0.0" />
+
+            <Button
+                android:id="@+id/ViewChecklistItemButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="1dp"
+                android:text="@string/view_checklist"
+                android:textAllCaps="true"
+                android:textColor="@color/text_link"
+                android:textSize="@dimen/text_secondary"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/AddScoutCardButton"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
             <ImageView
                 android:id="@+id/MatchOptionsImageView"
