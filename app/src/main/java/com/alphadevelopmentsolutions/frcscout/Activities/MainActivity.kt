@@ -377,7 +377,7 @@ class MainActivity : AppCompatActivity(),
                 /**
                  * ROBOT INFO
                  */
-                if(keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, false) as Boolean)
+                if(!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, false) as Boolean && withFilters))
                 {
                     progressDialogProgress += increaseFactor
                     context.runOnUiThread {

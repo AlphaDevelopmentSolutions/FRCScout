@@ -12,7 +12,7 @@ class KeyStore(val context: MainActivity? = null)
     init
     {
         if(context != null)
-            sharedPreferences= PreferenceManager.getDefaultSharedPreferences(context)
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     }
 
     /**

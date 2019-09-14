@@ -12,18 +12,18 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfoKey
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.R
-import kotlinx.android.synthetic.main.fragment_scout_card.view.*
+import kotlinx.android.synthetic.main.fragment_scout_card_info.view.*
 import kotlinx.android.synthetic.main.layout_card_scout_card_info_form.view.*
-import kotlinx.android.synthetic.main.layout_field_scout_card_info.view.*
+import kotlinx.android.synthetic.main.layout_field_info.view.*
 
-class ScoutCardFragment : MasterFragment()
+class ScoutCardInfoFragment : MasterFragment()
 {
     override fun onBackPressed(): Boolean
     {
         return false
     }
 
-    private var fragCreationThread: Thread? = null
+    private lateinit var layoutCreationThread: Thread
 
     private var layoutFields: ArrayList<View> = ArrayList()
     private var scoutCardInfoKeyStates: LinkedHashMap<String, ArrayList<ScoutCardInfoKey>> = LinkedHashMap()
@@ -33,7 +33,7 @@ class ScoutCardFragment : MasterFragment()
         super.onCreate(savedInstanceState)
 
         //start the creation of fragments on a new thread
-        fragCreationThread = Thread(Runnable {
+        layoutCreationThread = Thread(Runnable {
             loadingThread.join()
 
             val scoutCardInfoKeys = ScoutCardInfoKey.getObjects(year, null, database)
@@ -60,7 +60,7 @@ class ScoutCardFragment : MasterFragment()
                     fieldLinearLayout.orientation = LinearLayout.VERTICAL
                     fieldLinearLayout.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
-                    val infoKeyView = context.layoutInflater.inflate(R.layout.layout_field_scout_card_info, null)
+                    val infoKeyView = context.layoutInflater.inflate(R.layout.layout_field_info, null)
 
                     var scoutCardInfo = ScoutCardInfo(
                             -1,
@@ -198,7 +198,7 @@ class ScoutCardFragment : MasterFragment()
                 layoutFields.add(view)
             }
         })
-        fragCreationThread!!.start()
+        layoutCreationThread.start()
 
     }
 
@@ -206,7 +206,7 @@ class ScoutCardFragment : MasterFragment()
                               savedInstanceState: Bundle?): View?
     {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_scout_card, container, false)
+        val view = inflater.inflate(R.layout.fragment_scout_card_info, container, false)
         view.z = zIndex
 
         //gets rid of the shadow on the actionbar
@@ -214,18 +214,22 @@ class ScoutCardFragment : MasterFragment()
         context.isToolbarScrollable = false
         context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
 
-
-
-
-        fragCreationThread!!.join()
-
-        //add all the dynamic form frags to the viewpager
-        for(layoutField in layoutFields)
-            view.ScoutCardInfoFormListLinearLayout.addView(layoutField)
-
+        loadingThread.join()
 
         //update the title of the page to display the match
         context.setToolbarTitle(match!!.matchType.toString(match!!))
+
+        Thread(Runnable{
+            layoutCreationThread.join()
+
+            context.runOnUiThread{
+
+                //add all the dynamic form frags to the viewpager
+                for(layoutField in layoutFields)
+                    view.ScoutCardInfoFormListLinearLayout.addView(layoutField)
+            }
+
+        }).start()
 
         return view
     }
@@ -243,11 +247,11 @@ class ScoutCardFragment : MasterFragment()
          * Creates a new instance
          * @param match to get scout cards from
          * @param team to get scout cards from
-         * @return A new instance of fragment [ScoutCardFragment].
+         * @return A new instance of fragment [ScoutCardInfoFragment].
          */
-        fun newInstance(match: Match, team: Team): ScoutCardFragment
+        fun newInstance(match: Match, team: Team): ScoutCardInfoFragment
         {
-            val fragment = ScoutCardFragment()
+            val fragment = ScoutCardInfoFragment()
             val args = Bundle()
             args.putString(ARG_MATCH_JSON, toJson(match))
             args.putString(ARG_TEAM_JSON, toJson(team))

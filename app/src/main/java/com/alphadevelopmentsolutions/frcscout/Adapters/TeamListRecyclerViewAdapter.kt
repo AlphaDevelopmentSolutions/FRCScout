@@ -12,7 +12,7 @@ import android.widget.TextView
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
-import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment
+import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardInfoFragment
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment
 import com.alphadevelopmentsolutions.frcscout.R
 import com.squareup.picasso.Picasso
@@ -83,12 +83,12 @@ internal class TeamListRecyclerViewAdapter(private val match: Match?, private va
             {
                 viewHolder.viewTeamButton.text = context.getString(R.string.view_scout_card)
                 //Sends you to the scout card fragment
-                viewHolder.viewTeamButton.setOnClickListener { context.changeFragment(ScoutCardFragment.newInstance(match, teamList[viewHolder.adapterPosition]), true) }
+                viewHolder.viewTeamButton.setOnClickListener { context.changeFragment(ScoutCardInfoFragment.newInstance(match, teamList[viewHolder.adapterPosition]), true) }
             } else
             {
                 viewHolder.viewTeamButton.text = context.getString(R.string.add_scout_card)
                 //Sends you to the scout card fragment
-                viewHolder.viewTeamButton.setOnClickListener { context.changeFragment(ScoutCardFragment.newInstance(match, teamList[viewHolder.adapterPosition]), true) }
+                viewHolder.viewTeamButton.setOnClickListener { context.changeFragment(ScoutCardInfoFragment.newInstance(match, teamList[viewHolder.adapterPosition]), true) }
             }//no scout card found, add new one
 
             //Add a listener to the name of the team that when clicked will send you to the team page

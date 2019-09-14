@@ -8,10 +8,7 @@ import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.TableRow
-import android.widget.TextView
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
@@ -19,7 +16,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor
 import com.alphadevelopmentsolutions.frcscout.Fragments.ChecklistFragment
-import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardFragment
+import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardInfoFragment
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment
 import com.alphadevelopmentsolutions.frcscout.R
@@ -233,7 +230,7 @@ internal class MatchListRecyclerViewAdapter(
 
 
         //logic for showing the view scout card button
-        if (fragmentOnClick == ScoutCardFragment::class.java)
+        if (fragmentOnClick == ScoutCardInfoFragment::class.java)
         {
             if(scoutCards[match] == null || scoutCards[match]!!.size < 1)
                 scoutCards[match] = ScoutCardInfo.getObjects(event, match, team, null, null, false, context.database)
@@ -247,7 +244,7 @@ internal class MatchListRecyclerViewAdapter(
                 //Sends you to the scout card fragment
                 viewHolder.view.AddCardButton.setOnClickListener {
                     //add new card
-                    context.changeFragment(ScoutCardFragment.newInstance(match, team!!), true)
+                    context.changeFragment(ScoutCardInfoFragment.newInstance(match, team!!), true)
                 }
             }
 
@@ -260,7 +257,7 @@ internal class MatchListRecyclerViewAdapter(
                 //Sends you to the scout card fragment
                 viewHolder.view.ViewMatchButton.setOnClickListener {
                     //show match
-                    context.changeFragment(ScoutCardFragment.newInstance(match, team!!), true)
+                    context.changeFragment(ScoutCardInfoFragment.newInstance(match, team!!), true)
                 }
             }
         }

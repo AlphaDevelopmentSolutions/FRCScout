@@ -52,10 +52,10 @@ class ConfigViewPagerFragment : MasterFragment()
             override fun onPageSelected(p0: Int)
             {
                 if(p0 + 1 == view.ViewPager.adapter!!.count)
-                    view.NextBackButton.text = getString(R.string.back)
+                    view.NextBackButton.text = context.getString(R.string.back)
 
                 else
-                    view.NextBackButton.text = getString(R.string.next)
+                    view.NextBackButton.text = context.getString(R.string.next)
 
             }
 
@@ -64,7 +64,7 @@ class ConfigViewPagerFragment : MasterFragment()
         //change the page according to button text
         view.NextBackButton.setOnClickListener {
 
-            if(view.NextBackButton.text == getString(R.string.next))
+            if(view.NextBackButton.text == context.getString(R.string.next))
                 view.ViewPager.currentItem = view.ViewPager.currentItem + 1
 
             else

@@ -30,7 +30,7 @@ class MatchListFragment : MasterFragment()
             matches = Match.getObjects(event, null, team, database)
             searchedMatches = ArrayList(matches)
 
-            matchListRecyclerViewAdapter = MatchListRecyclerViewAdapter(event!!, team, searchedMatches, context, if (team == null) TeamListFragment::class.java else ScoutCardFragment::class.java)
+            matchListRecyclerViewAdapter = MatchListRecyclerViewAdapter(event!!, team, searchedMatches, context, if (team == null) TeamListFragment::class.java else ScoutCardInfoFragment::class.java)
 
         })
 

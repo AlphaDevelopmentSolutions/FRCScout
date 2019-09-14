@@ -57,7 +57,7 @@ class RobotInfo(
          * @param database used to load
          * @return arraylist of robotInfo
          */
-        fun getObjects(year: Year?, event: Event?, team: Team?, robotInfoKey: RobotInfoKey?, robotInfo: RobotInfo?, onlyDrafts: Boolean, database: Database): ArrayList<RobotInfo>?
+        fun getObjects(year: Year?, event: Event?, team: Team?, robotInfoKey: RobotInfoKey?, robotInfo: RobotInfo?, onlyDrafts: Boolean, database: Database): ArrayList<RobotInfo>
         {
             return database.getRobotInfo(year, event, team, robotInfoKey, robotInfo, onlyDrafts)
         }

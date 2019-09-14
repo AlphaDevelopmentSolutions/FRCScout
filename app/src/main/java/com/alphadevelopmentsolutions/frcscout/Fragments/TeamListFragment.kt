@@ -175,8 +175,8 @@ class TeamListFragment : MasterFragment()
 
             val viewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
 
-            viewPagerAdapter.addFragment(newInstance(match, AllianceColor.BLUE), getString(R.string.blue_alliance))
-            viewPagerAdapter.addFragment(newInstance(match, AllianceColor.RED), getString(R.string.red_alliance))
+            viewPagerAdapter.addFragment(newInstance(match, AllianceColor.BLUE), context.getString(R.string.blue_alliance))
+            viewPagerAdapter.addFragment(newInstance(match, AllianceColor.RED), context.getString(R.string.red_alliance))
 
             view.AllianceViewPager.adapter = viewPagerAdapter
             view.AllianceTabLayout.setupWithViewPager(view.AllianceViewPager)

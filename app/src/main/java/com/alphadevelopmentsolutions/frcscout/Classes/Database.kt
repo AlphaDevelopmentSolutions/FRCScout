@@ -1209,7 +1209,7 @@ class Database(context: MainActivity)
      * @param onlyDrafts if true, filters by only drafts
      * @return object based off given team ID
      */
-    fun getRobotInfo(year: Year?, event: Event?, team: Team?, robotInfoKey: RobotInfoKey?, robotInfo: RobotInfo?, onlyDrafts: Boolean): ArrayList<RobotInfo>?
+    fun getRobotInfo(year: Year?, event: Event?, team: Team?, robotInfoKey: RobotInfoKey?, robotInfo: RobotInfo?, onlyDrafts: Boolean): ArrayList<RobotInfo>
     {
         val robotInfos = ArrayList<RobotInfo>()
 
@@ -1274,12 +1274,10 @@ class Database(context: MainActivity)
             }
 
             cursor.close()
-
-            return robotInfos
         }
 
 
-        return null
+        return robotInfos
     }
 
     /**
@@ -1378,7 +1376,7 @@ class Database(context: MainActivity)
      * @param robotInfoKey if specified, filters by robotInfoKey id
      * @return object based off given team ID
      */
-    fun getRobotInfoKeys(year: Year?, robotInfoKey: RobotInfoKey?): ArrayList<RobotInfoKey>?
+    fun getRobotInfoKeys(year: Year?, robotInfoKey: RobotInfoKey?): ArrayList<RobotInfoKey>
     {
         val robotInfoKeys = ArrayList<RobotInfoKey>()
 
@@ -1421,12 +1419,10 @@ class Database(context: MainActivity)
             }
 
             cursor.close()
-
-            return robotInfoKeys
         }
 
 
-        return null
+        return robotInfoKeys
     }
 
     /**
