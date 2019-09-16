@@ -236,55 +236,67 @@ internal class MatchListRecyclerViewAdapter(
 
 
         //logic for showing the view scout card button
-        if (fragmentOnClick == ScoutCardInfoFragment::class.java)
+        when (fragmentOnClick)
         {
-            if(scoutCards[match] == null || scoutCards[match]!!.size < 1)
-                scoutCards[match] = ScoutCardInfo.getObjects(event, match, team, null, null, false, context.database)
-
-            //no card available, show the add card button
-            if (scoutCards[match]!!.size < 1)
+            ScoutCardInfoFragment::class.java ->
             {
-                viewHolder.view.AddScoutCardButton.visibility = View.VISIBLE
+                viewHolder.view.ViewMatchButton.visibility = View.GONE
+                viewHolder.view.ViewChecklistItemButton.visibility = View.GONE
+                viewHolder.view.ViewScoutCardButton.visibility = View.GONE
+                viewHolder.view.AddScoutCardButton.visibility = View.GONE
 
-                //Sends you to the scout card fragment
-                viewHolder.view.AddScoutCardButton.setOnClickListener {
-                    //add new card
-                    context.changeFragment(ScoutCardInfoFragment.newInstance(match, team!!), true)
+                if(scoutCards[match] == null || scoutCards[match]!!.size < 1)
+                    scoutCards[match] = ScoutCardInfo.getObjects(event, match, team, null, null, false, context.database)
+
+                //no card available, show the add card button
+                if (scoutCards[match]!!.size < 1)
+                {
+                    viewHolder.view.AddScoutCardButton.visibility = View.VISIBLE
+
+                    //Sends you to the scout card fragment
+                    viewHolder.view.AddScoutCardButton.setOnClickListener {
+                        //add new card
+                        context.changeFragment(ScoutCardInfoFragment.newInstance(match, team!!), true)
+                    }
                 }
-            }
 
-            //card available, show the view match button
-            else
+                //card available, show the view match button
+                else
+                {
+                    viewHolder.view.ViewScoutCardButton.visibility = View.VISIBLE
+
+                    //Sends you to the scout card fragment
+                    viewHolder.view.ViewScoutCardButton.setOnClickListener {
+                        //show match
+                        context.changeFragment(ScoutCardInfoFragment.newInstance(match, team!!), true)
+                    }
+                }
+
+                viewHolder.view.ViewMatchButton.visibility = View.VISIBLE
+
+                //Sends you to the match overview fragment
+                viewHolder.view.ViewMatchButton.setOnClickListener { context.changeFragment(TeamListFragment.newInstance(matches[viewHolder.adapterPosition], null), true) }
+            }
+            ChecklistFragment::class.java ->
             {
-                viewHolder.view.ViewScoutCardButton.visibility = View.VISIBLE
+                viewHolder.view.ViewChecklistItemButton.visibility = View.VISIBLE
+                viewHolder.view.ViewMatchButton.visibility = View.GONE
+                viewHolder.view.ViewScoutCardButton.visibility = View.GONE
+                viewHolder.view.AddScoutCardButton.visibility = View.GONE
 
-                //Sends you to the scout card fragment
-                viewHolder.view.ViewScoutCardButton.setOnClickListener {
-                    //show match
-                    context.changeFragment(ScoutCardInfoFragment.newInstance(match, team!!), true)
-                }
+                //Sends you to the checklist fragment
+                viewHolder.view.ViewChecklistItemButton.setOnClickListener { context.changeFragment(ChecklistFragment.newInstance(team!!, matches[viewHolder.adapterPosition]), true) }
             }
+            TeamListFragment::class.java ->
+            {
+                viewHolder.view.ViewMatchButton.visibility = View.VISIBLE
+                viewHolder.view.ViewChecklistItemButton.visibility = View.GONE
+                viewHolder.view.ViewScoutCardButton.visibility = View.GONE
+                viewHolder.view.AddScoutCardButton.visibility = View.GONE
 
-            viewHolder.view.ViewMatchButton.visibility = View.VISIBLE
-
-            //Sends you to the match overview fragment
-            viewHolder.view.ViewMatchButton.setOnClickListener { context.changeFragment(TeamListFragment.newInstance(matches[viewHolder.adapterPosition], null), true) }
-        }
-
-        else if (fragmentOnClick == ChecklistFragment::class.java)
-        {
-            viewHolder.view.ViewChecklistItemButton.visibility = View.VISIBLE
-
-            //Sends you to the checklist fragment
-            viewHolder.view.ViewChecklistItemButton.setOnClickListener { context.changeFragment(ChecklistFragment.newInstance(team!!, matches[viewHolder.adapterPosition]), true) }
-        }
-
-        else if (fragmentOnClick == TeamListFragment::class.java)
-        {
-            viewHolder.view.ViewMatchButton.visibility = View.VISIBLE
-
-            //Sends you to the match overview fragment
-            viewHolder.view.ViewMatchButton.setOnClickListener { context.changeFragment(TeamListFragment.newInstance(matches[viewHolder.adapterPosition], null), true) }
+                //Sends you to the match overview fragment
+                viewHolder.view.ViewMatchButton.setOnClickListener { context.changeFragment(TeamListFragment.newInstance(matches[viewHolder.adapterPosition], null), true) }
+            }
         }
     }
 

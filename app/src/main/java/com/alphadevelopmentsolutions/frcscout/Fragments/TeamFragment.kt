@@ -160,6 +160,9 @@ class TeamFragment : MasterFragment()
 
                 }
             })
+
+            if(TeamViewPager.currentItem != 2)
+                AddPhotoFab.hide()
         }
 
         return view
