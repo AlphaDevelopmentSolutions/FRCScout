@@ -89,12 +89,12 @@ class Match(
      * @return Status enum
      */
     val matchStatus: Status
-        get() = if (blueAllianceScore == redAllianceScore)
-            Status.TIE
-        else if (blueAllianceScore > redAllianceScore)
-            Status.BLUE
-        else
-            Status.RED
+        get() = when
+        {
+            blueAllianceScore == redAllianceScore -> Status.TIE
+            blueAllianceScore > redAllianceScore -> Status.BLUE
+            else -> Status.RED
+        }
 
     /**
      * This references the types defined by the blue alliance API

@@ -25,13 +25,26 @@ import java.lang.reflect.Type
 import java.util.*
 
 internal class MatchListRecyclerViewAdapter(
-        private val event: Event,
+        event: Event,
         private val team: Team?,
         private val matches: ArrayList<Match>,
         private val context: MainActivity,
         private val fragmentOnClick: Type) : RecyclerView.Adapter<MatchListRecyclerViewAdapter.ViewHolder>()
 {
     private val scoutCards: HashMap<Match, ArrayList<ScoutCardInfo>> = HashMap()
+
+    init
+    {
+        if(fragmentOnClick == ScoutCardInfoFragment::class.java)
+        {
+            for(match in matches)
+            {
+                scoutCards[match] = ScoutCardInfo.getObjects(event, match, team, null, null, false, context.database)
+            }
+        }
+
+
+    }
 
     internal class ViewHolder(val view: View, context: MainActivity) : RecyclerView.ViewHolder(view)
     {
@@ -61,7 +74,6 @@ internal class MatchListRecyclerViewAdapter(
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
     {
-
         val match = matches[viewHolder.adapterPosition]
 
         //set match numbers
@@ -113,24 +125,22 @@ internal class MatchListRecyclerViewAdapter(
         viewHolder.view.BlueAllianceScoreTextView.text = match.blueAllianceScore.toString()
         viewHolder.view.RedAllianceScoreTextView.text = match.redAllianceScore.toString()
 
-        var selectedTeamAllianceColor: AllianceColor? = null
-        var spannableString: SpannableString
-
-        //set the bold text for the winning team
-        val matchStatus = match.matchStatus
-
         //team specified, style according to specified team
         if (team != null)
         {
+
+            var spannableString = SpannableString(team.id.toString())
+            spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
+
+            var selectedTeamAllianceColor: AllianceColor? = null
+
             //add the underline when viewing matches for a specific team
             when
             {
                 team.id == match.blueAllianceTeamOneId ->
                 {
-                    spannableString = SpannableString(team.id.toString())
-                    spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
-                    viewHolder.view.BlueAllianceTeamOneIdTextView.text = spannableString
 
+                    viewHolder.view.BlueAllianceTeamOneIdTextView.text = spannableString
                     selectedTeamAllianceColor = AllianceColor.BLUE
                 }
                 team.id == match.blueAllianceTeamTwoId ->
@@ -191,48 +201,52 @@ internal class MatchListRecyclerViewAdapter(
             }
         }
 
-        when
+        //set the bold text for the winning team
+        with(match.matchStatus)
         {
-            matchStatus === Match.Status.BLUE ->
+            when
             {
-                viewHolder.view.BlueAllianceTeamOneIdTextView.setTypeface(null, Typeface.BOLD)
-                viewHolder.view.BlueAllianceTeamTwoIdTextView.setTypeface(null, Typeface.BOLD)
-                viewHolder.view.BlueAllianceTeamThreeIdTextView.setTypeface(null, Typeface.BOLD)
-                viewHolder.view.BlueAllianceScoreTextView.setTypeface(null, Typeface.BOLD)
+                this === Match.Status.BLUE ->
+                {
+                    viewHolder.view.BlueAllianceTeamOneIdTextView.setTypeface(null, Typeface.BOLD)
+                    viewHolder.view.BlueAllianceTeamTwoIdTextView.setTypeface(null, Typeface.BOLD)
+                    viewHolder.view.BlueAllianceTeamThreeIdTextView.setTypeface(null, Typeface.BOLD)
+                    viewHolder.view.BlueAllianceScoreTextView.setTypeface(null, Typeface.BOLD)
 
-                viewHolder.view.RedAllianceTeamOneIdTextView.setTypeface(null, Typeface.NORMAL)
-                viewHolder.view.RedAllianceTeamTwoIdTextView.setTypeface(null, Typeface.NORMAL)
-                viewHolder.view.RedAllianceTeamThreeIdTextView.setTypeface(null, Typeface.NORMAL)
-                viewHolder.view.RedAllianceScoreTextView.setTypeface(null, Typeface.NORMAL)
-            }
-            matchStatus === Match.Status.RED ->
-            {
-                viewHolder.view.BlueAllianceTeamOneIdTextView.setTypeface(null, Typeface.NORMAL)
-                viewHolder.view.BlueAllianceTeamTwoIdTextView.setTypeface(null, Typeface.NORMAL)
-                viewHolder.view.BlueAllianceTeamThreeIdTextView.setTypeface(null, Typeface.NORMAL)
-                viewHolder.view.BlueAllianceScoreTextView.setTypeface(null, Typeface.NORMAL)
+                    viewHolder.view.RedAllianceTeamOneIdTextView.setTypeface(null, Typeface.NORMAL)
+                    viewHolder.view.RedAllianceTeamTwoIdTextView.setTypeface(null, Typeface.NORMAL)
+                    viewHolder.view.RedAllianceTeamThreeIdTextView.setTypeface(null, Typeface.NORMAL)
+                    viewHolder.view.RedAllianceScoreTextView.setTypeface(null, Typeface.NORMAL)
+                }
+                this === Match.Status.RED ->
+                {
+                    viewHolder.view.BlueAllianceTeamOneIdTextView.setTypeface(null, Typeface.NORMAL)
+                    viewHolder.view.BlueAllianceTeamTwoIdTextView.setTypeface(null, Typeface.NORMAL)
+                    viewHolder.view.BlueAllianceTeamThreeIdTextView.setTypeface(null, Typeface.NORMAL)
+                    viewHolder.view.BlueAllianceScoreTextView.setTypeface(null, Typeface.NORMAL)
 
-                viewHolder.view.RedAllianceTeamOneIdTextView.setTypeface(null, Typeface.BOLD)
-                viewHolder.view.RedAllianceTeamTwoIdTextView.setTypeface(null, Typeface.BOLD)
-                viewHolder.view.RedAllianceTeamThreeIdTextView.setTypeface(null, Typeface.BOLD)
-                viewHolder.view.RedAllianceScoreTextView.setTypeface(null, Typeface.BOLD)
-            }
-            matchStatus === Match.Status.TIE ->
-            {
-                viewHolder.view.BlueAllianceTeamOneIdTextView.setTypeface(null, Typeface.NORMAL)
-                viewHolder.view.BlueAllianceTeamTwoIdTextView.setTypeface(null, Typeface.NORMAL)
-                viewHolder.view.BlueAllianceTeamThreeIdTextView.setTypeface(null, Typeface.NORMAL)
-                viewHolder.view.BlueAllianceScoreTextView.setTypeface(null, Typeface.NORMAL)
+                    viewHolder.view.RedAllianceTeamOneIdTextView.setTypeface(null, Typeface.BOLD)
+                    viewHolder.view.RedAllianceTeamTwoIdTextView.setTypeface(null, Typeface.BOLD)
+                    viewHolder.view.RedAllianceTeamThreeIdTextView.setTypeface(null, Typeface.BOLD)
+                    viewHolder.view.RedAllianceScoreTextView.setTypeface(null, Typeface.BOLD)
+                }
+                this === Match.Status.TIE ->
+                {
+                    viewHolder.view.BlueAllianceTeamOneIdTextView.setTypeface(null, Typeface.NORMAL)
+                    viewHolder.view.BlueAllianceTeamTwoIdTextView.setTypeface(null, Typeface.NORMAL)
+                    viewHolder.view.BlueAllianceTeamThreeIdTextView.setTypeface(null, Typeface.NORMAL)
+                    viewHolder.view.BlueAllianceScoreTextView.setTypeface(null, Typeface.NORMAL)
 
-                viewHolder.view.RedAllianceTeamOneIdTextView.setTypeface(null, Typeface.NORMAL)
-                viewHolder.view.RedAllianceTeamTwoIdTextView.setTypeface(null, Typeface.NORMAL)
-                viewHolder.view.RedAllianceTeamThreeIdTextView.setTypeface(null, Typeface.NORMAL)
-                viewHolder.view.RedAllianceScoreTextView.setTypeface(null, Typeface.NORMAL)
+                    viewHolder.view.RedAllianceTeamOneIdTextView.setTypeface(null, Typeface.NORMAL)
+                    viewHolder.view.RedAllianceTeamTwoIdTextView.setTypeface(null, Typeface.NORMAL)
+                    viewHolder.view.RedAllianceTeamThreeIdTextView.setTypeface(null, Typeface.NORMAL)
+                    viewHolder.view.RedAllianceScoreTextView.setTypeface(null, Typeface.NORMAL)
+                }
             }
         }
 
         //Opens an option menu for various options on that score card
-        viewHolder.view.MatchOptionsImageView.setOnClickListener { } //TODO: options menu
+//        viewHolder.view.MatchOptionsImageView.setOnClickListener { } //TODO: options menu
 
 
         //logic for showing the view scout card button
@@ -244,9 +258,6 @@ internal class MatchListRecyclerViewAdapter(
                 viewHolder.view.ViewChecklistItemButton.visibility = View.GONE
                 viewHolder.view.ViewScoutCardButton.visibility = View.GONE
                 viewHolder.view.AddScoutCardButton.visibility = View.GONE
-
-                if(scoutCards[match] == null || scoutCards[match]!!.size < 1)
-                    scoutCards[match] = ScoutCardInfo.getObjects(event, match, team, null, null, false, context.database)
 
                 //no card available, show the add card button
                 if (scoutCards[match]!!.size < 1)
@@ -260,7 +271,7 @@ internal class MatchListRecyclerViewAdapter(
                     }
                 }
 
-                //card available, show the view match button
+                //card available, show the view scout card button
                 else
                 {
                     viewHolder.view.ViewScoutCardButton.visibility = View.VISIBLE
