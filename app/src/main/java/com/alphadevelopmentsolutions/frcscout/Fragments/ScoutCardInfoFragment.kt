@@ -207,17 +207,6 @@ class ScoutCardInfoFragment : MasterFragment()
     {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_scout_card_info, container, false)
-        view.z = zIndex
-
-        //gets rid of the shadow on the actionbar
-        context.dropActionBar()
-        context.isToolbarScrollable = false
-        context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
-
-        loadingThread.join()
-
-        //update the title of the page to display the match
-        context.setToolbarTitle(match!!.matchType.toString(match!!))
 
         Thread(Runnable{
             layoutCreationThread.join()
@@ -227,11 +216,24 @@ class ScoutCardInfoFragment : MasterFragment()
                 //add all the dynamic form frags to the viewpager
                 for(layoutField in layoutFields)
                     view.ScoutCardInfoFormListLinearLayout.addView(layoutField)
+
+                isLoading = false
             }
 
         }).start()
 
-        return view
+        //gets rid of the shadow on the actionbar
+        context.dropActionBar()
+        context.isToolbarScrollable = false
+        context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
+
+        loadingThread.join()
+        isLoading = true
+
+        //update the title of the page to display the match
+        context.setToolbarTitle(match!!.matchType.toString(match!!))
+
+        return super.onCreateView(view, true)
     }
 
     override fun onDestroyView()

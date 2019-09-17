@@ -140,11 +140,15 @@ class RobotInfoFragment : MasterFragment()
                     view.RobotInfoFormListLinearLayout.addView(layoutField)
                 }
 
+                isLoading = false
             }
 
         }).start()
 
-        return view
+        loadingThread.join()
+        isLoading = true
+
+        return super.onCreateView(view, true)
     }
 
     companion object

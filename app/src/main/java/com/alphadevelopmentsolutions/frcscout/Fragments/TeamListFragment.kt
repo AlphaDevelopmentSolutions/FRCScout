@@ -37,6 +37,8 @@ class TeamListFragment : MasterFragment()
 
     private var previousSearchLength: Int = 0
 
+    private lateinit var teamListAdapter: TeamListRecyclerViewAdapter
+
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
@@ -73,6 +75,8 @@ class TeamListFragment : MasterFragment()
             } else
                 //add all the teams to the searchedTeams arraylist
                 ArrayList(teams!!)
+
+            teamListAdapter = TeamListRecyclerViewAdapter(match, searchedTeams!!, context)
         })
 
         loadTeamsThread!!.start()
@@ -87,22 +91,31 @@ class TeamListFragment : MasterFragment()
         //gets rid of the shadow on the actionbar
         context.dropActionBar()
 
-        view.AllianceTabLayout.setBackgroundColor(context.primaryColor)
-
-        //join back up with the load thread
-        loadTeamsThread!!.join()
+        loadingThread.join()
 
         context.setToolbarTitle(if (match == null) event!!.name!! else match.toString())
         context.isSearchViewVisible = match == null
         context.isToolbarScrollable = match == null
 
+        view.AllianceTabLayout.setBackgroundColor(context.primaryColor)
 
         if (match == null || allianceColor == AllianceColor.BLUE || allianceColor == AllianceColor.RED)
         {
-            val teamListRecyclerViewAdapter = TeamListRecyclerViewAdapter(match, searchedTeams!!, context)
+            Thread(Runnable{
+                //join back up with the load thread
+                loadTeamsThread!!.join()
 
-            view.TeamsRecyclerView.layoutManager = LinearLayoutManager(context)
-            view.TeamsRecyclerView.adapter = teamListRecyclerViewAdapter
+                val layoutManager = LinearLayoutManager(context)
+
+                context.runOnUiThread{
+
+                    view.TeamsRecyclerView.layoutManager = layoutManager
+                    view.TeamsRecyclerView.adapter = teamListAdapter
+
+                    isLoading = false
+                }
+
+            }).start()
 
             if(match == null)
             {
@@ -129,8 +142,8 @@ class TeamListFragment : MasterFragment()
                                 {
                                     //add it and notify the recyclerview
                                     searchedTeams!!.add(i, team)
-                                    teamListRecyclerViewAdapter.notifyItemInserted(i)
-                                    teamListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedTeams!!.size)
+                                    teamListAdapter.notifyItemInserted(i)
+                                    teamListAdapter.notifyItemRangeChanged(i, searchedTeams!!.size)
                                 }
 
                             }
@@ -148,8 +161,8 @@ class TeamListFragment : MasterFragment()
                             {
                                 //remove it from the list and notify the recyclerview
                                 searchedTeams!!.removeAt(i)
-                                teamListRecyclerViewAdapter.notifyItemRemoved(i)
-                                teamListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedTeams!!.size)
+                                teamListAdapter.notifyItemRemoved(i)
+                                teamListAdapter.notifyItemRangeChanged(i, searchedTeams!!.size)
 
                                 //this prevents the index from passing the size of the list,
                                 //stays on the same index until you NEED to move to the next one
@@ -168,24 +181,38 @@ class TeamListFragment : MasterFragment()
 
         } else
         {
-            view.z = zIndex
             context.setToolbarTitle(match.toString())
             view.AllianceViewPagerLinearLayout.visibility = View.VISIBLE
             view.TeamsRecyclerView.visibility = View.GONE
 
-            val viewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
+            Thread(Runnable{
 
-            viewPagerAdapter.addFragment(newInstance(match, AllianceColor.BLUE), context.getString(R.string.blue_alliance))
-            viewPagerAdapter.addFragment(newInstance(match, AllianceColor.RED), context.getString(R.string.red_alliance))
+                val viewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
 
-            view.AllianceViewPager.adapter = viewPagerAdapter
-            view.AllianceTabLayout.setupWithViewPager(view.AllianceViewPager)
-            view.AllianceTabLayout.setSelectedTabIndicatorColor(context.primaryColorDark)
+                val blueAllianceFrag = newInstance(match, AllianceColor.BLUE)
+                val redAllianceFrag = newInstance(match, AllianceColor.RED)
+
+                viewPagerAdapter.addFragment(blueAllianceFrag, context.getString(R.string.blue_alliance))
+                viewPagerAdapter.addFragment(redAllianceFrag, context.getString(R.string.red_alliance))
+
+                context.runOnUiThread {
+                    view.AllianceViewPager.adapter = viewPagerAdapter
+                    view.AllianceTabLayout.setupWithViewPager(view.AllianceViewPager)
+                    view.AllianceTabLayout.setSelectedTabIndicatorColor(context.primaryColorDark)
+
+                    isLoading = false
+                }
+
+
+            }).start()
 
             context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
+
         }//if match specified, setup the viewpager and hide the recyclerview
 
-        return view
+        isLoading = true
+
+        return super.onCreateView(view, !(match == null || allianceColor == AllianceColor.BLUE || allianceColor == AllianceColor.RED))
     }
 
     override fun onPause()

@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -37,6 +38,7 @@ import com.alphadevelopmentsolutions.frcscout.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.layout_view_loading.*
 import kotlinx.android.synthetic.main.layout_dialog_download.view.*
 import kotlinx.android.synthetic.main.layout_dialog_download.view.CancelButton
 import kotlinx.android.synthetic.main.layout_dialog_download.view.ChecklistCheckBox

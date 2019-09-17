@@ -287,10 +287,14 @@ class QuickStatsFragment : MasterFragment()
 
                     view.StatChartsLinearLayout.addView(statChart)
                 }
+
+                isLoading = false
             }
         }).start()
 
-        return view
+        isLoading = true
+
+        return super.onCreateView(view, false)
     }
 
     companion object

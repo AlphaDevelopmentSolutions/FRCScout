@@ -1,14 +1,22 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
+import com.alphadevelopmentsolutions.frcscout.R
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.layout_master.view.*
+import kotlinx.android.synthetic.main.layout_view_loading.view.*
 import java.util.*
 
 abstract class MasterFragment : Fragment()
@@ -62,6 +70,45 @@ abstract class MasterFragment : Fragment()
     interface OnFragmentInteractionListener
     {
         fun onFragmentInteraction(uri: Uri)
+    }
+
+    private lateinit var masterLayout: View
+    private lateinit var loadingView: View
+
+    protected fun onCreateView(view: View, addZ: Boolean = false): View?
+    {
+        loadingView = LayoutInflater.from(context).inflate(R.layout.layout_view_loading, null)
+        loadingView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+        loadingView.MainLoadingProgressBar.indeterminateDrawable.setColorFilter(context.primaryColor, PorterDuff.Mode.SRC_IN)
+
+        masterLayout = LayoutInflater.from(context).inflate(R.layout.layout_master, null)
+
+        if(addZ)
+            masterLayout.z = zIndex
+
+        if(isLoading)
+            masterLayout.MasterLinearLayout.addView(loadingView)
+
+        masterLayout.MasterLinearLayout.addView(view)
+
+        return masterLayout
+    }
+
+    protected var isLoading = false
+    set(value)
+    {
+        if(value != field)
+        {
+            if(::masterLayout.isInitialized && ::loadingView.isInitialized)
+            {
+                if (value)
+                    masterLayout.MasterLinearLayout.addView(loadingView)
+                else
+                    masterLayout.MasterLinearLayout.removeView(loadingView)
+            }
+
+            field = value
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?)

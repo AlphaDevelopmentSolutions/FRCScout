@@ -52,78 +52,91 @@ class MatchListFragment : MasterFragment()
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_match_list, container, false)
 
-        loadMatchesThread.join()
-
-        view.MatchListRecyclerView.layoutManager = LinearLayoutManager(activity)
-        view.MatchListRecyclerView.adapter = matchListRecyclerViewAdapter
-
-        if (team == null)
+        Thread(Runnable
         {
-            context.setToolbarTitle(event.toString())
-            context.isToolbarScrollable = true
-            context.isSearchViewVisible = true
+            loadMatchesThread.join()
 
-            context.setSearchViewOnTextChangeListener(object: SearchView.OnQueryTextListener{
-                override fun onQueryTextSubmit(p0: String?): Boolean
+            val layoutManager = LinearLayoutManager(activity)
+
+            context.runOnUiThread {
+                view.MatchListRecyclerView.layoutManager = layoutManager
+                view.MatchListRecyclerView.adapter = matchListRecyclerViewAdapter
+
+
+                if (team == null)
                 {
-                    return false
-                }
+                    context.setToolbarTitle(event.toString())
+                    context.isToolbarScrollable = true
+                    context.isSearchViewVisible = true
 
-                override fun onQueryTextChange(searchText: String?): Boolean
-                {
-                    val searchLength = searchText?.length ?: 0
-
-                    //You only need to reset the list if you are removing from your search, adding the objects back
-                    if (searchLength < previousSearchLength)
+                    context.setSearchViewOnTextChangeListener(object : SearchView.OnQueryTextListener
                     {
-                        //Reset the list
-                        for (i in matches.indices)
+                        override fun onQueryTextSubmit(p0: String?): Boolean
                         {
-                            val match = matches[i]
+                            return false
+                        }
 
-                            //check if the contact doesn't exist in the viewable list
-                            if (!searchedMatches.contains(match))
+                        override fun onQueryTextChange(searchText: String?): Boolean
+                        {
+                            val searchLength = searchText?.length ?: 0
+
+                            //You only need to reset the list if you are removing from your search, adding the objects back
+                            if (searchLength < previousSearchLength)
                             {
-                                //add it and notify the recyclerview
-                                searchedMatches.add(i, match)
-                                matchListRecyclerViewAdapter.notifyItemInserted(i)
-                                matchListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedMatches.size)
+                                //Reset the list
+                                for (i in matches.indices)
+                                {
+                                    val match = matches[i]
+
+                                    //check if the contact doesn't exist in the viewable list
+                                    if (!searchedMatches.contains(match))
+                                    {
+                                        //add it and notify the recyclerview
+                                        searchedMatches.add(i, match)
+                                        matchListRecyclerViewAdapter.notifyItemInserted(i)
+                                        matchListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedMatches.size)
+                                    }
+                                }
                             }
+
+                            //Delete from the list
+                            var i = 0
+                            while (i < searchedMatches.size)
+                            {
+                                val match = searchedMatches[i]
+                                val name = match.toString()
+
+                                //If the contacts name doesn't equal the searched name
+                                if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
+                                {
+                                    //remove it from the list and notify the recyclerview
+                                    searchedMatches.removeAt(i)
+                                    matchListRecyclerViewAdapter.notifyItemRemoved(i)
+                                    matchListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedMatches.size)
+
+                                    //this prevents the index from passing the size of the list,
+                                    //stays on the same index until you NEED to move to the next one
+                                    i--
+                                }
+                                i++
+                            }
+
+                            previousSearchLength = searchLength
+
+                            return false
                         }
-                    }
+                    })
+                } else
+                    context.isToolbarScrollable = false
 
-                    //Delete from the list
-                    var i = 0
-                    while (i < searchedMatches.size)
-                    {
-                        val match = searchedMatches[i]
-                        val name = match.toString()
+                isLoading = false
+            }
 
-                        //If the contacts name doesn't equal the searched name
-                        if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
-                        {
-                            //remove it from the list and notify the recyclerview
-                            searchedMatches.removeAt(i)
-                            matchListRecyclerViewAdapter.notifyItemRemoved(i)
-                            matchListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedMatches.size)
+        }).start()
 
-                            //this prevents the index from passing the size of the list,
-                            //stays on the same index until you NEED to move to the next one
-                            i--
-                        }
-                        i++
-                    }
+        isLoading = true
 
-                    previousSearchLength = searchLength
-
-                    return false
-                }
-            })
-        }
-        else
-            context.isToolbarScrollable = false
-
-        return view
+        return super.onCreateView(view, false)
     }
 
     companion object
