@@ -139,6 +139,28 @@ class MatchListFragment : MasterFragment()
         return super.onCreateView(view, false)
     }
 
+    override fun onPause()
+    {
+        super.onPause()
+        if(context.isSearchViewVisible)
+            context.isSearchViewVisible = false
+    }
+
+    override fun onResume()
+    {
+        super.onResume()
+        if(team == null && !context.isSearchViewVisible)
+            context.isSearchViewVisible = true
+    }
+
+    override fun onDestroyView()
+    {
+        if(context.isSearchViewVisible)
+            context.isSearchViewVisible = false
+
+        super.onDestroyView()
+    }
+
     companion object
     {
 

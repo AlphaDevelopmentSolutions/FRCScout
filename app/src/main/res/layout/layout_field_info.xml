@@ -41,7 +41,7 @@
             android:id="@+id/PlusButton"
             android:layout_width="@dimen/field_width"
             android:layout_height="@dimen/field_height"
-            app:icon="@drawable/fab_add"
+            app:icon="@drawable/ic_add_white_24dp"
             app:iconGravity="textStart"
             app:iconPadding="0dp" />
 

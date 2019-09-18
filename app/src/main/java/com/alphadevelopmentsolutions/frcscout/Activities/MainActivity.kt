@@ -826,6 +826,13 @@ class MainActivity : AppCompatActivity(),
 
                 return true
             }
+
+            R.id.SettingsItem ->
+            {
+                changeFragment(SettingsFragment.newInstance(SettingsFragment.Page.SETTINGS), true)
+
+                return true
+            }
         }
 
         return false

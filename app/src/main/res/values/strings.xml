@@ -155,4 +155,115 @@
     <string name="media">Media</string>
     <string name="complete">Complete</string>
     <string name="incomplete">Incomplete</string>
+    <string name="licenses">Licenses</string>
+    <string name="build_info">Build Info</string>
+    <string name="app_version">App Version - %1$s</string>
+    <string name="build_number">Build Number - %1$s</string>
+    <string name="build_type">Build Type - %1$s</string>
+    <string name="build_flavor">Build Flavor - %1$s</string>
+
+    <string name="license_frcscout">
+        Copyright (c) 2019 Alpha Development Solutions
+
+        \n\nFRCScout is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        \n\nFRCScout is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        \n\nYou should have received a copy of the GNU General Public License
+        along with FRCScout.  If not, see https://www.gnu.org/licenses/.
+    </string>
+
+    <string name="license_picasso">
+        Copyright 2013 Square, Inc.
+
+        \n\nLicensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+
+        \n\nhttp://www.apache.org/licenses/LICENSE-2.0
+
+        \n\nUnless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+    </string>
+
+    <string name="license_circleimageview">
+        Copyright 2014 Henning Dodenhof
+
+        \n\nLicensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+
+        \n\nhttp://www.apache.org/licenses/LICENSE-2.0
+
+        \n\nUnless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+    </string>
+
+    <string name="license_viewpagerdotsindicator">
+        Copyright 2016 Tommy Buonomo
+
+        \n\nLicensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+
+        \n\nhttp://www.apache.org/licenses/LICENSE-2.0
+
+        \n\nUnless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+    </string>
+
+    <string name="license_mpandroidchart">
+        Copyright 2019 Philipp Jahoda
+
+        \n\nLicensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+
+        \n\nhttp://www.apache.org/licenses/LICENSE-2.0
+
+        \n\nUnless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+    </string>
+
+    <string name="license_gson">
+        Copyright 2008 Google Inc.
+
+        \n\nLicensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+
+        \n\nhttp://www.apache.org/licenses/LICENSE-2.0
+
+        \n\nUnless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+    </string>
+
+    <string name="picasso">Picasso</string>
+    <string name="circleimageview">CircleImageView</string>
+    <string name="viewpagerdotsindicator">ViewPagerDotsIndicator</string>
+    <string name="mpandroidchart">MPAndroidChart</string>
+    <string name="gson">Gson</string>
+    <string name="settings">Settings</string>
+
 </resources>
