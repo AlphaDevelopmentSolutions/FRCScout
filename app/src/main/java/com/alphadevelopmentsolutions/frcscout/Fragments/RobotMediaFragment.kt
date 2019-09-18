@@ -9,15 +9,16 @@ import android.support.v4.content.FileProvider
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
-import com.alphadevelopmentsolutions.frcscout.Classes.Image
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.fragment_robot_media.view.*
 import java.io.File
+import java.util.*
+
 
 class RobotMediaFragment : MasterFragment()
 {
@@ -28,23 +29,19 @@ class RobotMediaFragment : MasterFragment()
     
     private var robotMediaJson: String? = null
     
-    private var robotMedia: RobotMedia? = null
+    private lateinit var robotMedia: RobotMedia
 
-    private var robotMediaImageView: ImageView? = null
+    private lateinit var robotMediaImageView: ImageView
 
-    private var robotMediaSaveButton: Button? = null
+    private lateinit var mediaFilePath: String
 
-    //    private Bitmap robotThumbBitmap;
 
-    private var mediaFile: File? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         if (arguments != null)
-        {
             robotMediaJson = arguments!!.getString(ARG_ROBOT_MEDIA)
-        }
 
         if (robotMediaJson != null && robotMediaJson != "")
             robotMedia = Gson().fromJson(robotMediaJson, RobotMedia::class.java)
@@ -58,65 +55,52 @@ class RobotMediaFragment : MasterFragment()
         context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
         view.z = zIndex
 
-        robotMediaImageView = view.findViewById(R.id.RobotMediaImageView)
-        robotMediaSaveButton = view.findViewById(R.id.RobotMediaSaveButton)
+        robotMediaImageView = view.RobotMediaImageView
 
-        //robot media loaded, load image
-        if (robotMedia != null)
+        //robot media loaded, load image into the imageview
+        if (::robotMedia.isInitialized)
         {
-            robotMediaSaveButton!!.visibility = View.GONE
+            view.RobotMediaSaveButton.visibility = View.GONE
 
-            val robotImage = File(robotMedia!!.fileUri)
+            val robotImage = File(robotMedia.fileUri)
 
             if (robotImage.exists())
             {
                 val robotImageBitmap = BitmapFactory.decodeFile(robotImage.absolutePath)
-                robotMediaImageView!!.setImageBitmap(robotImageBitmap)
+                robotMediaImageView.setImageBitmap(robotImageBitmap)
             }
-        } else
+        }
+        else
         {
-            mediaFile = File(Image.generateFileUri(Constants.ROBOT_MEDIA_DIRECTORY).absolutePath) //get file URI
-
             //save the new image
-            robotMediaSaveButton!!.setOnClickListener {
-                //                    if(robotThumbBitmap != null)
-                //                    {
-                //                        try {
+            view.RobotMediaSaveButton.setOnClickListener {
 
-                //code for thumbnails
-                //                            FileOutputStream fileOutputStream = new FileOutputStream(mediaFile);
-                //                            robotThumbBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream); //write data to file
-
-                loadingThread.join()
-                robotMedia = RobotMedia(
-                        -1,
-                        team!!.id!!,
-                        mediaFile!!.absolutePath,
-                        true)
-
-                robotMedia!!.save(database)
+                robotMedia.save(database)
 
                 context.supportFragmentManager.popBackStackImmediate()
-                //                        }
-                //                        catch (FileNotFoundException e)
-                //                        {
-                //                            e.printStackTrace();
-                //                        }
-                //                    }
             }
 
-            //launch intent to take picture if exit_main supplied
-            //            if(robotThumbBitmap == null)
-            //            {
-            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(context, context.packageName + ".provider", mediaFile!!))
-            startActivityForResult(takePictureIntent, Constants.ROBOT_MEDIA_REQUEST_CODE)
+            val tempFile = File.createTempFile(
+                    UUID.randomUUID().toString(),
+                    ".jpeg",
+                    context.getExternalFilesDir(Constants.ROBOT_MEDIA_DIRECTORY)).apply {
+                mediaFilePath = absolutePath
+            }
 
-            //            }
+            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+                takePictureIntent.resolveActivity(context.packageManager)?.also {
+                        tempFile.also {
 
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(context, "com.alphadevelopmentsolutions.frcscout.provider", it))
+                            startActivityForResult(takePictureIntent, Constants.ROBOT_MEDIA_REQUEST_CODE)
+                        }
+                }
+            }
+        }
 
-        }//allow the user to save the new image
+        loadingThread.join()
 
+        context.setToolbarTitle("${team!!.id} Robot Media")
 
         return view
     }
@@ -127,28 +111,35 @@ class RobotMediaFragment : MasterFragment()
 
         when (requestCode)
         {
-            Constants.ROBOT_MEDIA_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK)
+            Constants.ROBOT_MEDIA_REQUEST_CODE ->
             {
-                //code for thumbnails
-                //                    Bundle extras = data.getExtras();
-                //                    robotThumbBitmap = (Bitmap) extras.get("data");
+                if (resultCode == Activity.RESULT_OK)
+                {
+                    robotMedia = RobotMedia(
+                            -1,
+                            team!!.id!!,
+                            mediaFilePath,
+                            true)
 
-                robotMediaImageView!!.setImageBitmap(BitmapFactory.decodeFile(mediaFile!!.absolutePath))
+                    robotMediaImageView.setImageBitmap(robotMedia.imageBitmap)
+                }
+
+                else if(resultCode == Activity.RESULT_CANCELED)
+                    context.supportFragmentManager.popBackStackImmediate()
             }
         }
     }
 
-
-    override fun onDestroyView()
+    override fun onDetach()
     {
         //robot media never saved, delete image
-        if (robotMedia == null)
-            if (mediaFile!!.exists())
-                mediaFile!!.delete()
+        if ((!::robotMedia.isInitialized && ::mediaFilePath.isInitialized) || (::robotMedia.isInitialized && robotMedia.id == -1))
+            File(mediaFilePath).apply {
+                if(exists())
+                    delete()
+            }
 
-        context.unlockDrawerLayout()
-
-        super.onDestroyView()
+        super.onDetach()
     }
 
     companion object

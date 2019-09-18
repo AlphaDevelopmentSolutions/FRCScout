@@ -2,6 +2,8 @@ package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.util.Base64
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import java.io.ByteArrayOutputStream
@@ -47,7 +49,7 @@ class RobotMedia(
          * @param database used to load robot media
          * @return arraylist of robot media
          */
-        fun getObjects(robotMedia: RobotMedia?, team: Team?, onlyDrafts: Boolean, database: Database): ArrayList<RobotMedia>?
+        fun getObjects(robotMedia: RobotMedia?, team: Team?, onlyDrafts: Boolean, database: Database): ArrayList<RobotMedia>
         {
             return database.getRobotMedia(robotMedia, team, onlyDrafts)
         }
@@ -80,7 +82,40 @@ class RobotMedia(
      * @return bitmap version of robot image
      */
     val imageBitmap: Bitmap
-        get() = BitmapFactory.decodeFile(this.fileUri)
+        get()
+        {
+            return with(BitmapFactory.decodeFile(fileUri))
+            {
+                when (ExifInterface(fileUri).getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED))
+                {
+
+                    ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(this, 90f)
+
+                    ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(this, 180f)
+
+                    ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(this, 270f)
+
+                    ExifInterface.ORIENTATION_NORMAL -> rotateImage(this, 0f)
+
+                    else -> rotateImage(this, 0f)
+                }
+            }
+        }
+
+    /**
+     * Rotates the image specified by [angle]
+     * @param bitmap [Bitmap] to rotate
+     * @param angle [Float] angle to rotate to
+     * @return [Bitmap] rotated to specified angle
+     */
+    private fun rotateImage(bitmap: Bitmap, angle: Float): Bitmap
+    {
+        return with(bitmap)
+        {
+            Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply { postRotate(angle) }, true)
+        }
+
+    }
 
     override fun toString(): String
     {

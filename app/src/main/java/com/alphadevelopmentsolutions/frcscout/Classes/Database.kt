@@ -1614,7 +1614,7 @@ class Database(context: MainActivity)
      * @param onlyDrafts if true, filters robot media by only drafts
      * @return robotMedia based off given team ID
      */
-    fun getRobotMedia(robotMedia: RobotMedia?, team: Team?, onlyDrafts: Boolean): ArrayList<RobotMedia>?
+    fun getRobotMedia(robotMedia: RobotMedia?, team: Team?, onlyDrafts: Boolean): ArrayList<RobotMedia>
     {
         val robotMediaList = ArrayList<RobotMedia>()
 
@@ -1657,11 +1657,9 @@ class Database(context: MainActivity)
             }
 
             cursor.close()
-
-            return robotMediaList
         }
 
-        return null
+        return robotMediaList
     }
 
     /**

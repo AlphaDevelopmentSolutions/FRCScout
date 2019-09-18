@@ -1,8 +1,5 @@
 package com.alphadevelopmentsolutions.frcscout.Interfaces
 
-import android.content.Context
-import android.content.ContextWrapper
-import android.os.Environment
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.BuildConfig
 import java.io.File
@@ -54,7 +51,7 @@ interface Constants
          */
         fun getFileDirectory(context: MainActivity, dir: String): File
         {
-            return ContextWrapper(context).getDir(dir, Context.MODE_PRIVATE)
+            return context.getExternalFilesDir(dir)!!
         }
 
         const val ROBOT_MEDIA_DIRECTORY = "robot-media"

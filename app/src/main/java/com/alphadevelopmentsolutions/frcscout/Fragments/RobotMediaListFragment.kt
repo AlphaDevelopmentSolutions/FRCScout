@@ -2,11 +2,11 @@ package com.alphadevelopmentsolutions.frcscout.Fragments
 
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.alphadevelopmentsolutions.frcscout.Adapters.RobotMediaListRecyclerViewAdapter
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.R
 import kotlinx.android.synthetic.main.fragment_robot_media_list.view.*
@@ -25,7 +25,9 @@ class RobotMediaListFragment : MasterFragment()
         loadMediaThread = Thread(Runnable {
             loadingThread.join()
 
-            robotMediaListRecyclerViewAdapter = RobotMediaListRecyclerViewAdapter(team!!, team!!.getRobotMedia(null, false, database)!!, context)
+            robotMediaList = RobotMedia.getObjects(null, team, false, database)
+
+            robotMediaListRecyclerViewAdapter = RobotMediaListRecyclerViewAdapter(team!!, robotMediaList, context)
 
         })
 
@@ -36,6 +38,8 @@ class RobotMediaListFragment : MasterFragment()
 
     private lateinit var robotMediaListRecyclerViewAdapter: RobotMediaListRecyclerViewAdapter
 
+    private lateinit var robotMediaList: ArrayList<RobotMedia>
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
     {
@@ -43,8 +47,20 @@ class RobotMediaListFragment : MasterFragment()
         val view = inflater.inflate(R.layout.fragment_robot_media_list, container, false)
 
         Thread(Runnable {
+
             loadMediaThread.join()
 
+//            with(RobotMedia.getObjects(null, team, true, database))
+//            {
+//                if(size > robotMediaList.size)
+//                {
+//                    robotMediaList = this
+//                    for(i in robotMediaList.size - 1 until size)
+//                    {
+//                        robotMediaListRecyclerViewAdapter.notifyItemInserted(i)
+//                    }
+//                }
+//            }
 
             context.runOnUiThread {
                 view.RobotMediaRecyclerView.layoutManager = LinearLayoutManager(activity)
