@@ -62,13 +62,7 @@ class RobotMediaFragment : MasterFragment()
         {
             view.RobotMediaSaveButton.visibility = View.GONE
 
-            val robotImage = File(robotMedia.fileUri)
-
-            if (robotImage.exists())
-            {
-                val robotImageBitmap = BitmapFactory.decodeFile(robotImage.absolutePath)
-                robotMediaImageView.setImageBitmap(robotImageBitmap)
-            }
+            robotMediaImageView.setImageBitmap(robotMedia.imageBitmap)
         }
         else
         {

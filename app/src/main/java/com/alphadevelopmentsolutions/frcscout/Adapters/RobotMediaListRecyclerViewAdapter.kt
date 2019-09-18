@@ -1,5 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters
 
+import android.graphics.Bitmap
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -10,21 +11,22 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Fragments.RobotMediaFragment
 import com.alphadevelopmentsolutions.frcscout.R
+import kotlinx.android.synthetic.main.layout_card_robot_media.view.*
 import java.util.*
 
 internal class RobotMediaListRecyclerViewAdapter(private val team: Team, private val robotMedia: ArrayList<RobotMedia>, private val context: MainActivity) : RecyclerView.Adapter<RobotMediaListRecyclerViewAdapter.ViewHolder>()
 {
+    private val robotMediaBitmaps: ArrayList<Bitmap> = ArrayList()
 
-    internal class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    init
     {
-        var robotImageView: ImageView
-
-        init
+        for(media in robotMedia)
         {
-
-            robotImageView = view.findViewById(R.id.RobotImageView)
+            robotMediaBitmaps.add(media.imageBitmap)
         }
     }
+
+    internal class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder
     {
@@ -37,9 +39,9 @@ internal class RobotMediaListRecyclerViewAdapter(private val team: Team, private
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
     {
         //set scores
-        viewHolder.robotImageView.setImageBitmap(robotMedia[viewHolder.adapterPosition].imageBitmap)
+        viewHolder.view.RobotImageView.setImageBitmap(robotMediaBitmaps[viewHolder.adapterPosition])
 
-        viewHolder.robotImageView.setOnClickListener { context.changeFragment(RobotMediaFragment.newInstance(robotMedia[viewHolder.adapterPosition], team), true) }
+        viewHolder.view.RobotImageView.setOnClickListener { context.changeFragment(RobotMediaFragment.newInstance(robotMedia[viewHolder.adapterPosition], team), true) }
     }
 
     override fun getItemCount(): Int

@@ -8,6 +8,7 @@ import android.util.Log
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Exceptions.UnauthorizedClassException
+import java.io.File
 import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
@@ -1653,7 +1654,12 @@ class Database(context: MainActivity)
         {
             while (cursor.moveToNext())
             {
-                robotMediaList.add(getRobotMediaFromCursor(cursor))
+                val media = getRobotMediaFromCursor(cursor)
+
+                if(File(media.fileUri).exists())
+                    robotMediaList.add(media)
+                else
+                    media.delete(this)
             }
 
             cursor.close()

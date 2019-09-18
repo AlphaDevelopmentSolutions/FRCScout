@@ -63,7 +63,7 @@ class RobotMediaListFragment : MasterFragment()
 //            }
 
             context.runOnUiThread {
-                view.RobotMediaRecyclerView.layoutManager = LinearLayoutManager(activity)
+                view.RobotMediaRecyclerView.layoutManager = LinearLayoutManager(context)
                 view.RobotMediaRecyclerView.adapter = robotMediaListRecyclerViewAdapter
             }
         }).start()

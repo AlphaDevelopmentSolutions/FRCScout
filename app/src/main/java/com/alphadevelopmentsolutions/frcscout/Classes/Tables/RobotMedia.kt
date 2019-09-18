@@ -139,7 +139,7 @@ class RobotMedia(
         if (database.isOpen)
         {
             val robotMediaArrayList = getObjects(this, null, false, database)
-            val robotMedia = if (robotMediaArrayList!!.size > 0) robotMediaArrayList[0] else null
+            val robotMedia = if (robotMediaArrayList.size > 0) robotMediaArrayList[0] else null
 
             if (robotMedia != null)
             {

@@ -27,10 +27,11 @@ class TeamFragment : MasterFragment()
     {
         super.onCreate(savedInstanceState)
 
+        teamViewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
+
         loadFragmentsThread = Thread(Runnable {
             loadingThread.join()
 
-            teamViewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
             teamViewPagerAdapter.addFragment(MatchListFragment.newInstance(team!!), context.getString(R.string.matches))
             teamViewPagerAdapter.addFragment(RobotInfoFragment.newInstance(team!!), context.getString(R.string.info))
             teamViewPagerAdapter.addFragment(RobotMediaListFragment.newInstance(team!!), context.getString(R.string.media))
