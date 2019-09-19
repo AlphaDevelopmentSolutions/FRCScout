@@ -35,10 +35,12 @@ class RobotMediaListFragment : MasterFragment()
             if(robotMediaList.size != oldCount)
                 robotMediaListRecyclerViewAdapter = RobotMediaListRecyclerViewAdapter(team!!, robotMediaList, context)
 
-
-            context.runOnUiThread {
-                view.RobotMediaRecyclerView.layoutManager = LinearLayoutManager(context)
-                view.RobotMediaRecyclerView.adapter = robotMediaListRecyclerViewAdapter
+            if(::robotMediaListRecyclerViewAdapter.isInitialized)
+            {
+                context.runOnUiThread {
+                    view.RobotMediaRecyclerView.layoutManager = LinearLayoutManager(context)
+                    view.RobotMediaRecyclerView.adapter = robotMediaListRecyclerViewAdapter
+                }
             }
         }).start()
 
