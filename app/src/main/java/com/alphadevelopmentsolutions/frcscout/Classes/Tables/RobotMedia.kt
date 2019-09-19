@@ -12,6 +12,8 @@ import java.util.*
 
 class RobotMedia(
         var id: Int,
+        var yearId: Int,
+        var eventId: String,
         var teamId: Int,
         var fileUri: String,
         var isDraft: Boolean) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
@@ -21,12 +23,16 @@ class RobotMedia(
 
         val TABLE_NAME = "robot_media"
         val COLUMN_NAME_ID = "Id"
+        val COLUMN_NAME_YEAR_ID = "YearId"
+        val COLUMN_NAME_EVENT_ID = "EventId"
         val COLUMN_NAME_TEAM_ID = "TeamId"
         val COLUMN_NAME_FILE_URI = "FileURI"
         val COLUMN_NAME_IS_DRAFT = "IsDraft"
 
         val CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
                 COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
+                COLUMN_NAME_YEAR_ID + " INTEGER," +
+                COLUMN_NAME_EVENT_ID + " TEXT," +
                 COLUMN_NAME_TEAM_ID + " INTEGER," +
                 COLUMN_NAME_FILE_URI + " TEXT," +
                 COLUMN_NAME_IS_DRAFT + " INTEGER)"
@@ -44,14 +50,16 @@ class RobotMedia(
         /**
          * Returns arraylist of robot media with specified filters from database
          * @param robotMedia if specified, filters robot media by robotmedia id
-         * @param team if specified, filters robot media by team id
-         * @param onlyDrafts if true, filters robot media by draft
+         * @param year [Year] if specified, filters robot media by id
+         * @param event [Event] if specified, filters robot media by id
+         * @param team [Team] if specified, filters robot media by team id
+         * @param onlyDrafts [Boolean] if true, filters robot media by draft
          * @param database used to load robot media
          * @return arraylist of robot media
          */
-        fun getObjects(robotMedia: RobotMedia?, team: Team?, onlyDrafts: Boolean, database: Database): ArrayList<RobotMedia>
+        fun getObjects(robotMedia: RobotMedia?, year: Year?, event: Event?, team: Team?, onlyDrafts: Boolean, database: Database): ArrayList<RobotMedia>
         {
-            return database.getRobotMedia(robotMedia, team, onlyDrafts)
+            return database.getRobotMedia(robotMedia, year, event, team, onlyDrafts)
         }
     }
 
@@ -138,11 +146,13 @@ class RobotMedia(
 
         if (database.isOpen)
         {
-            val robotMediaArrayList = getObjects(this, null, false, database)
+            val robotMediaArrayList = getObjects(this, null, null, null, false, database)
             val robotMedia = if (robotMediaArrayList.size > 0) robotMediaArrayList[0] else null
 
             if (robotMedia != null)
             {
+                yearId = robotMedia.yearId
+                eventId = robotMedia.eventId
                 teamId = robotMedia.teamId
                 fileUri = robotMedia.fileUri
                 isDraft = robotMedia.isDraft

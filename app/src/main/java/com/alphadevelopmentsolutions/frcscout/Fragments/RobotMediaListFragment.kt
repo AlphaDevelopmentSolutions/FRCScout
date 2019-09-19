@@ -18,27 +18,7 @@ class RobotMediaListFragment : MasterFragment()
         return false
     }
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
-        super.onCreate(savedInstanceState)
-
-        loadMediaThread = Thread(Runnable {
-            loadingThread.join()
-
-            robotMediaList = RobotMedia.getObjects(null, team, false, database)
-
-            robotMediaListRecyclerViewAdapter = RobotMediaListRecyclerViewAdapter(team!!, robotMediaList, context)
-
-        })
-
-        loadMediaThread.start()
-    }
-
-    private lateinit var loadMediaThread: Thread
-
     private lateinit var robotMediaListRecyclerViewAdapter: RobotMediaListRecyclerViewAdapter
-
-    private lateinit var robotMediaList: ArrayList<RobotMedia>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
@@ -48,19 +28,13 @@ class RobotMediaListFragment : MasterFragment()
 
         Thread(Runnable {
 
-            loadMediaThread.join()
+            val oldCount = if(::robotMediaListRecyclerViewAdapter.isInitialized) robotMediaListRecyclerViewAdapter.itemCount else 0
 
-//            with(RobotMedia.getObjects(null, team, true, database))
-//            {
-//                if(size > robotMediaList.size)
-//                {
-//                    robotMediaList = this
-//                    for(i in robotMediaList.size - 1 until size)
-//                    {
-//                        robotMediaListRecyclerViewAdapter.notifyItemInserted(i)
-//                    }
-//                }
-//            }
+            val robotMediaList = RobotMedia.getObjects(null, year, event, team, false, database)
+
+            if(robotMediaList.size != oldCount)
+                robotMediaListRecyclerViewAdapter = RobotMediaListRecyclerViewAdapter(team!!, robotMediaList, context)
+
 
             context.runOnUiThread {
                 view.RobotMediaRecyclerView.layoutManager = LinearLayoutManager(context)

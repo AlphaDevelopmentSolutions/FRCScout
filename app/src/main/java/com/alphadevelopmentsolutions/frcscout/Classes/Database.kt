@@ -1597,12 +1597,16 @@ class Database(context: MainActivity)
     private fun getRobotMediaFromCursor(cursor: Cursor): RobotMedia
     {
         val id = cursor.getInt(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_ID))
+        val yearId = cursor.getInt(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_YEAR_ID))
+        val eventId = cursor.getString(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_EVENT_ID))
         val teamId = cursor.getInt(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_TEAM_ID))
         val fileUri = cursor.getString(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_FILE_URI))
         val isDraft = cursor.getInt(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_IS_DRAFT)) == 1
 
         return RobotMedia(
                 id,
+                yearId,
+                eventId,
                 teamId,
                 fileUri,
                 isDraft)
@@ -1611,11 +1615,13 @@ class Database(context: MainActivity)
     /**
      * Gets all robot media assigned to a team
      * @param robotMedia if specified, robot media filters by robot media id
-     * @param team if specified, filters robot media by team id
-     * @param onlyDrafts if true, filters robot media by only drafts
+     * @param year [Year] if specified, filters robot media by id
+     * @param event [Event] if specified, filters robot media by id
+     * @param team [Team] if specified, filters robot media by team id
+     * @param onlyDrafts [Boolean] if true, filters robot media by only drafts
      * @return robotMedia based off given team ID
      */
-    fun getRobotMedia(robotMedia: RobotMedia?, team: Team?, onlyDrafts: Boolean): ArrayList<RobotMedia>
+    fun getRobotMedia(robotMedia: RobotMedia?, year: Year?, event: Event?, team: Team?, onlyDrafts: Boolean): ArrayList<RobotMedia>
     {
         val robotMediaList = ArrayList<RobotMedia>()
 
@@ -1631,15 +1637,27 @@ class Database(context: MainActivity)
             whereArgs.add(robotMedia.id.toString())
         }
 
+        if (year != null)
+        {
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(RobotMedia.COLUMN_NAME_YEAR_ID).append(" = ?")
+            whereArgs.add(year.serverId!!.toString())
+        }
+
+        if (event != null)
+        {
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(RobotMedia.COLUMN_NAME_EVENT_ID).append(" = ?")
+            whereArgs.add(event.blueAllianceId!!)
+        }
+
         if (team != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(RobotMedia.COLUMN_NAME_TEAM_ID).append(" = ?")
-            whereArgs.add(team.id.toString())
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(RobotMedia.COLUMN_NAME_TEAM_ID).append(" = ?")
+            whereArgs.add(team.id!!.toString())
         }
 
         if (onlyDrafts)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(RobotMedia.COLUMN_NAME_IS_DRAFT).append(" = 1")
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(RobotMedia.COLUMN_NAME_IS_DRAFT).append(" = 1")
         }
 
         //select the info from the db
@@ -1678,6 +1696,8 @@ class Database(context: MainActivity)
     {
         //set all the values
         val contentValues = ContentValues()
+        contentValues.put(RobotMedia.COLUMN_NAME_YEAR_ID, robotMedia.yearId)
+        contentValues.put(RobotMedia.COLUMN_NAME_EVENT_ID, robotMedia.eventId)
         contentValues.put(RobotMedia.COLUMN_NAME_TEAM_ID, robotMedia.teamId)
         contentValues.put(RobotMedia.COLUMN_NAME_FILE_URI, robotMedia.fileUri)
         contentValues.put(RobotMedia.COLUMN_NAME_IS_DRAFT, if (robotMedia.isDraft) "1" else "0")

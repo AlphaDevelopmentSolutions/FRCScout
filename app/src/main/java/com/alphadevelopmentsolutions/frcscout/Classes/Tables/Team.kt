@@ -202,18 +202,6 @@ class Team : Table
         return ScoutCardInfo.getObjects(event, match, this, null, scoutCardInfo, onlyDrafts, database)
     }
 
-    /**
-     * Gets all scout cards associated with the team
-     * @param robotMedia if specified, filters robot media by robot media id
-     * @param database used for loading cards
-     * @param onlyDrafts boolean if you only want drafts
-     * @return arraylist of scout cards
-     */
-    fun getRobotMedia(robotMedia: RobotMedia?, onlyDrafts: Boolean, database: Database): ArrayList<RobotMedia>?
-    {
-        return RobotMedia.getObjects(robotMedia, this, onlyDrafts, database)
-    }
-
     override fun toString(): String
     {
         return "$id - $name"

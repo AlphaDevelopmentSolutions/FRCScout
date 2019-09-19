@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -38,7 +37,6 @@ import com.alphadevelopmentsolutions.frcscout.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.android.synthetic.main.layout_view_loading.*
 import kotlinx.android.synthetic.main.layout_dialog_download.view.*
 import kotlinx.android.synthetic.main.layout_dialog_download.view.CancelButton
 import kotlinx.android.synthetic.main.layout_dialog_download.view.ChecklistCheckBox
@@ -569,7 +567,7 @@ class MainActivity : AppCompatActivity(),
                  */
                 if (!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, false) as Boolean && withFilters))
                 {
-                    for (robotInfo in RobotInfo.getObjects(null, null, null, null, null, true, database)!!)
+                    for (robotInfo in RobotInfo.getObjects(null, null, null, null, null, true, database))
                     {
                         val submitRobotInfo = Server.SubmitRobotInfo(context, robotInfo)
                         if (submitRobotInfo.execute())
@@ -617,7 +615,7 @@ class MainActivity : AppCompatActivity(),
                  */
                 if (!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, false) as Boolean && withFilters))
                 {
-                    for (robotMedia in RobotMedia.getObjects(null, null, true, database)!!)
+                    for (robotMedia in RobotMedia.getObjects(null, null, null, null, true, database))
                     {
                         val submitRobotMedia = Server.SubmitRobotMedia(context, robotMedia)
                         if (submitRobotMedia.execute())

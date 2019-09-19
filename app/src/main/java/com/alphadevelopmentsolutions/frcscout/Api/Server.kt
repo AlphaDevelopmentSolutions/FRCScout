@@ -14,7 +14,7 @@ abstract class Server internal constructor(
 
     //region Getters
 
-    class Hello(private val context: MainActivity) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class Hello(private val context: MainActivity) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -47,7 +47,7 @@ abstract class Server internal constructor(
         }
     }
 
-    class GetServerConfig(private val context: MainActivity) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetServerConfig(private val context: MainActivity) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -90,7 +90,7 @@ abstract class Server internal constructor(
         }
     }
 
-    class GetTeams(private val context: MainActivity, event: Event? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetTeams(private val context: MainActivity, event: Event? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -162,7 +162,7 @@ abstract class Server internal constructor(
         //endregion
     }
 
-    class GetEventTeamList(private val context: MainActivity, event: Event? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetEventTeamList(private val context: MainActivity, event: Event? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -213,7 +213,7 @@ abstract class Server internal constructor(
         }
     }
 
-    class GetUsers(private val context: MainActivity) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetUsers(private val context: MainActivity) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -263,7 +263,7 @@ abstract class Server internal constructor(
         //endregion
     }
 
-    class GetScoutCardInfo(private val context: MainActivity, event: Event? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetScoutCardInfo(private val context: MainActivity, event: Event? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -334,7 +334,7 @@ abstract class Server internal constructor(
         //endregion
     }
 
-    class GetScoutCardInfoKeys(private val context: MainActivity, year: Year? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetScoutCardInfoKeys(private val context: MainActivity, year: Year? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -416,7 +416,7 @@ abstract class Server internal constructor(
         //endregion
     }
 
-    class GetRobotInfo(private val context: MainActivity, event: Event? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetRobotInfo(private val context: MainActivity, event: Event? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -481,7 +481,7 @@ abstract class Server internal constructor(
         //endregion
     }
 
-    class GetRobotInfoKeys(private val context: MainActivity, year: Year? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetRobotInfoKeys(private val context: MainActivity, year: Year? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -545,7 +545,7 @@ abstract class Server internal constructor(
         //endregion
     }
 
-    class GetMatches(private val context: MainActivity, event: Event? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetMatches(private val context: MainActivity, event: Event? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -631,12 +631,12 @@ abstract class Server internal constructor(
         //endregion
     }
 
-    class GetRobotMedia(private val context: MainActivity, team: Team? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetRobotMedia(private val context: MainActivity, team: Team? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
             put(API_PARAM_API_ACTION, "GetRobotMedia")
-            put("TeamId", team?.id?.toString() ?: "")
+            put(RobotMedia.COLUMN_NAME_TEAM_ID, team?.id?.toString() ?: "")
         }
     })
     {
@@ -663,6 +663,8 @@ abstract class Server internal constructor(
                 {
                     val robotMediaJson = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i)
 
+                    val yearId = robotMediaJson.getInt(RobotMedia.COLUMN_NAME_YEAR_ID)
+                    val eventId = robotMediaJson.getString(RobotMedia.COLUMN_NAME_EVENT_ID)
                     val teamId = robotMediaJson.getInt(RobotMedia.COLUMN_NAME_TEAM_ID)
                     var fileUri = Constants.WEB_URL + "/assets/robot-media/originals/" + robotMediaJson.getString(RobotMedia.COLUMN_NAME_FILE_URI)
 
@@ -670,10 +672,12 @@ abstract class Server internal constructor(
 
                     robotMedia.add(RobotMedia(
                             -1,
+                            yearId,
+                            eventId,
                             teamId,
                             fileUri,
-                            false
-                    ))
+                            false)
+                    )
 
                 }
 
@@ -689,7 +693,7 @@ abstract class Server internal constructor(
         //endregion
     }
 
-    class GetYears(private val context: MainActivity) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetYears(private val context: MainActivity) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -752,7 +756,7 @@ abstract class Server internal constructor(
         //endregion
     }
 
-    class GetEvents(private val context: MainActivity, private val team: Team? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetEvents(private val context: MainActivity, private val team: Team? = null) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -813,7 +817,7 @@ abstract class Server internal constructor(
         }
     }
 
-    class GetChecklistItems(private val context: MainActivity) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetChecklistItems(private val context: MainActivity) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -869,7 +873,7 @@ abstract class Server internal constructor(
         //endregion
     }
 
-    class GetChecklistItemResults(private val context: MainActivity) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class GetChecklistItemResults(private val context: MainActivity) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -940,7 +944,7 @@ abstract class Server internal constructor(
 
     //region Setters
 
-    class SubmitRobotInfo(private val context: MainActivity, robotInfo: RobotInfo) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class SubmitRobotInfo(private val context: MainActivity, robotInfo: RobotInfo) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -981,7 +985,7 @@ abstract class Server internal constructor(
         }
     }
 
-    class SubmitScoutCardInfo(private val context: MainActivity, scoutCardInfo: ScoutCardInfo) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class SubmitScoutCardInfo(private val context: MainActivity, scoutCardInfo: ScoutCardInfo) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
@@ -1025,14 +1029,16 @@ abstract class Server internal constructor(
         }
     }
 
-    class SubmitRobotMedia(private val context: MainActivity, robotMedia: RobotMedia) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class SubmitRobotMedia(private val context: MainActivity, robotMedia: RobotMedia) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {
             put(API_PARAM_API_ACTION, "SubmitRobotMedia")
 
-            put("TeamId", robotMedia.teamId.toString())
-            put("Base64Image", robotMedia.base64Image!!)
+            put(RobotMedia.COLUMN_NAME_YEAR_ID, robotMedia.yearId.toString())
+            put(RobotMedia.COLUMN_NAME_EVENT_ID, robotMedia.eventId)
+            put(RobotMedia.COLUMN_NAME_TEAM_ID, robotMedia.teamId.toString())
+            put(RobotMedia.COLUMN_NAME_FILE_URI, robotMedia.base64Image!!)
         }
     })
     {
@@ -1050,7 +1056,6 @@ abstract class Server internal constructor(
                 if (response.getString(API_FIELD_NAME_STATUS) != API_FIELD_NAME_STATUS_SUCCESS)
                     throw Exception(response.getString(API_FIELD_NAME_RESPONSE))
 
-
                 return true
             } catch (e: Exception)
             {
@@ -1061,7 +1066,7 @@ abstract class Server internal constructor(
         }
     }
 
-    class SubmitChecklistItemResult(private val context: MainActivity, checklistItemResult: ChecklistItemResult) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "")!!.toString(), object : HashMap<String, String>()
+    class SubmitChecklistItemResult(private val context: MainActivity, checklistItemResult: ChecklistItemResult) : Server(context, context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(), object : HashMap<String, String>()
     {
         init
         {

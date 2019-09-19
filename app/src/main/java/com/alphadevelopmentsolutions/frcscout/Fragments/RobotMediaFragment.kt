@@ -2,7 +2,6 @@ package com.alphadevelopmentsolutions.frcscout.Fragments
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
@@ -111,6 +110,8 @@ class RobotMediaFragment : MasterFragment()
                 {
                     robotMedia = RobotMedia(
                             -1,
+                            year!!.serverId!!,
+                            event!!.blueAllianceId!!,
                             team!!.id!!,
                             mediaFilePath,
                             true)
