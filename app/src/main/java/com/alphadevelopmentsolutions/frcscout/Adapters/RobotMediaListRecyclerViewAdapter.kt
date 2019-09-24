@@ -15,13 +15,13 @@ import kotlinx.android.synthetic.main.layout_card_robot_media.view.*
 import kotlinx.android.synthetic.main.layout_dialog_confirm.view.*
 import java.util.*
 
-internal class RobotMediaListRecyclerViewAdapter(private val team: Team, private val robotMedia: ArrayList<RobotMedia>, private val context: MainActivity) : RecyclerView.Adapter<RobotMediaListRecyclerViewAdapter.ViewHolder>()
+internal class RobotMediaListRecyclerViewAdapter(private val team: Team, private val robotMediaList: ArrayList<RobotMedia>, private val context: MainActivity) : RecyclerView.Adapter<RobotMediaListRecyclerViewAdapter.ViewHolder>()
 {
     private val robotMediaBitmaps: ArrayList<Bitmap> = ArrayList()
 
     init
     {
-        for(media in robotMedia)
+        for(media in robotMediaList)
         {
             robotMediaBitmaps.add(media.imageBitmap)
         }
@@ -39,36 +39,45 @@ internal class RobotMediaListRecyclerViewAdapter(private val team: Team, private
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
     {
+        val robotMedia = robotMediaList[viewHolder.adapterPosition]
+
         viewHolder.view.RobotImageView.setImageBitmap(robotMediaBitmaps[viewHolder.adapterPosition])
 
-        viewHolder.view.ViewRobotMediaButton.setOnClickListener { context.changeFragment(RobotMediaFragment.newInstance(robotMedia[viewHolder.adapterPosition], team), true) }
-        viewHolder.view.DeleteRobotMediaButton.setOnClickListener {
+        viewHolder.view.ViewRobotMediaButton.setOnClickListener { context.changeFragment(RobotMediaFragment.newInstance(robotMedia, team), true) }
 
-            val confirmDialogBuilder = AlertDialog.Builder(context)
-            var confirmDialog: AlertDialog? = null
-            val layout = LayoutInflater.from(context).inflate(R.layout.layout_dialog_confirm, null)
-            layout.ConfirmTitle.text = "Delete Robot Media?"
-            layout.ConfirmSupport.text = "Are you sure you want to delete this robot media? This can't be undone."
-            layout.CancelButton.setOnClickListener {
-                confirmDialog!!.dismiss()
-            }
-            layout.ConfirmButton.setOnClickListener {
-                confirmDialog!!.dismiss()
+        if(!robotMedia.isDraft)
+            viewHolder.view.DeleteRobotMediaButton.visibility = View.GONE
+        else
+            viewHolder.view.DeleteRobotMediaButton.setOnClickListener {
 
-                if(robotMedia[viewHolder.adapterPosition].delete(context.database))
-                {
-                    robotMedia.remove(robotMedia[viewHolder.adapterPosition])
-                    notifyItemRemoved(viewHolder.adapterPosition)
+                val confirmDialogBuilder = AlertDialog.Builder(context)
+                var confirmDialog: AlertDialog? = null
+                val layout = LayoutInflater.from(context).inflate(R.layout.layout_dialog_confirm, null)
+                layout.ConfirmTitle.text = "Delete Robot Media?"
+                layout.ConfirmSupport.text = "Are you sure you want to delete this robot media? This can't be undone."
+                layout.CancelButton.setOnClickListener {
+                    confirmDialog!!.dismiss()
                 }
-            }
+                layout.ConfirmButton.setOnClickListener {
+                    confirmDialog!!.dismiss()
 
-            confirmDialogBuilder.setView(layout)
-            confirmDialog = confirmDialogBuilder.show()
-        }
+                    with(robotMediaList[viewHolder.adapterPosition])
+                    {
+                        if(delete(context.database))
+                        {
+                            robotMediaList.remove(this)
+                            notifyItemRemoved(viewHolder.adapterPosition)
+                        }
+                    }
+                }
+
+                confirmDialogBuilder.setView(layout)
+                confirmDialog = confirmDialogBuilder.show()
+            }
     }
 
     override fun getItemCount(): Int
     {
-        return robotMedia.size
+        return robotMediaList.size
     }
 }
