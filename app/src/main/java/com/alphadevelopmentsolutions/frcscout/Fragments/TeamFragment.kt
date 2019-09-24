@@ -1,5 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
@@ -96,29 +97,29 @@ class TeamFragment : MasterFragment()
             with(team!!)
             {
                 if (facebookURL != "")
-                    FacebookFontAwesomeBrandIcon.setURL(facebookURL, context)
+                    FacebookButton.setOnClickListener{ context.startActivity(Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(facebookURL) }) }
                 else
-                    FacebookFontAwesomeBrandIcon.hide()
+                    FacebookButton.visibility = View.GONE
 
                 if (twitterURL != "")
-                    TwitterFontAwesomeBrandIcon.setURL(twitterURL, context)
+                    TwitterButton.setOnClickListener{ context.startActivity(Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(twitterURL) }) }
                 else
-                    TwitterFontAwesomeBrandIcon.hide()
+                    TwitterButton.visibility = View.GONE
 
                 if (instagramURL != "")
-                    InstagramFontAwesomeBrandIcon.setURL(instagramURL, context)
+                    InstagramButton.setOnClickListener{ context.startActivity(Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(instagramURL) }) }
                 else
-                    InstagramFontAwesomeBrandIcon.hide()
+                    InstagramButton.visibility = View.GONE
 
                 if (youtubeURL != "")
-                    YoutubeFontAwesomeBrandIcon.setURL(youtubeURL, context)
+                    YoutubeButton.setOnClickListener{ context.startActivity(Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(youtubeURL) }) }
                 else
-                    YoutubeFontAwesomeBrandIcon.hide()
+                    YoutubeButton.visibility = View.GONE
 
                 if (websiteURL != "")
-                    WebsiteFontAwesomeSolidIcon.setURL(websiteURL, context)
+                    WebsiteButton.setOnClickListener{ context.startActivity(Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(websiteURL) }) }
                 else
-                    WebsiteFontAwesomeSolidIcon.hide()
+                    WebsiteButton.visibility = View.GONE
             }
 
             TeamNumberNameTextView.text = "${team!!.id.toString()} - ${team!!.name}"

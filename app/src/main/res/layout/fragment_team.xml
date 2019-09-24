@@ -53,81 +53,59 @@
                 app:layout_collapseMode="parallax">
 
                 <LinearLayout
-                    android:id="@+id/linearLayout4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/TeamLocationTextView">
 
-                    <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
-                        android:id="@+id/FacebookFontAwesomeBrandIcon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:gravity="center"
-                        android:text="@string/icon_facebook"
-                        android:textColor="@color/text_secondary_light"
-                        android:textSize="25sp"
-                        tools:layout_editor_absoluteX="354dp"
-                        tools:layout_editor_absoluteY="338dp" />
+                    <ImageView
+                        android:id="@+id/FacebookButton"
+                        android:layout_width="@dimen/social_media_button_width"
+                        android:layout_height="@dimen/social_media_button_height"
+                        android:layout_margin="@dimen/material_padding"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_facebook_black"
+                        android:tint="@android:color/white" />
 
-                    <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
-                        android:id="@+id/TwitterFontAwesomeBrandIcon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:gravity="center"
-                        android:text="@string/icon_twitter"
-                        android:textColor="@color/text_secondary_light"
-                        android:textSize="25sp"
-                        tools:layout_editor_absoluteX="66dp"
-                        tools:layout_editor_absoluteY="138dp" />
+                    <ImageView
+                        android:id="@+id/TwitterButton"
+                        android:layout_width="@dimen/social_media_button_width"
+                        android:layout_height="@dimen/social_media_button_height"
+                        android:layout_margin="@dimen/material_padding"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_twitter_black"
+                        android:tint="@android:color/white" />
 
-                    <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
-                        android:id="@+id/InstagramFontAwesomeBrandIcon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:gravity="center"
-                        android:text="@string/icon_instagram"
-                        android:textColor="@color/text_secondary_light"
-                        android:textSize="25sp"
-                        tools:layout_editor_absoluteX="354dp"
-                        tools:layout_editor_absoluteY="238dp" />
+                    <ImageView
+                        android:id="@+id/InstagramButton"
+                        android:layout_width="@dimen/social_media_button_width"
+                        android:layout_height="@dimen/social_media_button_height"
+                        android:layout_margin="@dimen/material_padding"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_instagram_black"
+                        android:tint="@android:color/white" />
 
-                    <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeBrandIcon
-                        android:id="@+id/YoutubeFontAwesomeBrandIcon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:gravity="center"
-                        android:text="@string/icon_youtube"
-                        android:textColor="@color/text_secondary_light"
-                        android:textSize="25sp"
-                        tools:layout_editor_absoluteX="354dp"
-                        tools:layout_editor_absoluteY="238dp" />
+                    <ImageView
+                        android:id="@+id/YoutubeButton"
+                        android:layout_width="@dimen/social_media_button_width"
+                        android:layout_height="@dimen/social_media_button_height"
+                        android:layout_margin="@dimen/material_padding"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_youtube_black"
+                        android:tint="@android:color/white" />
 
-                    <com.alphadevelopmentsolutions.frcscout.Classes.FontAwesomeSolidIcon
-                        android:id="@+id/WebsiteFontAwesomeSolidIcon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:gravity="center"
-                        android:text="@string/icon_website"
-                        android:textColor="@color/text_secondary_light"
-                        android:textSize="25sp"
-                        tools:layout_editor_absoluteX="354dp"
-                        tools:layout_editor_absoluteY="238dp" />
+                    <ImageView
+                        android:id="@+id/WebsiteButton"
+                        android:layout_width="@dimen/social_media_button_width"
+                        android:layout_height="@dimen/social_media_button_height"
+                        android:layout_margin="@dimen/material_padding"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_public_white_24dp"
+                        android:tint="@android:color/white" />
 
                 </LinearLayout>
 

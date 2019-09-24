@@ -259,11 +259,31 @@
         limitations under the License.
     </string>
 
+    <string name="license_twitter">
+        Icons made by Pixel Perfect (https://www.flaticon.com/authors/pixel-perfect)from https://www.flaticon.com/
+    </string>
+
+    <string name="license_facebook">
+        Icons made by Freepik (https://www.flaticon.com/authors/freepik) from https://www.flaticon.com/
+    </string>
+
+    <string name="license_instagram">
+        Icons made by Freepik (https://www.flaticon.com/authors/freepik) from https://www.flaticon.com/
+    </string>
+
+    <string name="license_youtube">
+        Icons made by Pixel Perfect (https://www.flaticon.com/authors/pixel-perfect) from https://www.flaticon.com/
+    </string>
+
     <string name="picasso">Picasso</string>
     <string name="circleimageview">CircleImageView</string>
     <string name="viewpagerdotsindicator">ViewPagerDotsIndicator</string>
     <string name="mpandroidchart">MPAndroidChart</string>
     <string name="gson">Gson</string>
     <string name="settings">Settings</string>
+    <string name="twitter_icon">Twitter Icon</string>
+    <string name="facebook_icon">Facebook Icon</string>
+    <string name="instagram_icon">Instagram Icon</string>
+    <string name="youtube_icon">Youtube Icon</string>
 
 </resources>
