@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity(),
 
     private var searchView: SearchView? = null
 
-    public val dp = fun(height: Int): Int
+    val dp = fun(height: Int): Int
     {
         return (height * context.resources.displayMetrics.density + 0.5f).toInt()
     }

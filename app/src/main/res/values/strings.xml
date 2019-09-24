@@ -285,5 +285,8 @@
     <string name="facebook_icon">Facebook Icon</string>
     <string name="instagram_icon">Instagram Icon</string>
     <string name="youtube_icon">Youtube Icon</string>
+    <string name="view">view</string>
+    <string name="delete">delete</string>
+    <string name="confirm">Confirm</string>
 
 </resources>

@@ -196,12 +196,19 @@ class RobotMedia(
         var successful = false
 
         //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
+        if (!database.isOpen)
+            database.open()
 
         if (database.isOpen)
-        {
             successful = database.deleteRobotMedia(this)
 
+        if(successful)
+        {
+            with(File(fileUri))
+            {
+                if(exists())
+                    delete()
+            }
         }
 
         return successful
