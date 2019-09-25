@@ -226,7 +226,7 @@ class Event : Table
         if (database.isOpen)
         {
             val events = getObjects(null, this, null, database)
-            val event = if (events!!.size > 0) events[0] else null
+            val event = if (events.size > 0) events[0] else null
 
             if (event != null)
             {

@@ -106,7 +106,7 @@ class Year: Table
         if (database.isOpen)
         {
             val yearArrayList = getObjects(this, database)
-            val year = if (yearArrayList!!.size > 0) yearArrayList[0] else null
+            val year = if (yearArrayList.size > 0) yearArrayList[0] else null
 
             if (year != null)
             {

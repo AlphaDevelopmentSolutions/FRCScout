@@ -4,11 +4,10 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
@@ -46,7 +45,7 @@ abstract class MasterFragment : Fragment()
 
     protected var zIndex: Float = -1f
 
-    override fun onAttach(context: Context?)
+    override fun onAttach(context: Context)
     {
         super.onAttach(context)
         if (context is OnFragmentInteractionListener)
@@ -55,7 +54,7 @@ abstract class MasterFragment : Fragment()
         }
         else
         {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
+            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
         }
     }
 

@@ -1,8 +1,8 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters
 
 import android.graphics.Typeface
-import android.support.design.button.MaterialButton
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
+import androidx.recyclerview.widget.RecyclerView
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
 import android.view.LayoutInflater

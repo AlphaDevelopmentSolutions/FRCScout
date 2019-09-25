@@ -19,7 +19,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
-        <android.support.design.widget.TabLayout
+        <com.google.android.material.tabs.TabLayout
             android:id="@+id/AllianceTabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,14 +28,14 @@
             app:tabTextColor="@android:color/white"
             tools:layout_editor_absoluteY="200dp" />
 
-        <android.support.v4.view.ViewPager
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/AllianceViewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/TeamsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

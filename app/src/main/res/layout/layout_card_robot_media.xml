@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/material_padding"
@@ -65,7 +65,7 @@
                 app:layout_constraintStart_toEndOf="@+id/ViewRobotMediaButton"
                 app:layout_constraintTop_toBottomOf="@+id/RobotImageView" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </android.support.v7.widget.CardView>
 

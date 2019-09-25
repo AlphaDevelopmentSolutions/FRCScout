@@ -83,7 +83,7 @@ class RobotInfo(
         if (database.isOpen)
         {
             val robotInfoList = getObjects(null, null, null, null, this, false, database)
-            val robotInfo = if (robotInfoList!!.size > 0) robotInfoList[0] else null
+            val robotInfo = if (robotInfoList.size > 0) robotInfoList[0] else null
 
             if (robotInfo != null)
             {
