@@ -288,5 +288,6 @@
     <string name="view">view</string>
     <string name="delete">delete</string>
     <string name="confirm">Confirm</string>
+    <string name="search">Search</string>
 
 </resources>
