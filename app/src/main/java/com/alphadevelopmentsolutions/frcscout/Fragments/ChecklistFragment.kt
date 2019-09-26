@@ -1,12 +1,12 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.SearchView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.Adapters.ChecklistItemListRecyclerViewAdapter
 import com.alphadevelopmentsolutions.frcscout.Adapters.MatchListRecyclerViewAdapter
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItem

@@ -1,19 +1,19 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters
 
 import android.net.Uri
-import com.google.android.material.button.MaterialButton
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
+import com.google.android.material.button.MaterialButton
 import com.squareup.picasso.Picasso
 import java.io.File
 import java.text.SimpleDateFormat

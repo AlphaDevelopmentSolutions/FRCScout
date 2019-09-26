@@ -1,14 +1,13 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters
 
 import android.graphics.Typeface
-import com.google.android.material.button.MaterialButton
-import androidx.recyclerview.widget.RecyclerView
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TableRow
+import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
@@ -20,6 +19,7 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardInfoFragment
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamListFragment
 import com.alphadevelopmentsolutions.frcscout.R
+import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.layout_card_match.view.*
 import java.lang.reflect.Type
 import java.util.*

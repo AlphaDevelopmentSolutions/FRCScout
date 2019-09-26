@@ -1,10 +1,10 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
 import android.os.Bundle
-import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.viewpager.widget.ViewPager
 import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter
 import com.alphadevelopmentsolutions.frcscout.R
 import kotlinx.android.synthetic.main.fragment_config_view_pager.view.*
