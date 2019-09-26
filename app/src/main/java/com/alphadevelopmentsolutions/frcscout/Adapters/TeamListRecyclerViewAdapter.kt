@@ -88,6 +88,8 @@ internal class TeamListRecyclerViewAdapter(private val match: Match?, private va
                     text = context.getString(R.string.add_scout_card)
                     setOnClickListener { this@TeamListRecyclerViewAdapter.context.changeFragment(ScoutCardInfoFragment.newInstance(match, teamList[viewHolder.adapterPosition]), true) }
                 }
+
+                viewHolder.view.TeamNameTextView.setOnClickListener { this@TeamListRecyclerViewAdapter.context.changeFragment(TeamFragment.newInstance(teamList[viewHolder.adapterPosition]), true) }
             }
         }
     }
