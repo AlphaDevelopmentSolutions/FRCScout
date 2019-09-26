@@ -118,8 +118,11 @@ class MainActivity : AppCompatActivity(),
         context = this
         database = Database(context)
 
-        ChangeButton.setOnClickListener{
+        LogoutButton.setOnClickListener{
             keyStore.resetData()
+            primaryColor = 0
+            primaryColorDark = 0
+            updateAppColors()
             changeFragment(ConfigViewPagerFragment.newInstance(), false, false)
         }
 
@@ -927,8 +930,8 @@ class MainActivity : AppCompatActivity(),
         NavigationView.itemTextColor = ColorStateList(states, colors)
         NavigationView.itemIconTintList = ColorStateList(states, colors)
 
-        ChangeButton.setTextColor(primaryColor)
-        (ChangeButton as MaterialButton).rippleColor = buttonRipple
+        LogoutButton.setTextColor(primaryColor)
+        (LogoutButton as MaterialButton).rippleColor = buttonRipple
     }
 
     /**

@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
+import java.util.*
 
 class KeyStore(val context: MainActivity? = null)
 {
@@ -74,7 +75,7 @@ class KeyStore(val context: MainActivity? = null)
             setPreference(PRIMARY_COLOR_DARK_KEY, "")
 
             setPreference(SELECTED_EVENT_KEY, -1)
-            setPreference(SELECTED_YEAR_KEY, -1)
+            setPreference(SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR))
 
             setPreference(DOWNLOAD_EVENTS_KEY, true)
             setPreference(DOWNLOAD_MATCHES_KEY, true)
