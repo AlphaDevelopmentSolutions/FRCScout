@@ -24,7 +24,6 @@ class RobotInfoFragment : MasterFragment()
     }
 
     private var layoutFields: ArrayList<View> = ArrayList()
-    private var robotInfoKeyStates: LinkedHashMap<String, ArrayList<RobotInfoKey>> = LinkedHashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +34,9 @@ class RobotInfoFragment : MasterFragment()
 
             val robotInfoKeys = RobotInfoKey.getObjects(year, null, database)
             val robotInfos = RobotInfo.getObjects(year, event, team, null, null, false, database)
+            val robotInfoKeyStates: LinkedHashMap<String, ArrayList<RobotInfoKey>> = LinkedHashMap()
 
+            //split all info states with their keys
             for(robotInfoKey in robotInfoKeys)
             {
                 if(robotInfoKeyStates[robotInfoKey.keyState] != null)
@@ -45,19 +46,24 @@ class RobotInfoFragment : MasterFragment()
                     robotInfoKeyStates[robotInfoKey.keyState] = arrayListOf(robotInfoKey)
             }
 
+            //iterate through each state in the array
             for((infoKeyName, infoKeyValueArray) in robotInfoKeyStates)
             {
+                //inflate a new info form card and set all the values
                 val view = context.layoutInflater.inflate(R.layout.layout_card_scout_card_info_form, null)
                 view.ScoutCardInfoFormCardTitle.text = infoKeyName
 
+                //iterate through each info key in the array
                 for(infoKey in infoKeyValueArray)
                 {
+                    //inflate the field info layout and set the values
                     val fieldLinearLayout = LinearLayout(context)
                     fieldLinearLayout.orientation = LinearLayout.VERTICAL
                     fieldLinearLayout.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
                     val infoKeyView = context.layoutInflater.inflate(R.layout.layout_field_info, null)
 
+                    //set the default robot info
                     var robotInfo = RobotInfo(
                             -1,
                             year!!.serverId!!,
@@ -68,12 +74,20 @@ class RobotInfoFragment : MasterFragment()
                             true
                     )
 
+                    //set the robot info to the preloaded one if found
                     for(info in robotInfos)
                     {
                         if(info.propertyKeyId == infoKey.serverId)
                             robotInfo = info
                     }
 
+                    if(robotInfo.isDraft)
+                    {
+                        infoKeyView.DeleteButton.visibility = View.VISIBLE
+                        infoKeyView.DeleteButton.setOnClickListener {
+
+                        }
+                    }
                     infoKeyView.InfoKeyTitle.text = infoKey.keyName
                     infoKeyView.TextLinearLayout.visibility = View.VISIBLE
                     infoKeyView.TextEditText.setText(robotInfo.propertyValue)
