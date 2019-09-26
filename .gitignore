@@ -5,6 +5,7 @@
 
 #OSx Files
 *.DS_Store
+.DS_Store
 
 # Files for the ART/Dalvik VM
 *.dex
