@@ -28,6 +28,8 @@ class RobotMediaListFragment : MasterFragment()
 
         Thread(Runnable {
 
+            loadingThread.join()
+
             val oldCount = if(::robotMediaListRecyclerViewAdapter.isInitialized) robotMediaListRecyclerViewAdapter.itemCount else 0
 
             val robotMediaList = RobotMedia.getObjects(null, year, event, team, false, database)
