@@ -1,11 +1,11 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters
 
 import android.graphics.Bitmap
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
@@ -53,8 +53,8 @@ internal class RobotMediaListRecyclerViewAdapter(private val team: Team, private
                 val confirmDialogBuilder = AlertDialog.Builder(context)
                 var confirmDialog: AlertDialog? = null
                 val layout = LayoutInflater.from(context).inflate(R.layout.layout_dialog_confirm, null)
-                layout.ConfirmTitle.text = "Delete Robot Media?"
-                layout.ConfirmSupport.text = "Are you sure you want to delete this robot media? This can't be undone."
+                layout.ConfirmTitle.text = context.getString(R.string.delete_robot_media)
+                layout.ConfirmSupport.text = context.getString(R.string.delete_robot_media_support)
                 layout.CancelButton.setOnClickListener {
                     confirmDialog!!.dismiss()
                 }

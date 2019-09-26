@@ -289,5 +289,7 @@
     <string name="delete">delete</string>
     <string name="confirm">Confirm</string>
     <string name="search">Search</string>
+    <string name="delete_robot_media">Delete Robot Media</string>
+    <string name="delete_robot_media_support">Are you sure you want to delete this robot media? This can\'t be undone.</string>
 
 </resources>
