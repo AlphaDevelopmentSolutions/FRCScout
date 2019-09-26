@@ -1,11 +1,10 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters
 
 import android.net.Uri
-import com.google.android.material.button.MaterialButton
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfo
@@ -13,6 +12,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardInfoFragment
 import com.alphadevelopmentsolutions.frcscout.Fragments.TeamFragment
 import com.alphadevelopmentsolutions.frcscout.R
+import com.google.android.material.button.MaterialButton
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.layout_card_team.view.*
 import java.io.File
@@ -66,35 +66,30 @@ internal class TeamListRecyclerViewAdapter(private val match: Match?, private va
             viewHolder.view.TeamLogoImageView.setImageDrawable(context.getDrawable(R.drawable.frc_logo))
 
 
-        //send over to the teams home page frag
-        if (match == null)
+        with(viewHolder.view.ViewTeamButton)
         {
+
             //Sends you to the team fragment
-            viewHolder.view.ViewTeamButton.setOnClickListener { context.changeFragment(TeamFragment.newInstance(teamList[viewHolder.adapterPosition]), true) }
-        }
+            if (match == null)
+                setOnClickListener { this@TeamListRecyclerViewAdapter.context.changeFragment(TeamFragment.newInstance(teamList[viewHolder.adapterPosition]), true) }
 
-        else
-        {
-            //scout card found, show that one
-            if (teamHasScoutCardInfos[team.id]!!)
-            {
-                viewHolder.view.ViewTeamButton.text = context.getString(R.string.view_scout_card)
-                //Sends you to the scout card fragment
-                viewHolder.view.ViewTeamButton.setOnClickListener { context.changeFragment(ScoutCardInfoFragment.newInstance(match, teamList[viewHolder.adapterPosition]), true) }
-            }
-
-            //no scout card found, add new one
             else
             {
-                viewHolder.view.ViewTeamButton.text = context.getString(R.string.add_scout_card)
-                //Sends you to the scout card fragment
-                viewHolder.view.ViewTeamButton.setOnClickListener { context.changeFragment(ScoutCardInfoFragment.newInstance(match, teamList[viewHolder.adapterPosition]), true) }
+                //scout card found, show that one
+                if (teamHasScoutCardInfos[team.id] == true)
+                {
+                    text = context.getString(R.string.view_scout_card)
+                    setOnClickListener { this@TeamListRecyclerViewAdapter.context.changeFragment(ScoutCardInfoFragment.newInstance(match, teamList[viewHolder.adapterPosition]), true) }
+                }
+
+                //no scout card found, add new one
+                else
+                {
+                    text = context.getString(R.string.add_scout_card)
+                    setOnClickListener { this@TeamListRecyclerViewAdapter.context.changeFragment(ScoutCardInfoFragment.newInstance(match, teamList[viewHolder.adapterPosition]), true) }
+                }
             }
-
-            //Add a listener to the name of the team that when clicked will send you to the team page
-            viewHolder.view.ViewTeamButton.setOnClickListener { context.changeFragment(TeamFragment.newInstance(teamList[viewHolder.adapterPosition]), true) }
-
-        }//find the most recent scout card if any, and send to the scout card page
+        }
     }
 
     override fun getItemCount(): Int
