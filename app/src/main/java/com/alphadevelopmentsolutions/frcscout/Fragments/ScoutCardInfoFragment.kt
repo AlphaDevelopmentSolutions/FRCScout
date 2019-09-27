@@ -56,47 +56,97 @@ class ScoutCardInfoFragment : MasterFragment()
 
                 for(infoKey in infoKeyValueArray)
                 {
+                    var blockTextChange = false
+
                     val fieldLinearLayout = LinearLayout(context)
                     fieldLinearLayout.orientation = LinearLayout.VERTICAL
                     fieldLinearLayout.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
-                    val infoKeyView = context.layoutInflater.inflate(R.layout.layout_field_info, null)
-
-                    var scoutCardInfo = ScoutCardInfo(
-                            -1,
-                            year!!.serverId!!,
-                            event!!.blueAllianceId!!,
-                            match!!.key,
-                            team!!.id!!,
-                            "",
-                            "",
-                            infoKey.serverId,
-                            true
-                    )
-
-                    for(info in scoutCardInfos)
+                    with(context.layoutInflater.inflate(R.layout.layout_field_info, null))
                     {
-                        if(info.propertyKeyId == infoKey.serverId)
-                            scoutCardInfo = info
-                    }
 
-                    infoKeyView.InfoKeyTitle.text = infoKey.keyName
+                        var scoutCardInfo: ScoutCardInfo? = null
 
-                    when(infoKey.dataType)
-                    {
-                        ScoutCardInfoKey.DataTypes.TEXT ->
+                        for (info in scoutCardInfos)
                         {
-                            infoKeyView.TextLinearLayout.visibility = View.VISIBLE
+                            if (info.propertyKeyId == infoKey.serverId && scoutCardInfo == null)
+                                scoutCardInfo = info
+                        }
 
-                            infoKeyView.TextEditText.setText(scoutCardInfo.propertyValue)
+                        if (scoutCardInfo?.isDraft == true)
+                            DeleteButton.visibility = View.VISIBLE
 
-                            if (!scoutCardInfo.isDraft)
+                        InfoKeyTitle.text = infoKey.keyName
+
+                        //set the delete onclick
+                        DeleteButton.setOnClickListener {
+                            scoutCardInfo?.delete(database)
+                            scoutCardInfo = null
+
+                            //get the recent items from the db to replace the deleted one
+                            with(ScoutCardInfo.getObjects(event, match, team, infoKey, null, false, database))
                             {
-                                infoKeyView.TextEditText.isEnabled = false
+
+                                //replace with the most recent
+                                if (size > 0)
+                                {
+                                    scoutCardInfo = this[size - 1]
+
+                                    when(infoKey.dataType)
+                                    {
+                                        ScoutCardInfoKey.DataTypes.TEXT ->
+                                        {
+                                            blockTextChange = true
+                                            TextEditText.setText(scoutCardInfo?.propertyValue)
+                                        }
+
+                                        ScoutCardInfoKey.DataTypes.INT ->
+                                        {
+                                            InfoKeyValue.text = scoutCardInfo?.propertyValue
+                                        }
+
+                                        ScoutCardInfoKey.DataTypes.BOOL ->
+                                        {
+                                            BooleanCheckBox.isChecked = scoutCardInfo?.propertyValue == "1"
+                                        }
+                                    }
+                                }
+
+                                //reset robot info and textview
+                                else
+                                {
+                                    when(infoKey.dataType)
+                                    {
+                                        ScoutCardInfoKey.DataTypes.TEXT ->
+                                        {
+                                            TextEditText.setText("")
+                                        }
+
+                                        ScoutCardInfoKey.DataTypes.INT ->
+                                        {
+                                            InfoKeyValue.text = "0"
+                                        }
+
+                                        ScoutCardInfoKey.DataTypes.BOOL ->
+                                        {
+                                            BooleanCheckBox.isChecked = false
+                                        }
+                                    }
+
+                                }
+
+                                //hide delete button
+                                DeleteButton.visibility = View.GONE
                             }
-                            else
+                        }
+
+                        when (infoKey.dataType)
+                        {
+                            ScoutCardInfoKey.DataTypes.TEXT ->
                             {
-                                infoKeyView.TextEditText.addTextChangedListener(object : TextWatcher
+                                TextLinearLayout.visibility = View.VISIBLE
+                                TextEditText.setText(scoutCardInfo!!.propertyValue)
+                                TextEditText.addTextChangedListener(object : TextWatcher
                                 {
                                     override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int)
                                     {
@@ -105,8 +155,36 @@ class ScoutCardInfoFragment : MasterFragment()
 
                                     override fun onTextChanged(searchText: CharSequence, start: Int, before: Int, count: Int)
                                     {
-                                        scoutCardInfo.propertyValue = searchText.toString()
-                                        scoutCardInfo.save(database)
+                                        if (!blockTextChange)
+                                        {
+                                            //if the current robot info isn't a draft, create a new robot info item to save
+                                            if (!scoutCardInfo!!.isDraft)
+                                            {
+                                                scoutCardInfo = ScoutCardInfo(
+                                                        -1,
+                                                        year!!.serverId!!,
+                                                        event!!.blueAllianceId!!,
+                                                        match!!.key,
+                                                        team!!.id!!,
+                                                        "",
+                                                        "",
+                                                        infoKey.serverId,
+                                                        true
+                                                )
+                                            }
+
+                                            scoutCardInfo!!.propertyValue = searchText.toString()
+                                            scoutCardInfo!!.save(database)
+
+
+                                            with(DeleteButton)
+                                            {
+                                                if (visibility != View.VISIBLE)
+                                                    visibility = View.VISIBLE
+                                            }
+                                        }
+
+                                        blockTextChange = false
                                     }
 
                                     override fun afterTextChanged(editable: Editable)
@@ -114,83 +192,139 @@ class ScoutCardInfoFragment : MasterFragment()
 
                                     }
                                 })
+
                             }
-                        }
 
-                        //create an int layout
-                        ScoutCardInfoKey.DataTypes.INT ->
-                        {
-                            infoKeyView.IntegerLinearLayout.visibility = View.VISIBLE
-
-                            infoKeyView.InfoKeyValue.text = if(scoutCardInfo.propertyValue.isNotBlank()) scoutCardInfo.propertyValue else infoKey.minValue?.toString() ?: "0"
-
-                            if (!scoutCardInfo.isDraft)
+                            //create an int layout
+                            ScoutCardInfoKey.DataTypes.INT ->
                             {
-                                infoKeyView.PlusButton.visibility = View.GONE
-                                infoKeyView.MinusButton.visibility = View.GONE
-                            }
-                            else
-                            {
+                                IntegerLinearLayout.visibility = View.VISIBLE
+
+                                InfoKeyValue.text = if (scoutCardInfo?.propertyValue?.isNotBlank() == true) scoutCardInfo?.propertyValue ?: "0" else infoKey.minValue?.toString() ?: "0"
+
                                 //Add button click handlers
-                                infoKeyView.PlusButton.setOnClickListener{
+                                PlusButton.setOnClickListener {
 
-                                    val curr = Integer.parseInt(infoKeyView.InfoKeyValue.text.toString())
+                                    val curr = Integer.parseInt(InfoKeyValue.text.toString())
 
                                     //Check for maximum in key
-                                    if(infoKey.maxValue == null || curr < infoKey.maxValue!!)
+                                    if (infoKey.maxValue == null || curr < infoKey.maxValue!!)
                                     {
-                                        infoKeyView.InfoKeyValue.text = (curr + 1).toString()
+                                        InfoKeyValue.text = (curr + 1).toString()
 
-                                        scoutCardInfo.propertyValue = infoKeyView.InfoKeyValue.text.toString()
-                                        scoutCardInfo.save(database)
+                                        //if the current robot info isn't a draft, create a new robot info item to save
+                                        if (scoutCardInfo?.isDraft != true)
+                                        {
+                                            scoutCardInfo = ScoutCardInfo(
+                                                    -1,
+                                                    year!!.serverId!!,
+                                                    event!!.blueAllianceId!!,
+                                                    match!!.key,
+                                                    team!!.id!!,
+                                                    "",
+                                                    "",
+                                                    infoKey.serverId,
+                                                    true
+                                            )
+                                        }
+
+                                        scoutCardInfo!!.propertyValue = InfoKeyValue.text.toString()
+                                        scoutCardInfo!!.save(database)
+
+
+                                        with(DeleteButton)
+                                        {
+                                            if (visibility != View.VISIBLE)
+                                                visibility = View.VISIBLE
+                                        }
+
                                     }
                                     else
-                                        context.showSnackbar("This field has a maximum of " + infoKey.maxValue)
+                                        this@ScoutCardInfoFragment.context.showSnackbar("This field has a maximum of " + infoKey.maxValue)
 
                                 }
 
-                                infoKeyView.MinusButton.setOnClickListener{
+                                MinusButton.setOnClickListener {
 
-                                    val curr = Integer.parseInt(infoKeyView.InfoKeyValue.text.toString())
+                                    val curr = Integer.parseInt(InfoKeyValue.text.toString())
 
-                                    if(infoKey.minValue == null  || curr > infoKey.minValue!!)
+                                    if (infoKey.minValue == null || curr > infoKey.minValue!!)
                                     {
-                                        infoKeyView.InfoKeyValue.text = (curr - 1).toString()
+                                        InfoKeyValue.text = (curr - 1).toString()
 
-                                        scoutCardInfo.propertyValue = infoKeyView.InfoKeyValue.text.toString()
-                                        scoutCardInfo.save(database)
+                                        //if the current robot info isn't a draft, create a new robot info item to save
+                                        if (scoutCardInfo?.isDraft != true)
+                                        {
+                                            scoutCardInfo = ScoutCardInfo(
+                                                    -1,
+                                                    year!!.serverId!!,
+                                                    event!!.blueAllianceId!!,
+                                                    match!!.key,
+                                                    team!!.id!!,
+                                                    "",
+                                                    "",
+                                                    infoKey.serverId,
+                                                    true
+                                            )
+                                        }
+
+                                        scoutCardInfo!!.propertyValue = InfoKeyValue.text.toString()
+                                        scoutCardInfo!!.save(database)
+
+
+                                        with(DeleteButton)
+                                        {
+                                            if (visibility != View.VISIBLE)
+                                                visibility = View.VISIBLE
+                                        }
                                     }
                                     else
-                                        context.showSnackbar("This field has a minimum of " + infoKey.minValue)
+                                        this@ScoutCardInfoFragment.context.showSnackbar("This field has a minimum of " + infoKey.minValue)
                                 }
+
                             }
-                        }
 
-                        //create a bool layout
-                        ScoutCardInfoKey.DataTypes.BOOL ->
-                        {
-                            infoKeyView.BooleanLinearLayout.visibility = View.VISIBLE
-
-                            infoKeyView.BooleanCheckBox.isChecked = if(scoutCardInfo.propertyValue.isNotBlank()) scoutCardInfo.propertyValue == "1" else false
-
-                            if (!scoutCardInfo.isDraft)
+                            //create a bool layout
+                            ScoutCardInfoKey.DataTypes.BOOL ->
                             {
-                                infoKeyView.BooleanCheckBox.isEnabled = false
-                            }
-                            else
-                            {
-                                infoKeyView.BooleanCheckBox.setOnCheckedChangeListener { _, checked ->
+                                BooleanLinearLayout.visibility = View.VISIBLE
+                                BooleanCheckBox.isChecked = if (scoutCardInfo?.propertyValue?.isNotBlank() == true) scoutCardInfo?.propertyValue == "1" else false
+                                BooleanCheckBox.setOnCheckedChangeListener { _, checked ->
                                     run {
 
-                                        scoutCardInfo.propertyValue = if (checked) "1" else "0"
-                                        scoutCardInfo.save(database)
+                                        //if the current robot info isn't a draft, create a new robot info item to save
+                                        if (scoutCardInfo?.isDraft != true)
+                                        {
+                                            scoutCardInfo = ScoutCardInfo(
+                                                    -1,
+                                                    year!!.serverId!!,
+                                                    event!!.blueAllianceId!!,
+                                                    match!!.key,
+                                                    team!!.id!!,
+                                                    "",
+                                                    "",
+                                                    infoKey.serverId,
+                                                    true
+                                            )
+                                        }
+
+                                        scoutCardInfo!!.propertyValue = if (checked) "1" else "0"
+                                        scoutCardInfo!!.save(database)
+
+
+                                        with(DeleteButton)
+                                        {
+                                            if (visibility != View.VISIBLE)
+                                                visibility = View.VISIBLE
+                                        }
                                     }
                                 }
+
                             }
                         }
-                    }
 
-                    fieldLinearLayout.addView(infoKeyView)
+                        fieldLinearLayout.addView(this)
+                    }
 
                     view.ScoutCardInfoFormFieldsLinearLayout.addView(fieldLinearLayout)
                 }

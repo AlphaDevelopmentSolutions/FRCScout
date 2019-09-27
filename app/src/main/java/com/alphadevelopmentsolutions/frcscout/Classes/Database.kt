@@ -910,7 +910,7 @@ class Database(context: MainActivity)
             whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_IS_DRAFT).append(" = 1")
         }
 
-        val orderBy = ScoutCardInfo.COLUMN_NAME_MATCH_ID + " DESC"
+        val orderBy = ScoutCardInfo.COLUMN_NAME_ID + " DESC"
 
         //select the info from the db
         val cursor = db!!.query(

@@ -75,24 +75,13 @@ class RobotInfoFragment : MasterFragment()
                                 robotInfo = info
                         }
 
-                        //robot info not found, set as default item
-                        if(robotInfo == null)
-                            robotInfo = RobotInfo(
-                                    -1,
-                                    year!!.serverId!!,
-                                    event!!.blueAllianceId!!,
-                                    team!!.id!!,
-                                    "",
-                                    infoKey.serverId,
-                                    true
-                            )
-
-                        if (robotInfo.isDraft)
+                        if (robotInfo?.isDraft == true)
                             DeleteButton.visibility = View.VISIBLE
 
                         //set the delete onclick
                         DeleteButton.setOnClickListener {
-                            robotInfo!!.delete(database)
+                            robotInfo?.delete(database)
+                            robotInfo = null
 
                             //get the recent items from the db to replace the deleted one
                             with(RobotInfo.getObjects(year, event, team, infoKey, null, false, database))
@@ -103,23 +92,13 @@ class RobotInfoFragment : MasterFragment()
                                 {
                                     robotInfo = this[size - 1]
                                     blockTextChange = true
-                                    TextEditText.setText(robotInfo!!.propertyValue)
+                                    TextEditText.setText(robotInfo?.propertyValue)
                                 }
 
                                 //reset robot info and textview
                                 else
                                 {
-                                    robotInfo = RobotInfo(
-                                            -1,
-                                            year!!.serverId!!,
-                                            event!!.blueAllianceId!!,
-                                            team!!.id!!,
-                                            "",
-                                            infoKey.serverId,
-                                            true
-                                    )
-
-                                    TextEditText.setText(robotInfo!!.propertyValue)
+                                    TextEditText.setText("")
                                 }
 
                                 //hide delete button
@@ -143,7 +122,7 @@ class RobotInfoFragment : MasterFragment()
                                 if (!blockTextChange)
                                 {
                                     //if the current robot info isn't a draft, create a new robot info item to save
-                                    if (!robotInfo!!.isDraft)
+                                    if (robotInfo?.isDraft != true)
                                     {
                                         robotInfo = RobotInfo(
                                                 -1,
