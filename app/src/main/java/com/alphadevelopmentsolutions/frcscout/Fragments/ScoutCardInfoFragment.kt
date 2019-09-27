@@ -145,7 +145,7 @@ class ScoutCardInfoFragment : MasterFragment()
                             ScoutCardInfoKey.DataTypes.TEXT ->
                             {
                                 TextLinearLayout.visibility = View.VISIBLE
-                                TextEditText.setText(scoutCardInfo!!.propertyValue)
+                                TextEditText.setText(scoutCardInfo?.propertyValue)
                                 TextEditText.addTextChangedListener(object : TextWatcher
                                 {
                                     override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int)
@@ -158,7 +158,7 @@ class ScoutCardInfoFragment : MasterFragment()
                                         if (!blockTextChange)
                                         {
                                             //if the current robot info isn't a draft, create a new robot info item to save
-                                            if (!scoutCardInfo!!.isDraft)
+                                            if (scoutCardInfo?.isDraft != true)
                                             {
                                                 scoutCardInfo = ScoutCardInfo(
                                                         -1,
