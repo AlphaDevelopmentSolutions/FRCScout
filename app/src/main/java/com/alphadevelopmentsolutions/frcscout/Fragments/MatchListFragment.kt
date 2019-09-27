@@ -65,7 +65,7 @@ class MatchListFragment : MasterFragment()
 
                 if (team == null)
                 {
-                    context.setToolbarTitle(event.toString())
+                    context.setToolbarTitle(context.getString(R.string.matches))
                     context.isToolbarScrollable = true
                     context.isSearchViewVisible = true
 

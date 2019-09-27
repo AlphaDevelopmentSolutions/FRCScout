@@ -66,7 +66,7 @@ class ChecklistFragment : MasterFragment()
             recyclerView.adapter = matchListRecyclerViewAdapter
             recyclerView.layoutManager = LinearLayoutManager(context)
 
-            context.setToolbarTitle(event.toString())
+            context.setToolbarTitle(context.getString(R.string.checklist))
             context.isToolbarScrollable = true
             context.isSearchViewVisible = true
 
@@ -154,7 +154,7 @@ class ChecklistFragment : MasterFragment()
         if (match != null)
             context.unlockDrawerLayout()
 
-        context.setToolbarTitle(event.toString())
+        context.setToolbarTitle(context.getString(R.string.checklist))
 
         super.onDestroyView()
     }

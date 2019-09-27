@@ -132,7 +132,7 @@ class ConfigFragment : MasterFragment()
                     with(context)
                     {
                         runOnUiThread {
-                            updateNavText()
+                            updateNavText(null)
 
                             loadingDialog.dismiss()
 

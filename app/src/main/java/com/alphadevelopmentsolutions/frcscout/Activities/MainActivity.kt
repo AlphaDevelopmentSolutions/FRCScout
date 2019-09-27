@@ -141,7 +141,7 @@ class MainActivity : AppCompatActivity(),
         updateAppColors()
 
         //Update nav text
-        updateNavText()
+        updateNavText(Event((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int), database))
 
         //Load the view for the fragments
         loadView(savedInstanceState)
@@ -955,10 +955,10 @@ class MainActivity : AppCompatActivity(),
     /**
      * Updates the nav bar text for team name and number
      */
-    fun updateNavText()
+    fun updateNavText(event: Event?)
     {
-        navHeader.TeamNumberTextView.text = keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1).toString()
-        navHeader.TeamNameTextView.text = keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NAME_KEY, "").toString()
+        navHeader.EventNameTextView.text = if (event?.id != -1) event.toString() else ""
+        navHeader.TeamNameTextView.text = "${keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1)} - ${keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NAME_KEY, "")}"
     }
 
     /**

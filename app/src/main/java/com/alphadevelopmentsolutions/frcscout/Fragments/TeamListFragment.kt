@@ -89,7 +89,7 @@ class TeamListFragment : MasterFragment()
 
         loadTeamsThread!!.join()
 
-        context.setToolbarTitle(if (match == null) event!!.name!! else match.toString())
+        context.setToolbarTitle(if (match == null) context.getString(R.string.teams) else match.toString())
         context.isSearchViewVisible = match == null
         context.isToolbarScrollable = match == null
 
