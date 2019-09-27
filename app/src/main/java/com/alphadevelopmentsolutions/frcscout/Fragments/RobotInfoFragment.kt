@@ -56,61 +56,120 @@ class RobotInfoFragment : MasterFragment()
                 //iterate through each info key in the array
                 for(infoKey in infoKeyValueArray)
                 {
+                    var blockTextChange = false
+
                     //inflate the field info layout and set the values
                     val fieldLinearLayout = LinearLayout(context)
                     fieldLinearLayout.orientation = LinearLayout.VERTICAL
                     fieldLinearLayout.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
-                    val infoKeyView = context.layoutInflater.inflate(R.layout.layout_field_info, null)
-
-                    //set the default robot info
-                    var robotInfo = RobotInfo(
-                            -1,
-                            year!!.serverId!!,
-                            event!!.blueAllianceId!!,
-                            team!!.id!!,
-                            "",
-                            infoKey.serverId,
-                            true
-                    )
-
-                    //set the robot info to the preloaded one if found
-                    for(info in robotInfos)
+                    with(context.layoutInflater.inflate(R.layout.layout_field_info, null))
                     {
-                        if(info.propertyKeyId == infoKey.serverId)
-                            robotInfo = info
+                        //set the default robot info
+                        var robotInfo: RobotInfo? = null
+
+                        //set the robot info to the preloaded one if found
+                        for(info in robotInfos)
+                        {
+                            if(info.propertyKeyId == infoKey.serverId)
+                                robotInfo = info
+                        }
+
+                        if(robotInfo == null)
+                            robotInfo = RobotInfo(
+                                    -1,
+                                    year!!.serverId!!,
+                                    event!!.blueAllianceId!!,
+                                    team!!.id!!,
+                                    "",
+                                    infoKey.serverId,
+                                    true
+                            )
+
+
+                        if (robotInfo.isDraft)
+                            DeleteButton.visibility = View.VISIBLE
+
+                        DeleteButton.setOnClickListener {
+                            robotInfo!!.delete(database)
+
+                            with(RobotInfo.getObjects(year, event, team, infoKey, null, false, database))
+                            {
+                                if (size > 0)
+                                {
+                                    robotInfo = this[size - 1]
+                                    blockTextChange = true
+                                    TextEditText.setText(robotInfo!!.propertyValue)
+                                }
+                                else
+                                {
+                                    robotInfo = RobotInfo(
+                                            -1,
+                                            year!!.serverId!!,
+                                            event!!.blueAllianceId!!,
+                                            team!!.id!!,
+                                            "",
+                                            infoKey.serverId,
+                                            true
+                                    )
+
+                                    TextEditText.setText(robotInfo!!.propertyValue)
+                                }
+
+                                DeleteButton.visibility = View.GONE
+                            }
+                        }
+
+                        InfoKeyTitle.text = infoKey.keyName
+                        TextLinearLayout.visibility = View.VISIBLE
+                        TextEditText.setText(robotInfo!!.propertyValue)
+                        TextEditText.addTextChangedListener(object : TextWatcher
+                        {
+                            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int)
+                            {
+
+                            }
+
+                            override fun onTextChanged(searchText: CharSequence, start: Int, before: Int, count: Int)
+                            {
+
+                                if (!blockTextChange)
+                                {
+                                    if (!robotInfo!!.isDraft)
+                                    {
+                                        robotInfo = RobotInfo(
+                                                -1,
+                                                year!!.serverId!!,
+                                                event!!.blueAllianceId!!,
+                                                team!!.id!!,
+                                                "",
+                                                infoKey.serverId,
+                                                true
+                                        )
+                                    }
+
+                                    robotInfo!!.propertyValue = searchText.toString()
+                                    robotInfo!!.save(database)
+
+
+                                    with(DeleteButton)
+                                    {
+                                        if (visibility != View.VISIBLE)
+                                            visibility = View.VISIBLE
+                                    }
+                                }
+
+                                blockTextChange = false
+                            }
+
+                            override fun afterTextChanged(editable: Editable)
+                            {
+
+                            }
+                        })
+
+                        fieldLinearLayout.addView(this)
                     }
-
-                    if(robotInfo.isDraft)
-                    {
-                        infoKeyView.DeleteButton.visibility = View.VISIBLE
-                        infoKeyView.DeleteButton.setOnClickListener {
-
-                        }
-                    }
-                    infoKeyView.InfoKeyTitle.text = infoKey.keyName
-                    infoKeyView.TextLinearLayout.visibility = View.VISIBLE
-                    infoKeyView.TextEditText.setText(robotInfo.propertyValue)
-                    infoKeyView.TextEditText.addTextChangedListener(object : TextWatcher
-                    {
-                        override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int)
-                        {
-
-                        }
-
-                        override fun onTextChanged(searchText: CharSequence, start: Int, before: Int, count: Int)
-                        {
-                            robotInfo.propertyValue = searchText.toString()
-                            robotInfo.save(database)
-                        }
-
-                        override fun afterTextChanged(editable: Editable)
-                        {
-
-                        }
-                    })
-
-                    fieldLinearLayout.addView(infoKeyView)
 
                     view.ScoutCardInfoFormFieldsLinearLayout.addView(fieldLinearLayout)
                 }

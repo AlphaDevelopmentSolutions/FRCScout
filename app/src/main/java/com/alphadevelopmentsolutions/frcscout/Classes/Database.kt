@@ -1302,20 +1302,19 @@ class Database(context: MainActivity)
 
         Log.i("Database Save", "Saving ${RobotInfo.TABLE_NAME} with the Id ${robotInfo.id}")
 
-        //try and update first
-        //if update fails, no record was in the database so add a new record
+        return if(robotInfo.id > 0)
+        {
 
-        //create the where statement
-        val whereStatement = RobotInfo.COLUMN_NAME_YEAR_ID + " = ? AND " +
-                RobotInfo.COLUMN_NAME_EVENT_ID + " = ? AND " +
-                RobotInfo.COLUMN_NAME_TEAM_ID + " = ? AND " +
-                RobotInfo.COLUMN_NAME_PROPERTY_KEY_ID + " = ? "
-        val whereArgs = arrayOf<String>(robotInfo.yearId.toString(), robotInfo.eventId, robotInfo.teamId.toString(),
-                robotInfo.propertyKeyId.toString())
+            //create the where statement
+            val whereStatement = RobotInfo.COLUMN_NAME_ID + " = ?"
+            val whereArgs = arrayOf(robotInfo.id.toString() + "")
 
-        //update
-        return if (db!!.update(RobotInfo.TABLE_NAME, contentValues, whereStatement, whereArgs) > 0)
-            robotInfo.id.toLong()
+            //update
+            if (db!!.update(RobotInfo.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                robotInfo.id.toLong()
+            else
+                -1
+        }
         else
             db!!.insert(RobotInfo.TABLE_NAME, null, contentValues)
     }
