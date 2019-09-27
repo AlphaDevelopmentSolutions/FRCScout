@@ -71,7 +71,7 @@ class RobotInfoFragment : MasterFragment()
                         //set the robot info to the preloaded one if found
                         for(info in robotInfos)
                         {
-                            if(info.propertyKeyId == infoKey.serverId)
+                            if(info.propertyKeyId == infoKey.serverId && robotInfo == null)
                                 robotInfo = info
                         }
 
