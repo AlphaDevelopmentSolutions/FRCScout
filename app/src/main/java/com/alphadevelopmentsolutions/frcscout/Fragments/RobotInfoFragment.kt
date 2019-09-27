@@ -75,6 +75,7 @@ class RobotInfoFragment : MasterFragment()
                                 robotInfo = info
                         }
 
+                        //robot info not found, set as default item
                         if(robotInfo == null)
                             robotInfo = RobotInfo(
                                     -1,
@@ -86,21 +87,26 @@ class RobotInfoFragment : MasterFragment()
                                     true
                             )
 
-
                         if (robotInfo.isDraft)
                             DeleteButton.visibility = View.VISIBLE
 
+                        //set the delete onclick
                         DeleteButton.setOnClickListener {
                             robotInfo!!.delete(database)
 
+                            //get the recent items from the db to replace the deleted one
                             with(RobotInfo.getObjects(year, event, team, infoKey, null, false, database))
                             {
+
+                                //replace with the most recent
                                 if (size > 0)
                                 {
                                     robotInfo = this[size - 1]
                                     blockTextChange = true
                                     TextEditText.setText(robotInfo!!.propertyValue)
                                 }
+
+                                //reset robot info and textview
                                 else
                                 {
                                     robotInfo = RobotInfo(
@@ -116,6 +122,7 @@ class RobotInfoFragment : MasterFragment()
                                     TextEditText.setText(robotInfo!!.propertyValue)
                                 }
 
+                                //hide delete button
                                 DeleteButton.visibility = View.GONE
                             }
                         }
@@ -135,6 +142,7 @@ class RobotInfoFragment : MasterFragment()
 
                                 if (!blockTextChange)
                                 {
+                                    //if the current robot info isn't a draft, create a new robot info item to save
                                     if (!robotInfo!!.isDraft)
                                     {
                                         robotInfo = RobotInfo(
