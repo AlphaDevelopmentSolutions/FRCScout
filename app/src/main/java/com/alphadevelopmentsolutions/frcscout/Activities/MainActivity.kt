@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.RippleDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -34,6 +35,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -111,6 +113,8 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
+        FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(false)
+
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -718,35 +722,56 @@ class MainActivity : AppCompatActivity(),
                     //Update the checkboxes and set check listeners
                     with(layout)
                     {
-
-                        ChecklistCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, false) as Boolean)
-                        RobotInfoCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, false) as Boolean)
-                        ScoutCardInfoCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean)
-                        RobotMediaCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, false) as Boolean)
-                        
-                        ChecklistCheckBox.setOnCheckedChangeListener { _, b ->
-                            keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, b)
+                        ChecklistCheckBox.apply {
+                            isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, false) as Boolean)
+                            buttonTintList = checkboxBackground
+                            (background as RippleDrawable).setColor(checkboxRipple)
+                            setOnCheckedChangeListener { _, b ->
+                                keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, b)
+                            }
                         }
 
-                        RobotInfoCheckBox.setOnCheckedChangeListener { _, b ->
-                            keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, b)
+                        RobotInfoCheckBox.apply {
+                            isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, false) as Boolean)
+                            buttonTintList = checkboxBackground
+                            (background as RippleDrawable).setColor(checkboxRipple)
+                            setOnCheckedChangeListener { _, b ->
+                                keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_INFO_KEY, b)
+                            }
                         }
 
-                        ScoutCardInfoCheckBox.setOnCheckedChangeListener { _, b ->
-                            keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, b)
+                        ScoutCardInfoCheckBox.apply {
+                            isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean)
+                            buttonTintList = checkboxBackground
+                            (background as RippleDrawable).setColor(checkboxRipple)
+                            setOnCheckedChangeListener { _, b ->
+                                keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_SCOUT_CARD_INFO_KEY, b)
+                            }
                         }
 
-                        RobotMediaCheckBox.setOnCheckedChangeListener { _, b ->
-                            keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, b)
+                        RobotMediaCheckBox.apply {
+                            isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, false) as Boolean)
+                            buttonTintList = checkboxBackground
+                            (background as RippleDrawable).setColor(checkboxRipple)
+                            setOnCheckedChangeListener { _, b ->
+                                keyStore.setPreference(Constants.SharedPrefKeys.UPLOAD_ROBOT_MEDIA_KEY, b)
+                            }
                         }
 
-                        CancelButton.setOnClickListener {
-                            uploadAppDataDialog!!.dismiss()
+                        CancelButton.apply {
+                            setTextColor(primaryColor)
+                            (this as MaterialButton).rippleColor = buttonRipple
+                            setOnClickListener {
+                                uploadAppDataDialog!!.dismiss()
+                            }
                         }
 
-                        UploadButton.setOnClickListener {
-                            uploadAppDataDialog!!.dismiss()
-                            uploadApplicationData(true)
+                        UploadButton.apply {
+                            backgroundTintList = buttonBackground
+                            setOnClickListener {
+                                uploadAppDataDialog!!.dismiss()
+                                uploadApplicationData(true)
+                            }
                         }
                     }
 
@@ -774,49 +799,83 @@ class MainActivity : AppCompatActivity(),
                 with(layout)
                 {
 
-                    EventsCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, false) as Boolean)
-                    MatchesCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, false) as Boolean)
-                    TeamsCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, false) as Boolean)
-                    ChecklistCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, false) as Boolean)
-                    RobotInfoCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, false) as Boolean)
-                    ScoutCardInfoCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean)
-                    RobotMediaCheckBox.isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false) as Boolean)
-
-                    EventsCheckBox.setOnCheckedChangeListener { _, b ->
-                        keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, b)
+                    EventsCheckBox.apply {
+                        isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, false) as Boolean)
+                        buttonTintList = checkboxBackground
+                        (background as RippleDrawable).setColor(checkboxRipple)
+                        setOnCheckedChangeListener { _, b ->
+                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, b)
+                        }
                     }
 
-                    MatchesCheckBox.setOnCheckedChangeListener { _, b ->
-                        keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, b)
+                    MatchesCheckBox.apply {
+                        isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, false) as Boolean)
+                        buttonTintList = checkboxBackground
+                        (background as RippleDrawable).setColor(checkboxRipple)
+                        setOnCheckedChangeListener { _, b ->
+                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, b)
+                        }
                     }
 
-                    TeamsCheckBox.setOnCheckedChangeListener { _, b ->
-                        keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, b)
+                    TeamsCheckBox.apply {
+                        isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, false) as Boolean)
+                        buttonTintList = checkboxBackground
+                        (background as RippleDrawable).setColor(checkboxRipple)
+                        setOnCheckedChangeListener { _, b ->
+                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, b)
+                        }
                     }
 
-                    ChecklistCheckBox.setOnCheckedChangeListener { _, b ->
-                        keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, b)
+                    ChecklistCheckBox.apply {
+                        isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, false) as Boolean)
+                        buttonTintList = checkboxBackground
+                        (background as RippleDrawable).setColor(checkboxRipple)
+                        setOnCheckedChangeListener { _, b ->
+                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, b)
+                        }
                     }
 
-                    RobotInfoCheckBox.setOnCheckedChangeListener { _, b ->
-                        keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, b)
+                    RobotInfoCheckBox.apply {
+                        isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, false) as Boolean)
+                        buttonTintList = checkboxBackground
+                        (background as RippleDrawable).setColor(checkboxRipple)
+                        setOnCheckedChangeListener { _, b ->
+                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, b)
+                        }
                     }
 
-                    ScoutCardInfoCheckBox.setOnCheckedChangeListener { _, b ->
-                        keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, b)
+                    ScoutCardInfoCheckBox.apply {
+                        isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean)
+                        buttonTintList = checkboxBackground
+                        (background as RippleDrawable).setColor(checkboxRipple)
+                        setOnCheckedChangeListener { _, b ->
+                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, b)
+                        }
                     }
 
-                    RobotMediaCheckBox.setOnCheckedChangeListener { _, b ->
-                        keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, b)
+                    RobotMediaCheckBox.apply {
+                        isChecked = (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false) as Boolean)
+                        buttonTintList = checkboxBackground
+                        (background as RippleDrawable).setColor(checkboxRipple)
+                        setOnCheckedChangeListener { _, b ->
+                            keyStore.setPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, b)
+                        }
                     }
 
-                    CancelButton.setOnClickListener {
-                        downloadAppDataDialog!!.dismiss()
+                    CancelButton.apply {
+                        setTextColor(primaryColor)
+                        (this as MaterialButton).rippleColor = buttonRipple
+                        setOnClickListener {
+                            downloadAppDataDialog!!.dismiss()
+                        }
                     }
 
-                    DownloadButton.setOnClickListener {
-                        downloadAppDataDialog!!.dismiss()
-                        downloadApplicationData(true)
+                    DownloadButton.apply {
+                        backgroundTintList = buttonBackground
+                        setOnClickListener {
+                            downloadAppDataDialog!!.dismiss()
+                            downloadApplicationData(true)
+                        }
                     }
                 }
 
@@ -885,6 +944,31 @@ class MainActivity : AppCompatActivity(),
                 return field
             }
 
+    /**
+     * Used to set the background color of a button
+     */
+    var buttonBackground: ColorStateList? = null
+        get()
+        {
+            if(field == null || field!!.defaultColor != primaryColorDark)
+            {
+                val states = arrayOf(
+                        intArrayOf(android.R.attr.state_enabled)
+                )
+
+                val colors = intArrayOf(
+                        primaryColor
+                )
+
+                field = ColorStateList(states, colors)
+            }
+
+            return field
+        }
+
+    /**
+     * Used to set the ripple color of a button
+     */
     var buttonRipple: ColorStateList? = null
         get()
         {
@@ -902,6 +986,54 @@ class MainActivity : AppCompatActivity(),
                         primaryColorDark,
                         primaryColorDark,
                         primaryColorDark
+                )
+
+                field = ColorStateList(states, colors)
+            }
+
+            return field
+        }
+
+    /**
+     * Used to set the background for a checkbox
+     */
+    var checkboxBackground: ColorStateList? = null
+        get()
+        {
+            if(field == null || field!!.defaultColor != primaryColorDark)
+            {
+                val states = arrayOf(
+                        intArrayOf(android.R.attr.state_checked),
+                        intArrayOf(-android.R.attr.state_checked)
+                )
+
+                val colors = intArrayOf(
+                        primaryColorDark,
+                        Color.GRAY
+                )
+
+                field = ColorStateList(states, colors)
+            }
+
+            return field
+        }
+
+    /**
+     * Used to set the ripple for a checkbox
+     */
+    var checkboxRipple: ColorStateList? = null
+        get()
+        {
+            if(field == null || field!!.defaultColor != primaryColorDark)
+            {
+                val states = arrayOf(
+                        intArrayOf(android.R.attr.state_checked),
+                        intArrayOf(-android.R.attr.state_checked)
+                )
+
+                val colors = intArrayOf(
+                        Color.argb(30, Color.red(primaryColorDark), Color.green(primaryColorDark), Color.blue(primaryColorDark)),
+                        Color.argb(30, Color.red(Color.GRAY), Color.green(Color.GRAY), Color.blue(Color.GRAY))
                 )
 
                 field = ColorStateList(states, colors)
