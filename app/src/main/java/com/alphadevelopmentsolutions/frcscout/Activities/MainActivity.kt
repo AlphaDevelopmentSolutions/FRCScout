@@ -35,7 +35,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -113,8 +112,6 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
-        FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(false)
-
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -162,13 +159,15 @@ class MainActivity : AppCompatActivity(),
      */
     fun downloadApplicationData(withFilters: Boolean = true, refreshActivity: Boolean = true): Thread?
     {
+        loadingDialog = LoadingDialog(context, LoadingDialog.Style.PROGRESS)
+        loadingDialog.message = getString(R.string.connecting_to_server)
+        loadingDialog.show()
+
         if (isOnline)
         {
-            val increaseFactor = 8
+            loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.data))
 
-            loadingDialog = LoadingDialog(context, LoadingDialog.Style.PROGRESS)
-            loadingDialog.message = "Downloading data..."
-            loadingDialog.show()
+            val increaseFactor = 8
 
             val updateThread = Thread(Runnable {
 
@@ -177,7 +176,7 @@ class MainActivity : AppCompatActivity(),
                 progressDialogProgress = 0
 
                 context.runOnUiThread {
-                    loadingDialog.message = "Downloading Users..."
+                    loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.app_config))
                     loadingDialog.progress = progressDialogProgress
                 }
 
@@ -211,7 +210,7 @@ class MainActivity : AppCompatActivity(),
                 }
 
                 context.runOnUiThread {
-                    loadingDialog.message = "Downloading Years..."
+                    loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.years))
                     loadingDialog.progress = progressDialogProgress
                 }
 
@@ -236,7 +235,7 @@ class MainActivity : AppCompatActivity(),
 
                 progressDialogProgress += increaseFactor
                 context.runOnUiThread {
-                    loadingDialog.message = "Downloading Users..."
+                    loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.users))
                     loadingDialog.progress = progressDialogProgress
                 }
 
@@ -260,7 +259,7 @@ class MainActivity : AppCompatActivity(),
 
                     progressDialogProgress += increaseFactor
                     context.runOnUiThread {
-                        loadingDialog.message = "Downloading Events..."
+                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.events))
                         loadingDialog.progress = progressDialogProgress
                     }
 
@@ -276,7 +275,7 @@ class MainActivity : AppCompatActivity(),
 
                     progressDialogProgress += increaseFactor
                     context.runOnUiThread {
-                        loadingDialog.message = "Downloading Event Metadata..."
+                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.event_metadata))
                         loadingDialog.progress = progressDialogProgress
                     }
 
@@ -301,7 +300,7 @@ class MainActivity : AppCompatActivity(),
 
                     progressDialogProgress += increaseFactor
                     context.runOnUiThread {
-                        loadingDialog.message = "Downloading Matches..."
+                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.matches))
                         loadingDialog.progress = progressDialogProgress
                     }
 
@@ -325,7 +324,7 @@ class MainActivity : AppCompatActivity(),
                 {
                     progressDialogProgress += increaseFactor
                     context.runOnUiThread {
-                        loadingDialog.message = "Downloading Teams..."
+                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.teams))
                         loadingDialog.progress = progressDialogProgress
                     }
 
@@ -349,7 +348,7 @@ class MainActivity : AppCompatActivity(),
                 {
                     progressDialogProgress += increaseFactor
                     context.runOnUiThread {
-                        loadingDialog.message = "Downloading Checklist..."
+                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.checklist))
                         loadingDialog.progress = progressDialogProgress
                     }
 
@@ -388,7 +387,7 @@ class MainActivity : AppCompatActivity(),
                 {
                     progressDialogProgress += increaseFactor
                     context.runOnUiThread {
-                        loadingDialog.message = "Downloading Robot Info..."
+                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.robot_info))
                         loadingDialog.progress = progressDialogProgress
                     }
 
@@ -427,7 +426,7 @@ class MainActivity : AppCompatActivity(),
                 {
                     progressDialogProgress += increaseFactor
                     context.runOnUiThread {
-                        loadingDialog.message = "Downloading Scout Cards..."
+                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.scout_cards))
                         loadingDialog.progress = progressDialogProgress
                     }
 
@@ -466,7 +465,7 @@ class MainActivity : AppCompatActivity(),
                 {
                     progressDialogProgress += increaseFactor
                     context.runOnUiThread {
-                        loadingDialog.message = "Downloading Robot Media..."
+                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.robot_media))
                         loadingDialog.progress = progressDialogProgress
                     }
 
@@ -516,7 +515,11 @@ class MainActivity : AppCompatActivity(),
 
             return updateThread
         } else
+        {
+            loadingDialog.dismiss()
             showSnackbar(getString(R.string.no_internet))
+        }
+
 
         return null
     }
@@ -528,11 +531,13 @@ class MainActivity : AppCompatActivity(),
      */
     private fun uploadApplicationData(withFilters: Boolean = false): Thread?
     {
+        loadingDialog = LoadingDialog(context, LoadingDialog.Style.PROGRESS)
+        loadingDialog.message = getString(R.string.connecting_to_server)
+        loadingDialog.show()
+
         if(isOnline)
         {
-            loadingDialog = LoadingDialog(context, LoadingDialog.Style.PROGRESS)
-            loadingDialog.message = "Uploading data..."
-            loadingDialog.show()
+            loadingDialog.message = getString(R.string.uploading_data)
 
             val increaseFactor = 25
 
@@ -540,7 +545,7 @@ class MainActivity : AppCompatActivity(),
                 var success = true
 
                 context.runOnUiThread {
-                    loadingDialog.message = "Uploading Checklists..."
+                    loadingDialog.message = String.format(context.getString(R.string.uploading_data), getString(R.string.checklist))
                     loadingDialog.progress = progressDialogProgress
                 }
 
@@ -565,7 +570,7 @@ class MainActivity : AppCompatActivity(),
 
                 progressDialogProgress += increaseFactor
                 context.runOnUiThread {
-                    loadingDialog.message = "Uploading Robot Info..."
+                    loadingDialog.message = String.format(context.getString(R.string.uploading_data), getString(R.string.robot_info))
                     loadingDialog.progress = progressDialogProgress
                 }
 
@@ -589,7 +594,7 @@ class MainActivity : AppCompatActivity(),
 
                 progressDialogProgress += increaseFactor
                 context.runOnUiThread {
-                    loadingDialog.message = "Uploading Scout Cards..."
+                    loadingDialog.message = String.format(context.getString(R.string.uploading_data), getString(R.string.scout_cards))
                     loadingDialog.progress = progressDialogProgress
                 }
 
@@ -613,7 +618,7 @@ class MainActivity : AppCompatActivity(),
 
                 progressDialogProgress += increaseFactor
                 context.runOnUiThread {
-                    loadingDialog.message = "Uploading Robot Media..."
+                    loadingDialog.message = String.format(context.getString(R.string.uploading_data), getString(R.string.robot_media))
                     loadingDialog.progress = progressDialogProgress
                 }
 
@@ -649,7 +654,11 @@ class MainActivity : AppCompatActivity(),
             return uploadThread
         }
         else
+        {
+            loadingDialog.dismiss()
             showSnackbar(getString(R.string.no_internet))
+        }
+
 
         return null
     }

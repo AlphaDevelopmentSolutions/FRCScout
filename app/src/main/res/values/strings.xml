@@ -41,8 +41,8 @@
     <string name="upload_data">Upload Data</string>
     <string name="upload_data_desc">This will upload all data to the web server.</string>
     <string name="refresh_data">Refresh Data</string>
-    <string name="uploading">Uploading scout card data...</string>
-    <string name="no_internet">Not connected to internet.</string>
+    <string name="uploading">Uploading scout card data&#8230;</string>
+    <string name="no_internet">Can\'t connect to server. Are you connected to the internet?</string>
     <string name="upload_scout_cards">Upload Scout Cards?</string>
     <string name="upload_scout_cards_warning">This will delete scout cards stored on device.</string>
     <string name="change_event">Change Event</string>
@@ -164,7 +164,7 @@
     <string name="build_flavor">Build Flavor - %1$s</string>
 
     <string name="license_frcscout">
-        Copyright (c) 2019 Alpha Development Solutions
+        Copyright &#169; 2019 Alpha Development Solutions
 
         \n\nFRCScout is free software: you can redistribute it and/or modify
         it under the terms of the GNU General Public License as published by
@@ -292,5 +292,12 @@
     <string name="search">Search</string>
     <string name="delete_robot_media">Delete Robot Media</string>
     <string name="delete_robot_media_support">Are you sure you want to delete this robot media? This can\'t be undone.</string>
+    <string name="connecting_to_server">Connecting to server&#8230;</string>
+    <string name="uploading_data">Uploading %1$s&#8230;</string>
+    <string name="downloading_data">Downloading %1$s&#8230;</string>
+    <string name="data">data</string>
+    <string name="users">Users</string>
+    <string name="app_config">App Configurations</string>
+    <string name="event_metadata">Event Metadata</string>
 
 </resources>

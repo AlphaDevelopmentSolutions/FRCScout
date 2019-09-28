@@ -60,7 +60,7 @@ interface Constants
         const val ROBOT_MEDIA_REQUEST_CODE = 5885
 
         const val WEB_URL = BuildConfig.API_URL
-        const val API_URL = "$WEB_URL/api/api.php"
+        const val API_URL = "$WEB_URL/api/"
 
 
     }
