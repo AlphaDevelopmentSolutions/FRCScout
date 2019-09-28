@@ -149,7 +149,7 @@ class ConfigFragment : MasterFragment()
                         }
 
                         keyStore.resetData()
-                        showSnackbar(getString(R.string.invalid_url))
+                        showSnackbar(getString(R.string.invalid_login))
                     }
                 }//invalid config
             } else
