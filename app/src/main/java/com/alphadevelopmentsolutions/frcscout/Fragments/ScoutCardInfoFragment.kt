@@ -1,5 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
+import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,6 +13,7 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfoKey
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.R
+import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_scout_card_info.view.*
 import kotlinx.android.synthetic.main.layout_card_scout_card_info_form.view.*
 import kotlinx.android.synthetic.main.layout_field_info.view.*
@@ -78,6 +80,8 @@ class ScoutCardInfoFragment : MasterFragment()
 
                         InfoKeyTitle.text = infoKey.keyName
 
+                        DeleteButton.imageTintList = this@ScoutCardInfoFragment.context.buttonBackground
+
                         //set the delete onclick
                         DeleteButton.setOnClickListener {
                             scoutCardInfo?.delete(database)
@@ -132,9 +136,7 @@ class ScoutCardInfoFragment : MasterFragment()
                                             BooleanCheckBox.isChecked = false
                                         }
                                     }
-
                                 }
-
                                 //hide delete button
                                 DeleteButton.visibility = View.GONE
                             }
@@ -202,6 +204,9 @@ class ScoutCardInfoFragment : MasterFragment()
 
                                 InfoKeyValue.text = if (scoutCardInfo?.propertyValue?.isNotBlank() == true) scoutCardInfo?.propertyValue ?: "0" else infoKey.minValue?.toString() ?: "0"
 
+                                PlusButton.backgroundTintList = this@ScoutCardInfoFragment.context.buttonBackground
+                                (PlusButton as MaterialButton).rippleColor = this@ScoutCardInfoFragment.context.buttonRipple
+
                                 //Add button click handlers
                                 PlusButton.setOnClickListener {
 
@@ -243,6 +248,9 @@ class ScoutCardInfoFragment : MasterFragment()
                                         this@ScoutCardInfoFragment.context.showSnackbar("This field has a maximum of " + infoKey.maxValue)
 
                                 }
+
+                                MinusButton.backgroundTintList = this@ScoutCardInfoFragment.context.buttonBackground
+                                (MinusButton as MaterialButton).rippleColor = this@ScoutCardInfoFragment.context.buttonRipple
 
                                 MinusButton.setOnClickListener {
 
@@ -288,6 +296,8 @@ class ScoutCardInfoFragment : MasterFragment()
                             ScoutCardInfoKey.DataTypes.BOOL ->
                             {
                                 BooleanLinearLayout.visibility = View.VISIBLE
+                                BooleanCheckBox.buttonTintList = this@ScoutCardInfoFragment.context.checkboxBackground
+                                (BooleanCheckBox.background as RippleDrawable).setColor(this@ScoutCardInfoFragment.context.checkboxRipple)
                                 BooleanCheckBox.isChecked = if (scoutCardInfo?.propertyValue?.isNotBlank() == true) scoutCardInfo?.propertyValue == "1" else false
                                 BooleanCheckBox.setOnCheckedChangeListener { _, checked ->
                                     run {

@@ -1009,7 +1009,7 @@ class MainActivity : AppCompatActivity(),
     var checkboxBackground: ColorStateList? = null
         get()
         {
-            if(field == null || field!!.defaultColor != primaryColorDark)
+            if(field == null || field!!.defaultColor != primaryColor)
             {
                 val states = arrayOf(
                         intArrayOf(android.R.attr.state_checked),
@@ -1017,7 +1017,7 @@ class MainActivity : AppCompatActivity(),
                 )
 
                 val colors = intArrayOf(
-                        primaryColorDark,
+                        primaryColor,
                         Color.GRAY
                 )
 
