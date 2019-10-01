@@ -3,7 +3,6 @@ package com.alphadevelopmentsolutions.frcscout.Adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event
@@ -11,6 +10,7 @@ import com.alphadevelopmentsolutions.frcscout.Fragments.MatchListFragment
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.android.material.button.MaterialButton
+import kotlinx.android.synthetic.main.layout_card_event.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,22 +25,12 @@ internal class EventListRecyclerViewAdapter(private val eventList: ArrayList<Eve
         simpleDateFormat = SimpleDateFormat("MMM d, yyyy")
     }
 
-    internal class ViewHolder(view: View, context: MainActivity) : RecyclerView.ViewHolder(view)
+    internal class ViewHolder(val view: View, context: MainActivity) : RecyclerView.ViewHolder(view)
     {
-        var eventTitleTextView: TextView
-        var eventLocationTextView: TextView
-        var eventDateTextView: TextView
-        var viewEventButton: TextView
-
         init
         {
-
-            eventTitleTextView = view.findViewById(R.id.EventTitleTextView)
-            eventLocationTextView = view.findViewById(R.id.EventLocationTextView)
-            eventDateTextView = view.findViewById(R.id.EventDateTextView)
-            viewEventButton = view.findViewById(R.id.ViewEventButton)
-            viewEventButton.setTextColor(context.primaryColor)
-            (viewEventButton as MaterialButton).rippleColor = context.buttonRipple
+            view.ViewEventButton.setTextColor(context.primaryColor)
+            (view.ViewEventButton as MaterialButton).rippleColor = context.buttonRipple
         }
     }
 
@@ -57,12 +47,12 @@ internal class EventListRecyclerViewAdapter(private val eventList: ArrayList<Eve
         val event = eventList[viewHolder.adapterPosition]
 
         //Set the content on the card
-        viewHolder.eventTitleTextView.text = event.name
-        viewHolder.eventLocationTextView.text = String.format("%s, %s, %s", event.city, event.stateProvince, event.country)
-        viewHolder.eventDateTextView.text = String.format("%s - %s", simpleDateFormat.format(event.startDate!!.time), simpleDateFormat.format(event.endDate!!.time))
+        viewHolder.view.EventTitleTextView.text = event.name
+        viewHolder.view.EventLocationTextView.text = String.format("%s, %s, %s", event.city, event.stateProvince, event.country)
+        viewHolder.view.EventDateTextView.text = String.format("%s - %s", simpleDateFormat.format(event.startDate!!.time), simpleDateFormat.format(event.endDate!!.time))
 
         //Sends you to the teamlist fragment
-        viewHolder.viewEventButton.setOnClickListener {
+        viewHolder.view.ViewEventButton.setOnClickListener {
             //store the selected event in the shared pref
             context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, eventList[viewHolder.adapterPosition].id)
             context.setCheckedMenuItem(0)

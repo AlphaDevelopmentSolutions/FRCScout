@@ -65,6 +65,8 @@ class RobotMediaFragment : MasterFragment()
         }
         else
         {
+            view.RobotMediaSaveButton.backgroundTintList = context.buttonBackground
+
             //save the new image
             view.RobotMediaSaveButton.setOnClickListener {
 
