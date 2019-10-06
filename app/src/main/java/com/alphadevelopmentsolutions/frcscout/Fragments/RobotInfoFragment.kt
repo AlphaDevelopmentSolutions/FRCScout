@@ -78,6 +78,8 @@ class RobotInfoFragment : MasterFragment()
                         if (robotInfo?.isDraft == true)
                             DeleteButton.visibility = View.VISIBLE
 
+                        DeleteButton.imageTintList = this@RobotInfoFragment.context.buttonBackground
+
                         //set the delete onclick
                         DeleteButton.setOnClickListener {
                             robotInfo?.delete(database)
