@@ -26,4 +26,8 @@
         android:title="@string/settings"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/LogoutItem"
+        android:title="@string/logout"
+        app:showAsAction="never" />
 </menu>

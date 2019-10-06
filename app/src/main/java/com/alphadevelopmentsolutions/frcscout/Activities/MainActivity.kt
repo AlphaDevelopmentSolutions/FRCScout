@@ -118,15 +118,6 @@ class MainActivity : AppCompatActivity(),
 
         context = this
         database = Database(context)
-
-        LogoutButton.setOnClickListener{
-            keyStore.resetData()
-            primaryColor = 0
-            primaryColorDark = 0
-            updateAppColors()
-            changeFragment(ConfigViewPagerFragment.newInstance(), false, false)
-        }
-
         database.open()
 
         setSupportActionBar(MainToolbar)
@@ -902,6 +893,15 @@ class MainActivity : AppCompatActivity(),
 
                 return true
             }
+
+            R.id.LogoutItem ->
+            {
+                keyStore.resetData()
+                primaryColor = 0
+                primaryColorDark = 0
+                updateAppColors()
+                changeFragment(ConfigViewPagerFragment.newInstance(), false, false)
+            }
         }
 
         return false
@@ -1070,9 +1070,6 @@ class MainActivity : AppCompatActivity(),
 
         NavigationView.itemTextColor = ColorStateList(states, colors)
         NavigationView.itemIconTintList = ColorStateList(states, colors)
-
-        LogoutButton.setTextColor(primaryColor)
-        (LogoutButton as MaterialButton).rippleColor = buttonRipple
     }
 
     /**
@@ -1103,7 +1100,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     /**
-     * Locks the drawer layout
+     * Locks the drawer layoutl
      * @param setBackIcon [Boolean] to set the icon as the back arrow
      * @param backIconClickListener [View.OnClickListener] to preform when the back button is clicked
      */
