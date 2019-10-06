@@ -45,6 +45,8 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
 
             view.IncompleteButton.setTextColor(context.primaryColor)
             (view.IncompleteButton as MaterialButton).rippleColor = context.buttonRipple
+
+            view.CompletedByAutoCompleteTextView.backgroundTintList = context.editTextBackground
         }
     }
 
