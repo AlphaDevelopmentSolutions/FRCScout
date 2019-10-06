@@ -72,7 +72,7 @@ class EventListFragment : MasterFragment()
 
         loadYearThread.join()
 
-        context.setToolbarTitle(year!!.toString())
+        context.setToolbarTitle(year!!.serverId!!.toString())
 
         //showing this view means the user has not selected an event, clear the shared pref
         context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1)
