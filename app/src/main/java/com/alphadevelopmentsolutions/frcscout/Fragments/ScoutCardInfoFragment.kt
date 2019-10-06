@@ -148,6 +148,7 @@ class ScoutCardInfoFragment : MasterFragment()
                             {
                                 TextLinearLayout.visibility = View.VISIBLE
                                 TextEditText.setText(scoutCardInfo?.propertyValue)
+                                TextEditText.backgroundTintList = this@ScoutCardInfoFragment.context.editTextBackground
                                 TextEditText.addTextChangedListener(object : TextWatcher
                                 {
                                     override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int)

@@ -1004,6 +1004,31 @@ class MainActivity : AppCompatActivity(),
         }
 
     /**
+     * Used to set the background color of a edit text
+     */
+    var editTextBackground: ColorStateList? = null
+        get()
+        {
+            if(field == null || field!!.defaultColor != primaryColorDark)
+            {
+                val states = arrayOf(
+                        intArrayOf(android.R.attr.state_focused),
+                        intArrayOf(-android.R.attr.state_focused)
+                )
+
+                val colors = intArrayOf(
+                        primaryColor,
+                        Color.GRAY
+
+                )
+
+                field = ColorStateList(states, colors)
+            }
+
+            return field
+        }
+
+    /**
      * Used to set the background for a checkbox
      */
     var checkboxBackground: ColorStateList? = null
