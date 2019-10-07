@@ -31,7 +31,7 @@
                 android:textColor="@color/text_primary"
                 android:textSize="@dimen/text_primary"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/TeamLogoImageView"
+                app:layout_constraintEnd_toStartOf="@+id/YearLogoImageView"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 

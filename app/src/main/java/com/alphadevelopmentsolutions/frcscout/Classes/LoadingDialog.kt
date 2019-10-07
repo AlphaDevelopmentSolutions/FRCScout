@@ -36,6 +36,18 @@ class LoadingDialog(context: MainActivity, style: Style) : AlertDialog.Builder(c
         field = value
     }
 
+    var percentage: Int = 0
+        set(value)
+        {
+            if(view.PercentageTextView.visibility != View.VISIBLE)
+                view.PercentageTextView.visibility = View.VISIBLE
+
+            if(value != field)
+                view.PercentageTextView.text = String.format(context.getString(R.string.percentage), value)
+
+            field = value
+        }
+
     init
     {
         if(style == Style.PROGRESS)

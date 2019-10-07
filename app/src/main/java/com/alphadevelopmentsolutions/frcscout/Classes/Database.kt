@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
-import android.util.Log
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Exceptions.UnauthorizedClassException
@@ -297,7 +296,7 @@ class Database(context: MainActivity)
         contentValues.put(Event.COLUMN_NAME_START_DATE, event.startDate!!.time)
         contentValues.put(Event.COLUMN_NAME_END_DATE, event.endDate!!.time)
 
-        Log.i("Database Save", "Saving ${Event.TABLE_NAME} with the Id ${event.id}")
+        AppLog.log("Database Save", "Saving ${Event.TABLE_NAME} with the Id ${event.id}")
 
         //event already exists in DB, update
         if (event.id > 0)
@@ -465,7 +464,7 @@ class Database(context: MainActivity)
         contentValues.put(Team.COLUMN_NAME_WEBSITE_URL, team.websiteURL)
         contentValues.put(Team.COLUMN_NAME_IMAGE_FILE_URI, team.imageFileURI)
 
-        Log.i("Database Save", "Saving ${Team.TABLE_NAME} with the Id ${team.id}")
+        AppLog.log("Database Save", "Saving ${Team.TABLE_NAME} with the Id ${team.id}")
 
         //team already exists in DB, update
         if (team.id!! > 0)
@@ -578,7 +577,7 @@ class Database(context: MainActivity)
         contentValues.put(Robot.COLUMN_NAME_NAME, robot.name)
         contentValues.put(Robot.COLUMN_NAME_TEAM_NUMBER, robot.teamNumber)
 
-        Log.i("Database Save", "Saving ${Robot.TABLE_NAME} with the Id ${robot.id}")
+        AppLog.log("Database Save", "Saving ${Robot.TABLE_NAME} with the Id ${robot.id}")
 
         //robot already exists in DB, update
         if (robot.id > 0)
@@ -776,7 +775,7 @@ class Database(context: MainActivity)
         contentValues.put(Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE, match.blueAllianceScore)
         contentValues.put(Match.COLUMN_NAME_RED_ALLIANCE_SCORE, match.redAllianceScore)
 
-        Log.i("Database Save", "Saving ${Match.TABLE_NAME} with the Id ${match.id}")
+        AppLog.log("Database Save", "Saving ${Match.TABLE_NAME} with the Id ${match.id}")
 
 
         //Match already exists in DB, update
@@ -958,7 +957,7 @@ class Database(context: MainActivity)
 
         contentValues.put(ScoutCardInfo.COLUMN_NAME_IS_DRAFT, if (scoutCardInfo.isDraft) "1" else "0")
 
-        Log.i("Database Save", "Saving ${ScoutCardInfoKey.TABLE_NAME} with the Id ${scoutCardInfo.id}")
+        AppLog.log("Database Save", "Saving ${ScoutCardInfoKey.TABLE_NAME} with the Id ${scoutCardInfo.id}")
 
         //scoutCardInfo already exists in DB, update
         if (scoutCardInfo.id > 0)
@@ -1126,7 +1125,7 @@ class Database(context: MainActivity)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_INCLUDE_IN_STATS, if (scoutCardInfoKey.includeInStats) 1 else 0)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_DATA_TYPE, scoutCardInfoKey.dataType.name)
 
-        Log.i("Database Save", "Saving ${ScoutCardInfoKey.TABLE_NAME} with the Id ${scoutCardInfoKey.id}")
+        AppLog.log("Database Save", "Saving ${ScoutCardInfoKey.TABLE_NAME} with the Id ${scoutCardInfoKey.id}")
 
 
         //scoutCardInfoKey already exists in DB, update
@@ -1300,7 +1299,7 @@ class Database(context: MainActivity)
 
         contentValues.put(RobotInfo.COLUMN_NAME_IS_DRAFT, if (robotInfo.isDraft) "1" else "0")
 
-        Log.i("Database Save", "Saving ${RobotInfo.TABLE_NAME} with the Id ${robotInfo.id}")
+        AppLog.log("Database Save", "Saving ${RobotInfo.TABLE_NAME} with the Id ${robotInfo.id}")
 
         return if(robotInfo.id > 0)
         {
@@ -1441,7 +1440,7 @@ class Database(context: MainActivity)
         contentValues.put(RobotInfoKey.COLUMN_NAME_KEY_STATE, robotInfoKey.keyState)
         contentValues.put(RobotInfoKey.COLUMN_NAME_KEY_NAME, robotInfoKey.keyName)
 
-        Log.i("Database Save", "Saving ${RobotInfoKey.TABLE_NAME} with the Id ${robotInfoKey.id}")
+        AppLog.log("Database Save", "Saving ${RobotInfoKey.TABLE_NAME} with the Id ${robotInfoKey.id}")
 
         //robotInfoKey already exists in DB, update
         if (robotInfoKey.id > 0)
@@ -1546,7 +1545,7 @@ class Database(context: MainActivity)
         contentValues.put(User.COLUMN_NAME_FIRST_NAME, user.firstName)
         contentValues.put(User.COLUMN_NAME_LAST_NAME, user.lastName)
 
-        Log.i("Database Save", "Saving ${User.TABLE_NAME} with the Id ${user.id}")
+        AppLog.log("Database Save", "Saving ${User.TABLE_NAME} with the Id ${user.id}")
 
         //object already exists in DB, update
         if (user.id > 0)
@@ -1823,7 +1822,7 @@ class Database(context: MainActivity)
         contentValues.put(Year.COLUMN_NAME_END_DATE, year.endDate.time)
         contentValues.put(Year.COLUMN_NAME_IMAGE_URI, year.imageUri)
 
-        Log.i("Database Save", "Saving ${Year.TABLE_NAME} with the Id ${year.id}")
+        AppLog.log("Database Save", "Saving ${Year.TABLE_NAME} with the Id ${year.id}")
 
         //year already exists in DB, update
         if (year.id!! > 0)
@@ -1948,7 +1947,7 @@ class Database(context: MainActivity)
         contentValues.put(EventTeamList.COLUMN_NAME_TEAM_ID, eventTeamList.teamId)
         contentValues.put(EventTeamList.COLUMN_NAME_EVENT_ID, eventTeamList.eventId)
 
-        Log.i("Database Save", "Saving ${EventTeamList.TABLE_NAME} with the Id ${eventTeamList.id}")
+        AppLog.log("Database Save", "Saving ${EventTeamList.TABLE_NAME} with the Id ${eventTeamList.id}")
 
         //robotMedia already exists in DB, update
         if (eventTeamList.id > 0)
@@ -2068,7 +2067,7 @@ class Database(context: MainActivity)
         contentValues.put(ChecklistItem.COLUMN_NAME_TITLE, checklistItem.title)
         contentValues.put(ChecklistItem.COLUMN_NAME_DESCRIPTION, checklistItem.description)
 
-        Log.i("Database Save", "Saving ${ChecklistItem.TABLE_NAME} with the Id ${checklistItem.id}")
+        AppLog.log("Database Save", "Saving ${ChecklistItem.TABLE_NAME} with the Id ${checklistItem.id}")
 
         //robotMedia already exists in DB, update
         if (checklistItem.id > 0)
@@ -2220,7 +2219,7 @@ class Database(context: MainActivity)
         contentValues.put(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE, checklistItemResult.completedDate.time.toString())
         contentValues.put(ChecklistItemResult.COLUMN_NAME_IS_DRAFT, if (checklistItemResult.isDraft) 1 else 0)
 
-        Log.i("Database Save", "Saving ${ChecklistItemResult.TABLE_NAME} with the Id ${checklistItemResult.id}")
+        AppLog.log("Database Save", "Saving ${ChecklistItemResult.TABLE_NAME} with the Id ${checklistItemResult.id}")
 
         //robotMedia already exists in DB, update
         if (checklistItemResult.id > 0)

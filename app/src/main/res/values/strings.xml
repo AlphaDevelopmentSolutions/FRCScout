@@ -295,9 +295,14 @@
     <string name="connecting_to_server">Connecting to server&#8230;</string>
     <string name="uploading_data">Uploading %1$s&#8230;</string>
     <string name="downloading_data">Downloading %1$s&#8230;</string>
+    <string name="importing_data">Importing %1$s&#8230;</string>
+    <string name="percentage">%1$d%%</string>
     <string name="data">data</string>
     <string name="users">Users</string>
     <string name="app_config">App Configurations</string>
     <string name="event_metadata">Event Metadata</string>
+    <string name="scout_card_metadata">Scout Card Metadata</string>
+    <string name="robot_info_metadata">Robot Info Metadata</string>
+    <string name="checklist_results">Checklist Results</string>
 
 </resources>
