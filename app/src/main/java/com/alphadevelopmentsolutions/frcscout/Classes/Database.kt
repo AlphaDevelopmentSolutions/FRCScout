@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Exceptions.UnauthorizedClassException
+import com.alphadevelopmentsolutions.frcscout.Interfaces.AppLog
 import java.io.File
 import java.util.*
 import kotlin.reflect.KClass

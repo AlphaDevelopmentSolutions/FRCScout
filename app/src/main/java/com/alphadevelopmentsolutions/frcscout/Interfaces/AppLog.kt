@@ -1,4 +1,4 @@
-package com.alphadevelopmentsolutions.frcscout.Classes
+package com.alphadevelopmentsolutions.frcscout.Interfaces
 
 import android.util.Log
 import com.alphadevelopmentsolutions.frcscout.BuildConfig

@@ -1,7 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Api
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
-import com.alphadevelopmentsolutions.frcscout.Classes.AppLog
+import com.alphadevelopmentsolutions.frcscout.Interfaces.AppLog
 import com.alphadevelopmentsolutions.frcscout.Classes.Image
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import org.json.JSONException
