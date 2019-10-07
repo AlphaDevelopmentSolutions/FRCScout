@@ -130,11 +130,6 @@ class YearListFragment : MasterFragment()
         return view
     }
 
-    override fun onDestroy()
-    {
-        super.onDestroy()
-    }
-
     companion object
     {
         /**
