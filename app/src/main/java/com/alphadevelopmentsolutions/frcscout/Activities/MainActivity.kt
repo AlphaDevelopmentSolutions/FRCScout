@@ -1132,11 +1132,34 @@ class MainActivity : AppCompatActivity(),
 
             R.id.LogoutItem ->
             {
+                RobotInfoKey.clearTable(database)
+                RobotInfo.clearTable(database, true)
+                ScoutCardInfoKey.clearTable(database)
+                ScoutCardInfo.clearTable(database, true)
+                ChecklistItem.clearTable(database)
+                ChecklistItemResult.clearTable(database, true)
+                RobotMedia.clearTable(database, true)
+                Team.clearTable(database)
+                User.clearTable(database)
+                Year.clearTable(database)
+
+                //Purge year media
+                var mediaFolder = File(Constants.YEAR_MEDIA_DIRECTORY)
+                if (mediaFolder.isDirectory)
+                    for (child in mediaFolder.listFiles())
+                        child.delete()
+
+                //Purge robot media
+                mediaFolder = File(Constants.ROBOT_MEDIA_DIRECTORY)
+                if (mediaFolder.isDirectory)
+                    for (child in mediaFolder.listFiles())
+                        child.delete()
+
                 keyStore.resetData()
                 primaryColor = 0
                 primaryColorDark = 0
                 updateAppColors()
-                changeFragment(ConfigViewPagerFragment.newInstance(), false, false)
+                changeFragment(ConfigViewPagerFragment.newInstance(), addToBackStack = false, animate = false)
             }
         }
 
