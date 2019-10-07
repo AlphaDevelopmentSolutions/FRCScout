@@ -60,10 +60,11 @@ class ScoutCardInfo(
          * @param event if specified, filters scout cards by event id
          * @param match if specified, filters scout cards by match id
          * @param team if specified, filters scout cards by team id
-         * @param scoutCard if specified, filters scout cards by scout card id
+         * @param scoutCardInfoKey if specified, filters scout cards by scout card id
+         * @param scoutCardInfo if specified, filters scout cards by scout card id
          * @param onlyDrafts if true, filters scout cards by draft
          * @param database used to load scout cards
-         * @return arraylist of scout cards
+         * @return [ArrayList] of [ScoutCardInfo]
          */
         fun getObjects(event: Event?, match: Match?, team: Team?, scoutCardInfoKey: ScoutCardInfoKey?, scoutCardInfo: ScoutCardInfo?, onlyDrafts: Boolean, database: Database): ArrayList<ScoutCardInfo>
         {
