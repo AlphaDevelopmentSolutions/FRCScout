@@ -49,7 +49,7 @@ internal class EventListRecyclerViewAdapter(private val eventList: ArrayList<Eve
         //Set the content on the card
         viewHolder.view.EventTitleTextView.text = event.name
         viewHolder.view.EventLocationTextView.text = String.format("%s, %s, %s", event.city, event.stateProvince, event.country)
-        viewHolder.view.EventDateTextView.text = String.format("%s - %s", simpleDateFormat.format(event.startDate!!.time), simpleDateFormat.format(event.endDate!!.time))
+        viewHolder.view.EventDateTextView.text = String.format("%s - %s", simpleDateFormat.format(event.startDate.time), simpleDateFormat.format(event.endDate.time))
 
         //Sends you to the teamlist fragment
         viewHolder.view.ViewEventButton.setOnClickListener {

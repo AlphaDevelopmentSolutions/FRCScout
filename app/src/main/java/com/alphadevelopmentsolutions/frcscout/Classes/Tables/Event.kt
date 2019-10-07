@@ -4,57 +4,19 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import java.util.*
 import kotlin.math.round
 
-class Event : Table
+class Event(
+        var id: Int = DEFAULT_INT,
+        var yearId: Int = DEFAULT_INT,
+        var blueAllianceId: String = DEFAULT_STRING,
+        var name: String = DEFAULT_STRING,
+        var city: String = DEFAULT_STRING,
+        var stateProvince: String = DEFAULT_STRING,
+        var country: String = DEFAULT_STRING,
+        var startDate: Date = DEFAULT_DATE,
+        var endDate: Date = DEFAULT_DATE) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
-
-    var id: Int = 0
-    var yearId: Int = 0
-
-    var blueAllianceId: String? = null
-    var name: String? = null
-    var city: String? = null
-    var stateProvince: String? = null
-    var country: String? = null
-
-    var startDate: Date? = null
-    var endDate: Date? = null
-
-    constructor(
-            id: Int,
-            yearId: Int,
-            blueAllianceId: String,
-            name: String,
-            city: String,
-            stateProvince: String,
-            country: String,
-            startDate: Date,
-            endDate: Date) : super(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
-    {
-        this.id = id
-        this.yearId = yearId
-        this.blueAllianceId = blueAllianceId
-        this.name = name
-        this.city = city
-        this.stateProvince = stateProvince
-        this.country = country
-        this.startDate = startDate
-        this.endDate = endDate
-    }
-
-    /**
-     * Used for loading
-     * @param id to load
-     */
-    constructor(id: Int, database: Database) : super(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
-    {
-        this.id = id
-
-        load(database)
-    }
-
     companion object
     {
-
         val TABLE_NAME = "events"
         val COLUMN_NAME_ID = "Id"
         val COLUMN_NAME_YEAR_ID = "YearId"
@@ -137,7 +99,7 @@ class Event : Table
 
     override fun toString(): String
     {
-        return name!!
+        return name
     }
 
     /**
@@ -162,7 +124,7 @@ class Event : Table
         {
             for(scoutCardInfoKey in scoutCardInfoKeys)
             {
-                if(scoutCardInfoKey.includeInStats)
+                if(scoutCardInfoKey.includeInStats == true)
                 {
                     if(!scoutCardInfos.isNullOrEmpty())
                     {
@@ -175,7 +137,7 @@ class Event : Table
                                 statsHashMap[scoutCardInfoKey.toString()] = (statsHashMap[scoutCardInfoKey.toString()] ?: 0.0) + stat //add to the stat record
 
                                 val runningCardCountTotal = (cardCount[scoutCardInfoKey.toString()] ?: 0)
-                                cardCount[scoutCardInfoKey.toString()] = if(scoutCardInfoKey.nullZeros && stat == 0) runningCardCountTotal else runningCardCountTotal + 1 //keep a running total of the card count
+                                cardCount[scoutCardInfoKey.toString()] = if(scoutCardInfoKey.nullZeros == true && stat == 0) runningCardCountTotal else runningCardCountTotal + 1 //keep a running total of the card count
                             }
                         }
 
@@ -184,7 +146,7 @@ class Event : Table
                             statsHashMap[scoutCardInfoKey.toString()] = 0.0 //add to the stat record
 
                             val runningCardCountTotal = (cardCount[scoutCardInfoKey.toString()] ?: 0)
-                            cardCount[scoutCardInfoKey.toString()] = if(scoutCardInfoKey.nullZeros) runningCardCountTotal else runningCardCountTotal + 1 //keep a running total of the card count
+                            cardCount[scoutCardInfoKey.toString()] = if(scoutCardInfoKey.nullZeros == true) runningCardCountTotal else runningCardCountTotal + 1 //keep a running total of the card count
                         }
                     }
 

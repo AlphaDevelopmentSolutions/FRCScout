@@ -5,12 +5,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ChecklistItemResult(
-        var id: Int,
-        var checklistItemId: Int,
-        var matchId: String,
-        var status: String,
-        var completedBy: String,
-        var completedDate: Date,
+        var id: Int = DEFAULT_INT,
+        var checklistItemId: Int = DEFAULT_INT,
+        var matchId: String = DEFAULT_STRING,
+        var status: String = DEFAULT_STRING,
+        var completedBy: String? = null,
+        var completedDate: Date? = null,
         var isDraft: Boolean) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
     companion object

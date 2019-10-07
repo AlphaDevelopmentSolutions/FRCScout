@@ -92,32 +92,32 @@ internal class MatchListRecyclerViewAdapter(
         //clicking their number will bring you to their team page
         if (team?.id != match.blueAllianceTeamOneId)
         {
-            viewHolder.view.BlueAllianceTeamOneIdTextView.setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(match.blueAllianceTeamOneId, context.database)), true) }
+            viewHolder.view.BlueAllianceTeamOneIdTextView.setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(match.blueAllianceTeamOneId).apply { load(context.database) }), true) }
         }
 
         if (team?.id != match.blueAllianceTeamTwoId)
         {
-            viewHolder.view.BlueAllianceTeamTwoIdTextView.setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(match.blueAllianceTeamTwoId, context.database)), true) }
+            viewHolder.view.BlueAllianceTeamTwoIdTextView.setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(match.blueAllianceTeamTwoId).apply { load(context.database) }), true) }
         }
 
         if (team?.id != match.blueAllianceTeamThreeId)
         {
-            viewHolder.view.BlueAllianceTeamThreeIdTextView.setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(match.blueAllianceTeamThreeId, context.database)), true) }
+            viewHolder.view.BlueAllianceTeamThreeIdTextView.setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(match.blueAllianceTeamThreeId).apply { load(context.database) }), true) }
         }
 
         if (team?.id != match.redAllianceTeamOneId)
         {
-            viewHolder.view.RedAllianceTeamOneIdTextView.setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(match.redAllianceTeamOneId, context.database)), true) }
+            viewHolder.view.RedAllianceTeamOneIdTextView.setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(match.redAllianceTeamOneId).apply { load(context.database) }), true) }
         }
 
         if (team?.id != match.redAllianceTeamTwoId)
         {
-            viewHolder.view.RedAllianceTeamTwoIdTextView.setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(match.redAllianceTeamTwoId, context.database)), true) }
+            viewHolder.view.RedAllianceTeamTwoIdTextView.setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(match.redAllianceTeamTwoId).apply { load(context.database) }), true) }
         }
 
         if (team?.id != match.redAllianceTeamThreeId)
         {
-            viewHolder.view.RedAllianceTeamThreeIdTextView.setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(match.redAllianceTeamThreeId, context.database)), true) }
+            viewHolder.view.RedAllianceTeamThreeIdTextView.setOnClickListener { context.changeFragment(TeamFragment.newInstance(Team(match.redAllianceTeamThreeId).apply { load(context.database) }), true) }
         }
 
         //set score

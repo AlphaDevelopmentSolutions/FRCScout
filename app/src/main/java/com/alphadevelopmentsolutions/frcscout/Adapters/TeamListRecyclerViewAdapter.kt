@@ -26,7 +26,7 @@ internal class TeamListRecyclerViewAdapter(private val match: Match?, private va
         if(match != null)
         {
             for(team in teamList)
-                teamHasScoutCardInfos[team.id!!] = ScoutCardInfo.getObjects(null, match, team, null, null, false, context.database).size > 0
+                teamHasScoutCardInfos[team.id] = ScoutCardInfo.getObjects(null, match, team, null, null, false, context.database).size > 0
         }
 
     }

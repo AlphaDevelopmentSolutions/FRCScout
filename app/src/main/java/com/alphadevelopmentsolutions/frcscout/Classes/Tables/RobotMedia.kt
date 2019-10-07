@@ -11,16 +11,15 @@ import java.io.File
 import java.util.*
 
 class RobotMedia(
-        var id: Int,
-        var yearId: Int,
-        var eventId: String,
-        var teamId: Int,
-        var fileUri: String,
-        var isDraft: Boolean) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var id: Int = DEFAULT_INT,
+        var yearId: Int = DEFAULT_INT,
+        var eventId: String = DEFAULT_STRING,
+        var teamId: Int = DEFAULT_INT,
+        var fileUri: String = DEFAULT_STRING,
+        var isDraft: Boolean = DEFAULT_BOOLEAN) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
     companion object
     {
-
         val TABLE_NAME = "robot_media"
         val COLUMN_NAME_ID = "Id"
         val COLUMN_NAME_YEAR_ID = "YearId"

@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity(),
         updateAppColors()
 
         //Update nav text
-        updateNavText(Event((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int), database))
+        updateNavText(Event((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int)).apply { load(database) })
 
         //Load the view for the fragments
         loadView(savedInstanceState)
@@ -405,41 +405,6 @@ class MainActivity : AppCompatActivity(),
                 }
                 else
                     progressDialogProgress += increaseFactor * 2
-
-                /**
-                 * ROBOT MEDIA
-                 */
-                if(keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false) as Boolean && withFilters)
-                {
-                    progressDialogProgress += increaseFactor
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.robot_media))
-                        loadingDialog.progress = progressDialogProgress
-                    }
-
-                    //Get the folder and purge all files
-                    val mediaFolder = File(Constants.ROBOT_MEDIA_DIRECTORY)
-                    if (mediaFolder.isDirectory)
-                        for (child in mediaFolder.listFiles())
-                            child.delete()
-
-                    val getRobotMedia = Server.GetRobotMedia(context)
-                    if (getRobotMedia.execute())
-                    {
-                        RobotMedia.clearTable(database, true)
-
-                        for (robotMedia in getRobotMedia.robotMedia)
-                        {
-                            if(robotMedia.save(database) > 0)
-                            {
-                                val team = Team(robotMedia.teamId, database)
-                                team.imageFileURI = robotMedia.fileUri
-                                team.save(database)
-                            }
-                        }
-
-                    }
-                }
 
                 //endregion
 
@@ -720,13 +685,49 @@ class MainActivity : AppCompatActivity(),
 
                 //endregion
 
+                /**
+                 * ROBOT MEDIA
+                 * This has to be ran after teams have been imported
+                 */
+                if(keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false) as Boolean && withFilters)
+                {
+                    progressDialogProgress += increaseFactor
+                    context.runOnUiThread {
+                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.robot_media))
+                        loadingDialog.progress = progressDialogProgress
+                    }
+
+                    //Get the folder and purge all files
+                    val mediaFolder = File(Constants.ROBOT_MEDIA_DIRECTORY)
+                    if (mediaFolder.isDirectory)
+                        for (child in mediaFolder.listFiles())
+                            child.delete()
+
+                    val getRobotMedia = Server.GetRobotMedia(context)
+                    if (getRobotMedia.execute())
+                    {
+                        RobotMedia.clearTable(database, true)
+
+                        for (robotMedia in getRobotMedia.robotMedia)
+                        {
+                            if(robotMedia.save(database) > 0)
+                            {
+                                val team = Team(robotMedia.teamId).apply { load(database) }
+                                team.imageFileURI = robotMedia.fileUri
+                                team.save(database)
+                            }
+                        }
+
+                    }
+                }
+
                 database.finishTransaction()
 
                 runOnUiThread {
-                    val year = Year((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!, database)
+                    val year = Year(-1, (keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!).apply { load(database) }
 
                     //set the year when showing the event list frag
-                    keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, year.serverId!!)
+                    keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, year.serverId)
 
                     loadingDialog.dismiss()
 
@@ -734,7 +735,7 @@ class MainActivity : AppCompatActivity(),
                         context.recreate()
 
                     else
-                        changeFragment(EventListFragment.newInstance(Year((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!, database)), false, false)
+                        changeFragment(EventListFragment.newInstance(Year(-1, (keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!).apply { load(database) }), false, false)
                 }
             })
 
@@ -918,9 +919,9 @@ class MainActivity : AppCompatActivity(),
 
             R.id.nav_teams -> changeFragment(TeamListFragment.newInstance(null, null), false, false)
 
-            R.id.nav_checklist -> changeFragment(ChecklistFragment.newInstance(Team((keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Int), database), null), false, false)
+            R.id.nav_checklist -> changeFragment(ChecklistFragment.newInstance(Team((keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Int)).apply { load(database) }, null), false, false)
 
-            R.id.nav_events -> changeFragment(EventListFragment.newInstance(Year(keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int, database)), false, false)
+            R.id.nav_events -> changeFragment(EventListFragment.newInstance(Year(-1, keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int).apply { load(database) }), false, false)
         }
 
         MainDrawerLayout.closeDrawer(GravityCompat.START)
@@ -1519,7 +1520,7 @@ class MainActivity : AppCompatActivity(),
                 //No event selected, default to yar list
                 else
                 {
-                    val year = Year((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int), database)
+                    val year = Year(-1, (keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int)).apply { load(database) }
                     changeFragment(EventListFragment.newInstance(year), false, false)
                 }
 

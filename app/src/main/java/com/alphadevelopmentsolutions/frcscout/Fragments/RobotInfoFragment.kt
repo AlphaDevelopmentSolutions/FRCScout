@@ -129,9 +129,9 @@ class RobotInfoFragment : MasterFragment()
                                     {
                                         robotInfo = RobotInfo(
                                                 -1,
-                                                year!!.serverId!!,
-                                                event!!.blueAllianceId!!,
-                                                team!!.id!!,
+                                                year!!.serverId,
+                                                event!!.blueAllianceId,
+                                                team!!.id,
                                                 "",
                                                 infoKey.serverId,
                                                 true

@@ -73,7 +73,7 @@ class QuickStatsFragment : MasterFragment()
                     
                     for(scoutCardInfoKey in scoutCardInfoKeys)
                     {
-                        if(scoutCardInfoKey.includeInStats)
+                        if(scoutCardInfoKey.includeInStats == true)
                             this[scoutCardInfoKey.keyState] = (this[scoutCardInfoKey.keyState] ?: ArrayList()).apply {
                                 add(scoutCardInfoKey)
                             }

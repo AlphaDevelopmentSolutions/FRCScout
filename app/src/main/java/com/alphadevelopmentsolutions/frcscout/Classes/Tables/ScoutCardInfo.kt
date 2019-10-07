@@ -4,19 +4,18 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import java.util.*
 
 class ScoutCardInfo(
-        var id: Int,
-        var yearId: Int,
-        var eventId: String,
-        var matchId: String,
-        var teamId: Int,
-        var completedBy: String,
-        var propertyValue: String,
-        var propertyKeyId: Int,
-        var isDraft: Boolean) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var id: Int = DEFAULT_INT,
+        var yearId: Int = DEFAULT_INT,
+        var eventId: String = DEFAULT_STRING,
+        var matchId: String = DEFAULT_STRING,
+        var teamId: Int = DEFAULT_INT,
+        var completedBy: String = DEFAULT_STRING,
+        var propertyValue: String = DEFAULT_STRING,
+        var propertyKeyId: Int = DEFAULT_INT,
+        var isDraft: Boolean = DEFAULT_BOOLEAN) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
     companion object
     {
-
         val TABLE_NAME = "scout_card_info"
         val COLUMN_NAME_ID = "Id"
         val COLUMN_NAME_YEAR_ID = "YearId"

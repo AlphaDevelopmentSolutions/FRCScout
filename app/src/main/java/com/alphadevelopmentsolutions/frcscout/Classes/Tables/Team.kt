@@ -5,58 +5,22 @@ import android.graphics.BitmapFactory
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import java.io.File
 
-class Team : Table
+class Team(
+        var id: Int = DEFAULT_INT,
+        var name: String = DEFAULT_STRING,
+        var city: String? = null,
+        var stateProvince: String? = null,
+        var country: String? = null,
+        var rookieYear: Int? = null,
+        var facebookURL: String? = null,
+        var twitterURL: String? = null,
+        var instagramURL: String? = null,
+        var youtubeURL: String? = null,
+        var websiteURL: String? = null,
+        var imageFileURI: String? = null) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
-
-    var id: Int? = null
-    lateinit var name: String
-    lateinit var city: String
-    lateinit var stateProvince: String
-    lateinit var country: String
-    var rookieYear: Int? = null
-    lateinit var facebookURL: String
-    lateinit var twitterURL: String
-    lateinit var instagramURL: String
-    lateinit var youtubeURL: String
-    lateinit var websiteURL: String
-    lateinit var imageFileURI: String
-
-    constructor( id: Int,
-                 name: String,
-                 city: String,
-                 stateProvince: String,
-                 country: String,
-                 rookieYear: Int,
-                 facebookURL: String,
-                 twitterURL: String,
-                 instagramURL: String,
-                 youtubeURL: String,
-                 websiteURL: String,
-                 imageFileURI: String) : super(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
-    {
-        this.id = id
-        this.name = name
-        this.city = city
-        this.stateProvince = stateProvince
-        this.country = country
-        this.rookieYear = rookieYear
-        this.facebookURL = facebookURL
-        this.twitterURL = twitterURL
-        this.instagramURL = instagramURL
-        this.youtubeURL = youtubeURL
-        this.websiteURL = websiteURL
-        this.imageFileURI = imageFileURI
-    }
-
-    constructor(id: Int, database: Database) : super(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
-    {
-        this.id = id
-        load(database)
-    }
-
     companion object
     {
-
         val TABLE_NAME = "teams"
         val COLUMN_NAME_ID = "Id"
         val COLUMN_NAME_NAME = "Name"
@@ -160,7 +124,7 @@ class Team : Table
                 //iterate through each scout card info key
                 for(scoutCardInfoKey in scoutCardInfoKeys)
                 {
-                    if(scoutCardInfoKey.includeInStats)
+                    if(scoutCardInfoKey.includeInStats == true)
                     {
                         if(!filteredScoutCardInfos.isNullOrEmpty())
                         {

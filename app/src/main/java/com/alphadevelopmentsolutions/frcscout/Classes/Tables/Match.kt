@@ -8,26 +8,24 @@ import kotlin.collections.HashMap
 import kotlin.math.round
 
 class Match(
-        var id: Int,
-        var date: Date,
-        var eventId: String,
-        var key: String,
-        var matchType: Type,
-        var setNumber: Int,
-        var matchNumber: Int,
-        var blueAllianceTeamOneId: Int,
-        var blueAllianceTeamTwoId: Int,
-        var blueAllianceTeamThreeId: Int,
-        var redAllianceTeamOneId: Int,
-        var redAllianceTeamTwoId: Int,
-        var redAllianceTeamThreeId: Int,
-        var blueAllianceScore: Int,
-        var redAllianceScore: Int) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var id: Int = DEFAULT_INT,
+        var date: Date = DEFAULT_DATE,
+        var eventId: String = DEFAULT_STRING,
+        var key: String = DEFAULT_STRING,
+        var matchType: Type = Type.qm,
+        var setNumber: Int = DEFAULT_INT,
+        var matchNumber: Int = DEFAULT_INT,
+        var blueAllianceTeamOneId: Int = DEFAULT_INT,
+        var blueAllianceTeamTwoId: Int = DEFAULT_INT,
+        var blueAllianceTeamThreeId: Int = DEFAULT_INT,
+        var redAllianceTeamOneId: Int = DEFAULT_INT,
+        var redAllianceTeamTwoId: Int = DEFAULT_INT,
+        var redAllianceTeamThreeId: Int = DEFAULT_INT,
+        var blueAllianceScore: Int? = null,
+        var redAllianceScore: Int? = null) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
-
     companion object
     {
-
         val TABLE_NAME = "matches"
         val COLUMN_NAME_ID = "Id"
         val COLUMN_NAME_DATE = "Date"
@@ -92,7 +90,7 @@ class Match(
         get() = when
         {
             blueAllianceScore == redAllianceScore -> Status.TIE
-            blueAllianceScore > redAllianceScore -> Status.BLUE
+            blueAllianceScore?: 0 > redAllianceScore?: 0 -> Status.BLUE
             else -> Status.RED
         }
 
@@ -261,7 +259,7 @@ class Match(
             //iterate through each scout card info key
             for(scoutCardInfoKey in scoutCardInfoKeys)
             {
-                if(scoutCardInfoKey.includeInStats)
+                if(scoutCardInfoKey.includeInStats == true)
                 {
                     if(!filteredScoutCardInfos.isNullOrEmpty())
                     {
@@ -274,7 +272,7 @@ class Match(
                                 statsHashMap[scoutCardInfoKey.toString()] = (statsHashMap[scoutCardInfoKey.toString()] ?: 0.0) + stat //add to the stat record
 
                                 val runningCardCountTotal = (cardCount[scoutCardInfoKey.toString()] ?: 0)
-                                cardCount[scoutCardInfoKey.toString()] = if(scoutCardInfoKey.nullZeros && stat == 0) runningCardCountTotal else runningCardCountTotal + 1 //keep a running total of the card count
+                                cardCount[scoutCardInfoKey.toString()] = if(scoutCardInfoKey.nullZeros == true && stat == 0) runningCardCountTotal else runningCardCountTotal + 1 //keep a running total of the card count
                             }
                         }
 
@@ -284,7 +282,7 @@ class Match(
                             statsHashMap[scoutCardInfoKey.toString()] = 0.0 //add to the stat record
 
                             val runningCardCountTotal = (cardCount[scoutCardInfoKey.toString()] ?: 0)
-                            cardCount[scoutCardInfoKey.toString()] = if(scoutCardInfoKey.nullZeros) runningCardCountTotal else runningCardCountTotal + 1 //keep a running total of the card count
+                            cardCount[scoutCardInfoKey.toString()] = if(scoutCardInfoKey.nullZeros == true) runningCardCountTotal else runningCardCountTotal + 1 //keep a running total of the card count
                         }
                     }
 

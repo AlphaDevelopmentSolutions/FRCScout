@@ -4,17 +4,17 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import java.util.*
 
 class ScoutCardInfoKey(
-        var id: Int,
-        var serverId: Int,
-        var yearId: Int,
-        var keyState: String,
-        var keyName: String,
-        var sortOrder: Int,
-        var minValue: Int?,
-        var maxValue: Int?,
-        var nullZeros: Boolean,
-        var includeInStats: Boolean,
-        var dataType: DataTypes) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var id: Int = DEFAULT_INT,
+        var serverId: Int = DEFAULT_INT,
+        var yearId: Int = DEFAULT_INT,
+        var keyState: String = DEFAULT_STRING,
+        var keyName: String = DEFAULT_STRING,
+        var sortOrder: Int = DEFAULT_INT,
+        var minValue: Int? = null,
+        var maxValue: Int? = null,
+        var nullZeros: Boolean? = null,
+        var includeInStats: Boolean? = null,
+        var dataType: DataTypes = DataTypes.TEXT) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
     companion object
     {

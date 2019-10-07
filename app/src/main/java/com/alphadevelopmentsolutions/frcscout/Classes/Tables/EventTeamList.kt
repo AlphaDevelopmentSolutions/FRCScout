@@ -4,14 +4,12 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import java.util.*
 
 class EventTeamList(
-        var id: Int,
-        var teamId: Int,
-        var eventId: String) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var id: Int = DEFAULT_INT,
+        var teamId: Int = DEFAULT_INT,
+        var eventId: String = DEFAULT_STRING) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
-
     companion object
     {
-
         val TABLE_NAME = "event_team_list"
         val COLUMN_NAME_ID = "Id"
         val COLUMN_NAME_TEAM_ID = "TeamId"

@@ -1076,7 +1076,7 @@ abstract class Server internal constructor(
             put(ChecklistItemResult.COLUMN_NAME_MATCH_ID, checklistItemResult.matchId)
 
             put(ChecklistItemResult.COLUMN_NAME_STATUS, checklistItemResult.status)
-            put(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY, checklistItemResult.completedBy)
+            put(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY, checklistItemResult.completedBy?: "")
 
             put(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE, checklistItemResult.completedDateForSQL)
         }

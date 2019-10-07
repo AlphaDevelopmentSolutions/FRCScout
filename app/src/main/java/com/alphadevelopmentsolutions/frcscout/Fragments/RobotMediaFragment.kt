@@ -112,9 +112,9 @@ class RobotMediaFragment : MasterFragment()
                 {
                     robotMedia = RobotMedia(
                             -1,
-                            year!!.serverId!!,
-                            event!!.blueAllianceId!!,
-                            team!!.id!!,
+                            year!!.serverId,
+                            event!!.blueAllianceId,
+                            team!!.id,
                             mediaFilePath,
                             true)
 

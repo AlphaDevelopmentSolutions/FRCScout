@@ -53,7 +53,7 @@ class EventListFragment : MasterFragment()
             if (yearJson != null && yearJson != "")
                 year = Gson().fromJson(yearJson, Year::class.java)
 
-            events = Event.getObjects(year, null, Team(context.keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Int, database), database)
+            events = Event.getObjects(year, null, Team(context.keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Int).apply { load(context.database) }, database)
             searchedEvents = ArrayList(events)
         })
 
@@ -72,7 +72,7 @@ class EventListFragment : MasterFragment()
 
         loadYearThread.join()
 
-        context.setToolbarTitle(year!!.serverId!!.toString())
+        context.setToolbarTitle(year!!.serverId.toString())
 
         //showing this view means the user has not selected an event, clear the shared pref
         context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1)

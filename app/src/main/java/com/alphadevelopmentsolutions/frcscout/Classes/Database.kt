@@ -1,9 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.Classes
 
-import android.content.ContentValues
-import android.database.Cursor
 import android.database.SQLException
-import android.database.sqlite.SQLiteDatabase
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Exceptions.UnauthorizedClassException
@@ -17,8 +14,8 @@ import kotlin.reflect.jvm.jvmName
 
 class Database(context: MainActivity)
 {
-    private val databaseHelper: DatabaseHelper
-    private var db: SQLiteDatabase? = null
+    private val databaseHelper: DatabaseHelper = DatabaseHelper(context)
+    private var db: CustomSQLiteDatabase = CustomSQLiteDatabase()
 
     /**
      * Checks if the database is currently open
@@ -26,7 +23,7 @@ class Database(context: MainActivity)
      * @return boolean if database is open
      */
     val isOpen: Boolean
-        get() = if (db != null) db!!.isOpen else false
+        get() = if (db != null) db.isOpen else false
 
     enum class SortDirection
     {
@@ -108,17 +105,12 @@ class Database(context: MainActivity)
             return Arrays.copyOf(Objects.requireNonNull<Array<Any>>(columns.toTypedArray()), columns.size, Array<String>::class.java)
         }
 
-    init
-    {
-        databaseHelper = DatabaseHelper(context)
-    }
-
     /**
      * Starts a transaction when inserting a large number of records
      */
     fun beginTransaction()
     {
-        db!!.beginTransaction()
+        db.beginTransaction()
     }
 
     /**
@@ -126,8 +118,7 @@ class Database(context: MainActivity)
      */
     fun finishTransaction()
     {
-        db!!.setTransactionSuccessful()
-        db!!.endTransaction()
+        db.finishTransaction()
     }
 
     /**
@@ -135,7 +126,7 @@ class Database(context: MainActivity)
      */
     fun inTransaction(): Boolean
     {
-        return db!!.inTransaction()
+        return db.inTransaction()
     }
 
     /**
@@ -145,13 +136,13 @@ class Database(context: MainActivity)
      */
     fun open(): Boolean
     {
-        try
+        return try
         {
-            db = databaseHelper.writableDatabase
-            return true
+            db.database = databaseHelper.writableDatabase
+            true
         } catch (e: SQLException)
         {
-            return false
+            false
         }
 
     }
@@ -163,13 +154,13 @@ class Database(context: MainActivity)
      */
     fun close(): Boolean
     {
-        try
+        return try
         {
             databaseHelper.close()
-            return true
+            true
         } catch (e: SQLException)
         {
-            return false
+            false
         }
 
     }
@@ -182,7 +173,7 @@ class Database(context: MainActivity)
      */
     fun clearTable(tableName: String, clearDrafts: Boolean? = null)
     {
-        db!!.execSQL(String.format("DELETE FROM %s%s", tableName, if (clearDrafts != null) (if(clearDrafts) "" else " WHERE IsDraft = 0") else ""))
+        db.execSQL(String.format("DELETE FROM %s%s", tableName, if (clearDrafts != null) (if(clearDrafts) "" else " WHERE IsDraft = 0") else ""))
     }
 
     //region Event Logic
@@ -192,7 +183,7 @@ class Database(context: MainActivity)
      * @param cursor info from database
      * @return Event object converted data
      */
-    private fun getEventFromCursor(cursor: Cursor): Event
+    private fun getEventFromCursor(cursor: DatabaseCursor): Event
     {
         val id = cursor.getInt(cursor.getColumnIndex(Event.COLUMN_NAME_ID))
         val yearId = cursor.getInt(cursor.getColumnIndex(Event.COLUMN_NAME_YEAR_ID))
@@ -201,8 +192,8 @@ class Database(context: MainActivity)
         val city = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_CITY))
         val stateProvince = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_STATEPROVINCE))
         val country = cursor.getString(cursor.getColumnIndex(Event.COLUMN_NAME_COUNTRY))
-        val startDate = Date(cursor.getLong(cursor.getColumnIndex(Event.COLUMN_NAME_START_DATE)))
-        val endDate = Date(cursor.getLong(cursor.getColumnIndex(Event.COLUMN_NAME_END_DATE)))
+        val startDate = cursor.getDate(cursor.getColumnIndex(Event.COLUMN_NAME_START_DATE))
+        val endDate = cursor.getDate(cursor.getColumnIndex(Event.COLUMN_NAME_END_DATE))
 
         return Event(
                 id,
@@ -242,7 +233,7 @@ class Database(context: MainActivity)
         if (event != null)
         {
             whereStatement
-                    .append(if (whereStatement.length > 0) " AND " else "")
+                    .append(if (whereStatement.isNotEmpty()) " AND " else "")
                     .append(Event.COLUMN_NAME_ID).append(" = ?")
             whereArgs.add(event.id.toString())
         }
@@ -250,12 +241,12 @@ class Database(context: MainActivity)
         if (team != null)
         {
             whereStatement
-                    .append(if (whereStatement.length > 0) " AND " else "")
+                    .append(if (whereStatement.isNotEmpty()) " AND " else "")
                     .append("${Event.COLUMN_NAME_BLUE_ALLIANCE_ID} IN (SELECT ${EventTeamList.COLUMN_NAME_EVENT_ID} FROM ${EventTeamList.TABLE_NAME} WHERE ${EventTeamList.COLUMN_NAME_TEAM_ID} = ${team.id})")
         }
 
         //select the info from the db
-        val cursor = db!!.query(
+        val cursor = db.query(
                 Event.TABLE_NAME,
                 columns,
                 whereStatement.toString(),
@@ -287,15 +278,15 @@ class Database(context: MainActivity)
     fun setEvent(event: Event): Long
     {
         //set all the values
-        val contentValues = ContentValues()
+        val contentValues = MasterContentValues()
         contentValues.put(Event.COLUMN_NAME_YEAR_ID, event.yearId)
         contentValues.put(Event.COLUMN_NAME_BLUE_ALLIANCE_ID, event.blueAllianceId)
         contentValues.put(Event.COLUMN_NAME_NAME, event.name)
         contentValues.put(Event.COLUMN_NAME_CITY, event.city)
         contentValues.put(Event.COLUMN_NAME_STATEPROVINCE, event.stateProvince)
         contentValues.put(Event.COLUMN_NAME_COUNTRY, event.country)
-        contentValues.put(Event.COLUMN_NAME_START_DATE, event.startDate!!.time)
-        contentValues.put(Event.COLUMN_NAME_END_DATE, event.endDate!!.time)
+        contentValues.put(Event.COLUMN_NAME_START_DATE, event.startDate)
+        contentValues.put(Event.COLUMN_NAME_END_DATE, event.endDate)
 
         AppLog.log("Database Save", "Saving ${Event.TABLE_NAME} with the Id ${event.id}")
 
@@ -307,9 +298,9 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(event.id.toString() + "")
 
             //update
-            return db!!.update(Event.TABLE_NAME, contentValues, whereStatement, whereArgs).toLong()
+            return db.update(Event.TABLE_NAME, contentValues, whereStatement, whereArgs).toLong()
         } else
-            return db!!.insert(Event.TABLE_NAME, null, contentValues)//insert new event in db
+            return db.insert(Event.TABLE_NAME, null, contentValues)//insert new event in db
 
     }
 
@@ -327,7 +318,7 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(event.id.toString() + "")
 
             //delete
-            return db!!.delete(Event.TABLE_NAME, whereStatement, whereArgs) >= 1
+            return db.delete(Event.TABLE_NAME, whereStatement, whereArgs) >= 1
         }
 
         return false
@@ -341,20 +332,20 @@ class Database(context: MainActivity)
      * @param cursor info from database
      * @return Team object converted data
      */
-    private fun getTeamFromCursor(cursor: Cursor): Team
+    private fun getTeamFromCursor(cursor: DatabaseCursor): Team
     {
         val id = cursor.getInt(cursor.getColumnIndex(Team.COLUMN_NAME_ID))
         val name = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_NAME))
-        val city = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_CITY))
-        val stateProvince = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_STATEPROVINCE))
-        val country = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_COUNTRY))
-        val rookieYear = cursor.getInt(cursor.getColumnIndex(Team.COLUMN_NAME_ROOKIE_YEAR))
-        val facebookURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_FACEBOOK_URL))
-        val twitterURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_TWITTER_URL))
-        val instagramURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_INSTAGRAM_URL))
-        val youtubeURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_YOUTUBE_URL))
-        val websiteURL = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_WEBSITE_URL))
-        val imageFileURI = cursor.getString(cursor.getColumnIndex(Team.COLUMN_NAME_IMAGE_FILE_URI))
+        val city = cursor.getStringOrNull(cursor.getColumnIndex(Team.COLUMN_NAME_CITY))
+        val stateProvince = cursor.getStringOrNull(cursor.getColumnIndex(Team.COLUMN_NAME_STATEPROVINCE))
+        val country = cursor.getStringOrNull(cursor.getColumnIndex(Team.COLUMN_NAME_COUNTRY))
+        val rookieYear = cursor.getIntOrNull(cursor.getColumnIndex(Team.COLUMN_NAME_ROOKIE_YEAR))
+        val facebookURL = cursor.getStringOrNull(cursor.getColumnIndex(Team.COLUMN_NAME_FACEBOOK_URL))
+        val twitterURL = cursor.getStringOrNull(cursor.getColumnIndex(Team.COLUMN_NAME_TWITTER_URL))
+        val instagramURL = cursor.getStringOrNull(cursor.getColumnIndex(Team.COLUMN_NAME_INSTAGRAM_URL))
+        val youtubeURL = cursor.getStringOrNull(cursor.getColumnIndex(Team.COLUMN_NAME_YOUTUBE_URL))
+        val websiteURL = cursor.getStringOrNull(cursor.getColumnIndex(Team.COLUMN_NAME_WEBSITE_URL))
+        val imageFileURI = cursor.getStringOrNull(cursor.getColumnIndex(Team.COLUMN_NAME_IMAGE_FILE_URI))
 
         return Team(
                 id,
@@ -390,13 +381,13 @@ class Database(context: MainActivity)
         if (event != null)
         {
             whereStatement.append(Team.COLUMN_NAME_ID + " IN (SELECT " + EventTeamList.COLUMN_NAME_TEAM_ID + " FROM " + EventTeamList.TABLE_NAME + " WHERE " + EventTeamList.COLUMN_NAME_EVENT_ID + " = ?) ")
-            whereArgs.add(event.blueAllianceId!!)
+            whereArgs.add(event.blueAllianceId)
         }
 
         if (match != null)
         {
 
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "")
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "")
                     .append("(" + Team.COLUMN_NAME_ID + " IN (SELECT " + Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID + " FROM " + Match.TABLE_NAME + " WHERE " + Match.COLUMN_NAME_KEY + " = ?) OR ")
                     .append(Team.COLUMN_NAME_ID + " IN (SELECT " + Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID + " FROM " + Match.TABLE_NAME + " WHERE " + Match.COLUMN_NAME_KEY + " = ?) OR ")
                     .append(Team.COLUMN_NAME_ID + " IN (SELECT " + Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID + " FROM " + Match.TABLE_NAME + " WHERE " + Match.COLUMN_NAME_KEY + " = ?) OR ")
@@ -416,12 +407,12 @@ class Database(context: MainActivity)
         if (team != null)
         {
 
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(Team.COLUMN_NAME_ID + " = ? ")
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(Team.COLUMN_NAME_ID + " = ? ")
             whereArgs.add(team.id.toString())
         }
 
         //select the info from the db
-        val cursor = db!!.query(
+        val cursor = db.query(
                 Team.TABLE_NAME,
                 columns,
                 whereStatement.toString(),
@@ -452,7 +443,7 @@ class Database(context: MainActivity)
     fun setTeam(team: Team): Long
     {
         //set all the values
-        val contentValues = ContentValues()
+        val contentValues = MasterContentValues()
         contentValues.put(Team.COLUMN_NAME_NAME, team.name)
         contentValues.put(Team.COLUMN_NAME_CITY, team.city)
         contentValues.put(Team.COLUMN_NAME_STATEPROVINCE, team.stateProvince)
@@ -468,7 +459,7 @@ class Database(context: MainActivity)
         AppLog.log("Database Save", "Saving ${Team.TABLE_NAME} with the Id ${team.id}")
 
         //team already exists in DB, update
-        if (team.id!! > 0)
+        if (team.id > 0)
         {
             //create the where statement
             val whereStatement = Team.COLUMN_NAME_ID + " = ?"
@@ -479,26 +470,23 @@ class Database(context: MainActivity)
 
 
             //select the info from the db
-            val cursor = db!!.query(
+            val cursor = db.query(
                     Team.TABLE_NAME,
                     columns,
                     whereStatement,
                     whereArgs, null, null, null)
 
-            if (cursor.count > 0)
-            {
+            return if (cursor.count > 0) {
                 cursor.close()
                 //update
-                return db!!.update(Team.TABLE_NAME, contentValues, whereStatement, whereArgs).toLong()
-            }
-            else
-            {
+                db.update(Team.TABLE_NAME, contentValues, whereStatement, whereArgs).toLong()
+            } else {
                 cursor.close()
                 contentValues.put(Team.COLUMN_NAME_ID, team.id)
-                return db!!.insert(Team.TABLE_NAME, null, contentValues)
+                db.insert(Team.TABLE_NAME, null, contentValues)
             }//record doesn't exist yet, insert
         } else
-            return db!!.insert(Team.TABLE_NAME, null, contentValues)//insert new team in db
+            return db.insert(Team.TABLE_NAME, null, contentValues)//insert new team in db
 
     }
 
@@ -509,14 +497,14 @@ class Database(context: MainActivity)
      */
     fun deleteTeam(team: Team): Boolean
     {
-        if (team.id!! > 0)
+        if (team.id > 0)
         {
             //create the where statement
             val whereStatement = Team.COLUMN_NAME_ID + " = ?"
             val whereArgs = arrayOf(team.id.toString() + "")
 
             //delete
-            return db!!.delete(Team.TABLE_NAME, whereStatement, whereArgs) >= 1
+            return db.delete(Team.TABLE_NAME, whereStatement, whereArgs) >= 1
         }
 
         return false
@@ -541,7 +529,7 @@ class Database(context: MainActivity)
         val whereArgs = arrayOf(robot.id.toString() + "")
 
         //select the info from the db
-        val cursor = db!!.query(
+        val cursor = db.query(
                 Robot.TABLE_NAME,
                 columns,
                 whereStatement,
@@ -574,7 +562,7 @@ class Database(context: MainActivity)
     fun setRobot(robot: Robot): Long
     {
         //set all the values
-        val contentValues = ContentValues()
+        val contentValues = MasterContentValues()
         contentValues.put(Robot.COLUMN_NAME_NAME, robot.name)
         contentValues.put(Robot.COLUMN_NAME_TEAM_NUMBER, robot.teamNumber)
 
@@ -588,9 +576,9 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(robot.id.toString() + "")
 
             //update
-            return db!!.update(Robot.TABLE_NAME, contentValues, whereStatement, whereArgs).toLong()
+            return db.update(Robot.TABLE_NAME, contentValues, whereStatement, whereArgs).toLong()
         } else
-            return db!!.insert(Robot.TABLE_NAME, null, contentValues)//insert new robot in db
+            return db.insert(Robot.TABLE_NAME, null, contentValues)//insert new robot in db
 
     }
 
@@ -609,7 +597,7 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(robot.id.toString() + "")
 
             //delete
-            return db!!.delete(Robot.TABLE_NAME, whereStatement, whereArgs) >= 1
+            return db.delete(Robot.TABLE_NAME, whereStatement, whereArgs) >= 1
         }
 
         return false
@@ -623,10 +611,10 @@ class Database(context: MainActivity)
      * @param cursor info from database
      * @return Match object converted data
      */
-    private fun getMatchFromCursor(cursor: Cursor): Match
+    private fun getMatchFromCursor(cursor: DatabaseCursor): Match
     {
         val id = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_ID))
-        val date = Date(cursor.getLong(cursor.getColumnIndex(Match.COLUMN_NAME_DATE)))
+        val date = cursor.getDate(cursor.getColumnIndex(Match.COLUMN_NAME_DATE))
         val eventId = cursor.getString(cursor.getColumnIndex(Match.COLUMN_NAME_EVENT_ID))
         val key = cursor.getString(cursor.getColumnIndex(Match.COLUMN_NAME_KEY))
         val matchType = Match.Type.getTypeFromString(cursor.getString(cursor.getColumnIndex(Match.COLUMN_NAME_MATCH_TYPE)))
@@ -641,8 +629,8 @@ class Database(context: MainActivity)
         val redAllianceTeamTwo = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID))
         val redAllianceTeamThree = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID))
 
-        val blueAllianceScore = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE))
-        val redAllianceScore = cursor.getInt(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_SCORE))
+        val blueAllianceScore = cursor.getIntOrNull(cursor.getColumnIndex(Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE))
+        val redAllianceScore = cursor.getIntOrNull(cursor.getColumnIndex(Match.COLUMN_NAME_RED_ALLIANCE_SCORE))
 
         return Match(
                 id,
@@ -680,7 +668,7 @@ class Database(context: MainActivity)
         val columns = columns
 
         //begin a transaction for multiple calls
-        if(!db!!.inTransaction())
+        if(!db.inTransaction())
             beginTransaction()
 
         Match.Type.getTypes().forEach{
@@ -692,7 +680,7 @@ class Database(context: MainActivity)
             if (event != null)
             {
                 whereStatement.append(Match.COLUMN_NAME_EVENT_ID).append(" = ?")
-                whereArgs.add(event.blueAllianceId!!)
+                whereArgs.add(event.blueAllianceId)
             }
 
             if (match != null)
@@ -724,7 +712,7 @@ class Database(context: MainActivity)
             whereArgs.add(it.toString())
 
             //select the info from the db
-            val cursor = db!!.query(
+            val cursor = db.query(
                     Match.TABLE_NAME,
                     columns,
                     whereStatement.toString(),
@@ -757,7 +745,7 @@ class Database(context: MainActivity)
     fun setMatch(match: Match): Long
     {
         //set all the values
-        val contentValues = ContentValues()
+        val contentValues = MasterContentValues()
         contentValues.put(Match.COLUMN_NAME_DATE, match.date.time)
         contentValues.put(Match.COLUMN_NAME_EVENT_ID, match.eventId)
         contentValues.put(Match.COLUMN_NAME_KEY, match.key)
@@ -780,19 +768,19 @@ class Database(context: MainActivity)
 
 
         //Match already exists in DB, update
-        if (match.id > 0)
+        return if (match.id > 0)
         {
             //create the where statement
             val whereStatement = Match.COLUMN_NAME_ID + " = ?"
             val whereArgs = arrayOf(match.id.toString() + "")
 
             //update
-            return if (db!!.update(Match.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            if (db.update(Match.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 match.id.toLong()
             else
                 -1
         } else
-            return db!!.insert(Match.TABLE_NAME, null, contentValues)//insert new Match in db
+            db.insert(Match.TABLE_NAME, null, contentValues)//insert new Match in db
 
     }
 
@@ -811,7 +799,7 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(match.id.toString() + "")
 
             //delete
-            return db!!.delete(Match.TABLE_NAME, whereStatement, whereArgs) >= 1
+            return db.delete(Match.TABLE_NAME, whereStatement, whereArgs) >= 1
         }
 
         return false
@@ -823,9 +811,9 @@ class Database(context: MainActivity)
     /**
      * Takes in a cursor with info pulled from database and converts it into a scout card
      * @param cursor info from database
-     * @return scoutcardinfo converted data
+     * @return [ScoutCardInfo] converted data
      */
-    private fun getScoutCardInfoFromCursor(cursor: Cursor): ScoutCardInfo
+    private fun getScoutCardInfoFromCursor(cursor: DatabaseCursor): ScoutCardInfo
     {
         val id = cursor.getInt(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_ID))
         val yearId = cursor.getInt(cursor.getColumnIndex(ScoutCardInfo.COLUMN_NAME_YEAR_ID))
@@ -878,42 +866,42 @@ class Database(context: MainActivity)
         if (event != null)
         {
             whereStatement.append(ScoutCardInfo.COLUMN_NAME_EVENT_ID).append(" = ?")
-            whereArgs.add(event.blueAllianceId!!)
+            whereArgs.add(event.blueAllianceId)
         }
 
         if (match != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_MATCH_ID).append(" = ?")
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_MATCH_ID).append(" = ?")
             whereArgs.add(match.key)
         }
 
         if (team != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_TEAM_ID).append(" = ?")
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_TEAM_ID).append(" = ?")
             whereArgs.add(team.id.toString())
         }
 
         if (scoutCardInfoKey != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY_ID + " = ?")
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY_ID + " = ?")
             whereArgs.add(scoutCardInfoKey.serverId.toString())
         }
 
         if (scoutCardInfo != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_ID).append(" = ?")
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_ID).append(" = ?")
             whereArgs.add(scoutCardInfo.id.toString())
         }
 
         if (onlyDrafts)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_IS_DRAFT).append(" = 1")
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(ScoutCardInfo.COLUMN_NAME_IS_DRAFT).append(" = 1")
         }
 
         val orderBy = ScoutCardInfo.COLUMN_NAME_ID + " DESC"
 
         //select the info from the db
-        val cursor = db!!.query(
+        val cursor = db.query(
                 ScoutCardInfo.TABLE_NAME,
                 columns,
                 whereStatement.toString(),
@@ -945,7 +933,7 @@ class Database(context: MainActivity)
     fun setScoutCardInfo(scoutCardInfo: ScoutCardInfo): Long
     {
         //set all the values
-        val contentValues = ContentValues()
+        val contentValues = MasterContentValues()
         contentValues.put(ScoutCardInfo.COLUMN_NAME_YEAR_ID, scoutCardInfo.yearId)
         contentValues.put(ScoutCardInfo.COLUMN_NAME_EVENT_ID, scoutCardInfo.eventId)
         contentValues.put(ScoutCardInfo.COLUMN_NAME_MATCH_ID, scoutCardInfo.matchId)
@@ -956,24 +944,24 @@ class Database(context: MainActivity)
         contentValues.put(ScoutCardInfo.COLUMN_NAME_PROPERTY_VALUE, scoutCardInfo.propertyValue)
         contentValues.put(ScoutCardInfo.COLUMN_NAME_PROPERTY_KEY_ID, scoutCardInfo.propertyKeyId)
 
-        contentValues.put(ScoutCardInfo.COLUMN_NAME_IS_DRAFT, if (scoutCardInfo.isDraft) "1" else "0")
+        contentValues.put(ScoutCardInfo.COLUMN_NAME_IS_DRAFT, scoutCardInfo.isDraft)
 
         AppLog.log("Database Save", "Saving ${ScoutCardInfoKey.TABLE_NAME} with the Id ${scoutCardInfo.id}")
 
         //scoutCardInfo already exists in DB, update
-        if (scoutCardInfo.id > 0)
+        return if (scoutCardInfo.id > 0)
         {
             //create the where statement
             val whereStatement = ScoutCardInfo.COLUMN_NAME_ID + " = ?"
             val whereArgs = arrayOf(scoutCardInfo.id.toString() + "")
 
             //update
-            return if (db!!.update(ScoutCardInfo.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            if (db.update(ScoutCardInfo.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 scoutCardInfo.id.toLong()
             else
                 -1
         } else
-            return db!!.insert(ScoutCardInfo.TABLE_NAME, null, contentValues)//insert new scoutCardInfo in db
+            db.insert(ScoutCardInfo.TABLE_NAME, null, contentValues)//insert new scoutCardInfo in db
 
     }
 
@@ -992,7 +980,7 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(scoutCardInfo.id.toString() + "")
 
             //delete
-            return db!!.delete(ScoutCardInfo.TABLE_NAME, whereStatement, whereArgs) >= 1
+            return db.delete(ScoutCardInfo.TABLE_NAME, whereStatement, whereArgs) >= 1
         }
 
         return false
@@ -1004,9 +992,9 @@ class Database(context: MainActivity)
     /**
      * Takes in a cursor with info pulled from database and converts it into a pit card
      * @param cursor info from database
-     * @return pitcard converted data
+     * @return [ScoutCardInfoKey] converted data
      */
-    private fun getScoutCardInfoKeyFromCursor(cursor: Cursor): ScoutCardInfoKey
+    private fun getScoutCardInfoKeyFromCursor(cursor: DatabaseCursor): ScoutCardInfoKey
     {
         val id = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_ID))
         val serverId = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_SERVER_ID))
@@ -1017,15 +1005,11 @@ class Database(context: MainActivity)
 
         val sortOrder = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER))
 
-        val stringMinValue = cursor.getString(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE))
-        val stringMaxValue = cursor.getString(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE))
+        val minValue = cursor.getIntOrNull(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE))
+        val maxValue = cursor.getIntOrNull(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE))
 
-        val minValue = if(stringMinValue != null) Integer.parseInt(stringMinValue) else null
-        val maxValue = if(stringMaxValue != null) Integer.parseInt(stringMaxValue) else null
-
-
-        val nullZeros = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_NULL_ZEROS)) == 1
-        val includeInStats = cursor.getInt(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_INCLUDE_IN_STATS)) == 1
+        val nullZeros = cursor.getBooleanOrNull(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_NULL_ZEROS))
+        val includeInStats = cursor.getBooleanOrNull(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_INCLUDE_IN_STATS))
 
         val dataType = ScoutCardInfoKey.DataTypes.parseString(cursor.getString(cursor.getColumnIndex(ScoutCardInfoKey.COLUMN_NAME_DATA_TYPE)))
 
@@ -1073,7 +1057,7 @@ class Database(context: MainActivity)
 
         if (scoutCardInfoKey != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ScoutCardInfoKey.COLUMN_NAME_ID + " = ?")
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(ScoutCardInfoKey.COLUMN_NAME_ID + " = ?")
             whereArgs.add(scoutCardInfoKey.id.toString())
         }
 
@@ -1081,7 +1065,7 @@ class Database(context: MainActivity)
         val orderBy = ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER + " ASC"
 
         //select the info from the db
-        val cursor = db!!.query(
+        val cursor = db.query(
                 ScoutCardInfoKey.TABLE_NAME,
                 columns,
                 whereStatement.toString(),
@@ -1114,7 +1098,7 @@ class Database(context: MainActivity)
     fun setScoutCardInfoKey(scoutCardInfoKey: ScoutCardInfoKey): Long
     {
         //set all the values
-        val contentValues = ContentValues()
+        val contentValues = MasterContentValues()
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_SERVER_ID, scoutCardInfoKey.serverId)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_YEAR_ID, scoutCardInfoKey.yearId)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_KEY_STATE, scoutCardInfoKey.keyState)
@@ -1122,27 +1106,27 @@ class Database(context: MainActivity)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER, scoutCardInfoKey.sortOrder)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE, scoutCardInfoKey.minValue)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE, scoutCardInfoKey.maxValue)
-        contentValues.put(ScoutCardInfoKey.COLUMN_NAME_NULL_ZEROS, if (scoutCardInfoKey.nullZeros) 1 else 0)
-        contentValues.put(ScoutCardInfoKey.COLUMN_NAME_INCLUDE_IN_STATS, if (scoutCardInfoKey.includeInStats) 1 else 0)
+        contentValues.put(ScoutCardInfoKey.COLUMN_NAME_NULL_ZEROS, scoutCardInfoKey.nullZeros)
+        contentValues.put(ScoutCardInfoKey.COLUMN_NAME_INCLUDE_IN_STATS, scoutCardInfoKey.includeInStats)
         contentValues.put(ScoutCardInfoKey.COLUMN_NAME_DATA_TYPE, scoutCardInfoKey.dataType.name)
 
         AppLog.log("Database Save", "Saving ${ScoutCardInfoKey.TABLE_NAME} with the Id ${scoutCardInfoKey.id}")
 
 
         //scoutCardInfoKey already exists in DB, update
-        if (scoutCardInfoKey.id > 0)
+        return if (scoutCardInfoKey.id > 0)
         {
             //create the where statement
             val whereStatement = ScoutCardInfoKey.COLUMN_NAME_ID + " = ?"
             val whereArgs = arrayOf(scoutCardInfoKey.id.toString() + "")
 
             //update
-            return if (db!!.update(ScoutCardInfoKey.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            if (db.update(ScoutCardInfoKey.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 scoutCardInfoKey.id.toLong()
             else
                 -1
         } else
-            return db!!.insert(ScoutCardInfoKey.TABLE_NAME, null, contentValues)//insert new scoutCardInfo in db
+            db.insert(ScoutCardInfoKey.TABLE_NAME, null, contentValues)//insert new scoutCardInfo in db
 
     }
 
@@ -1161,7 +1145,7 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(scoutCardInfoKey.id.toString() + "")
 
             //delete
-            return db!!.delete(ScoutCardInfoKey.TABLE_NAME, whereStatement, whereArgs) >= 1
+            return db.delete(ScoutCardInfoKey.TABLE_NAME, whereStatement, whereArgs) >= 1
         }
 
         return false
@@ -1175,7 +1159,7 @@ class Database(context: MainActivity)
      * @param cursor info from database
      * @return pitcard converted data
      */
-    private fun getRobotInfoFromCursor(cursor: Cursor): RobotInfo
+    private fun getRobotInfoFromCursor(cursor: DatabaseCursor): RobotInfo
     {
         val id = cursor.getInt(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_ID))
         val yearId = cursor.getInt(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_YEAR_ID))
@@ -1185,7 +1169,7 @@ class Database(context: MainActivity)
         val propertyValue = cursor.getString(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_PROPERTY_VALUE))
         val propertyKeyId = cursor.getInt(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_PROPERTY_KEY_ID))
 
-        val isDraft = cursor.getInt(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_IS_DRAFT)) == 1
+        val isDraft = cursor.getBoolean(cursor.getColumnIndex(RobotInfo.COLUMN_NAME_IS_DRAFT))
 
 
         return RobotInfo(
@@ -1229,37 +1213,37 @@ class Database(context: MainActivity)
 
         if (event != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(RobotInfo.COLUMN_NAME_EVENT_ID + " = ? ")
-            whereArgs.add(event.blueAllianceId!!)
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(RobotInfo.COLUMN_NAME_EVENT_ID + " = ? ")
+            whereArgs.add(event.blueAllianceId)
         }
 
         if (team != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(RobotInfo.COLUMN_NAME_TEAM_ID + " = ? ")
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(RobotInfo.COLUMN_NAME_TEAM_ID + " = ? ")
             whereArgs.add(team.id.toString())
         }
 
         if (robotInfoKey != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(RobotInfo.COLUMN_NAME_PROPERTY_KEY_ID + " = ? ")
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(RobotInfo.COLUMN_NAME_PROPERTY_KEY_ID + " = ? ")
             whereArgs.add(robotInfoKey.serverId.toString())
         }
 
         if (robotInfo != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(RobotInfo.COLUMN_NAME_ID + " = ? ")
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(RobotInfo.COLUMN_NAME_ID + " = ? ")
             whereArgs.add(robotInfo.id.toString())
         }
 
         if (onlyDrafts)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(RobotInfo.COLUMN_NAME_IS_DRAFT + " = 1 ")
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(RobotInfo.COLUMN_NAME_IS_DRAFT + " = 1 ")
         }
 
         val orderBy = RobotInfo.COLUMN_NAME_ID + " DESC"
 
         //select the info from the db
-        val cursor = db!!.query(
+        val cursor = db.query(
                 RobotInfo.TABLE_NAME,
                 columns,
                 whereStatement.toString(),
@@ -1290,7 +1274,7 @@ class Database(context: MainActivity)
     fun setRobotInfo(robotInfo: RobotInfo): Long
     {
         //set all the values
-        val contentValues = ContentValues()
+        val contentValues = MasterContentValues()
         contentValues.put(RobotInfo.COLUMN_NAME_YEAR_ID, robotInfo.yearId)
         contentValues.put(RobotInfo.COLUMN_NAME_EVENT_ID, robotInfo.eventId)
         contentValues.put(RobotInfo.COLUMN_NAME_TEAM_ID, robotInfo.teamId)
@@ -1298,7 +1282,7 @@ class Database(context: MainActivity)
         contentValues.put(RobotInfo.COLUMN_NAME_PROPERTY_VALUE, robotInfo.propertyValue)
         contentValues.put(RobotInfo.COLUMN_NAME_PROPERTY_KEY_ID, robotInfo.propertyKeyId)
 
-        contentValues.put(RobotInfo.COLUMN_NAME_IS_DRAFT, if (robotInfo.isDraft) "1" else "0")
+        contentValues.put(RobotInfo.COLUMN_NAME_IS_DRAFT, robotInfo.isDraft)
 
         AppLog.log("Database Save", "Saving ${RobotInfo.TABLE_NAME} with the Id ${robotInfo.id}")
 
@@ -1310,13 +1294,13 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(robotInfo.id.toString() + "")
 
             //update
-            if (db!!.update(RobotInfo.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            if (db.update(RobotInfo.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 robotInfo.id.toLong()
             else
                 -1
         }
         else
-            db!!.insert(RobotInfo.TABLE_NAME, null, contentValues)
+            db.insert(RobotInfo.TABLE_NAME, null, contentValues)
     }
 
     /**
@@ -1334,7 +1318,7 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(robotInfo.id.toString() + "")
 
             //delete
-            return db!!.delete(RobotInfo.TABLE_NAME, whereStatement, whereArgs) >= 1
+            return db.delete(RobotInfo.TABLE_NAME, whereStatement, whereArgs) >= 1
         }
 
         return false
@@ -1348,7 +1332,7 @@ class Database(context: MainActivity)
      * @param cursor info from database
      * @return pitcard converted data
      */
-    private fun getRobotInfoKeyFromCursor(cursor: Cursor): RobotInfoKey
+    private fun getRobotInfoKeyFromCursor(cursor: DatabaseCursor): RobotInfoKey
     {
         val id = cursor.getInt(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_ID))
         val serverId = cursor.getInt(cursor.getColumnIndex(RobotInfoKey.COLUMN_NAME_SERVER_ID))
@@ -1395,7 +1379,7 @@ class Database(context: MainActivity)
 
         if (robotInfoKey != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(RobotInfoKey.COLUMN_NAME_ID + " = ?")
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(RobotInfoKey.COLUMN_NAME_ID + " = ?")
             whereArgs.add(robotInfoKey.id.toString())
         }
 
@@ -1403,7 +1387,7 @@ class Database(context: MainActivity)
         val orderBy = RobotInfoKey.COLUMN_NAME_SORT_ORDER + " ASC"
 
         //select the info from the db
-        val cursor = db!!.query(
+        val cursor = db.query(
                 RobotInfoKey.TABLE_NAME,
                 columns,
                 whereStatement.toString(),
@@ -1434,7 +1418,7 @@ class Database(context: MainActivity)
     fun setRobotInfoKey(robotInfoKey: RobotInfoKey): Long
     {
         //set all the values
-        val contentValues = ContentValues()
+        val contentValues = MasterContentValues()
         contentValues.put(RobotInfoKey.COLUMN_NAME_SERVER_ID, robotInfoKey.serverId)
         contentValues.put(RobotInfoKey.COLUMN_NAME_YEAR_ID, robotInfoKey.yearId)
         contentValues.put(RobotInfoKey.COLUMN_NAME_SORT_ORDER, robotInfoKey.sortOrder)
@@ -1451,12 +1435,12 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(robotInfoKey.id.toString() + "")
 
             //update
-            return if (db!!.update(RobotInfoKey.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            return if (db.update(RobotInfoKey.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 robotInfoKey.id.toLong()
             else
                 -1
         } else
-            return db!!.insert(RobotInfoKey.TABLE_NAME, null, contentValues)//insert new scoutCardInfo in db
+            return db.insert(RobotInfoKey.TABLE_NAME, null, contentValues)//insert new scoutCardInfo in db
 
     }
 
@@ -1475,7 +1459,7 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(robotInfoKey.id.toString() + "")
 
             //delete
-            return db!!.delete(RobotInfoKey.TABLE_NAME, whereStatement, whereArgs) >= 1
+            return db.delete(RobotInfoKey.TABLE_NAME, whereStatement, whereArgs) >= 1
         }
 
         return false
@@ -1506,7 +1490,7 @@ class Database(context: MainActivity)
         val columns = columns
 
         //select the info from the db
-        val cursor = db!!.query(
+        val cursor = db.query(
                 User.TABLE_NAME,
                 columns,
                 whereStatement.toString(),
@@ -1542,7 +1526,7 @@ class Database(context: MainActivity)
     fun setUser(user: User): Long
     {
         //set all the values
-        val contentValues = ContentValues()
+        val contentValues = MasterContentValues()
         contentValues.put(User.COLUMN_NAME_FIRST_NAME, user.firstName)
         contentValues.put(User.COLUMN_NAME_LAST_NAME, user.lastName)
 
@@ -1556,12 +1540,12 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(user.id.toString() + "")
 
             //update
-            return if (db!!.update(User.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            return if (db.update(User.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 user.id.toLong()
             else
                 -1
         } else
-            return db!!.insert(User.TABLE_NAME, null, contentValues)//insert new object in db
+            return db.insert(User.TABLE_NAME, null, contentValues)//insert new object in db
 
     }
 
@@ -1579,7 +1563,7 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(user.id.toString() + "")
 
             //delete
-            return db!!.delete(User.TABLE_NAME, whereStatement, whereArgs) >= 1
+            return db.delete(User.TABLE_NAME, whereStatement, whereArgs) >= 1
         }
 
         return false
@@ -1593,14 +1577,14 @@ class Database(context: MainActivity)
      * @param cursor info from database
      * @return robotMedia converted data
      */
-    private fun getRobotMediaFromCursor(cursor: Cursor): RobotMedia
+    private fun getRobotMediaFromCursor(cursor: DatabaseCursor): RobotMedia
     {
         val id = cursor.getInt(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_ID))
         val yearId = cursor.getInt(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_YEAR_ID))
         val eventId = cursor.getString(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_EVENT_ID))
         val teamId = cursor.getInt(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_TEAM_ID))
         val fileUri = cursor.getString(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_FILE_URI))
-        val isDraft = cursor.getInt(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_IS_DRAFT)) == 1
+        val isDraft = cursor.getBoolean(cursor.getColumnIndex(RobotMedia.COLUMN_NAME_IS_DRAFT))
 
         return RobotMedia(
                 id,
@@ -1639,19 +1623,19 @@ class Database(context: MainActivity)
         if (year != null)
         {
             whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(RobotMedia.COLUMN_NAME_YEAR_ID).append(" = ?")
-            whereArgs.add(year.serverId!!.toString())
+            whereArgs.add(year.serverId.toString())
         }
 
         if (event != null)
         {
             whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(RobotMedia.COLUMN_NAME_EVENT_ID).append(" = ?")
-            whereArgs.add(event.blueAllianceId!!)
+            whereArgs.add(event.blueAllianceId)
         }
 
         if (team != null)
         {
             whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(RobotMedia.COLUMN_NAME_TEAM_ID).append(" = ?")
-            whereArgs.add(team.id!!.toString())
+            whereArgs.add(team.id.toString())
         }
 
         if (onlyDrafts)
@@ -1660,7 +1644,7 @@ class Database(context: MainActivity)
         }
 
         //select the info from the db
-        val cursor = db!!.query(
+        val cursor = db.query(
                 RobotMedia.TABLE_NAME,
                 columns,
                 whereStatement.toString(),
@@ -1694,7 +1678,7 @@ class Database(context: MainActivity)
     fun setRobotMedia(robotMedia: RobotMedia): Long
     {
         //set all the values
-        val contentValues = ContentValues()
+        val contentValues = MasterContentValues()
         contentValues.put(RobotMedia.COLUMN_NAME_YEAR_ID, robotMedia.yearId)
         contentValues.put(RobotMedia.COLUMN_NAME_EVENT_ID, robotMedia.eventId)
         contentValues.put(RobotMedia.COLUMN_NAME_TEAM_ID, robotMedia.teamId)
@@ -1709,12 +1693,12 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(robotMedia.id.toString() + "")
 
             //update
-            return if (db!!.update(RobotMedia.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            return if (db.update(RobotMedia.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 robotMedia.id.toLong()
             else
                 -1
         } else
-            return db!!.insert(RobotMedia.TABLE_NAME, null, contentValues)//insert new robotMedia in db
+            return db.insert(RobotMedia.TABLE_NAME, null, contentValues)//insert new robotMedia in db
 
     }
 
@@ -1732,7 +1716,7 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(robotMedia.id.toString() + "")
 
             //delete
-            return db!!.delete(RobotMedia.TABLE_NAME, whereStatement, whereArgs) >= 1
+            return db.delete(RobotMedia.TABLE_NAME, whereStatement, whereArgs) >= 1
         }
 
         return false
@@ -1746,13 +1730,13 @@ class Database(context: MainActivity)
      * @param cursor info from database
      * @return years converted data
      */
-    private fun getYearsFromCursor(cursor: Cursor): Year
+    private fun getYearsFromCursor(cursor: DatabaseCursor): Year
     {
         val id = cursor.getInt(cursor.getColumnIndex(Year.COLUMN_NAME_ID))
         val serverId = cursor.getInt(cursor.getColumnIndex(Year.COLUMN_NAME_SERVER_ID))
         val name = cursor.getString(cursor.getColumnIndex(Year.COLUMN_NAME_NAME))
-        val startDate = Date(cursor.getLong(cursor.getColumnIndex(Year.COLUMN_NAME_START_DATE)))
-        val endDate = Date(cursor.getLong(cursor.getColumnIndex(Year.COLUMN_NAME_END_DATE)))
+        val startDate = cursor.getDate(cursor.getColumnIndex(Year.COLUMN_NAME_START_DATE))
+        val endDate = cursor.getDate(cursor.getColumnIndex(Year.COLUMN_NAME_END_DATE))
         val fileUri = cursor.getString(cursor.getColumnIndex(Year.COLUMN_NAME_IMAGE_URI))
 
         return Year(
@@ -1786,7 +1770,7 @@ class Database(context: MainActivity)
         }
 
         //select the info from the db
-        val cursor = db!!.query(
+        val cursor = db.query(
                 Year.TABLE_NAME,
                 columns,
                 whereStatement.toString(),
@@ -1816,7 +1800,7 @@ class Database(context: MainActivity)
     fun setYears(year: Year): Long
     {
         //set all the values
-        val contentValues = ContentValues()
+        val contentValues = MasterContentValues()
         contentValues.put(Year.COLUMN_NAME_SERVER_ID, year.serverId)
         contentValues.put(Year.COLUMN_NAME_NAME, year.name)
         contentValues.put(Year.COLUMN_NAME_START_DATE, year.startDate.time)
@@ -1826,19 +1810,19 @@ class Database(context: MainActivity)
         AppLog.log("Database Save", "Saving ${Year.TABLE_NAME} with the Id ${year.id}")
 
         //year already exists in DB, update
-        if (year.id!! > 0)
+        if (year.id > 0)
         {
             //create the where statement
             val whereStatement = Year.COLUMN_NAME_ID + " = ?"
             val whereArgs = arrayOf(year.id.toString() + "")
 
             //update
-            return if (db!!.update(Year.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
-                year.id!!.toLong()
+            return if (db.update(Year.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+                year.id.toLong()
             else
                 -1
         } else
-            return db!!.insert(Year.TABLE_NAME, null, contentValues)//insert new year in db
+            return db.insert(Year.TABLE_NAME, null, contentValues)//insert new year in db
 
     }
 
@@ -1849,14 +1833,14 @@ class Database(context: MainActivity)
      */
     fun deleteYears(year: Year): Boolean
     {
-        if (year.id!! > 0)
+        if (year.id > 0)
         {
             //create the where statement
             val whereStatement = Year.COLUMN_NAME_ID + " = ?"
             val whereArgs = arrayOf(year.id.toString() + "")
 
             //delete
-            return db!!.delete(Year.TABLE_NAME, whereStatement, whereArgs) >= 1
+            return db.delete(Year.TABLE_NAME, whereStatement, whereArgs) >= 1
         }
 
         return false
@@ -1868,9 +1852,9 @@ class Database(context: MainActivity)
     /**
      * Takes in a cursor with info pulled from database and converts it into an object
      * @param cursor info from database
-     * @return eventeamlist converted data
+     * @return [EventTeamList] converted data
      */
-    private fun getEventTeamListFromCursor(cursor: Cursor): EventTeamList
+    private fun getEventTeamListFromCursor(cursor: DatabaseCursor): EventTeamList
     {
         val id = cursor.getInt(cursor.getColumnIndex(EventTeamList.COLUMN_NAME_ID))
         val teamId = cursor.getInt(cursor.getColumnIndex(EventTeamList.COLUMN_NAME_TEAM_ID))
@@ -1906,14 +1890,14 @@ class Database(context: MainActivity)
 
         if (event != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(EventTeamList.COLUMN_NAME_EVENT_ID).append(" = ?")
-            whereArgs.add(event.blueAllianceId!!)
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(EventTeamList.COLUMN_NAME_EVENT_ID).append(" = ?")
+            whereArgs.add(event.blueAllianceId)
         }
 
         val orderBy = EventTeamList.COLUMN_NAME_TEAM_ID + " DESC"
 
         //select the info from the db
-        val cursor = db!!.query(
+        val cursor = db.query(
                 EventTeamList.TABLE_NAME,
                 columns,
                 whereStatement.toString(),
@@ -1944,7 +1928,7 @@ class Database(context: MainActivity)
     fun setEventTeamList(eventTeamList: EventTeamList): Long
     {
         //set all the values
-        val contentValues = ContentValues()
+        val contentValues = MasterContentValues()
         contentValues.put(EventTeamList.COLUMN_NAME_TEAM_ID, eventTeamList.teamId)
         contentValues.put(EventTeamList.COLUMN_NAME_EVENT_ID, eventTeamList.eventId)
 
@@ -1958,12 +1942,12 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(eventTeamList.id.toString() + "")
 
             //update
-            return if (db!!.update(EventTeamList.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            return if (db.update(EventTeamList.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 eventTeamList.id.toLong()
             else
                 -1
         } else
-            return db!!.insert(EventTeamList.TABLE_NAME, null, contentValues)//insert new robotMedia in db
+            return db.insert(EventTeamList.TABLE_NAME, null, contentValues)//insert new robotMedia in db
 
     }
 
@@ -1981,7 +1965,7 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(eventTeamList.id.toString() + "")
 
             //delete
-            return db!!.delete(EventTeamList.TABLE_NAME, whereStatement, whereArgs) >= 1
+            return db.delete(EventTeamList.TABLE_NAME, whereStatement, whereArgs) >= 1
         }
 
         return false
@@ -1995,7 +1979,7 @@ class Database(context: MainActivity)
      * @param cursor info from database
      * @return ChecklistItem converted data
      */
-    private fun getChecklistItemFromCursor(cursor: Cursor): ChecklistItem
+    private fun getChecklistItemFromCursor(cursor: DatabaseCursor): ChecklistItem
     {
         val id = cursor.getInt(cursor.getColumnIndex(ChecklistItem.COLUMN_NAME_ID))
         val serverId = cursor.getInt(cursor.getColumnIndex(ChecklistItem.COLUMN_NAME_SERVER_ID))
@@ -2033,7 +2017,7 @@ class Database(context: MainActivity)
         }
 
         //select the info from the db
-        val cursor = db!!.query(
+        val cursor = db.query(
                 ChecklistItem.TABLE_NAME,
                 columns,
                 whereStatement.toString(),
@@ -2063,7 +2047,7 @@ class Database(context: MainActivity)
     fun setChecklistItem(checklistItem: ChecklistItem): Long
     {
         //set all the values
-        val contentValues = ContentValues()
+        val contentValues = MasterContentValues()
         contentValues.put(ChecklistItem.COLUMN_NAME_SERVER_ID, checklistItem.serverId.toString())
         contentValues.put(ChecklistItem.COLUMN_NAME_TITLE, checklistItem.title)
         contentValues.put(ChecklistItem.COLUMN_NAME_DESCRIPTION, checklistItem.description)
@@ -2078,12 +2062,12 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(checklistItem.id.toString() + "")
 
             //update
-            return if (db!!.update(ChecklistItem.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            return if (db.update(ChecklistItem.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 checklistItem.id.toLong()
             else
                 -1
         } else
-            return db!!.insert(ChecklistItem.TABLE_NAME, null, contentValues)//insert new robotMedia in db
+            return db.insert(ChecklistItem.TABLE_NAME, null, contentValues)//insert new robotMedia in db
 
     }
 
@@ -2101,7 +2085,7 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(checklistItem.id.toString() + "")
 
             //delete
-            return db!!.delete(ChecklistItem.TABLE_NAME, whereStatement, whereArgs) >= 1
+            return db.delete(ChecklistItem.TABLE_NAME, whereStatement, whereArgs) >= 1
         }
 
         return false
@@ -2115,7 +2099,7 @@ class Database(context: MainActivity)
      * @param cursor info from database
      * @return ChecklistItemResult converted data
      */
-    private fun getChecklistItemResultFromCursor(cursor: Cursor): ChecklistItemResult
+    private fun getChecklistItemResultFromCursor(cursor: DatabaseCursor): ChecklistItemResult
     {
         val id = cursor.getInt(cursor.getColumnIndex(ChecklistItemResult.COLUMN_NAME_ID))
         val checklistItemId = cursor.getInt(cursor.getColumnIndex(ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID))
@@ -2123,11 +2107,11 @@ class Database(context: MainActivity)
 
         val status = cursor.getString(cursor.getColumnIndex(ChecklistItemResult.COLUMN_NAME_STATUS))
 
-        val completedBy = cursor.getString(cursor.getColumnIndex(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY))
+        val completedBy = cursor.getStringOrNull(cursor.getColumnIndex(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY))
 
-        val completedDate = Date(cursor.getLong(cursor.getColumnIndex(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE)))
+        val completedDate = cursor.getDateOrNull(cursor.getColumnIndex(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE))
 
-        val isDraft = cursor.getInt(cursor.getColumnIndex(ChecklistItemResult.COLUMN_NAME_IS_DRAFT)) == 1
+        val isDraft = cursor.getBoolean(cursor.getColumnIndex(ChecklistItemResult.COLUMN_NAME_IS_DRAFT))
 
         return ChecklistItemResult(
                 id,
@@ -2168,20 +2152,20 @@ class Database(context: MainActivity)
 
         if (checklistItemResult != null)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ChecklistItemResult.COLUMN_NAME_ID).append(" = ?")
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(ChecklistItemResult.COLUMN_NAME_ID).append(" = ?")
             whereArgs.add(checklistItemResult.id.toString())
         }
 
         if (onlyDrafts)
         {
-            whereStatement.append(if (whereStatement.length > 0) " AND " else "").append(ChecklistItemResult.COLUMN_NAME_IS_DRAFT).append(" = 1")
+            whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append(ChecklistItemResult.COLUMN_NAME_IS_DRAFT).append(" = 1")
         }
 
 
         val orderBy = ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE + " DESC"
 
         //select the info from the db
-        val cursor = db!!.query(
+        val cursor = db.query(
                 ChecklistItemResult.TABLE_NAME,
                 columns,
                 whereStatement.toString(),
@@ -2212,13 +2196,13 @@ class Database(context: MainActivity)
     fun setChecklistItemResult(checklistItemResult: ChecklistItemResult): Long
     {
         //set all the values
-        val contentValues = ContentValues()
-        contentValues.put(ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID, checklistItemResult.checklistItemId.toString())
+        val contentValues = MasterContentValues()
+        contentValues.put(ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID, checklistItemResult.checklistItemId)
         contentValues.put(ChecklistItemResult.COLUMN_NAME_MATCH_ID, checklistItemResult.matchId)
         contentValues.put(ChecklistItemResult.COLUMN_NAME_STATUS, checklistItemResult.status)
         contentValues.put(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY, checklistItemResult.completedBy)
-        contentValues.put(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE, checklistItemResult.completedDate.time.toString())
-        contentValues.put(ChecklistItemResult.COLUMN_NAME_IS_DRAFT, if (checklistItemResult.isDraft) 1 else 0)
+        contentValues.put(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE, checklistItemResult.completedDate)
+        contentValues.put(ChecklistItemResult.COLUMN_NAME_IS_DRAFT, checklistItemResult.isDraft)
 
         AppLog.log("Database Save", "Saving ${ChecklistItemResult.TABLE_NAME} with the Id ${checklistItemResult.id}")
 
@@ -2230,12 +2214,12 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(checklistItemResult.id.toString() + "")
 
             //update
-            return if (db!!.update(ChecklistItemResult.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            return if (db.update(ChecklistItemResult.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 checklistItemResult.id.toLong()
             else
                 -1
         } else
-            return db!!.insert(ChecklistItemResult.TABLE_NAME, null, contentValues)//insert new robotMedia in db
+            return db.insert(ChecklistItemResult.TABLE_NAME, null, contentValues)//insert new robotMedia in db
 
     }
 
@@ -2253,7 +2237,7 @@ class Database(context: MainActivity)
             val whereArgs = arrayOf(checklistItemResult.id.toString() + "")
 
             //delete
-            return db!!.delete(ChecklistItemResult.TABLE_NAME, whereStatement, whereArgs) >= 1
+            return db.delete(ChecklistItemResult.TABLE_NAME, whereStatement, whereArgs) >= 1
         }
 
         return false

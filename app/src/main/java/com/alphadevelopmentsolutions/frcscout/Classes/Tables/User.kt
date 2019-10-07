@@ -4,11 +4,10 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import java.util.*
 
 class User(
-        var id: Int,
-        var firstName: String,
-        var lastName: String) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var id: Int = DEFAULT_INT,
+        var firstName: String = DEFAULT_STRING,
+        var lastName: String = DEFAULT_STRING) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
-
     companion object
     {
         val TABLE_NAME = "users"

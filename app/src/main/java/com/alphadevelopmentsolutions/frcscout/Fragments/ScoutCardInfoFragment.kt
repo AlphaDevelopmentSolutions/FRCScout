@@ -165,10 +165,10 @@ class ScoutCardInfoFragment : MasterFragment()
                                             {
                                                 scoutCardInfo = ScoutCardInfo(
                                                         -1,
-                                                        year!!.serverId!!,
-                                                        event!!.blueAllianceId!!,
+                                                        year!!.serverId,
+                                                        event!!.blueAllianceId,
                                                         match!!.key,
-                                                        team!!.id!!,
+                                                        team!!.id,
                                                         "",
                                                         "",
                                                         infoKey.serverId,
@@ -223,10 +223,10 @@ class ScoutCardInfoFragment : MasterFragment()
                                         {
                                             scoutCardInfo = ScoutCardInfo(
                                                     -1,
-                                                    year!!.serverId!!,
-                                                    event!!.blueAllianceId!!,
+                                                    year!!.serverId,
+                                                    event!!.blueAllianceId,
                                                     match!!.key,
-                                                    team!!.id!!,
+                                                    team!!.id,
                                                     "",
                                                     "",
                                                     infoKey.serverId,
@@ -266,10 +266,10 @@ class ScoutCardInfoFragment : MasterFragment()
                                         {
                                             scoutCardInfo = ScoutCardInfo(
                                                     -1,
-                                                    year!!.serverId!!,
-                                                    event!!.blueAllianceId!!,
+                                                    year!!.serverId,
+                                                    event!!.blueAllianceId,
                                                     match!!.key,
-                                                    team!!.id!!,
+                                                    team!!.id,
                                                     "",
                                                     "",
                                                     infoKey.serverId,
@@ -308,10 +308,10 @@ class ScoutCardInfoFragment : MasterFragment()
                                         {
                                             scoutCardInfo = ScoutCardInfo(
                                                     -1,
-                                                    year!!.serverId!!,
-                                                    event!!.blueAllianceId!!,
+                                                    year!!.serverId,
+                                                    event!!.blueAllianceId,
                                                     match!!.key,
-                                                    team!!.id!!,
+                                                    team!!.id,
                                                     "",
                                                     "",
                                                     infoKey.serverId,
