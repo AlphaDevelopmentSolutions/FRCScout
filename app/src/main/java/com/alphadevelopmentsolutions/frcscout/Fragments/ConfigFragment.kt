@@ -1,21 +1,16 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import com.alphadevelopmentsolutions.frcscout.Api.Server
 import com.alphadevelopmentsolutions.frcscout.Classes.LoadingDialog
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import kotlinx.android.synthetic.main.fragment_config.view.*
-import kotlinx.android.synthetic.main.layout_permission.view.*
 
 class ConfigFragment : MasterFragment()
 {
@@ -49,19 +44,6 @@ class ConfigFragment : MasterFragment()
             1 -> view = inflater.inflate(R.layout.layout_welcome, container, false)
             2 ->
             {
-                view = inflater.inflate(R.layout.layout_permission, container, false)
-
-                view.GrantPermissionButton.setOnClickListener {
-                    //write permission not granted, request
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                        ActivityCompat.requestPermissions(context, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 5885)
-
-                    else
-                        context.showSnackbar("Permission already granted.")
-                }
-            }
-            3 ->
-            {
                 view = inflater.inflate(R.layout.fragment_config, container, false)
 
                 view.SignUpButton.setOnClickListener {
@@ -73,28 +55,10 @@ class ConfigFragment : MasterFragment()
 
                 view.ConnectButton!!.setOnClickListener {
 
-                    if (view.UsernameEditText.text.toString() == "")
-                        context.showSnackbar("Username must not be empty.")
-
-                    else if (view.PasswordEditText.text.toString() == "")
-                        context.showSnackbar("Password must not be empty.")
-
-                    else
-                    {
-
-                        //android >= marshmallow, permission needed
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                        {
-                            //write permission not granted, request
-                            if (context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-                            {
-                                login(view.UsernameEditText.text.toString(), view.PasswordEditText.text.toString())
-                            }
-                            else
-                                context.showSnackbar("You must grant storage permission before logging in.")
-                        }
-                        else
-                            login(view.UsernameEditText.text.toString(), view.PasswordEditText.text.toString())
+                    when {
+                        view.UsernameEditText.text.toString() == "" -> context.showSnackbar("Username must not be empty.")
+                        view.PasswordEditText.text.toString() == "" -> context.showSnackbar("Password must not be empty.")
+                        else -> login(view.UsernameEditText.text.toString(), view.PasswordEditText.text.toString())
                     }
                 }
             }

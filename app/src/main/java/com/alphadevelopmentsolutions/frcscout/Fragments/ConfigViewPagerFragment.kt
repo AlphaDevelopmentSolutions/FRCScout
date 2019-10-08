@@ -31,8 +31,7 @@ class ConfigViewPagerFragment : MasterFragment()
         //add all config frags to viewpager
         val viewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
         viewPagerAdapter.addFragment(ConfigFragment.newInstance(1), context.getString(R.string.welcome))
-        viewPagerAdapter.addFragment(ConfigFragment.newInstance(2), context.getString(R.string.config_permission_header))
-        viewPagerAdapter.addFragment(ConfigFragment.newInstance(3), context.getString(R.string.login))
+        viewPagerAdapter.addFragment(ConfigFragment.newInstance(2), context.getString(R.string.login))
 
         view.ViewPager.adapter = viewPagerAdapter
         view.ViewPagerDots.setViewPager(view.ViewPager)

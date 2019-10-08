@@ -1497,14 +1497,6 @@ class MainActivity : AppCompatActivity(),
             //validate the app config to ensure all properties are filled
             if (keyStore.validateApiConfig())
             {
-                //android >= marshmallow, permission needed
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                {
-                    //write permission not granted, request
-                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 5885)
-                }
-
                 //Check if any events are on the device, if not download data
                 if (Year.getObjects(null, database).size == 0)
                     downloadApplicationData(false)?.join()
