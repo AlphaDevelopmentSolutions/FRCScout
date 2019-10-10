@@ -212,6 +212,8 @@ class TeamListFragment : MasterFragment()
         super.onResume()
         if(!context.isSearchViewVisible && match == null)
             context.isSearchViewVisible = true
+
+        teamListAdapter.notifyItemChanged(0)
     }
 
     override fun onDestroyView()
