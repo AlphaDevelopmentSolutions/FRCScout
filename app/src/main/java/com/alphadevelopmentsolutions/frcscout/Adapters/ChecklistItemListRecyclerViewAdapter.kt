@@ -128,6 +128,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
                     viewHolder.view.StatusTextView.text = Status.INCOMPLETE
                     viewHolder.view.StatusTextView.setTextColor(ContextCompat.getColor(context, R.color.bad))
 
+                    finalChecklistItemResult.status = Status.INCOMPLETE
                     finalChecklistItemResult.completedBy = viewHolder.view.CompletedByAutoCompleteTextView.text.toString()
                     finalChecklistItemResult.save(context.database)
 
@@ -141,6 +142,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
                     viewHolder.view.StatusTextView.text = Status.COMPLETE
                     viewHolder.view.StatusTextView.setTextColor(ContextCompat.getColor(context, R.color.good))
 
+                    finalChecklistItemResult.status = Status.COMPLETE
                     finalChecklistItemResult.completedBy = viewHolder.view.CompletedByAutoCompleteTextView.text.toString()
                     finalChecklistItemResult.save(context.database)
 
