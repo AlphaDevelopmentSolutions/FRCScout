@@ -33,8 +33,9 @@
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/OutlineBoxLight"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/basic_card_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:hint="@string/username"
             app:hintTextAppearance="@style/TextInputLayoutLight">
@@ -51,8 +52,9 @@
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/OutlineBoxLight"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/basic_card_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:hint="@string/password"
             app:hintTextAppearance="@style/TextInputLayoutLight">
@@ -79,9 +81,9 @@
         <Button
             android:id="@+id/SignUpButton"
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="center"
             android:fontFamily="sans-serif"
             android:text="@string/no_account"
             android:textAllCaps="false"

@@ -6,4 +6,5 @@
     android:layout_height="match_parent"
     android:background="@color/background"
     android:scrollbars="vertical"
-    tools:context=".Fragments.YearListFragment" />
+    tools:context=".Fragments.YearListFragment"
+    tools:listitem="@layout/layout_card_year" />
