@@ -1,13 +1,10 @@
 package com.alphadevelopmentsolutions.frcscout.Activities
 
-import android.Manifest
 import android.app.Activity
-import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.RippleDrawable
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -18,7 +15,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.app.ActivityCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -410,12 +406,15 @@ class MainActivity : AppCompatActivity(),
 
                 //region Importing
 
+                progressDialogProgress += increaseFactor
+                context.runOnUiThread {
+                    loadingDialog.progress = progressDialogProgress
+                }
+
                 if (getEventsSuccess == true)
                 {
-                    progressDialogProgress += increaseFactor
                     context.runOnUiThread {
                         loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.events))
-                        loadingDialog.progress = progressDialogProgress
                         loadingDialog.percentage = 0
                     }
 
@@ -434,12 +433,15 @@ class MainActivity : AppCompatActivity(),
                     }
                 }
 
+                progressDialogProgress += increaseFactor
+                context.runOnUiThread {
+                    loadingDialog.progress = progressDialogProgress
+                }
+
                 if (getEventTeamListSuccess == true)
                 {
-                    progressDialogProgress += increaseFactor
                     context.runOnUiThread {
                         loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.event_metadata))
-                        loadingDialog.progress = progressDialogProgress
                         loadingDialog.percentage = 0
                     }
 
@@ -458,12 +460,15 @@ class MainActivity : AppCompatActivity(),
                     }
                 }
 
+                progressDialogProgress += increaseFactor
+                context.runOnUiThread {
+                    loadingDialog.progress = progressDialogProgress
+                }
+
                 if (getMatchesSuccess == true)
                 {
-                    progressDialogProgress += increaseFactor
                     context.runOnUiThread {
                         loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.matches))
-                        loadingDialog.progress = progressDialogProgress
                         loadingDialog.percentage = 0
                     }
 
@@ -516,10 +521,8 @@ class MainActivity : AppCompatActivity(),
 
                 if (getChecklistItemsSuccess == true)
                 {
-                    progressDialogProgress += increaseFactor
                     context.runOnUiThread {
                         loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.checklist))
-                        loadingDialog.progress = progressDialogProgress
                         loadingDialog.percentage = 0
                     }
 
@@ -545,10 +548,8 @@ class MainActivity : AppCompatActivity(),
 
                 if (getChecklistItemResultsSuccess == true)
                 {
-                    progressDialogProgress += increaseFactor
                     context.runOnUiThread {
                         loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.checklist_results))
-                        loadingDialog.progress = progressDialogProgress
                         loadingDialog.percentage = 0
                     }
 
@@ -574,10 +575,8 @@ class MainActivity : AppCompatActivity(),
 
                 if (getRobotInfoKeysSuccess == true)
                 {
-                    progressDialogProgress += increaseFactor
                     context.runOnUiThread {
                         loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.robot_info_metadata))
-                        loadingDialog.progress = progressDialogProgress
                         loadingDialog.percentage = 0
                     }
 
@@ -603,10 +602,8 @@ class MainActivity : AppCompatActivity(),
 
                 if (getRobotInfoSuccess == true)
                 {
-                    progressDialogProgress += increaseFactor
                     context.runOnUiThread {
                         loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.robot_info))
-                        loadingDialog.progress = progressDialogProgress
                         loadingDialog.percentage = 0
                     }
 
@@ -632,10 +629,8 @@ class MainActivity : AppCompatActivity(),
 
                 if (getScoutCardInfoKeysSuccess == true)
                 {
-                    progressDialogProgress += increaseFactor
                     context.runOnUiThread {
                         loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.scout_card_metadata))
-                        loadingDialog.progress = progressDialogProgress
                         loadingDialog.percentage = 0
                     }
 
@@ -661,10 +656,8 @@ class MainActivity : AppCompatActivity(),
 
                 if (getScoutCardInfoSuccess == true)
                 {
-                    progressDialogProgress += increaseFactor
                     context.runOnUiThread {
                         loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.scout_cards))
-                        loadingDialog.progress = progressDialogProgress
                         loadingDialog.percentage = 0
                     }
 
@@ -695,6 +688,7 @@ class MainActivity : AppCompatActivity(),
                     context.runOnUiThread {
                         loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.robot_media))
                         loadingDialog.progress = progressDialogProgress
+                        loadingDialog.percentage = 0
                     }
 
                     //Get the folder and purge all files
@@ -706,18 +700,28 @@ class MainActivity : AppCompatActivity(),
                     val getRobotMedia = Server.GetRobotMedia(context)
                     if (getRobotMedia.execute())
                     {
+
                         RobotMedia.clearTable(database, true)
 
-                        for (robotMedia in getRobotMedia.robotMedia)
+                        val objs = getRobotMedia.robotMedia
+                        val objsSize = objs.size
+
+                        for(i in 0 until objsSize)
                         {
-                            if(robotMedia.save(database) > 0)
+                            context.runOnUiThread {
+                                loadingDialog.percentage = round((i.toDouble() / objsSize.toDouble()) * 100.00).toInt()
+                            }
+
+                            with(objs[i])
                             {
-                                val team = Team(robotMedia.teamId).apply { load(database) }
-                                team.imageFileURI = robotMedia.fileUri
-                                team.save(database)
+                                if (save(database) > 0)
+                                {
+                                    val team = Team(teamId).apply { load(database) }
+                                    team.imageFileURI = fileUri
+                                    team.save(database)
+                                }
                             }
                         }
-
                     }
                 }
 
@@ -768,6 +772,7 @@ class MainActivity : AppCompatActivity(),
             loadingDialog.message = getString(R.string.uploading_data)
 
             val increaseFactor = 25
+            progressDialogProgress = 0
 
             val uploadThread = Thread(Runnable {
                 var success = true
