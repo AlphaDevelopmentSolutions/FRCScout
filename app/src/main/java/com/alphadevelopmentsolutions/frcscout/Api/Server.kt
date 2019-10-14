@@ -666,7 +666,7 @@ abstract class Server internal constructor(
                     val yearId = robotMediaJson.getInt(RobotMedia.COLUMN_NAME_YEAR_ID)
                     val eventId = robotMediaJson.getString(RobotMedia.COLUMN_NAME_EVENT_ID)
                     val teamId = robotMediaJson.getInt(RobotMedia.COLUMN_NAME_TEAM_ID)
-                    var fileUri = Constants.WEB_URL + "/assets/robot-media/originals/" + robotMediaJson.getString(RobotMedia.COLUMN_NAME_FILE_URI)
+                    var fileUri = Constants.WEB_URL + "/assets/robot-media/originals/" + context.keyStore.getPreference(Constants.SharedPrefKeys.TEAM_ROBOT_MEDIA_DIR_KEY, "") + "/" + robotMediaJson.getString(RobotMedia.COLUMN_NAME_FILE_URI)
 
                     fileUri = apiParser.downloadImage(fileUri, Constants.ROBOT_MEDIA_DIRECTORY, context).absolutePath
 

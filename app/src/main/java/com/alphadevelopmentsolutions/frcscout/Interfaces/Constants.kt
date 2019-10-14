@@ -23,6 +23,7 @@ interface Constants
 
             const val PRIMARY_COLOR_KEY = "PRIMARY_COLOR"
             const val PRIMARY_COLOR_DARK_KEY = "PRIMARY_COLOR_DARK"
+            const val TEAM_ROBOT_MEDIA_DIR_KEY = "TEAM_ROBOT_MEDIA_DIR"
 
             const val SELECTED_EVENT_KEY = "SELECTED_EVENT"
             const val SELECTED_YEAR_KEY = "SELECTED_YEAR"
