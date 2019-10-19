@@ -87,11 +87,7 @@ class TeamFragment : MasterFragment()
                         .load(Uri.fromFile(File(team!!.imageFileURI)))
                         .fit()
                         .centerCrop()
-                        .placeholder(R.drawable.frc_logo)
-                        .error(R.drawable.frc_logo)
                         .into(TeamLogoImageView)
-            else
-                TeamLogoImageView.setImageDrawable(context.getDrawable(R.drawable.frc_logo))
 
             //checks to see if the team has a valid URL for each social media, if not hide the icon
             with(team!!)

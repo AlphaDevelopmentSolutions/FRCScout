@@ -73,9 +73,6 @@ internal class YearListRecyclerViewAdapter(private val yearList: ArrayList<Year>
                     .fit()
                     .centerCrop()
                     .into(viewHolder.yearLogoImageView)
-        else
-            viewHolder.yearLogoImageView.setImageDrawable(context.getDrawable(R.drawable.frc_logo))
-
 
         //Sends you to the event list fragment
         viewHolder.viewButton.setOnClickListener {

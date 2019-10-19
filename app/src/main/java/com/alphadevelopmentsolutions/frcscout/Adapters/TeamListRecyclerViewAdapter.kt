@@ -54,8 +54,6 @@ internal class TeamListRecyclerViewAdapter(private val match: Match?, private va
                         .fit()
                         .centerCrop()
                         .into(viewHolder.view.TeamLogoImageView)
-            else
-                TeamLogoImageView.setImageDrawable(context.getDrawable(R.drawable.frc_logo))
 
             //Sends you to the team fragment
             if (match == null)
