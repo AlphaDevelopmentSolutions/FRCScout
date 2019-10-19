@@ -14,7 +14,7 @@ interface AppLog
                 Log.d(title, message)
         }
 
-        fun error(exception: java.lang.Exception)
+        fun error(exception: Exception)
         {
             if(BuildConfig.DEBUG)
                 exception.stackTrace

@@ -96,10 +96,10 @@ class Database(context: MainActivity)
                 }
             } catch (e: IllegalAccessException)
             {
-                e.printStackTrace()
+                AppLog.error(e)
             } catch (e: ClassNotFoundException)
             {
-                e.printStackTrace()
+                AppLog.error(e)
             }
 
             return Arrays.copyOf(Objects.requireNonNull<Array<Any>>(columns.toTypedArray()), columns.size, Array<String>::class.java)
@@ -142,6 +142,7 @@ class Database(context: MainActivity)
             true
         } catch (e: SQLException)
         {
+            AppLog.error(e)
             false
         }
 
@@ -160,6 +161,7 @@ class Database(context: MainActivity)
             true
         } catch (e: SQLException)
         {
+            AppLog.error(e)
             false
         }
 
