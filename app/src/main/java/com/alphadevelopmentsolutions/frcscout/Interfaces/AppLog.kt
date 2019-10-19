@@ -2,6 +2,7 @@ package com.alphadevelopmentsolutions.frcscout.Interfaces
 
 import android.util.Log
 import com.alphadevelopmentsolutions.frcscout.BuildConfig
+import com.crashlytics.android.Crashlytics
 
 interface AppLog
 {
@@ -11,6 +12,14 @@ interface AppLog
         {
             if(BuildConfig.DEBUG)
                 Log.d(title, message)
+        }
+
+        fun error(exception: java.lang.Exception)
+        {
+            if(BuildConfig.DEBUG)
+                exception.stackTrace
+            else
+                Crashlytics.logException(exception)
         }
     }
 }

@@ -304,5 +304,9 @@
     <string name="scout_card_metadata">Scout Card Metadata</string>
     <string name="robot_info_metadata">Robot Info Metadata</string>
     <string name="checklist_results">Checklist Results</string>
+    <string name="server_get_failure">Failed to get %1$s</string>
+    <string name="server_submit_failure">Failed to submit %1$s</string>
+    <string name="server_config">Server Config</string>
+    <string name="server_failure">Server Failure</string>
 
 </resources>

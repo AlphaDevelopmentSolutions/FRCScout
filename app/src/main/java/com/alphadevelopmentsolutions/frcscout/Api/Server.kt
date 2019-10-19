@@ -2,6 +2,7 @@ package com.alphadevelopmentsolutions.frcscout.Api
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
+import com.alphadevelopmentsolutions.frcscout.Interfaces.AppLog
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import java.util.*
@@ -41,6 +42,7 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
+                AppLog.error(e)
                 return false
             }
 
@@ -83,7 +85,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_get_failure), context.getString(R.string.app_config)))
+                AppLog.error(e)
                 return false
             }
 
@@ -152,7 +155,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_get_failure), context.getString(R.string.teams)))
+                AppLog.error(e)
                 return false
             }
 
@@ -206,7 +210,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_get_failure), context.getString(R.string.event_metadata)))
+                AppLog.error(e)
                 return false
             }
 
@@ -253,7 +258,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_get_failure), context.getString(R.string.users)))
+                AppLog.error(e)
                 return false
             }
 
@@ -324,7 +330,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_get_failure), context.getString(R.string.scout_cards)))
+                AppLog.error(e)
                 return false
             }
 
@@ -406,7 +413,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_get_failure), context.getString(R.string.scout_card_metadata)))
+                AppLog.error(e)
                 return false
             }
 
@@ -471,7 +479,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_get_failure), context.getString(R.string.robot_info)))
+                AppLog.error(e)
                 return false
             }
 
@@ -536,7 +545,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_get_failure), context.getString(R.string.robot_info_metadata)))
+                AppLog.error(e)
                 return false
             }
 
@@ -621,7 +631,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_get_failure), context.getString(R.string.matches)))
+                AppLog.error(e)
                 return false
             }
 
@@ -684,7 +695,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_get_failure), context.getString(R.string.robot_media)))
+                AppLog.error(e)
                 return false
             }
 
@@ -746,7 +758,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_get_failure), context.getString(R.string.years)))
+                AppLog.error(e)
                 return false
             }
 
@@ -810,7 +823,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_get_failure), context.getString(R.string.events)))
+                AppLog.error(e)
                 return false
             }
 
@@ -864,7 +878,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_get_failure), context.getString(R.string.checklist)))
+                AppLog.error(e)
                 return false
             }
 
@@ -931,7 +946,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_get_failure), context.getString(R.string.checklist_results)))
+                AppLog.error(e)
                 return false
             }
 
@@ -978,7 +994,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_submit_failure), context.getString(R.string.robot_info)))
+                AppLog.error(e)
                 return false
             }
 
@@ -1022,7 +1039,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_submit_failure), context.getString(R.string.scout_cards)))
+                AppLog.error(e)
                 return false
             }
 
@@ -1059,7 +1077,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_submit_failure), context.getString(R.string.robot_media)))
+                AppLog.error(e)
                 return false
             }
 
@@ -1099,7 +1118,8 @@ abstract class Server internal constructor(
                 return true
             } catch (e: Exception)
             {
-                context.showSnackbar(e.message!!)
+                context.showSnackbar(String.format(context.getString(R.string.server_submit_failure), context.getString(R.string.checklist_results)))
+                AppLog.error(e)
                 return false
             }
 

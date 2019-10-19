@@ -1,8 +1,8 @@
 package com.alphadevelopmentsolutions.frcscout.Api
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
-import com.alphadevelopmentsolutions.frcscout.Interfaces.AppLog
 import com.alphadevelopmentsolutions.frcscout.Classes.Image
+import com.alphadevelopmentsolutions.frcscout.Interfaces.AppLog
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import org.json.JSONException
 import org.json.JSONObject
@@ -49,6 +49,8 @@ class ApiParser(private val api: Api)
         val httpURLConnection = url.openConnection() as HttpURLConnection
         httpURLConnection.requestMethod = "POST"
         httpURLConnection.doOutput = true
+        httpURLConnection.connectTimeout = 5000
+        httpURLConnection.readTimeout = 5000
 
         //gather all post data to submit to the server
         val bufferedWriter = BufferedWriter(OutputStreamWriter(httpURLConnection.outputStream))
