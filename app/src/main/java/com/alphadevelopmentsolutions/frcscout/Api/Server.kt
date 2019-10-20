@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.Api
 
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
+import com.alphadevelopmentsolutions.frcscout.Classes.NullableJSONObject
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Interfaces.AppLog
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
@@ -123,19 +124,19 @@ abstract class Server internal constructor(
                 //iterate through, create a new object and add it to the arraylist
                 for (i in 0 until response.getJSONArray(API_FIELD_NAME_RESPONSE).length())
                 {
-                    val teamObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i)
+                    val teamObject = NullableJSONObject(response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i))
 
                     val teamId = teamObject.getInt(Team.COLUMN_NAME_ID)
                     val name = teamObject.getString(Team.COLUMN_NAME_NAME)
-                    val city = teamObject.getString(Team.COLUMN_NAME_CITY)
-                    val stateProvince = teamObject.getString(Team.COLUMN_NAME_STATEPROVINCE)
-                    val country = teamObject.getString(Team.COLUMN_NAME_COUNTRY)
-                    val rookieYear = teamObject.getInt(Team.COLUMN_NAME_ROOKIE_YEAR)
-                    val facebookURL = teamObject.getString(Team.COLUMN_NAME_FACEBOOK_URL)
-                    val twitterURL = teamObject.getString(Team.COLUMN_NAME_TWITTER_URL)
-                    val instagramURL = teamObject.getString(Team.COLUMN_NAME_INSTAGRAM_URL)
-                    val youtubeURL = teamObject.getString(Team.COLUMN_NAME_YOUTUBE_URL)
-                    val websiteUrl = teamObject.getString(Team.COLUMN_NAME_WEBSITE_URL)
+                    val city = teamObject.getStringOrNull(Team.COLUMN_NAME_CITY)
+                    val stateProvince = teamObject.getStringOrNull(Team.COLUMN_NAME_STATEPROVINCE)
+                    val country = teamObject.getStringOrNull(Team.COLUMN_NAME_COUNTRY)
+                    val rookieYear = teamObject.getIntOrNull(Team.COLUMN_NAME_ROOKIE_YEAR)
+                    val facebookURL = teamObject.getStringOrNull(Team.COLUMN_NAME_FACEBOOK_URL)
+                    val twitterURL = teamObject.getStringOrNull(Team.COLUMN_NAME_TWITTER_URL)
+                    val instagramURL = teamObject.getStringOrNull(Team.COLUMN_NAME_INSTAGRAM_URL)
+                    val youtubeURL = teamObject.getStringOrNull(Team.COLUMN_NAME_YOUTUBE_URL)
+                    val websiteUrl = teamObject.getStringOrNull(Team.COLUMN_NAME_WEBSITE_URL)
 
                     teams.add(Team(
                             teamId,
@@ -371,7 +372,7 @@ abstract class Server internal constructor(
                 //iterate through, create a new object and add it to the arraylist
                 for (i in 0 until response.getJSONArray(API_FIELD_NAME_RESPONSE).length())
                 {
-                    val robotInfoKeyObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i)
+                    val robotInfoKeyObject = NullableJSONObject(response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i))
 
                     val serverId = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_SERVER_ID)
                     val yearId = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_YEAR_ID)
@@ -381,11 +382,11 @@ abstract class Server internal constructor(
 
                     val sortOrder = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER)
 
-                    val minValue = if (robotInfoKeyObject.isNull(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE)) null else robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE)
-                    val maxValue = if (robotInfoKeyObject.isNull(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE)) null else robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE)
+                    val minValue = robotInfoKeyObject.getIntOrNull(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE)
+                    val maxValue = robotInfoKeyObject.getIntOrNull(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE)
 
-                    val nullZeros = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_NULL_ZEROS) == 1
-                    val includeInStats = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_INCLUDE_IN_STATS) == 1
+                    val nullZeros = with(robotInfoKeyObject.getIntOrNull(ScoutCardInfoKey.COLUMN_NAME_NULL_ZEROS)) { if(this == null) false else this == 1}
+                    val includeInStats = with(robotInfoKeyObject.getIntOrNull(ScoutCardInfoKey.COLUMN_NAME_INCLUDE_IN_STATS)) { if(this == null) false else this == 1}
 
                     val dataType = ScoutCardInfoKey.DataTypes.parseString(robotInfoKeyObject.getString(ScoutCardInfoKey.COLUMN_NAME_DATA_TYPE))
 
@@ -585,7 +586,7 @@ abstract class Server internal constructor(
                 //iterate through, create a new object and add it to the arraylist
                 for (i in 0 until response.getJSONArray(API_FIELD_NAME_RESPONSE).length())
                 {
-                    val matchObject = response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i)
+                    val matchObject = NullableJSONObject(response.getJSONArray(API_FIELD_NAME_RESPONSE).getJSONObject(i))
 
                     val date = simpleDateFormat.parse(matchObject.getString(Match.COLUMN_NAME_DATE))
                     val eventId = matchObject.getString(Match.COLUMN_NAME_EVENT_ID)
@@ -602,8 +603,8 @@ abstract class Server internal constructor(
                     val redAllianceTeamTwoId = matchObject.getInt(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID)
                     val redAllianceTeamThreeId = matchObject.getInt(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID)
 
-                    val blueAllianceScore = matchObject.getInt(Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE)
-                    val redAllianceScore = matchObject.getInt(Match.COLUMN_NAME_RED_ALLIANCE_SCORE)
+                    val blueAllianceScore = matchObject.getIntOrNull(Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE)
+                    val redAllianceScore = matchObject.getIntOrNull(Match.COLUMN_NAME_RED_ALLIANCE_SCORE)
 
 
                     matches.add(Match(
@@ -918,15 +919,15 @@ abstract class Server internal constructor(
 
                 for (i in 0 until checklistItemResultArray.length())
                 {
-                    val checklistItemResultObject = checklistItemResultArray.getJSONObject(i)
+                    val checklistItemResultObject = NullableJSONObject(checklistItemResultArray.getJSONObject(i))
 
                     val checklistItemId = checklistItemResultObject.getInt(ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID)
 
                     val matchId = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_MATCH_ID)
                     val status = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_STATUS)
-                    val completedBy = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY)
+                    val completedBy = checklistItemResultObject.getStringOrNull(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY)
 
-                    val completedDate = simpleDateFormat.parse(checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE))
+                    val completedDate = with(checklistItemResultObject.getStringOrNull(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE)) { if (this != null) simpleDateFormat.parse(this) else null }
 
                     checklistItemResults.add(
                             ChecklistItemResult(

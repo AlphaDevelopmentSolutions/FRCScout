@@ -29,4 +29,5 @@
     <dimen name="field_height">48dp</dimen>
     <dimen name="social_media_button_width">40dp</dimen>
     <dimen name="social_media_button_height">40dp</dimen>
+    <dimen name="login_input_width">300dp</dimen>
 </resources>

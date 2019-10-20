@@ -13,7 +13,8 @@
         android:fullBackupContent="@xml/backup_descriptor">
         <activity
             android:name=".Activities.MainActivity"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
