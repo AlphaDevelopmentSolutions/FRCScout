@@ -114,6 +114,7 @@
 
     <string name="menu_home">Home</string>
     <string name="teams">Teams</string>
+    <string name="team">team</string>
     <string name="checklist">Checklist</string>
     <string name="name">Name</string>
     <string name="current_status">Current Status -\u0020</string>
@@ -308,5 +309,6 @@
     <string name="server_submit_failure">Failed to submit %1$s</string>
     <string name="server_config">Server Config</string>
     <string name="server_failure">Server Failure</string>
+    <string name="load_fail">Failed to load %1$s. Try updating your %1$s list.</string>
 
 </resources>
