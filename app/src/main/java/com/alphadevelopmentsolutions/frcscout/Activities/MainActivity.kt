@@ -42,7 +42,6 @@ import kotlinx.android.synthetic.main.layout_dialog_download.view.RobotMediaChec
 import kotlinx.android.synthetic.main.layout_dialog_download.view.ScoutCardInfoCheckBox
 import kotlinx.android.synthetic.main.layout_dialog_upload.view.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
-import java.io.File
 import java.util.*
 import kotlin.math.round
 
@@ -234,7 +233,7 @@ class MainActivity : AppCompatActivity(),
                  * YEARS
                  */
                 //Purge Year Media
-                val mediaFolder = File(Constants.YEAR_MEDIA_DIRECTORY)
+                val mediaFolder = Constants.getFileDirectory(this, Constants.YEAR_MEDIA_DIRECTORY)
                 if (mediaFolder.isDirectory)
                     for (child in mediaFolder.listFiles())
                         child.delete()
@@ -689,10 +688,11 @@ class MainActivity : AppCompatActivity(),
                         loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.robot_media))
                         loadingDialog.progress = progressDialogProgress
                         loadingDialog.percentage = 0
+                        loadingDialog.showPercentage = false
                     }
 
                     //Get the folder and purge all files
-                    val mediaFolder = File(Constants.ROBOT_MEDIA_DIRECTORY)
+                    val mediaFolder = Constants.getFileDirectory(this, Constants.ROBOT_MEDIA_DIRECTORY)
                     if (mediaFolder.isDirectory)
                         for (child in mediaFolder.listFiles())
                             child.delete()
@@ -1150,13 +1150,13 @@ class MainActivity : AppCompatActivity(),
                 Year.clearTable(database)
 
                 //Purge year media
-                var mediaFolder = File(Constants.YEAR_MEDIA_DIRECTORY)
+                var mediaFolder = Constants.getFileDirectory(this, Constants.YEAR_MEDIA_DIRECTORY)
                 if (mediaFolder.isDirectory)
                     for (child in mediaFolder.listFiles())
                         child.delete()
 
                 //Purge robot media
-                mediaFolder = File(Constants.ROBOT_MEDIA_DIRECTORY)
+                mediaFolder = Constants.getFileDirectory(this, Constants.ROBOT_MEDIA_DIRECTORY)
                 if (mediaFolder.isDirectory)
                     for (child in mediaFolder.listFiles())
                         child.delete()
