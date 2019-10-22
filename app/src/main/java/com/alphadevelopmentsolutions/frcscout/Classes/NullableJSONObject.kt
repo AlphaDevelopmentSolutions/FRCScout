@@ -23,4 +23,15 @@ class NullableJSONObject(private val jsonObject: JSONObject)
     {
         return jsonObject.getString(fieldName)
     }
+
+    fun getBoolean(fieldName: String): Boolean
+    {
+        return with(getIntOrNull(fieldName))
+        {
+            if(this == null)
+                false
+            else
+                this == 1
+        }
+    }
 }

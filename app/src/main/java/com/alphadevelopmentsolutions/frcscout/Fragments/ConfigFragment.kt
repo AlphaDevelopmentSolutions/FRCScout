@@ -6,10 +6,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.alphadevelopmentsolutions.frcscout.Api.Server
+import com.alphadevelopmentsolutions.frcscout.Api.Api
 import com.alphadevelopmentsolutions.frcscout.Classes.LoadingDialog
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
+import com.google.android.gms.safetynet.SafetyNet
 import kotlinx.android.synthetic.main.fragment_config.view.*
 
 class ConfigFragment : MasterFragment()
@@ -47,7 +48,7 @@ class ConfigFragment : MasterFragment()
                 view = inflater.inflate(R.layout.fragment_config, container, false)
 
                 view.SignUpButton.setOnClickListener {
-                    val url = "https://frcscout.dev/create-account.php"
+                    val url = "https://www.frcscout.app/create-account"
                     val i = Intent(Intent.ACTION_VIEW)
                     i.data = Uri.parse(url)
                     startActivity(i)
@@ -56,8 +57,8 @@ class ConfigFragment : MasterFragment()
                 view.ConnectButton!!.setOnClickListener {
 
                     when {
-                        view.UsernameEditText.text.toString() == "" -> context.showSnackbar("Username must not be empty.")
-                        view.PasswordEditText.text.toString() == "" -> context.showSnackbar("Password must not be empty.")
+                        view.UsernameEditText.text.toString() == "" -> String.format(context.getString(R.string.not_empty), context.getString(R.string.username))
+                        view.PasswordEditText.text.toString() == "" -> String.format(context.getString(R.string.not_empty), context.getString(R.string.password))
                         else -> login(view.UsernameEditText.text.toString(), view.PasswordEditText.text.toString())
                     }
                 }
@@ -75,60 +76,72 @@ class ConfigFragment : MasterFragment()
      */
     private fun login(username: String, password: String)
     {
-        context.keyStore.setPreference(Constants.SharedPrefKeys.API_CORE_USERNAME, username)
-        context.keyStore.setPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, password)
-        context.keyStore.setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "TEMP")
+        //reCAPTCHA check
+        SafetyNet.getClient(context).verifyWithRecaptcha(Constants.RECAPTCHA_SITE_KEY)
+                .addOnSuccessListener {
 
-        val loadingDialog = LoadingDialog(context, LoadingDialog.Style.SPINNER)
-        loadingDialog.message = "Logging in please wait..."
-        loadingDialog.show()
-
-        Thread(Runnable {
-            //validate connection
-            if (context.isOnline)
-            {
-                //gather server configs
-                val getServerConfig = Server.GetServerConfig(context)
-
-                //valid config
-                if (getServerConfig.execute())
-                {
-                    with(context)
+                    if(it.tokenResult.isNotEmpty())
                     {
-                        runOnUiThread {
-                            updateNavText(null)
+                        context.keyStore.setPreference(Constants.SharedPrefKeys.API_CORE_USERNAME, username)
+                        context.keyStore.setPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, password)
+                        context.keyStore.setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "TEMP")
 
-                            loadingDialog.dismiss()
+                        val loadingDialog = LoadingDialog(context, LoadingDialog.Style.SPINNER)
+                        loadingDialog.message = context.getString(R.string.logging_in)
+                        loadingDialog.show()
 
-                            downloadApplicationData(false, false)
-                        }
-                    
+                        Thread(Runnable {
+                            //validate connection
+                            if (context.isOnline)
+                            {
+                                //attempt to login to server
+                                val login = Api.Account.Login(context, username, password, it.tokenResult)
+
+                                //valid config
+                                if (login.execute())
+                                {
+                                    with(context)
+                                    {
+                                        runOnUiThread {
+                                            updateNavText(null)
+
+                                            loadingDialog.dismiss()
+
+                                            downloadApplicationData(false, false)
+                                        }
+
+                                    }
+                                } else
+                                {
+                                    with(context)
+                                    {
+                                        runOnUiThread {
+                                            loadingDialog.dismiss()
+                                        }
+
+                                        keyStore.resetData()
+                                        showSnackbar(getString(R.string.invalid_login))
+                                    }
+                                }//invalid config
+                            } else
+                            {
+                                with(context)
+                                {
+                                    runOnUiThread {
+                                        loadingDialog.dismiss()
+                                    }
+
+                                    keyStore.resetData()
+                                    showSnackbar(getString(R.string.invalid_url))
+                                }
+                            }//invalid connection
+                        }).start()
                     }
-                } else
-                {
-                    with(context)
-                    {
-                        runOnUiThread {
-                            loadingDialog.dismiss()
-                        }
+                    else
+                        context.showSnackbar(context.getString(R.string.recaptcha_error))
 
-                        keyStore.resetData()
-                        showSnackbar(getString(R.string.invalid_login))
-                    }
-                }//invalid config
-            } else
-            {
-                with(context)
-                {
-                    runOnUiThread {
-                        loadingDialog.dismiss()
-                    }
-
-                    keyStore.resetData()
-                    showSnackbar(getString(R.string.invalid_url))
                 }
-            }//invalid connection
-        }).start()
+                .addOnFailureListener { context.showSnackbar(context.getString(R.string.recaptcha_error)) }
     }
 
     companion object

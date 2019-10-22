@@ -4,15 +4,18 @@ import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Image
 import com.alphadevelopmentsolutions.frcscout.Interfaces.AppLog
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
+import com.alphadevelopmentsolutions.frcscout.Interfaces.HttpResponseCodes
+import org.json.JSONArray
 import org.json.JSONException
-import org.json.JSONObject
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 
 
-class ApiParser(private val api: Api)
+class ApiResponse(private val api: Api)
 {
+    var responseCode: Int = 401
+    lateinit var response: JSONArray
 
     /**
      * Parses data from the server
@@ -21,14 +24,16 @@ class ApiParser(private val api: Api)
      * @throws IOException
      */
     @Throws(IOException::class, JSONException::class)
-    fun parse(): JSONObject
+    fun parse(): ApiResponse
     {
-        val response = queryAPI()
+        val response = queryApi()
 
         AppLog.log("API Response", response)
 
+        this.response = JSONArray(response)
+
         //parse and return the response
-        return JSONObject(response)
+        return this
     }
 
     /**
@@ -37,13 +42,13 @@ class ApiParser(private val api: Api)
      * @throws IOException
      */
     @Throws(IOException::class)
-    private fun queryAPI(): String
+    private fun queryApi(): String
     {
         //response from server
         val response = StringBuilder()
 
         //create the url based on the app URL and specified file
-        val url = URL(Constants.API_URL)
+        val url = URL(api.url)
 
         //create a new connection to the server
         val httpURLConnection = url.openConnection() as HttpURLConnection
@@ -58,8 +63,11 @@ class ApiParser(private val api: Api)
         bufferedWriter.flush()
         bufferedWriter.close()
 
+        //get header code
+        responseCode = httpURLConnection.responseCode
+
         //read response from the server
-        val bufferedReader = BufferedReader(InputStreamReader(httpURLConnection.inputStream))
+        val bufferedReader = BufferedReader(InputStreamReader(if(responseCode == HttpResponseCodes.OK) httpURLConnection.inputStream else httpURLConnection.errorStream))
 
         //for each line in the response, append to the response string
         var line: String?

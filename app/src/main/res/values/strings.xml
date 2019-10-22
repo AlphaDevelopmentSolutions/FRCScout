@@ -310,5 +310,8 @@
     <string name="server_config">Server Config</string>
     <string name="server_failure">Server Failure</string>
     <string name="load_fail">Failed to load %1$s. Try updating your %1$s list.</string>
+    <string name="recaptcha_error">There was an issue verifying the reCAPTCHA. Please try again.</string>
+    <string name="logging_in">Logging in please wait&#8230;</string>
+    <string name="not_empty">%1$s must not be empty.</string>
 
 </resources>

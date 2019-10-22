@@ -19,7 +19,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentManager
-import com.alphadevelopmentsolutions.frcscout.Api.Server
+import com.alphadevelopmentsolutions.frcscout.Api.Api
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import com.alphadevelopmentsolutions.frcscout.Classes.KeyStore
 import com.alphadevelopmentsolutions.frcscout.Classes.LoadingDialog
@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity(),
 
         with(
             Thread(Runnable {
-                val hello = Server.Hello(context)
+                val hello = Api.Connect.Hello(context)
 
                 if (hello.execute())
                     field = true
@@ -154,30 +154,30 @@ class MainActivity : AppCompatActivity(),
         {
             loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.data))
 
-            val getEvents = Server.GetEvents(context)
+            val getEvents = Api.Get.Events(context)
             var getEventsSuccess: Boolean? = null
-            val getEventTeamList = Server.GetEventTeamList(context)
+            val getEventTeamList = Api.Get.EventTeamList(context)
             var getEventTeamListSuccess: Boolean? = null
 
-            val getMatches = Server.GetMatches(context)
+            val getMatches = Api.Get.Matches(context)
             var getMatchesSuccess: Boolean? = null
 
-            val getTeams = Server.GetTeams(context)
+            val getTeams = Api.Get.Teams(context)
             var getTeamsSuccess: Boolean? = null
 
-            val getChecklistItems = Server.GetChecklistItems(context)
+            val getChecklistItems = Api.Get.ChecklistItems(context)
             var getChecklistItemsSuccess: Boolean? = null
-            val getChecklistItemResults = Server.GetChecklistItemResults(context)
+            val getChecklistItemResults = Api.Get.ChecklistItemResults(context)
             var getChecklistItemResultsSuccess: Boolean? = null
 
-            val getRobotInfoKeys = Server.GetRobotInfoKeys(context)
+            val getRobotInfoKeys = Api.Get.RobotInfoKeys(context)
             var getRobotInfoKeysSuccess: Boolean? = null
-            val getRobotInfo = Server.GetRobotInfo(context)
+            val getRobotInfo = Api.Get.RobotInfo(context)
             var getRobotInfoSuccess: Boolean? = null
 
-            val getScoutCardInfoKeys = Server.GetScoutCardInfoKeys(context)
+            val getScoutCardInfoKeys = Api.Get.ScoutCardInfoKeys(context)
             var getScoutCardInfoKeysSuccess: Boolean? = null
-            val getScoutCardInfo = Server.GetScoutCardInfo(context)
+            val getScoutCardInfo = Api.Get.ScoutCardInfo(context)
             var getScoutCardInfoSuccess: Boolean? = null
             
             val increaseFactor = 4
@@ -199,7 +199,7 @@ class MainActivity : AppCompatActivity(),
                  * SERVER CONFIG
                  */
                 //Update Server Config
-                val getServerConfig = Server.GetServerConfig(context)
+                val getServerConfig = Api.Get.ServerConfig(context)
                 if(getServerConfig.execute())
                 {
                     runOnUiThread{
@@ -239,7 +239,7 @@ class MainActivity : AppCompatActivity(),
                         child.delete()
 
                 //Update Years
-                val getYears = Server.GetYears(context)
+                val getYears = Api.Get.Years(context)
                 if (getYears.execute())
                 {
                     Year.clearTable(database)
@@ -257,7 +257,7 @@ class MainActivity : AppCompatActivity(),
                 /**
                  * USERS
                  */
-                val getUsers = Server.GetUsers(context)
+                val getUsers = Api.Get.Users(context)
                 if (getUsers.execute())
                 {
                     User.clearTable(database)
@@ -697,7 +697,7 @@ class MainActivity : AppCompatActivity(),
                         for (child in mediaFolder.listFiles())
                             child.delete()
 
-                    val getRobotMedia = Server.GetRobotMedia(context)
+                    val getRobotMedia = Api.Get.RobotMedia(context)
                     if (getRobotMedia.execute())
                     {
 
@@ -789,7 +789,7 @@ class MainActivity : AppCompatActivity(),
                 {
                     for (checklistItemResult in ChecklistItemResult.getObjects(null, null, true, database)!!)
                     {
-                        val submitChecklistItemResult = Server.SubmitChecklistItemResult(context, checklistItemResult)
+                        val submitChecklistItemResult = Api.Set.ChecklistItemResult(context, checklistItemResult)
                         if (submitChecklistItemResult.execute())
                         {
                             checklistItemResult.isDraft = false
@@ -814,7 +814,7 @@ class MainActivity : AppCompatActivity(),
                 {
                     for (robotInfo in RobotInfo.getObjects(null, null, null, null, null, true, database))
                     {
-                        val submitRobotInfo = Server.SubmitRobotInfo(context, robotInfo)
+                        val submitRobotInfo = Api.Set.RobotInfo(context, robotInfo)
                         if (submitRobotInfo.execute())
                         {
                             robotInfo.isDraft = false
@@ -838,7 +838,7 @@ class MainActivity : AppCompatActivity(),
                 {
                     for (scoutCardInfo in ScoutCardInfo.getObjects(null, null, null, null, null, true, database))
                     {
-                        val submitScoutCardInfo = Server.SubmitScoutCardInfo(context, scoutCardInfo)
+                        val submitScoutCardInfo = Api.Set.ScoutCardInfo(context, scoutCardInfo)
                         if (submitScoutCardInfo.execute())
                         {
                             scoutCardInfo.isDraft = false
@@ -862,7 +862,7 @@ class MainActivity : AppCompatActivity(),
                 {
                     for (robotMedia in RobotMedia.getObjects(null, null, null, null, true, database))
                     {
-                        val submitRobotMedia = Server.SubmitRobotMedia(context, robotMedia)
+                        val submitRobotMedia = Api.Set.RobotMedia(context, robotMedia)
                         if (submitRobotMedia.execute())
                         {
                             robotMedia.isDraft = false
