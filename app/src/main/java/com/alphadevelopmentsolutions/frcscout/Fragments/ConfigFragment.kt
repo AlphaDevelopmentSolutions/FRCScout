@@ -21,6 +21,7 @@ class ConfigFragment : MasterFragment()
     }
 
     private var configNumber: Int? = null
+    private var loggingIn = false
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -76,43 +77,56 @@ class ConfigFragment : MasterFragment()
      */
     private fun login(username: String, password: String)
     {
-        //reCAPTCHA check
-        SafetyNet.getClient(context).verifyWithRecaptcha(Constants.RECAPTCHA_SITE_KEY)
-                .addOnSuccessListener {
+        if(!loggingIn) {
 
-                    if(it.tokenResult.isNotEmpty())
-                    {
-                        context.keyStore.setPreference(Constants.SharedPrefKeys.API_CORE_USERNAME, username)
-                        context.keyStore.setPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, password)
-                        context.keyStore.setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "TEMP")
+            loggingIn = true
 
-                        val loadingDialog = LoadingDialog(context, LoadingDialog.Style.SPINNER)
-                        loadingDialog.message = context.getString(R.string.logging_in)
-                        loadingDialog.show()
+            //reCAPTCHA check
+            SafetyNet.getClient(context).verifyWithRecaptcha(Constants.RECAPTCHA_SITE_KEY)
+                    .addOnSuccessListener {
 
-                        Thread(Runnable {
-                            //validate connection
-                            if (context.isOnline)
-                            {
-                                //attempt to login to server
-                                val login = Api.Account.Login(context, username, password, it.tokenResult)
+                        if (it.tokenResult.isNotEmpty()) {
+                            context.keyStore.setPreference(Constants.SharedPrefKeys.API_CORE_USERNAME, username)
+                            context.keyStore.setPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, password)
+                            context.keyStore.setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "TEMP")
 
-                                //valid config
-                                if (login.execute())
-                                {
-                                    with(context)
-                                    {
-                                        runOnUiThread {
-                                            updateNavText(null)
+                            val loadingDialog = LoadingDialog(context, LoadingDialog.Style.SPINNER)
+                            loadingDialog.message = context.getString(R.string.logging_in)
+                            loadingDialog.show()
 
-                                            loadingDialog.dismiss()
+                            Thread(Runnable {
+                                //validate connection
+                                if (context.isOnline) {
+                                    //attempt to login to server
+                                    val login = Api.Account.Login(context, username, password, it.tokenResult)
 
-                                            downloadApplicationData(false, false)
+                                    //valid config
+                                    if (login.execute()) {
+                                        with(context)
+                                        {
+                                            runOnUiThread {
+                                                updateNavText(null)
+
+                                                loadingDialog.dismiss()
+
+                                                context.keyStore.resetData()
+
+                                                downloadApplicationData(false, false)
+                                            }
+
                                         }
+                                    } else {
+                                        with(context)
+                                        {
+                                            runOnUiThread {
+                                                loadingDialog.dismiss()
+                                            }
 
-                                    }
-                                } else
-                                {
+                                            keyStore.resetData()
+                                            showSnackbar(getString(R.string.invalid_login))
+                                        }
+                                    }//invalid config
+                                } else {
                                     with(context)
                                     {
                                         runOnUiThread {
@@ -120,28 +134,22 @@ class ConfigFragment : MasterFragment()
                                         }
 
                                         keyStore.resetData()
-                                        showSnackbar(getString(R.string.invalid_login))
+                                        showSnackbar(getString(R.string.invalid_url))
                                     }
-                                }//invalid config
-                            } else
-                            {
-                                with(context)
-                                {
-                                    runOnUiThread {
-                                        loadingDialog.dismiss()
-                                    }
+                                }//invalid connection
+                            }).start()
+                        } else
+                            context.showSnackbar(context.getString(R.string.recaptcha_error))
 
-                                    keyStore.resetData()
-                                    showSnackbar(getString(R.string.invalid_url))
-                                }
-                            }//invalid connection
-                        }).start()
+                        loggingIn = false
+
                     }
-                    else
+                    .addOnFailureListener {
                         context.showSnackbar(context.getString(R.string.recaptcha_error))
 
-                }
-                .addOnFailureListener { context.showSnackbar(context.getString(R.string.recaptcha_error)) }
+                        loggingIn = false
+                    }
+        }
     }
 
     companion object
