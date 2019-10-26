@@ -30,7 +30,7 @@ android {
     buildTypes {
         release
         {
-            buildConfigField("String", "API_URL", "\"https://www.frcscout.dev\"")
+            buildConfigField("String", "API_URL", "\"https://www.frcscout.app\"")
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
