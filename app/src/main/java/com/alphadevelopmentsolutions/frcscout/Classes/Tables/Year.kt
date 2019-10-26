@@ -5,40 +5,16 @@ import android.graphics.BitmapFactory
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import java.util.*
 
-class Year: Table
+class Year(
+        var id: Int = DEFAULT_INT,
+        var serverId: Int = DEFAULT_INT,
+        var name: String = DEFAULT_STRING,
+        var startDate: Date = DEFAULT_DATE,
+        var endDate: Date = DEFAULT_DATE,
+        var imageUri: String = DEFAULT_STRING) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
-
-    var id: Int? = null
-    var serverId: Int? = null
-    lateinit var name: String
-    lateinit var startDate: Date
-    lateinit var endDate: Date
-    lateinit var imageUri: String
-
-    constructor(id: Int,
-                serverId: Int,
-                name: String,
-                startDate: Date,
-                endDate: Date,
-                imageUri: String) : super(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
-    {
-        this.id = id
-        this.serverId = serverId
-        this.name = name
-        this.startDate = startDate
-        this.endDate = endDate
-        this.imageUri = imageUri
-    }
-
-    constructor(id: Int, database: Database) : super(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
-    {
-        this.serverId = id
-        load(database)
-    }
-
     companion object
     {
-
         val TABLE_NAME = "years"
         val COLUMN_NAME_ID = "LocalId"
         val COLUMN_NAME_SERVER_ID = "Id"
@@ -70,7 +46,7 @@ class Year: Table
          * @param database used to load robot media
          * @return ArrayList of years
          */
-        fun getObjects(year: Year?, database: Database): ArrayList<Year>?
+        fun getObjects(year: Year?, database: Database): ArrayList<Year>
         {
             return database.getYears(year)
         }
@@ -106,7 +82,7 @@ class Year: Table
         if (database.isOpen)
         {
             val yearArrayList = getObjects(this, database)
-            val year = if (yearArrayList!!.size > 0) yearArrayList[0] else null
+            val year = if (yearArrayList.size > 0) yearArrayList[0] else null
 
             if (year != null)
             {

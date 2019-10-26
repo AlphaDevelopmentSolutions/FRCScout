@@ -4,12 +4,12 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import java.util.*
 
 class RobotInfoKey(
-        var id: Int,
-        var serverId: Int,
-        var yearId: Int,
-        var keyState: String,
-        var keyName: String,
-        var sortOrder: Int) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var id: Int = DEFAULT_INT,
+        var serverId: Int = DEFAULT_INT,
+        var yearId: Int = DEFAULT_INT,
+        var keyState: String = DEFAULT_STRING,
+        var keyName: String = DEFAULT_STRING,
+        var sortOrder: Int = DEFAULT_INT) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
     companion object
     {
@@ -45,7 +45,7 @@ class RobotInfoKey(
          * @param database used to load
          * @return arraylist of robotInfoKeys
          */
-        fun getObjects(year: Year?, robotInfoKey: RobotInfoKey?, database: Database): ArrayList<RobotInfoKey>?
+        fun getObjects(year: Year?, robotInfoKey: RobotInfoKey?, database: Database): ArrayList<RobotInfoKey>
         {
             return database.getRobotInfoKeys(year, robotInfoKey)
         }
@@ -72,7 +72,7 @@ class RobotInfoKey(
         if (database.isOpen)
         {
             val robotInfoKeyList = getObjects(null, this, database)
-            val robotInfoKey = if (robotInfoKeyList!!.size > 0) robotInfoKeyList[0] else null
+            val robotInfoKey = if (robotInfoKeyList.size > 0) robotInfoKeyList[0] else null
 
             if (robotInfoKey != null)
             {

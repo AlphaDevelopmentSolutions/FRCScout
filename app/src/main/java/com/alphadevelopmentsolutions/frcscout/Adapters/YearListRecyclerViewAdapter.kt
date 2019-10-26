@@ -1,18 +1,19 @@
 package com.alphadevelopmentsolutions.frcscout.Adapters
 
 import android.net.Uri
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
 import com.alphadevelopmentsolutions.frcscout.Fragments.EventListFragment
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
+import com.google.android.material.button.MaterialButton
 import com.squareup.picasso.Picasso
 import java.io.File
 import java.text.SimpleDateFormat
@@ -45,6 +46,7 @@ internal class YearListRecyclerViewAdapter(private val yearList: ArrayList<Year>
             yearLogoImageView = view.findViewById(R.id.YearLogoImageView)
             viewButton = view.findViewById(R.id.ViewButton)
             viewButton.setTextColor(context.primaryColor)
+            (viewButton as MaterialButton).rippleColor = context.buttonRipple
         }
     }
 
@@ -71,13 +73,10 @@ internal class YearListRecyclerViewAdapter(private val yearList: ArrayList<Year>
                     .fit()
                     .centerCrop()
                     .into(viewHolder.yearLogoImageView)
-        else
-            viewHolder.yearLogoImageView.setImageDrawable(context.getDrawable(R.drawable.frc_logo))
-
 
         //Sends you to the event list fragment
         viewHolder.viewButton.setOnClickListener {
-            context.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, yearList[viewHolder.adapterPosition].serverId!!)
+            context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, yearList[viewHolder.adapterPosition].serverId)
             context.changeFragment(EventListFragment.newInstance(yearList[viewHolder.adapterPosition]), false)
         }
 

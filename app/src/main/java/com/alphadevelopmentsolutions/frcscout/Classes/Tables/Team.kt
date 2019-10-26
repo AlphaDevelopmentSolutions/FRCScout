@@ -3,62 +3,24 @@ package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
-import com.alphadevelopmentsolutions.frcscout.Interfaces.StatsKeys
 import java.io.File
-import java.util.*
 
-class Team : Table
+class Team(
+        var id: Int = DEFAULT_INT,
+        var name: String = DEFAULT_STRING,
+        var city: String? = null,
+        var stateProvince: String? = null,
+        var country: String? = null,
+        var rookieYear: Int? = null,
+        var facebookURL: String? = null,
+        var twitterURL: String? = null,
+        var instagramURL: String? = null,
+        var youtubeURL: String? = null,
+        var websiteURL: String? = null,
+        var imageFileURI: String? = null) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
-
-    var id: Int? = null
-    lateinit var name: String
-    lateinit var city: String
-    lateinit var stateProvince: String
-    lateinit var country: String
-    var rookieYear: Int? = null
-    lateinit var facebookURL: String
-    lateinit var twitterURL: String
-    lateinit var instagramURL: String
-    lateinit var youtubeURL: String
-    lateinit var websiteURL: String
-    lateinit var imageFileURI: String
-
-    constructor( id: Int,
-                 name: String,
-                 city: String,
-                 stateProvince: String,
-                 country: String,
-                 rookieYear: Int,
-                 facebookURL: String,
-                 twitterURL: String,
-                 instagramURL: String,
-                 youtubeURL: String,
-                 websiteURL: String,
-                 imageFileURI: String) : super(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
-    {
-        this.id = id
-        this.name = name
-        this.city = city
-        this.stateProvince = stateProvince
-        this.country = country
-        this.rookieYear = rookieYear
-        this.facebookURL = facebookURL
-        this.twitterURL = twitterURL
-        this.instagramURL = instagramURL
-        this.youtubeURL = youtubeURL
-        this.websiteURL = websiteURL
-        this.imageFileURI = imageFileURI
-    }
-
-    constructor(id: Int, database: Database) : super(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
-    {
-        this.id = id
-        load(database)
-    }
-
     companion object
     {
-
         val TABLE_NAME = "teams"
         val COLUMN_NAME_ID = "Id"
         val COLUMN_NAME_NAME = "Name"
@@ -124,236 +86,70 @@ class Team : Table
         }
 
     /**
-     * Calculates all stats for the QuickStatsFragment
-     * Highly recommended that this gets ran inside it's own thread is it
-     * will take a long time to process
-     * @param database used to pull data
-     * @return hashmap of stats
+     * Calculates all stats for this [Team]
+     * Highly recommended that this gets ran inside it's own thread
+     * it will take a long time to process
+     * @param year [Year] used to pull data
+     * @param event [Event] used to pull data
+     * @param matches [ArrayList] list of [Match] for stats
+     * @param scoutCardInfoKeys [ArrayList] list of [ScoutCardInfoKey] for stats
+     * @param scoutCardInfos [ArrayList] list of [ScoutCardInfo] for stats
+     * @param database [Database] used to pull data
+     * @return [HashMap] of stats
      */
-    fun getStats(database: Database, event: Event): HashMap<String, HashMap<String, Double>>
+    fun getStats(year: Year?, event: Event?, matches: ArrayList<Match>?, scoutCardInfoKeys: ArrayList<ScoutCardInfoKey>?, scoutCardInfos: ArrayList<ScoutCardInfo>?,  database: Database): HashMap<String, HashMap<String, Int>>
     {
-        val stats = HashMap<String, HashMap<String, Double>>()
-        val minStats = HashMap<String, Double>()
-        val avgStats = HashMap<String, Double>()
-        val maxStats = HashMap<String, Double>()
+        val teamStats = HashMap<String, HashMap<String, Int>>()
 
-        //pre-populate min stats
-        minStats[StatsKeys.AUTO_EXIT_HAB] = 1000.0
-        minStats[StatsKeys.AUTO_HATCH] = 1000.0
-        minStats[StatsKeys.AUTO_HATCH_DROPPED] = 1000.0
-        minStats[StatsKeys.AUTO_CARGO] = 1000.0
-        minStats[StatsKeys.AUTO_CARGO_DROPPED] = 1000.0
-        minStats[StatsKeys.TELEOP_HATCH] = 1000.0
-        minStats[StatsKeys.TELEOP_HATCH_DROPPED] = 1000.0
-        minStats[StatsKeys.TELEOP_CARGO] = 1000.0
-        minStats[StatsKeys.TELEOP_CARGO_DROPPED] = 1000.0
-        minStats[StatsKeys.RETURNED_HAB] = 1000.0
-        minStats[StatsKeys.RETURNED_HAB_FAILS] = 1000.0
-        minStats[StatsKeys.DEFENSE_RATING] = 1000.0
-        minStats[StatsKeys.OFFENSE_RATING] = 1000.0
-        minStats[StatsKeys.DRIVE_RATING] = 1000.0
+        val scoutCardInfoKeys = scoutCardInfoKeys ?: ScoutCardInfoKey.getObjects(year, null, database)
+        val scoutCardInfos = scoutCardInfos ?: ScoutCardInfo.getObjects(event, null, this, null, null, false, database)
+        val matches = matches ?: Match.getObjects(event, null, this, database)
 
-        //pre-populate avg stats
-        avgStats[StatsKeys.AUTO_EXIT_HAB] = 0.0
-        avgStats[StatsKeys.AUTO_HATCH] = 0.0
-        avgStats[StatsKeys.AUTO_HATCH_DROPPED] = 0.0
-        avgStats[StatsKeys.AUTO_CARGO] = 0.0
-        avgStats[StatsKeys.AUTO_CARGO_DROPPED] = 0.0
-        avgStats[StatsKeys.TELEOP_HATCH] = 0.0
-        avgStats[StatsKeys.TELEOP_HATCH_DROPPED] = 0.0
-        avgStats[StatsKeys.TELEOP_CARGO] = 0.0
-        avgStats[StatsKeys.TELEOP_CARGO_DROPPED] = 0.0
-        avgStats[StatsKeys.RETURNED_HAB] = 0.0
-        avgStats[StatsKeys.RETURNED_HAB_FAILS] = 0.0
-        avgStats[StatsKeys.DEFENSE_RATING] = 0.0
-        avgStats[StatsKeys.OFFENSE_RATING] = 0.0
-        avgStats[StatsKeys.DRIVE_RATING] = 0.0
-
-        //pre-populate max stats
-        maxStats[StatsKeys.AUTO_EXIT_HAB] = 0.0
-        maxStats[StatsKeys.AUTO_HATCH] = 0.0
-        maxStats[StatsKeys.AUTO_HATCH_DROPPED] = 0.0
-        maxStats[StatsKeys.AUTO_CARGO] = 0.0
-        maxStats[StatsKeys.AUTO_CARGO_DROPPED] = 0.0
-        maxStats[StatsKeys.TELEOP_HATCH] = 0.0
-        maxStats[StatsKeys.TELEOP_HATCH_DROPPED] = 0.0
-        maxStats[StatsKeys.TELEOP_CARGO] = 0.0
-        maxStats[StatsKeys.TELEOP_CARGO_DROPPED] = 0.0
-        maxStats[StatsKeys.RETURNED_HAB] = 0.0
-        maxStats[StatsKeys.RETURNED_HAB_FAILS] = 0.0
-        maxStats[StatsKeys.DEFENSE_RATING] = 0.0
-        maxStats[StatsKeys.OFFENSE_RATING] = 0.0
-        maxStats[StatsKeys.DRIVE_RATING] = 0.0
-
-
-        //get all scout cards from the database
-        val scoutCards = getScoutCards(event, null, null, false, database)
-
-        //store iterations for avg
-        var i = 0
-
-        var nulledDefenseRatings = 0
-        var nulledOffenseRatings = 0
-
-        for (scoutCard in scoutCards!!)
+        if (!matches.isNullOrEmpty() && !scoutCardInfoKeys.isNullOrEmpty() && !scoutCardInfos.isNullOrEmpty())
         {
-//            //calculate min
-//
-//            //if they exited, check the level
-//            if (scoutCard.autonomousExitHabitat)
-//            {
-//                if (scoutCard.preGameStartingLevel < minStats[StatsKeys.AUTO_EXIT_HAB]!!)
-//                    minStats[StatsKeys.AUTO_EXIT_HAB] = scoutCard.preGameStartingLevel.toDouble()
-//            } else if (0 < minStats[StatsKeys.AUTO_EXIT_HAB]!!)
-//                minStats[StatsKeys.AUTO_EXIT_HAB] = 0.0//if they didn't exit, set to 0
-//
-//            if (scoutCard.autonomousHatchPanelsSecured < minStats[StatsKeys.AUTO_HATCH]!!)
-//                minStats[StatsKeys.AUTO_HATCH] = scoutCard.autonomousHatchPanelsSecured.toDouble()
-//
-//            if (scoutCard.autonomousHatchPanelsSecuredAttempts < minStats[StatsKeys.AUTO_HATCH_DROPPED]!!)
-//                minStats[StatsKeys.AUTO_HATCH_DROPPED] = scoutCard.autonomousHatchPanelsSecuredAttempts.toDouble()
-//
-//            if (scoutCard.autonomousCargoStored < minStats[StatsKeys.AUTO_CARGO]!!)
-//                minStats[StatsKeys.AUTO_CARGO] = scoutCard.autonomousCargoStored.toDouble()
-//
-//            if (scoutCard.autonomousCargoStoredAttempts < minStats[StatsKeys.AUTO_CARGO_DROPPED]!!)
-//                minStats[StatsKeys.AUTO_CARGO_DROPPED] = scoutCard.autonomousCargoStoredAttempts.toDouble()
-//
-//            if (scoutCard.teleopHatchPanelsSecured < minStats[StatsKeys.TELEOP_HATCH]!!)
-//                minStats[StatsKeys.TELEOP_HATCH] = scoutCard.teleopHatchPanelsSecured.toDouble()
-//
-//            if (scoutCard.teleopHatchPanelsSecuredAttempts < minStats[StatsKeys.TELEOP_HATCH_DROPPED]!!)
-//                minStats[StatsKeys.TELEOP_HATCH_DROPPED] = scoutCard.teleopHatchPanelsSecuredAttempts.toDouble()
-//
-//            if (scoutCard.teleopCargoStored < minStats[StatsKeys.TELEOP_CARGO]!!)
-//                minStats[StatsKeys.TELEOP_CARGO] = scoutCard.teleopCargoStored.toDouble()
-//
-//            if (scoutCard.teleopCargoStoredAttempts < minStats[StatsKeys.TELEOP_CARGO_DROPPED]!!)
-//                minStats[StatsKeys.TELEOP_CARGO_DROPPED] = scoutCard.teleopCargoStoredAttempts.toDouble()
-//
-//            if (scoutCard.endGameReturnedToHabitat < minStats[StatsKeys.RETURNED_HAB]!!)
-//                minStats[StatsKeys.RETURNED_HAB] = scoutCard.endGameReturnedToHabitat.toDouble()
-//
-//            if (scoutCard.endGameReturnedToHabitatAttempts < minStats[StatsKeys.RETURNED_HAB_FAILS]!!)
-//                minStats[StatsKeys.RETURNED_HAB_FAILS] = scoutCard.endGameReturnedToHabitatAttempts.toDouble()
-//
-//            if (scoutCard.defenseRating != 0 && scoutCard.defenseRating < minStats[StatsKeys.DEFENSE_RATING]!!)
-//                minStats[StatsKeys.DEFENSE_RATING] = scoutCard.defenseRating.toDouble()
-//
-//            if (scoutCard.offenseRating != 0 && scoutCard.offenseRating < minStats[StatsKeys.OFFENSE_RATING]!!)
-//                minStats[StatsKeys.OFFENSE_RATING] = scoutCard.offenseRating.toDouble()
-//
-//            if (scoutCard.driveRating < minStats[StatsKeys.DRIVE_RATING]!!)
-//                minStats[StatsKeys.DRIVE_RATING] = scoutCard.driveRating.toDouble()
-//
-//            //calculate avg
-//            if (scoutCard.autonomousExitHabitat)
-//                avgStats[StatsKeys.AUTO_EXIT_HAB] = avgStats[StatsKeys.AUTO_EXIT_HAB]!! + scoutCard.preGameStartingLevel
-//            avgStats[StatsKeys.AUTO_HATCH] = avgStats[StatsKeys.AUTO_HATCH]!! + scoutCard.autonomousHatchPanelsSecured
-//            avgStats[StatsKeys.AUTO_HATCH_DROPPED] = avgStats[StatsKeys.AUTO_HATCH_DROPPED]!! + scoutCard.autonomousHatchPanelsSecuredAttempts
-//            avgStats[StatsKeys.AUTO_CARGO] = avgStats[StatsKeys.AUTO_CARGO]!! + scoutCard.autonomousCargoStored
-//            avgStats[StatsKeys.AUTO_CARGO_DROPPED] = avgStats[StatsKeys.AUTO_CARGO_DROPPED]!! + scoutCard.autonomousCargoStoredAttempts
-//
-//            avgStats[StatsKeys.TELEOP_HATCH] = avgStats[StatsKeys.TELEOP_HATCH]!! + scoutCard.teleopHatchPanelsSecured
-//            avgStats[StatsKeys.TELEOP_HATCH_DROPPED] = avgStats[StatsKeys.TELEOP_HATCH_DROPPED]!! + scoutCard.teleopHatchPanelsSecuredAttempts
-//            avgStats[StatsKeys.TELEOP_CARGO] = avgStats[StatsKeys.TELEOP_CARGO]!! + scoutCard.teleopCargoStored
-//            avgStats[StatsKeys.TELEOP_CARGO_DROPPED] = avgStats[StatsKeys.TELEOP_CARGO_DROPPED]!! + scoutCard.teleopCargoStoredAttempts
-//
-//            avgStats[StatsKeys.RETURNED_HAB] = avgStats[StatsKeys.RETURNED_HAB]!! + scoutCard.endGameReturnedToHabitat
-//            avgStats[StatsKeys.RETURNED_HAB_FAILS] = avgStats[StatsKeys.RETURNED_HAB_FAILS]!! + scoutCard.endGameReturnedToHabitatAttempts
-//
-//            avgStats[StatsKeys.DEFENSE_RATING] = avgStats[StatsKeys.DEFENSE_RATING]!! + scoutCard.defenseRating
-//            avgStats[StatsKeys.OFFENSE_RATING] = avgStats[StatsKeys.OFFENSE_RATING]!! + scoutCard.offenseRating
-//            avgStats[StatsKeys.DRIVE_RATING] = avgStats[StatsKeys.DRIVE_RATING]!! + scoutCard.driveRating
-//
-//            nulledDefenseRatings = if (scoutCard.defenseRating == 0) nulledDefenseRatings + 1 else nulledDefenseRatings
-//            nulledOffenseRatings = if (scoutCard.offenseRating == 0) nulledOffenseRatings + 1 else nulledOffenseRatings
-//
-//            i++
-//
-//            //calculate max
-//
-//            //if they exited, check the level
-//            if (scoutCard.autonomousExitHabitat)
-//            {
-//                if (scoutCard.preGameStartingLevel > maxStats[StatsKeys.AUTO_EXIT_HAB]!!)
-//                    maxStats[StatsKeys.AUTO_EXIT_HAB] = scoutCard.preGameStartingLevel.toDouble()
-//            } else if (0 > maxStats[StatsKeys.AUTO_EXIT_HAB]!!)
-//                maxStats[StatsKeys.AUTO_EXIT_HAB] = scoutCard.preGameStartingLevel.toDouble()//if they didn't exit, set to 0
-//
-//            if (scoutCard.autonomousHatchPanelsSecured > maxStats[StatsKeys.AUTO_HATCH]!!)
-//                maxStats[StatsKeys.AUTO_HATCH] = scoutCard.autonomousHatchPanelsSecured.toDouble()
-//
-//            if (scoutCard.autonomousHatchPanelsSecuredAttempts > maxStats[StatsKeys.AUTO_HATCH_DROPPED]!!)
-//                maxStats[StatsKeys.AUTO_HATCH_DROPPED] = scoutCard.autonomousHatchPanelsSecuredAttempts.toDouble()
-//
-//            if (scoutCard.autonomousCargoStored > maxStats[StatsKeys.AUTO_CARGO]!!)
-//                maxStats[StatsKeys.AUTO_CARGO] = scoutCard.autonomousCargoStored.toDouble()
-//
-//            if (scoutCard.autonomousCargoStoredAttempts > maxStats[StatsKeys.AUTO_CARGO_DROPPED]!!)
-//                maxStats[StatsKeys.AUTO_CARGO_DROPPED] = scoutCard.autonomousCargoStoredAttempts.toDouble()
-//
-//            if (scoutCard.teleopHatchPanelsSecured > maxStats[StatsKeys.TELEOP_HATCH]!!)
-//                maxStats[StatsKeys.TELEOP_HATCH] = scoutCard.teleopHatchPanelsSecured.toDouble()
-//
-//            if (scoutCard.teleopHatchPanelsSecuredAttempts > maxStats[StatsKeys.TELEOP_HATCH_DROPPED]!!)
-//                maxStats[StatsKeys.TELEOP_HATCH_DROPPED] = scoutCard.teleopHatchPanelsSecuredAttempts.toDouble()
-//
-//            if (scoutCard.teleopCargoStored > maxStats[StatsKeys.TELEOP_CARGO]!!)
-//                maxStats[StatsKeys.TELEOP_CARGO] = scoutCard.teleopCargoStored.toDouble()
-//
-//            if (scoutCard.teleopCargoStoredAttempts > maxStats[StatsKeys.TELEOP_CARGO_DROPPED]!!)
-//                maxStats[StatsKeys.TELEOP_CARGO_DROPPED] = scoutCard.teleopCargoStoredAttempts.toDouble()
-//
-//            if (scoutCard.endGameReturnedToHabitat > maxStats[StatsKeys.RETURNED_HAB]!!)
-//                maxStats[StatsKeys.RETURNED_HAB] = scoutCard.endGameReturnedToHabitat.toDouble()
-//
-//            if (scoutCard.endGameReturnedToHabitatAttempts > maxStats[StatsKeys.RETURNED_HAB_FAILS]!!)
-//                maxStats[StatsKeys.RETURNED_HAB_FAILS] = scoutCard.endGameReturnedToHabitatAttempts.toDouble()
-//
-//            if (scoutCard.defenseRating > maxStats[StatsKeys.DEFENSE_RATING]!!)
-//                maxStats[StatsKeys.DEFENSE_RATING] = scoutCard.defenseRating.toDouble()
-//
-//            if (scoutCard.offenseRating > maxStats[StatsKeys.OFFENSE_RATING]!!)
-//                maxStats[StatsKeys.OFFENSE_RATING] = scoutCard.offenseRating.toDouble()
-//
-//            if (scoutCard.driveRating > maxStats[StatsKeys.DRIVE_RATING]!!)
-//                maxStats[StatsKeys.DRIVE_RATING] = scoutCard.driveRating.toDouble()
+            for(match in matches)
+            {
+                val statsHashMap = HashMap<String, Int>()
+
+                //filter the cards that match this match
+                val filteredScoutCardInfos = ArrayList<ScoutCardInfo>().apply {
+
+                    for(scoutCard in scoutCardInfos)
+                    {
+                        if(scoutCard.matchId == match.key && scoutCard.teamId == id)
+                            add(scoutCard)
+                    }
+                }
+
+                //iterate through each scout card info key
+                for(scoutCardInfoKey in scoutCardInfoKeys)
+                {
+                    if(scoutCardInfoKey.includeInStats == true)
+                    {
+                        if(!filteredScoutCardInfos.isNullOrEmpty())
+                        {
+                            for(scoutCardInfo in filteredScoutCardInfos)
+                            {
+                                if(scoutCardInfo.propertyKeyId == scoutCardInfoKey.serverId)
+                                    statsHashMap[scoutCardInfoKey.toString()] = Integer.parseInt(scoutCardInfo.propertyValue) //get the most recent stat and set it
+                            }
+
+                            //if stat was never set, default to 0
+                            if(statsHashMap[scoutCardInfoKey.toString()] == null)
+                                statsHashMap[scoutCardInfoKey.toString()] = 0
+
+                        }
+                        else
+                            statsHashMap[scoutCardInfoKey.toString()] = 0
+                    }
+                }
+
+                //add the stats to the running list of stats per match
+                teamStats[match.toString()] = statsHashMap
+            }
         }
 
-        //once iterations have ended, do a final calculation for avg
-        //calculate avg
-        avgStats[StatsKeys.AUTO_EXIT_HAB] = avgStats[StatsKeys.AUTO_EXIT_HAB]!! / i
-        avgStats[StatsKeys.AUTO_HATCH] = avgStats[StatsKeys.AUTO_HATCH]!! / i
-        avgStats[StatsKeys.AUTO_HATCH_DROPPED] = avgStats[StatsKeys.AUTO_HATCH_DROPPED]!! / i
-        avgStats[StatsKeys.AUTO_CARGO] = avgStats[StatsKeys.AUTO_CARGO]!! / i
-        avgStats[StatsKeys.AUTO_CARGO_DROPPED] = avgStats[StatsKeys.AUTO_CARGO_DROPPED]!! / i
-
-        avgStats[StatsKeys.TELEOP_HATCH] = avgStats[StatsKeys.TELEOP_HATCH]!! / i
-        avgStats[StatsKeys.TELEOP_HATCH_DROPPED] = avgStats[StatsKeys.TELEOP_HATCH_DROPPED]!! / i
-        avgStats[StatsKeys.TELEOP_CARGO] = avgStats[StatsKeys.TELEOP_CARGO]!! / i
-        avgStats[StatsKeys.TELEOP_CARGO_DROPPED] = avgStats[StatsKeys.TELEOP_CARGO_DROPPED]!! / i
-
-        avgStats[StatsKeys.RETURNED_HAB] = avgStats[StatsKeys.RETURNED_HAB]!! / i
-        avgStats[StatsKeys.RETURNED_HAB_FAILS] = avgStats[StatsKeys.RETURNED_HAB_FAILS]!! / i
-
-        avgStats[StatsKeys.DEFENSE_RATING] = avgStats[StatsKeys.DEFENSE_RATING]!! / (i - nulledDefenseRatings)
-        avgStats[StatsKeys.OFFENSE_RATING] = avgStats[StatsKeys.OFFENSE_RATING]!! / (i - nulledOffenseRatings)
-        avgStats[StatsKeys.DRIVE_RATING] = avgStats[StatsKeys.DRIVE_RATING]!! / i
-
-        //verify the min stats are not still at default 1000
-        for ((key, value) in minStats)
-        {
-            if (value > 900)
-                minStats[key] = 0.0
-        }
-
-
-        stats[StatsKeys.MIN] = minStats
-        stats[StatsKeys.AVG] = avgStats
-        stats[StatsKeys.MAX] = maxStats
-
-        return stats
+        return teamStats
     }
 
     /**
@@ -368,18 +164,6 @@ class Team : Table
     fun getScoutCards(event: Event?, match: Match?, scoutCardInfo: ScoutCardInfo?, onlyDrafts: Boolean, database: Database): ArrayList<ScoutCardInfo>?
     {
         return ScoutCardInfo.getObjects(event, match, this, null, scoutCardInfo, onlyDrafts, database)
-    }
-
-    /**
-     * Gets all scout cards associated with the team
-     * @param robotMedia if specified, filters robot media by robot media id
-     * @param database used for loading cards
-     * @param onlyDrafts boolean if you only want drafts
-     * @return arraylist of scout cards
-     */
-    fun getRobotMedia(robotMedia: RobotMedia?, onlyDrafts: Boolean, database: Database): ArrayList<RobotMedia>?
-    {
-        return RobotMedia.getObjects(robotMedia, this, onlyDrafts, database)
     }
 
     override fun toString(): String

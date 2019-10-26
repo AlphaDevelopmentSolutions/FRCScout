@@ -2,58 +2,21 @@ package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import java.util.*
+import kotlin.math.round
 
-class Event : Table
+class Event(
+        var id: Int = DEFAULT_INT,
+        var yearId: Int = DEFAULT_INT,
+        var blueAllianceId: String = DEFAULT_STRING,
+        var name: String = DEFAULT_STRING,
+        var city: String = DEFAULT_STRING,
+        var stateProvince: String = DEFAULT_STRING,
+        var country: String = DEFAULT_STRING,
+        var startDate: Date = DEFAULT_DATE,
+        var endDate: Date = DEFAULT_DATE) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
-
-    var id: Int = 0
-    var yearId: Int = 0
-
-    var blueAllianceId: String? = null
-    var name: String? = null
-    var city: String? = null
-    var stateProvince: String? = null
-    var country: String? = null
-
-    var startDate: Date? = null
-    var endDate: Date? = null
-
-    constructor(
-            id: Int,
-            yearId: Int,
-            blueAllianceId: String,
-            name: String,
-            city: String,
-            stateProvince: String,
-            country: String,
-            startDate: Date,
-            endDate: Date) : super(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
-    {
-        this.id = id
-        this.yearId = yearId
-        this.blueAllianceId = blueAllianceId
-        this.name = name
-        this.city = city
-        this.stateProvince = stateProvince
-        this.country = country
-        this.startDate = startDate
-        this.endDate = endDate
-    }
-
-    /**
-     * Used for loading
-     * @param id to load
-     */
-    constructor(id: Int, database: Database) : super(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
-    {
-        this.id = id
-
-        load(database)
-    }
-
     companion object
     {
-
         val TABLE_NAME = "events"
         val COLUMN_NAME_ID = "Id"
         val COLUMN_NAME_YEAR_ID = "YearId"
@@ -92,9 +55,9 @@ class Event : Table
          * @param database used to load events
          * @return arraylist of events
          */
-        fun getObjects(year: Year?, event: Event?, database: Database): ArrayList<Event>?
+        fun getObjects(year: Year?, event: Event?, team: Team?, database: Database): ArrayList<Event>
         {
-            return database.getEvents(year, event)
+            return database.getEvents(year, event, team)
         }
     }
 
@@ -136,7 +99,76 @@ class Event : Table
 
     override fun toString(): String
     {
-        return name!!
+        return name
+    }
+
+    /**
+     * Calculates all stats for this [Event]
+     * Highly recommended that this gets ran inside it's own thread
+     * it will take a long time to process
+     * @param year [Year] used to pull data
+     * @param scoutCardInfoKeys [ArrayList] list of [ScoutCardInfoKey] for stats
+     * @param scoutCardInfos [ArrayList] list of [ScoutCardInfo] for stats
+     * @param database [Database] used to pull data
+     * @return [HashMap] of stats
+     */
+    fun getStats(year: Year?, scoutCardInfoKeys: ArrayList<ScoutCardInfoKey>?, scoutCardInfos: ArrayList<ScoutCardInfo>?, database: Database): HashMap<String, Double>
+    {
+        val statsHashMap = HashMap<String, Double>()
+        val cardCount = HashMap<String, Int>()
+
+        val scoutCardInfoKeys = scoutCardInfoKeys ?: ScoutCardInfoKey.getObjects(year, null, database)
+        val scoutCardInfos = scoutCardInfos ?: ScoutCardInfo.getObjects(this, null, null, null, null, false, database)
+
+        if(!scoutCardInfoKeys.isNullOrEmpty() && !scoutCardInfos.isNullOrEmpty())
+        {
+            for(scoutCardInfoKey in scoutCardInfoKeys)
+            {
+                if(scoutCardInfoKey.includeInStats == true)
+                {
+                    if(!scoutCardInfos.isNullOrEmpty())
+                    {
+                        for(scoutCardInfo in scoutCardInfos)
+                        {
+                            if(scoutCardInfo.propertyKeyId == scoutCardInfoKey.serverId)
+                            {
+                                val stat = Integer.parseInt(scoutCardInfo.propertyValue)
+
+                                statsHashMap[scoutCardInfoKey.toString()] = (statsHashMap[scoutCardInfoKey.toString()] ?: 0.0) + stat //add to the stat record
+
+                                val runningCardCountTotal = (cardCount[scoutCardInfoKey.toString()] ?: 0)
+                                cardCount[scoutCardInfoKey.toString()] = if(scoutCardInfoKey.nullZeros == true && stat == 0) runningCardCountTotal else runningCardCountTotal + 1 //keep a running total of the card count
+                            }
+                        }
+
+                        if(statsHashMap[scoutCardInfoKey.toString()] == null)
+                        {
+                            statsHashMap[scoutCardInfoKey.toString()] = 0.0 //add to the stat record
+
+                            val runningCardCountTotal = (cardCount[scoutCardInfoKey.toString()] ?: 0)
+                            cardCount[scoutCardInfoKey.toString()] = if(scoutCardInfoKey.nullZeros == true) runningCardCountTotal else runningCardCountTotal + 1 //keep a running total of the card count
+                        }
+                    }
+
+                    //set default stats
+                    else
+                    {
+                        statsHashMap[scoutCardInfoKey.toString()] = 0.0
+                        cardCount[scoutCardInfoKey.toString()] = 0
+                    }
+                }
+            }
+
+            //calculate averages by iterating through each stat and card count
+            for(stat in statsHashMap)
+            {
+                val cardCount = cardCount[stat.key]!!
+
+                statsHashMap[stat.key] = if(cardCount != 0) round((statsHashMap[stat.key]!! / cardCount) * 100.00) / 100.00 else 0.0
+            }
+        }
+
+        return statsHashMap
     }
 
     //endregion
@@ -155,8 +187,8 @@ class Event : Table
 
         if (database.isOpen)
         {
-            val events = getObjects(null, this, database)
-            val event = if (events!!.size > 0) events[0] else null
+            val events = getObjects(null, this, null, database)
+            val event = if (events.size > 0) events[0] else null
 
             if (event != null)
             {

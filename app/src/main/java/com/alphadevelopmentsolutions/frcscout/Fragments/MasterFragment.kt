@@ -1,19 +1,26 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
+import android.content.Context
+import android.graphics.PorterDuff
+import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
-
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.layout_master.view.*
+import kotlinx.android.synthetic.main.layout_view_loading.view.*
 import java.util.*
 
-open class MasterFragment : Fragment()
+abstract class MasterFragment : Fragment()
 {
-    //store the context and database in the master fragment which all other fragmets extend from
+    //store the context and database in the master fragment which all other fragments extend from
     protected lateinit var context: MainActivity
     protected lateinit var database: Database
 
@@ -21,18 +28,86 @@ open class MasterFragment : Fragment()
 
     protected var event: Event? = null
 
-    protected var teamJson: String? = null
+    private var teamJson: String? = null
     protected var matchJson: String? = null
-    protected var scoutCardJson: String? = null
-    protected var pitCardJson: String? = null
+    private var scoutCardJson: String? = null
+    private var pitCardJson: String? = null
 
     protected var team: Team? = null
     protected var match: Match? = null
     protected var scoutCardInfo: ScoutCardInfo? = null
 
-    protected lateinit var gson: Gson
+    private lateinit var gson: Gson
 
     protected lateinit var loadingThread: Thread
+
+    private var mListener: OnFragmentInteractionListener? = null
+
+    override fun onAttach(context: Context)
+    {
+        super.onAttach(context)
+        if (context is OnFragmentInteractionListener)
+        {
+            mListener = context
+        }
+        else
+        {
+            throw RuntimeException("$context must implement OnFragmentInteractionListener")
+        }
+    }
+
+    override fun onDetach()
+    {
+        super.onDetach()
+        mListener = null
+    }
+
+    interface OnFragmentInteractionListener
+    {
+        fun onFragmentInteraction(uri: Uri)
+    }
+
+    private lateinit var masterLayout: View
+    private lateinit var loadingView: View
+
+    protected fun onCreateView(view: View): View?
+    {
+        loadingView = LayoutInflater.from(context).inflate(R.layout.layout_view_loading, null).apply {
+
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+            MainLoadingProgressBar.indeterminateDrawable.setColorFilter(this@MasterFragment.context.primaryColor, PorterDuff.Mode.SRC_IN)
+
+        }
+
+        masterLayout = LayoutInflater.from(context).inflate(R.layout.layout_master, null).apply {
+
+            if(isLoading)
+                MasterLinearLayout.addView(loadingView)
+
+            MasterLinearLayout.addView(view)
+        }
+
+
+
+        return masterLayout
+    }
+
+    protected var isLoading = false
+    set(value)
+    {
+        if(value != field)
+        {
+            if(::masterLayout.isInitialized && ::loadingView.isInitialized)
+            {
+                if (value)
+                    masterLayout.MasterLinearLayout.addView(loadingView)
+                else
+                    masterLayout.MasterLinearLayout.removeView(loadingView)
+            }
+
+            field = value
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -40,7 +115,7 @@ open class MasterFragment : Fragment()
 
         //assign context and database vars
         context = activity as MainActivity
-        database = context.getDatabase()
+        database = context.database
         gson = Gson()
 
         //check if any args were passed, specifically for team and match json
@@ -55,11 +130,11 @@ open class MasterFragment : Fragment()
         //create and start the thread to load the json vars
         loadingThread = Thread(Runnable {
 
-            year = Year(context.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int, database)
+            year = Year(-1, context.keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int).apply { load(context.database) }
 
-            val eventId = context.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int
+            val eventId = context.keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int
             if (eventId > 0)
-                event = Event(eventId, database)
+                event = Event(eventId).apply { load(context.database) }
 
             //load the team from json, if available
             if (teamJson != null && teamJson != "")
@@ -77,32 +152,14 @@ open class MasterFragment : Fragment()
         loadingThread.start()
     }
 
-    override fun onDetach()
-    {
-        //reset the title of the app upon detach
-        context.supportActionBar!!.setTitle(R.string.app_name)
-        super.onDetach()
-    }
-
     /**
-     * Joins back up with the loading thread
+     * Used to override the activities back pressed event
+     * @return [Boolean] true to override activities back press event
      */
-    protected fun joinLoadingThread()
-    {
-        //join back up with the loading thread
-        try
-        {
-            loadingThread.join()
-        } catch (e: InterruptedException)
-        {
-            e.printStackTrace()
-        }
-
-    }
+    abstract fun onBackPressed() : Boolean
 
     companion object
     {
-
         @JvmStatic
         protected val ARG_TEAM_JSON = "TEAM_JSON"
 

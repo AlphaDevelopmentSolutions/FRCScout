@@ -4,15 +4,13 @@ import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import java.util.*
 
 class ChecklistItem(
-        var id: Int,
-        var serverId: Int,
-        var title: String,
+        var id: Int = DEFAULT_INT,
+        var serverId: Int = DEFAULT_INT,
+        var title: String = DEFAULT_STRING,
         var description: String) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
-
     companion object
     {
-
         val TABLE_NAME = "checklist_items"
         val COLUMN_NAME_ID = "LocalId"
         val COLUMN_NAME_SERVER_ID = "Id"

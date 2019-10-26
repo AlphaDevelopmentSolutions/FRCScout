@@ -1,47 +1,28 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
-import android.support.v4.view.ViewPager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.LinearLayout
+import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.alphadevelopmentsolutions.frcscout.Adapters.FragmentViewPagerAdapter
 import com.alphadevelopmentsolutions.frcscout.Adapters.TeamListRecyclerViewAdapter
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor
 import com.alphadevelopmentsolutions.frcscout.R
+import kotlinx.android.synthetic.main.fragment_team_list.view.*
 import java.util.*
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [TeamListFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [TeamListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TeamListFragment : MasterFragment()
 {
+    override fun onBackPressed(): Boolean
+    {
+        return false
+    }
 
     private var allianceColorString: String? = null
-
-    private var mListener: OnFragmentInteractionListener? = null
-
-    private var teamsRecyclerView: RecyclerView? = null
-
-    private var teamSearchEditText: EditText? = null
 
     private var teams: ArrayList<Team>? = null
     private var searchedTeams: ArrayList<Team>? = null
@@ -50,11 +31,9 @@ class TeamListFragment : MasterFragment()
 
     private var allianceColor: AllianceColor? = null
 
-    private var allianceViewPagerLinearLayout: LinearLayout? = null
-    private var allianceTabLayout: TabLayout? = null
-    private var allianceViewPager: ViewPager? = null
+    private var previousSearchLength: Int = 0
 
-    private var searchTeamsToolbar: Toolbar? = null
+    private lateinit var teamListAdapter: TeamListRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -63,12 +42,12 @@ class TeamListFragment : MasterFragment()
         //check if any args were passed, specifically for team and match json
         if (arguments != null)
         {
-            matchJson = arguments!!.getString(MasterFragment.ARG_MATCH_JSON)
+            matchJson = arguments!!.getString(ARG_MATCH_JSON)
             allianceColorString = arguments!!.getString(ARG_ALLIANCE_COLOR)
         }
 
         loadTeamsThread = Thread(Runnable {
-            joinLoadingThread()
+            loadingThread.join()
 
             if (match != null && allianceColorString != null && allianceColorString != "")
                 allianceColor = AllianceColor.getColorFromString(allianceColorString!!)
@@ -78,7 +57,7 @@ class TeamListFragment : MasterFragment()
 
             //if a match and alliance color was specified,
             //remove any teams that are not in that match or alliance color
-            if (match != null && allianceColor != null)
+            searchedTeams = if (match != null && allianceColor != null)
             {
                 for (team in ArrayList(teams!!))
                 {
@@ -88,10 +67,12 @@ class TeamListFragment : MasterFragment()
                 }
 
                 //add all the teams to the searchedTeams arraylist
-                searchedTeams = ArrayList(teams!!)
+                ArrayList(teams!!)
             } else
-            //add all the teams to the searchedTeams arraylist
-                searchedTeams = ArrayList(teams!!)
+                //add all the teams to the searchedTeams arraylist
+                ArrayList(teams!!)
+
+            teamListAdapter = TeamListRecyclerViewAdapter(match, searchedTeams!!, context)
         })
 
         loadTeamsThread!!.start()
@@ -106,174 +87,170 @@ class TeamListFragment : MasterFragment()
         //gets rid of the shadow on the actionbar
         context.dropActionBar()
 
-        teamsRecyclerView = view.findViewById(R.id.TeamsRecyclerView)
-        teamSearchEditText = view.findViewById(R.id.TeamSearchEditText)
-        allianceViewPagerLinearLayout = view.findViewById(R.id.AllianceViewPagerLinearLayout)
-        allianceTabLayout = view.findViewById(R.id.AllianceTabLayout)
-        allianceViewPager = view.findViewById(R.id.AllianceViewPager)
-        searchTeamsToolbar = view.findViewById(R.id.SearchTeamsToolbar)
+        loadTeamsThread!!.join()
 
-        searchTeamsToolbar!!.setBackgroundColor(context.primaryColor)
-        allianceTabLayout!!.setBackgroundColor(context.primaryColor)
+        context.setToolbarTitle(if (match == null) context.getString(R.string.teams) else match.toString())
+        context.isSearchViewVisible = match == null
+        context.isToolbarScrollable = match == null
 
-
-        //join back up with the load teams thread
-        try
-        {
-            loadTeamsThread!!.join()
-        } catch (e: InterruptedException)
-        {
-            e.printStackTrace()
-        }
-
-        context.title = if (match == null) event!!.name else match.toString()
-
-        //hide search bar if match is specified
-        if (match != null)
-            searchTeamsToolbar!!.visibility = View.GONE
+        view.AllianceTabLayout.setBackgroundColor(context.primaryColor)
 
         if (match == null || allianceColor == AllianceColor.BLUE || allianceColor == AllianceColor.RED)
         {
-            val teamListRecyclerViewAdapter = TeamListRecyclerViewAdapter(match, searchedTeams!!, context)
+            Thread(Runnable{
 
-            teamsRecyclerView!!.layoutManager = LinearLayoutManager(context)
-            teamsRecyclerView!!.adapter = teamListRecyclerViewAdapter
+                val layoutManager = LinearLayoutManager(context)
 
-            teamSearchEditText!!.addTextChangedListener(object : TextWatcher
+                context.runOnUiThread{
+
+                    view.TeamsRecyclerView.layoutManager = layoutManager
+                    view.TeamsRecyclerView.adapter = teamListAdapter
+
+                    isLoading = false
+                }
+
+            }).start()
+
+            if(match == null)
             {
-                override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int)
-                {
-
-                }
-
-                override fun onTextChanged(searchText: CharSequence, start: Int, before: Int, count: Int)
-                {
-                    //You only need to reset the list if you are removing from your search, adding the objects back
-                    if (count < before)
+                context.setSearchViewOnTextChangeListener(object: SearchView.OnQueryTextListener{
+                    override fun onQueryTextSubmit(p0: String?): Boolean
                     {
-                        //Reset the list
-                        for (i in teams!!.indices)
-                        {
-                            val team = teams!![i]
+                        return false
+                    }
 
-                            //check if the contact doesn't exist in the viewable list
-                            if (!searchedTeams!!.contains(team))
+                    override fun onQueryTextChange(searchText: String?): Boolean
+                    {
+                        val searchLength = searchText?.length ?: 0
+
+                        //You only need to reset the list if you are removing from your search, adding the objects back
+                        if (searchLength < previousSearchLength)
+                        {
+                            //Reset the list
+                            for (i in teams!!.indices)
                             {
-                                //add it and notify the recyclerview
-                                searchedTeams!!.add(i, team)
-                                teamListRecyclerViewAdapter.notifyItemInserted(i)
-                                teamListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedTeams!!.size)
+                                val team = teams!![i]
+
+                                //check if the contact doesn't exist in the viewable list
+                                if (!searchedTeams!!.contains(team))
+                                {
+                                    //add it and notify the recyclerview
+                                    searchedTeams!!.add(i, team)
+                                    teamListAdapter.notifyItemInserted(i)
+                                    teamListAdapter.notifyItemRangeChanged(i, searchedTeams!!.size)
+                                }
+
                             }
-
                         }
-                    }
 
-                    //Delete from the list
-                    var i = 0
-                    while (i < searchedTeams!!.size)
-                    {
-                        val team = searchedTeams!![i]
-                        val name = team.id.toString() + " - " + team.name
-
-                        //If the contacts name doesn't equal the searched name
-                        if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
+                        //Delete from the list
+                        var i = 0
+                        while (i < searchedTeams!!.size)
                         {
-                            //remove it from the list and notify the recyclerview
-                            searchedTeams!!.removeAt(i)
-                            teamListRecyclerViewAdapter.notifyItemRemoved(i)
-                            teamListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedTeams!!.size)
+                            val team = searchedTeams!![i]
+                            val name = team.id.toString() + " - " + team.name
 
-                            //this prevents the index from passing the size of the list,
-                            //stays on the same index until you NEED to move to the next one
-                            i--
+                            //If the contacts name doesn't equal the searched name
+                            if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
+                            {
+                                //remove it from the list and notify the recyclerview
+                                searchedTeams!!.removeAt(i)
+                                teamListAdapter.notifyItemRemoved(i)
+                                teamListAdapter.notifyItemRangeChanged(i, searchedTeams!!.size)
+
+                                //this prevents the index from passing the size of the list,
+                                //stays on the same index until you NEED to move to the next one
+                                i--
+                            }
+                            i++
                         }
-                        i++
+
+                        previousSearchLength = searchLength
+
+                        return false
                     }
-                }
 
-                override fun afterTextChanged(editable: Editable)
-                {
+                })
+            }
 
-                }
-            })
-        } else
+        }
+
+        else
         {
-            allianceViewPagerLinearLayout!!.visibility = View.VISIBLE
-            teamsRecyclerView!!.visibility = View.GONE
+            context.setToolbarTitle(match.toString())
+            view.AllianceViewPagerLinearLayout.visibility = View.VISIBLE
+            view.TeamsRecyclerView.visibility = View.GONE
 
             val viewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
 
-            viewPagerAdapter.addFragment(TeamListFragment.newInstance(match, AllianceColor.BLUE), getString(R.string.blue_alliance))
-            viewPagerAdapter.addFragment(TeamListFragment.newInstance(match, AllianceColor.RED), getString(R.string.red_alliance))
+            val blueAllianceFrag = newInstance(match, AllianceColor.BLUE)
+            val redAllianceFrag = newInstance(match, AllianceColor.RED)
 
-            allianceViewPager!!.adapter = viewPagerAdapter
-            allianceTabLayout!!.setupWithViewPager(allianceViewPager)
+            viewPagerAdapter.addFragment(blueAllianceFrag, context.getString(R.string.blue_alliance))
+            viewPagerAdapter.addFragment(redAllianceFrag, context.getString(R.string.red_alliance))
+
+            view.AllianceViewPager.adapter = viewPagerAdapter
+            view.AllianceTabLayout.setupWithViewPager(view.AllianceViewPager)
+            view.AllianceTabLayout.setSelectedTabIndicatorColor(context.primaryColorDark)
+
+            context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
+
         }//if match specified, setup the viewpager and hide the recyclerview
 
-        return view
+        return super.onCreateView(view)
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri)
+    override fun onPause()
     {
-        if (mListener != null)
-        {
-            mListener!!.onFragmentInteraction(uri)
-        }
+        super.onPause()
+        if(context.isSearchViewVisible)
+            context.isSearchViewVisible = false
     }
 
-    override fun onAttach(context: Context?)
+    override fun onResume()
     {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener)
-        {
-            mListener = context
-        } else
-        {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
+        super.onResume()
+        if(!context.isSearchViewVisible && match == null)
+            context.isSearchViewVisible = true
+
+        teamListAdapter.notifyItemChanged(0)
     }
 
-    override fun onDetach()
+    override fun onDestroyView()
     {
-        super.onDetach()
-        mListener = null
+        if (match != null)
+            context.unlockDrawerLayout()
+
+        if(context.isSearchViewVisible)
+            context.isSearchViewVisible = false
+
+        super.onDestroyView()
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener
+    override fun onDestroy()
     {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
+        super.onDestroy()
+        context.setSearchViewOnTextChangeListener(null)
     }
 
     companion object
     {
-        internal val ARG_ALLIANCE_COLOR = "ALLIANCE_COLOR"
+        internal const val ARG_ALLIANCE_COLOR = "ALLIANCE_COLOR"
 
         /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @return A new instance of fragment TeamListFragment.
+         * Creates a new instance
+         * @param match to get teams from
+         * @param allianceColor to get teams from
+         * @return A new instance of fragment [TeamListFragment].
          */
-        // TODO: Rename and change types and number of parameters
         fun newInstance(match: Match?, allianceColor: AllianceColor?): TeamListFragment
         {
             val fragment = TeamListFragment()
             val args = Bundle()
-            args.putString(MasterFragment.ARG_MATCH_JSON, MasterFragment.toJson(match))
+            args.putString(ARG_MATCH_JSON, toJson(match))
             args.putString(ARG_ALLIANCE_COLOR, allianceColor?.name ?: AllianceColor.NONE.name)
             fragment.arguments = args
             return fragment
         }
     }
-}// Required empty public constructor
+}

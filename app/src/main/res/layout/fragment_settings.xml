@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Fragments.SettingsFragment" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/material_padding"
+        android:orientation="vertical"
+        android:padding="@dimen/material_padding">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/build_info"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_primary" />
+
+        <TextView
+            android:id="@+id/AppVersionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_version"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_secondary" />
+
+        <TextView
+            android:id="@+id/BuildNumberTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/build_number"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_secondary" />
+
+        <TextView
+            android:id="@+id/BuildTypeTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/build_type"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_secondary" />
+
+        <TextView
+            android:id="@+id/BuildFlavorTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/build_flavor"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_secondary" />
+    </LinearLayout>
+
+    <include
+        layout="@layout/layout_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height" />
+
+    <TextView
+        android:id="@+id/LicensesButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:letterSpacing="0"
+        android:padding="16dp"
+        android:text="@string/licenses"
+        android:textAlignment="viewStart"
+        android:textAllCaps="false"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/text_primary"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <include
+        layout="@layout/layout_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height" />
+</LinearLayout>

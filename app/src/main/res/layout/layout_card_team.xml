@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
+    <androidx.cardview.widget.CardView
+        android:layout_width="@dimen/basic_card_width"
         android:layout_height="@dimen/basic_card_height"
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/material_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/material_padding"
@@ -27,13 +28,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
                 android:text="@string/placeholder"
-                android:textColor="@color/textPrimary"
-                android:textSize="@dimen/textPrimary"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_primary"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/TeamLogoImageView"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/TeamLocationTextView"
@@ -42,8 +46,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/placeholder"
-                android:textColor="@color/textSecondary"
-                android:textSize="@dimen/textSecondary"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_secondary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/TeamNameTextView" />
 
@@ -51,10 +55,11 @@
                 android:id="@+id/TeamLogoImageView"
                 android:layout_width="@dimen/basic_card_image_height"
                 android:layout_height="@dimen/basic_card_image_width"
+                android:background="@color/primary"
                 android:contentDescription="@string/team_logo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/frc_logo" />
+                app:srcCompat="@mipmap/ic_launcher" />
 
             <Button
                 android:id="@+id/ViewTeamButton"
@@ -64,15 +69,15 @@
                 android:layout_marginStart="1dp"
                 android:text="@string/view_team"
                 android:textAllCaps="true"
-                android:textColor="@color/textLink"
-                android:textSize="@dimen/textSecondary"
+                android:textColor="@color/text_link"
+                android:textSize="@dimen/text_secondary"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

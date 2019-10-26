@@ -1,36 +1,50 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.alphadevelopmentsolutions.frcscout.Adapters.MatchListRecyclerViewAdapter
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.R
+import kotlinx.android.synthetic.main.fragment_match_list.view.*
+import java.util.*
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [MatchListFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [MatchListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MatchListFragment : MasterFragment()
 {
-    private var mListener: MatchListFragment.OnFragmentInteractionListener? = null
-
-    private var matchListRecyclerView: RecyclerView? = null
+    override fun onBackPressed(): Boolean
+    {
+        return false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
+
+        loadMatchesThread = Thread(Runnable {
+            loadingThread.join()
+
+            matches = Match.getObjects(event, null, team, database)
+            searchedMatches = ArrayList(matches)
+
+            matchListRecyclerViewAdapter = MatchListRecyclerViewAdapter(event!!, team, searchedMatches, context, if (team == null) TeamListFragment::class.java else ScoutCardInfoFragment::class.java)
+
+        })
+
+        loadMatchesThread.start()
     }
+
+    private lateinit var matches: ArrayList<Match>
+    private lateinit var searchedMatches: ArrayList<Match>
+
+    private lateinit var loadMatchesThread: Thread
+
+    private var previousSearchLength: Int = 0
+
+    private lateinit var matchListRecyclerViewAdapter: MatchListRecyclerViewAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
@@ -38,80 +52,130 @@ class MatchListFragment : MasterFragment()
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_match_list, container, false)
 
-        matchListRecyclerView = view.findViewById(R.id.MatchListRecyclerView)
-
-        joinLoadingThread()
-
-        if (team == null)
-            context.setTitle(event.toString())
-
-        val scoutCardsRecyclerViewAdapter = MatchListRecyclerViewAdapter(event!!, team, context, if (team == null) TeamListFragment::class.java else ScoutCardFragment::class.java)
-        matchListRecyclerView!!.layoutManager = LinearLayoutManager(activity)
-        matchListRecyclerView!!.adapter = scoutCardsRecyclerViewAdapter
-
-        return view
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri)
-    {
-        if (mListener != null)
+        Thread(Runnable
         {
-            mListener!!.onFragmentInteraction(uri)
-        }
+            loadMatchesThread.join()
+
+            val layoutManager = LinearLayoutManager(activity)
+
+            context.runOnUiThread {
+                view.MatchListRecyclerView.layoutManager = layoutManager
+                view.MatchListRecyclerView.adapter = matchListRecyclerViewAdapter
+
+
+                if (team == null)
+                {
+                    context.setToolbarTitle(context.getString(R.string.matches))
+                    context.isToolbarScrollable = true
+                    context.isSearchViewVisible = true
+
+                    context.setSearchViewOnTextChangeListener(object : SearchView.OnQueryTextListener
+                    {
+                        override fun onQueryTextSubmit(p0: String?): Boolean
+                        {
+                            return false
+                        }
+
+                        override fun onQueryTextChange(searchText: String?): Boolean
+                        {
+                            val searchLength = searchText?.length ?: 0
+
+                            //You only need to reset the list if you are removing from your search, adding the objects back
+                            if (searchLength < previousSearchLength)
+                            {
+                                //Reset the list
+                                for (i in matches.indices)
+                                {
+                                    val match = matches[i]
+
+                                    //check if the contact doesn't exist in the viewable list
+                                    if (!searchedMatches.contains(match))
+                                    {
+                                        //add it and notify the recyclerview
+                                        searchedMatches.add(i, match)
+                                        matchListRecyclerViewAdapter.notifyItemInserted(i)
+                                        matchListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedMatches.size)
+                                    }
+                                }
+                            }
+
+                            //Delete from the list
+                            var i = 0
+                            while (i < searchedMatches.size)
+                            {
+                                val match = searchedMatches[i]
+                                val name = match.toString()
+
+                                //If the contacts name doesn't equal the searched name
+                                if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
+                                {
+                                    //remove it from the list and notify the recyclerview
+                                    searchedMatches.removeAt(i)
+                                    matchListRecyclerViewAdapter.notifyItemRemoved(i)
+                                    matchListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedMatches.size)
+
+                                    //this prevents the index from passing the size of the list,
+                                    //stays on the same index until you NEED to move to the next one
+                                    i--
+                                }
+                                i++
+                            }
+
+                            previousSearchLength = searchLength
+
+                            return false
+                        }
+                    })
+                } else
+                    context.isToolbarScrollable = false
+
+                isLoading = false
+            }
+
+        }).start()
+
+        isLoading = true
+
+        return super.onCreateView(view)
     }
 
-    override fun onAttach(context: Context?)
+    override fun onPause()
     {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener)
-        {
-            mListener = context
-        } else
-        {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
+        super.onPause()
+        if(context.isSearchViewVisible)
+            context.isSearchViewVisible = false
     }
 
-    override fun onDetach()
+    override fun onResume()
     {
-        super.onDetach()
-        mListener = null
+        super.onResume()
+        if(team == null && !context.isSearchViewVisible)
+            context.isSearchViewVisible = true
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener
+    override fun onDestroyView()
     {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
+        if(context.isSearchViewVisible)
+            context.isSearchViewVisible = false
+
+        super.onDestroyView()
     }
 
     companion object
     {
 
         /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param team
-         * @return A new instance of fragment ScoutCardListFragment.
+         * Creates a new instance
+         * @param team to show matches for
+         * @return A new instance of fragment [MatchListFragment].
          */
-        // TODO: Rename and change types and number of parameters
         fun newInstance(team: Team?): MatchListFragment
         {
             val fragment = MatchListFragment()
             val args = Bundle()
-            args.putString(MasterFragment.ARG_TEAM_JSON, MasterFragment.toJson(team))
+            args.putString(ARG_TEAM_JSON, toJson(team))
             fragment.arguments = args
             return fragment
         }
     }
-}// Required empty public constructor
+}

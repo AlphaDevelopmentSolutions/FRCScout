@@ -3,11 +3,10 @@ package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 
 class Robot(
-        var id: Int,
-        var name: String,
-        var teamNumber: Int) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var id: Int = DEFAULT_INT,
+        var name: String = DEFAULT_STRING,
+        var teamNumber: Int = DEFAULT_INT) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
-
     companion object
     {
         val TABLE_NAME = "robots"

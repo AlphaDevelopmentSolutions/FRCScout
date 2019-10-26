@@ -18,6 +18,10 @@
             android:id="@+id/nav_checklist"
             android:icon="@drawable/ic_assignment_white_24dp"
             android:title="@string/checklist"/>
+        <item
+            android:id="@+id/nav_events"
+            android:icon="@drawable/ic_business_white_24dp"
+            android:title="@string/events"/>
     </group>
 
 </menu>

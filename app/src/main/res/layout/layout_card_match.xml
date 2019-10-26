@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
+    <androidx.cardview.widget.CardView
+        android:layout_width="@dimen/basic_card_width"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/material_padding"
         android:minHeight="@dimen/basic_card_height"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/material_padding"
@@ -22,195 +23,138 @@
             android:layout_marginEnd="@dimen/basic_card_margin"
             android:layout_marginBottom="@dimen/material_padding">
 
-            <LinearLayout
-                android:id="@+id/linearLayout"
+            <TextView
+                android:id="@+id/MatchIdTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_weight="1"
+                android:text="@string/placeholder"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_primary"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/MatchOutcomeScoreLinearLayout"
-                android:baselineAligned="false">
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TableLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:layout_constraintBottom_toTopOf="@+id/ViewMatchButton"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/MatchOutcomeScoreLinearLayout">
-
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/blue_alliance"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/BlueAllianceTeamOneIdTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/material_padding"
-                            android:text="@string/number_placeholder" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/red_alliance"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/RedAllianceTeamOneIdTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/material_padding"
-                            android:text="@string/number_placeholder" />
-                    </TableRow>
-
-                </TableLayout>
-
-                <TableLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:layout_constraintBottom_toTopOf="@+id/ViewMatchButton"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/MatchOutcomeScoreLinearLayout">
-
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/blue_alliance"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/BlueAllianceTeamTwoIdTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/material_padding"
-                            android:text="@string/number_placeholder" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/red_alliance"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/RedAllianceTeamTwoIdTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/material_padding"
-                            android:text="@string/number_placeholder" />
-                    </TableRow>
-
-                </TableLayout>
-
-                <TableLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:layout_constraintBottom_toTopOf="@+id/ViewMatchButton"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/MatchOutcomeScoreLinearLayout">
-
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/blue_alliance"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/BlueAllianceTeamThreeIdTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/material_padding"
-                            android:text="@string/number_placeholder" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/red_alliance"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/RedAllianceTeamThreeIdTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/material_padding"
-                            android:text="@string/number_placeholder" />
-                    </TableRow>
-
-                </TableLayout>
-
-                <TableLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:layout_constraintBottom_toTopOf="@+id/ViewMatchButton"
-                    app:layout_constraintStart_toEndOf="@+id/tableLayout"
-                    app:layout_constraintTop_toBottomOf="@+id/MatchOutcomeScoreLinearLayout">
-
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/blue_alliance"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/BlueAllianceScoreTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/material_padding"
-                            android:text="@string/number_placeholder" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/red_alliance"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/RedAllianceScoreTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/material_padding"
-                            android:text="@string/number_placeholder" />
-                    </TableRow>
-
-                </TableLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/MatchOutcomeScoreLinearLayout"
-                android:layout_width="wrap_content"
+            <TableLayout
+                android:id="@+id/TeamTableLayout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:orientation="horizontal"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/MatchIdTextView">
 
-                <TextView
-                    android:id="@+id/MatchIdTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/placeholder"
-                    android:textColor="@color/textPrimary"
-                    android:textSize="@dimen/textPrimary"
-                    android:textStyle="bold" />
-            </LinearLayout>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/blue_alliance"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/BlueAllianceTeamOneIdTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="@dimen/material_padding"
+                        android:text="@string/number_placeholder"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:id="@+id/BlueAllianceTeamTwoIdTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="@dimen/material_padding"
+                        android:text="@string/number_placeholder"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:id="@+id/BlueAllianceTeamThreeIdTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="@dimen/material_padding"
+                        android:text="@string/number_placeholder"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:id="@+id/BlueAllianceScoreTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="@dimen/material_padding"
+                        android:text="@string/number_placeholder"
+                        android:textAlignment="center" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/red_alliance"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/RedAllianceTeamOneIdTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="@dimen/material_padding"
+                        android:text="@string/number_placeholder"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:id="@+id/RedAllianceTeamTwoIdTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="@dimen/material_padding"
+                        android:text="@string/number_placeholder"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:id="@+id/RedAllianceTeamThreeIdTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="@dimen/material_padding"
+                        android:text="@string/number_placeholder"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:id="@+id/RedAllianceScoreTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="@dimen/material_padding"
+                        android:text="@string/number_placeholder"
+                        android:textAlignment="center" />
+
+                </TableRow>
+
+            </TableLayout>
 
             <Button
                 android:id="@+id/ViewMatchButton"
@@ -218,30 +162,62 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="1dp"
-                android:text="@string/view_card"
+                android:text="@string/view_match"
                 android:textAllCaps="true"
-                android:textColor="@color/textLink"
-                android:textSize="@dimen/textSecondary"
+                android:textColor="@color/text_link"
+                android:textSize="@dimen/text_secondary"
                 android:textStyle="bold"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/TeamTableLayout" />
 
             <Button
-                android:id="@+id/AddCardButton"
+                android:id="@+id/ViewScoutCardButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="1dp"
+                android:text="@string/view_scout_card"
+                android:textAllCaps="true"
+                android:textColor="@color/text_link"
+                android:textSize="@dimen/text_secondary"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ViewMatchButton"
+                app:layout_constraintTop_toBottomOf="@+id/TeamTableLayout" />
+
+            <Button
+                android:id="@+id/AddScoutCardButton"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/add_card"
                 android:textAllCaps="true"
-                android:textColor="@color/textLink"
-                android:textSize="@dimen/textSecondary"
+                android:textColor="@color/text_link"
+                android:textSize="@dimen/text_secondary"
                 android:textStyle="bold"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ViewMatchButton"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintStart_toEndOf="@+id/ViewScoutCardButton"
+                app:layout_constraintTop_toBottomOf="@+id/TeamTableLayout" />
+
+            <Button
+                android:id="@+id/ViewChecklistItemButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="1dp"
+                android:text="@string/view_checklist"
+                android:textAllCaps="true"
+                android:textColor="@color/text_link"
+                android:textSize="@dimen/text_secondary"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/AddScoutCardButton"
+                app:layout_constraintTop_toBottomOf="@+id/TeamTableLayout" />
 
             <ImageView
                 android:id="@+id/MatchOptionsImageView"
@@ -253,7 +229,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_more_vert_black_24dp" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </android.support.v7.widget.CardView>
-</LinearLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

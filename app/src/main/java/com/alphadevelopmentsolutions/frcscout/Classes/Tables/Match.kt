@@ -3,28 +3,29 @@ package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.math.round
 
 class Match(
-        var id: Int,
-        var date: Date,
-        var eventId: String,
-        var key: String,
-        var matchType: Type,
-        var setNumber: Int,
-        var matchNumber: Int,
-        var blueAllianceTeamOneId: Int,
-        var blueAllianceTeamTwoId: Int,
-        var blueAllianceTeamThreeId: Int,
-        var redAllianceTeamOneId: Int,
-        var redAllianceTeamTwoId: Int,
-        var redAllianceTeamThreeId: Int,
-        var blueAllianceScore: Int,
-        var redAllianceScore: Int) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var id: Int = DEFAULT_INT,
+        var date: Date = DEFAULT_DATE,
+        var eventId: String = DEFAULT_STRING,
+        var key: String = DEFAULT_STRING,
+        var matchType: Type = Type.qm,
+        var setNumber: Int = DEFAULT_INT,
+        var matchNumber: Int = DEFAULT_INT,
+        var blueAllianceTeamOneId: Int = DEFAULT_INT,
+        var blueAllianceTeamTwoId: Int = DEFAULT_INT,
+        var blueAllianceTeamThreeId: Int = DEFAULT_INT,
+        var redAllianceTeamOneId: Int = DEFAULT_INT,
+        var redAllianceTeamTwoId: Int = DEFAULT_INT,
+        var redAllianceTeamThreeId: Int = DEFAULT_INT,
+        var blueAllianceScore: Int? = null,
+        var redAllianceScore: Int? = null) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
 {
-
     companion object
     {
-
         val TABLE_NAME = "matches"
         val COLUMN_NAME_ID = "Id"
         val COLUMN_NAME_DATE = "Date"
@@ -75,9 +76,9 @@ class Match(
          * @param database used to load teams
          * @return arraylist of teams
          */
-        fun getObjects(event: Event?, match: Match?, team: Team?, database: Database): ArrayList<Match>?
+        fun getObjects(event: Event?, match: Match?, team: Team?, database: Database, sortDirection: Database.SortDirection = Database.SortDirection.DESC): ArrayList<Match>
         {
-            return database.getMatches(event, match, team)
+            return database.getMatches(event, match, team, sortDirection)
         }
     }
 
@@ -86,12 +87,12 @@ class Match(
      * @return Status enum
      */
     val matchStatus: Status
-        get() = if (blueAllianceScore == redAllianceScore)
-            Status.TIE
-        else if (blueAllianceScore > redAllianceScore)
-            Status.BLUE
-        else
-            Status.RED
+        get() = when
+        {
+            blueAllianceScore == redAllianceScore -> Status.TIE
+            blueAllianceScore?: 0 > redAllianceScore?: 0 -> Status.BLUE
+            else -> Status.RED
+        }
 
     /**
      * This references the types defined by the blue alliance API
@@ -107,17 +108,15 @@ class Match(
 
         fun toString(match: Match): String
         {
-            when (this)
+            return when (this)
             {
-                qm -> return "Quals " + match.matchNumber
+                qm -> "Quals " + match.matchNumber
 
-                qf -> return "Quarters " + match.setNumber + " Match " + match.matchNumber
+                qf -> "Quarters " + match.setNumber + " - " + match.matchNumber
 
-                sf -> return "Semis " + match.setNumber + " Match " + match.matchNumber
+                sf -> "Semis " + match.setNumber + " - " + match.matchNumber
 
-                f -> return "Finals " + match.matchNumber
-
-                else -> return ""
+                f -> "Finals " + match.matchNumber
             }
         }
 
@@ -139,6 +138,11 @@ class Match(
                     Type.sf
                 else
                     Type.f
+            }
+
+            fun getTypes() : ArrayList<Type>
+            {
+                return arrayListOf(qm, qf, sf, f)
             }
         }
     }
@@ -209,6 +213,102 @@ class Match(
     }
 
     /**
+     * Calculates all stats for this [Match]
+     * Highly recommended that this gets ran inside it's own thread
+     * it will take a long time to process
+     * @param year [Year] used to pull data
+     * @param event [Event] used to pull data
+     * @param scoutCardInfoKeys [ArrayList] list of [ScoutCardInfoKey] for stats
+     * @param scoutCardInfos [ArrayList] list of [ScoutCardInfo] for stats
+     * @param database [Database] used to pull data
+     * @return [HashMap] of stats
+     */
+    fun getStats(year: Year?, event: Event?, scoutCardInfoKeys: ArrayList<ScoutCardInfoKey>?, scoutCardInfos: ArrayList<ScoutCardInfo>?, database: Database): HashMap<String, Double>
+    {
+        val statsHashMap = HashMap<String, Double>()
+        val cardCount = HashMap<String, Int>()
+
+        val scoutCardInfoKeys = scoutCardInfoKeys ?: ScoutCardInfoKey.getObjects(year, null, database)
+        val scoutCardInfos = scoutCardInfos ?: ScoutCardInfo.getObjects(event, this, null, null, null, false, database)
+
+        if(!scoutCardInfoKeys.isNullOrEmpty() && !scoutCardInfos.isNullOrEmpty())
+        {
+            val teamList = ArrayList<Int>().apply {
+
+                add(blueAllianceTeamOneId)
+                add(blueAllianceTeamTwoId)
+                add(blueAllianceTeamThreeId)
+
+                add(redAllianceTeamOneId)
+                add(redAllianceTeamTwoId)
+                add(redAllianceTeamThreeId)
+            }
+
+            //filter the scout cards for the teams included in this match
+            val filteredScoutCardInfos = ArrayList<ScoutCardInfo>().apply {
+
+                for(scoutCardInfo in scoutCardInfos)
+                {
+                    if(scoutCardInfo.matchId == key && teamList.contains(scoutCardInfo.teamId))
+                    {
+                        add(scoutCardInfo)
+                    }
+                }
+            }
+
+            //iterate through each scout card info key
+            for(scoutCardInfoKey in scoutCardInfoKeys)
+            {
+                if(scoutCardInfoKey.includeInStats == true)
+                {
+                    if(!filteredScoutCardInfos.isNullOrEmpty())
+                    {
+                        for(scoutCardInfo in filteredScoutCardInfos)
+                        {
+                            if(scoutCardInfo.propertyKeyId == scoutCardInfoKey.serverId)
+                            {
+                                val stat = Integer.parseInt(scoutCardInfo.propertyValue)
+
+                                statsHashMap[scoutCardInfoKey.toString()] = (statsHashMap[scoutCardInfoKey.toString()] ?: 0.0) + stat //add to the stat record
+
+                                val runningCardCountTotal = (cardCount[scoutCardInfoKey.toString()] ?: 0)
+                                cardCount[scoutCardInfoKey.toString()] = if(scoutCardInfoKey.nullZeros == true && stat == 0) runningCardCountTotal else runningCardCountTotal + 1 //keep a running total of the card count
+                            }
+                        }
+
+                        //check if the record was never inserted and default to zero
+                        if(statsHashMap[scoutCardInfoKey.toString()] == null)
+                        {
+                            statsHashMap[scoutCardInfoKey.toString()] = 0.0 //add to the stat record
+
+                            val runningCardCountTotal = (cardCount[scoutCardInfoKey.toString()] ?: 0)
+                            cardCount[scoutCardInfoKey.toString()] = if(scoutCardInfoKey.nullZeros == true) runningCardCountTotal else runningCardCountTotal + 1 //keep a running total of the card count
+                        }
+                    }
+
+                    //default stats
+                    else
+                    {
+                        statsHashMap[scoutCardInfoKey.toString()] = 0.0
+                        cardCount[scoutCardInfoKey.toString()] = 0
+                    }
+                }
+            }
+
+            //calculate averages by iterating through each stat and card count
+            for(stat in statsHashMap)
+            {
+                val cardCount = cardCount[stat.key]!!
+
+                statsHashMap[stat.key] = if(cardCount != 0) round((statsHashMap[stat.key]!! / cardCount) * 100.00) / 100.00 else 0.0
+            }
+        }
+
+        return statsHashMap
+    }
+
+
+    /**
      * Converts the match object into a string title
      * @return string title of match
      */
@@ -216,8 +316,6 @@ class Match(
     {
         return matchType.toString(this)
     }
-
-    //endregion
 
     //region Load, Save & Delete
 
@@ -234,7 +332,7 @@ class Match(
         if (database.isOpen)
         {
             val matches = getObjects(null, this, null, database)
-            val match = if (matches!!.size > 0) matches[0] else null
+            val match = if (matches.size > 0) matches[0] else null
 
             if (match != null)
             {

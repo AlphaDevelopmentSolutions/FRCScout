@@ -4,7 +4,7 @@
     <style name="AppTheme" parent="Base.Theme.MaterialComponents.Light">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
         <item name="actionBarTheme">@style/AppTheme.ActionBarTheme
         </item> <!-- used for the back arrow on the action bar -->
@@ -41,11 +41,17 @@
 
     <style name="CustomProgressDialog">
         <item name="android:windowIsFloating">true</item>
-        <item name="android:textSize">@dimen/textSecondary</item>
+        <item name="android:textSize">@dimen/text_secondary</item>
     </style>
 
     <style name="TextInputLayoutLight" parent="@android:style/TextAppearance">
         <item name="android:textColor">#FFF</item>
+    </style>
+
+    <style name="OutlineBoxLight" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">#fff</item>
+        <item name="android:textColorHint">#fff</item>
+        <item name="android:strokeColor">#fff</item>
     </style>
 
     <style name="EditTextLight" parent="Widget.AppCompat.EditText">
@@ -53,10 +59,7 @@
         <item name="colorControlActivated">#FFF</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
+    <style name="AppTheme.NoActionBar"></style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
