@@ -151,6 +151,9 @@ class MatchListFragment : MasterFragment()
         super.onResume()
         if(team == null && !context.isSearchViewVisible)
             context.isSearchViewVisible = true
+
+        if(team == null)
+            context.unlockDrawerLayout()
     }
 
     override fun onDestroyView()

@@ -162,7 +162,6 @@
     <string name="app_version">App Version - %1$s</string>
     <string name="build_number">Build Number - %1$s</string>
     <string name="build_type">Build Type - %1$s</string>
-    <string name="build_flavor">Build Flavor - %1$s</string>
 
     <string name="license_frcscout">
         Copyright &#169; 2019 Alpha Development Solutions

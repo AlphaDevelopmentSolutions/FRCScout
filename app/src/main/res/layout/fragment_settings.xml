@@ -44,13 +44,6 @@
             android:textColor="@color/text_secondary"
             android:textSize="@dimen/text_secondary" />
 
-        <TextView
-            android:id="@+id/BuildFlavorTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/build_flavor"
-            android:textColor="@color/text_secondary"
-            android:textSize="@dimen/text_secondary" />
     </LinearLayout>
 
     <include

@@ -218,9 +218,6 @@ class TeamListFragment : MasterFragment()
 
     override fun onDestroyView()
     {
-        if (match != null)
-            context.unlockDrawerLayout()
-
         if(context.isSearchViewVisible)
             context.isSearchViewVisible = false
 

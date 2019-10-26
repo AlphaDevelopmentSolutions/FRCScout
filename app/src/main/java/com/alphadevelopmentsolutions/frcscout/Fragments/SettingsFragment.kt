@@ -72,7 +72,6 @@ class SettingsFragment : MasterFragment()
                             AppVersionTextView.text = String.format(context.getString(R.string.app_version), BuildConfig.VERSION_NAME)
                             BuildNumberTextView.text = String.format(context.getString(R.string.build_number), BuildConfig.VERSION_CODE)
                             BuildTypeTextView.text = String.format(context.getString(R.string.build_type), BuildConfig.BUILD_TYPE)
-                            BuildFlavorTextView.text = String.format(context.getString(R.string.build_flavor), BuildConfig.FLAVOR)
 
                             LicensesButton.setOnClickListener{
                                 this@SettingsFragment.context.changeFragment(newInstance(Page.LICENSES), true)

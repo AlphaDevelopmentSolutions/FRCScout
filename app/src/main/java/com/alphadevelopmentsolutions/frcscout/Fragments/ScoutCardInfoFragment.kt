@@ -381,12 +381,6 @@ class ScoutCardInfoFragment : MasterFragment()
         return super.onCreateView(view)
     }
 
-    override fun onDestroyView()
-    {
-        context.unlockDrawerLayout()
-        super.onDestroyView()
-    }
-
     companion object
     {
 

@@ -151,9 +151,7 @@ class ChecklistFragment : MasterFragment()
     {
         if (match != null)
             context.unlockDrawerLayout()
-
-        context.setToolbarTitle(context.getString(R.string.checklist))
-
+        
         super.onDestroyView()
     }
 
