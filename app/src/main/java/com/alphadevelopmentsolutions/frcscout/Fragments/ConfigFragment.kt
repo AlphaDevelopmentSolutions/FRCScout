@@ -86,10 +86,6 @@ class ConfigFragment : MasterFragment()
                     .addOnSuccessListener {
 
                         if (it.tokenResult.isNotEmpty()) {
-                            context.keyStore.setPreference(Constants.SharedPrefKeys.API_CORE_USERNAME, username)
-                            context.keyStore.setPreference(Constants.SharedPrefKeys.API_CORE_PASSWORD, password)
-                            context.keyStore.setPreference(Constants.SharedPrefKeys.API_KEY_KEY, "TEMP")
-
                             val loadingDialog = LoadingDialog(context, LoadingDialog.Style.SPINNER)
                             loadingDialog.message = context.getString(R.string.logging_in)
                             loadingDialog.show()
@@ -102,18 +98,17 @@ class ConfigFragment : MasterFragment()
 
                                     //valid config
                                     if (login.execute()) {
+
                                         with(context)
                                         {
+
                                             runOnUiThread {
                                                 updateNavText(null)
 
                                                 loadingDialog.dismiss()
 
-                                                context.keyStore.resetData()
-
                                                 downloadApplicationData(false, false)
                                             }
-
                                         }
                                     } else {
                                         with(context)
