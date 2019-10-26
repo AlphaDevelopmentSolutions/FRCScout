@@ -31,9 +31,15 @@ class CustomSQLiteDatabase
         database?.execSQL(sql)
     }
 
-    fun query(table: String, columns: Array<String>, selection: String, selectionArgs: Array<String>, groupBy: String?, having: String?, orderBy: String?): DatabaseCursor
+    fun query(table: String, columns: Array<String>, selection: String, selectionArgs: Array<String>, groupBy: String?, having: String?, orderBy: String?): DatabaseCursor?
     {
-        return DatabaseCursor(database?.query(table, columns, selection, selectionArgs, groupBy, having, orderBy))
+        with(database?.query(table, columns, selection, selectionArgs, groupBy, having, orderBy))
+        {
+            return if(this != null)
+                DatabaseCursor(this)
+            else
+                null
+        }
     }
 
     fun update(table: String, values: MasterContentValues, whereClause: String, whereArgs: Array<String>): Int

@@ -23,7 +23,7 @@ class Database(context: MainActivity)
      * @return boolean if database is open
      */
     val isOpen: Boolean
-        get() = if (db != null) db.isOpen else false
+        get() = db.isOpen
 
     enum class SortDirection
     {
@@ -38,7 +38,7 @@ class Database(context: MainActivity)
      * @return class that called thread
      * @throws ClassNotFoundException
      */
-    protected val callingClass: KClass<*>?
+    private val callingClass: KClass<*>?
         @Throws(ClassNotFoundException::class)
         get()
         {
@@ -72,10 +72,11 @@ class Database(context: MainActivity)
      * Returns all columns inside the an object in string array format
      * @return string array of all columns
      */
-    private//get all the COLUMN fields from the calling class
-    //retrieve all fields and iterate through finding the COLUMN fields
-    //add the COLUMN field to the columns array
+    private
     val columns: Array<String>
+        //get all the COLUMN fields from the calling class
+        //retrieve all fields and iterate through finding the COLUMN fields
+        //add the COLUMN field to the columns array
         get()
         {
             val columns = ArrayList<String>()
@@ -293,16 +294,16 @@ class Database(context: MainActivity)
         AppLog.log("Database Save", "Saving ${Event.TABLE_NAME} with the Id ${event.id}")
 
         //event already exists in DB, update
-        if (event.id > 0)
+        return if (event.id > 0)
         {
             //create the where statement
             val whereStatement = Event.COLUMN_NAME_ID + " = ?"
             val whereArgs = arrayOf(event.id.toString() + "")
 
             //update
-            return db.update(Event.TABLE_NAME, contentValues, whereStatement, whereArgs).toLong()
+            db.update(Event.TABLE_NAME, contentValues, whereStatement, whereArgs).toLong()
         } else
-            return db.insert(Event.TABLE_NAME, null, contentValues)//insert new event in db
+            db.insert(Event.TABLE_NAME, null, contentValues)//insert new event in db
 
     }
 
@@ -478,15 +479,24 @@ class Database(context: MainActivity)
                     whereStatement,
                     whereArgs, null, null, null)
 
-            return if (cursor.count > 0) {
-                cursor.close()
-                //update
-                db.update(Team.TABLE_NAME, contentValues, whereStatement, whereArgs).toLong()
-            } else {
-                cursor.close()
-                contentValues.put(Team.COLUMN_NAME_ID, team.id)
-                db.insert(Team.TABLE_NAME, null, contentValues)
-            }//record doesn't exist yet, insert
+            if(cursor != null)
+            {
+
+                return if (cursor.count > 0)
+                {
+                    cursor.close()
+                    //update
+                    db.update(Team.TABLE_NAME, contentValues, whereStatement, whereArgs).toLong()
+                }
+                else
+                {
+                    cursor.close()
+                    contentValues.put(Team.COLUMN_NAME_ID, team.id)
+                    db.insert(Team.TABLE_NAME, null, contentValues)
+                }//record doesn't exist yet, insert
+            }
+            else
+                return -1
         } else
             return db.insert(Team.TABLE_NAME, null, contentValues)//insert new team in db
 
@@ -571,16 +581,16 @@ class Database(context: MainActivity)
         AppLog.log("Database Save", "Saving ${Robot.TABLE_NAME} with the Id ${robot.id}")
 
         //robot already exists in DB, update
-        if (robot.id > 0)
+        return if (robot.id > 0)
         {
             //create the where statement
             val whereStatement = Robot.COLUMN_NAME_ID + " = ?"
             val whereArgs = arrayOf(robot.id.toString() + "")
 
             //update
-            return db.update(Robot.TABLE_NAME, contentValues, whereStatement, whereArgs).toLong()
+            db.update(Robot.TABLE_NAME, contentValues, whereStatement, whereArgs).toLong()
         } else
-            return db.insert(Robot.TABLE_NAME, null, contentValues)//insert new robot in db
+            db.insert(Robot.TABLE_NAME, null, contentValues)//insert new robot in db
 
     }
 
@@ -1430,19 +1440,19 @@ class Database(context: MainActivity)
         AppLog.log("Database Save", "Saving ${RobotInfoKey.TABLE_NAME} with the Id ${robotInfoKey.id}")
 
         //robotInfoKey already exists in DB, update
-        if (robotInfoKey.id > 0)
+        return if (robotInfoKey.id > 0)
         {
             //create the where statement
             val whereStatement = RobotInfoKey.COLUMN_NAME_ID + " = ?"
             val whereArgs = arrayOf(robotInfoKey.id.toString() + "")
 
             //update
-            return if (db.update(RobotInfoKey.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            if (db.update(RobotInfoKey.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 robotInfoKey.id.toLong()
             else
                 -1
         } else
-            return db.insert(RobotInfoKey.TABLE_NAME, null, contentValues)//insert new scoutCardInfo in db
+            db.insert(RobotInfoKey.TABLE_NAME, null, contentValues)//insert new scoutCardInfo in db
 
     }
 
@@ -1535,19 +1545,19 @@ class Database(context: MainActivity)
         AppLog.log("Database Save", "Saving ${User.TABLE_NAME} with the Id ${user.id}")
 
         //object already exists in DB, update
-        if (user.id > 0)
+        return if (user.id > 0)
         {
             //create the where statement
             val whereStatement = User.COLUMN_NAME_ID + " = ?"
             val whereArgs = arrayOf(user.id.toString() + "")
 
             //update
-            return if (db.update(User.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            if (db.update(User.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 user.id.toLong()
             else
                 -1
         } else
-            return db.insert(User.TABLE_NAME, null, contentValues)//insert new object in db
+            db.insert(User.TABLE_NAME, null, contentValues)//insert new object in db
 
     }
 
@@ -1688,19 +1698,19 @@ class Database(context: MainActivity)
         contentValues.put(RobotMedia.COLUMN_NAME_IS_DRAFT, if (robotMedia.isDraft) "1" else "0")
 
         //robotMedia already exists in DB, update
-        if (robotMedia.id > 0)
+        return if (robotMedia.id > 0)
         {
             //create the where statement
             val whereStatement = RobotMedia.COLUMN_NAME_ID + " = ?"
             val whereArgs = arrayOf(robotMedia.id.toString() + "")
 
             //update
-            return if (db.update(RobotMedia.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            if (db.update(RobotMedia.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 robotMedia.id.toLong()
             else
                 -1
         } else
-            return db.insert(RobotMedia.TABLE_NAME, null, contentValues)//insert new robotMedia in db
+            db.insert(RobotMedia.TABLE_NAME, null, contentValues)//insert new robotMedia in db
 
     }
 
@@ -1812,19 +1822,19 @@ class Database(context: MainActivity)
         AppLog.log("Database Save", "Saving ${Year.TABLE_NAME} with the Id ${year.id}")
 
         //year already exists in DB, update
-        if (year.id > 0)
+        return if (year.id > 0)
         {
             //create the where statement
             val whereStatement = Year.COLUMN_NAME_ID + " = ?"
             val whereArgs = arrayOf(year.id.toString() + "")
 
             //update
-            return if (db.update(Year.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            if (db.update(Year.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 year.id.toLong()
             else
                 -1
         } else
-            return db.insert(Year.TABLE_NAME, null, contentValues)//insert new year in db
+            db.insert(Year.TABLE_NAME, null, contentValues)//insert new year in db
 
     }
 
@@ -1937,19 +1947,19 @@ class Database(context: MainActivity)
         AppLog.log("Database Save", "Saving ${EventTeamList.TABLE_NAME} with the Id ${eventTeamList.id}")
 
         //robotMedia already exists in DB, update
-        if (eventTeamList.id > 0)
+        return if (eventTeamList.id > 0)
         {
             //create the where statement
             val whereStatement = EventTeamList.COLUMN_NAME_ID + " = ?"
             val whereArgs = arrayOf(eventTeamList.id.toString() + "")
 
             //update
-            return if (db.update(EventTeamList.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            if (db.update(EventTeamList.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 eventTeamList.id.toLong()
             else
                 -1
         } else
-            return db.insert(EventTeamList.TABLE_NAME, null, contentValues)//insert new robotMedia in db
+            db.insert(EventTeamList.TABLE_NAME, null, contentValues)//insert new robotMedia in db
 
     }
 
@@ -2057,19 +2067,19 @@ class Database(context: MainActivity)
         AppLog.log("Database Save", "Saving ${ChecklistItem.TABLE_NAME} with the Id ${checklistItem.id}")
 
         //robotMedia already exists in DB, update
-        if (checklistItem.id > 0)
+        return if (checklistItem.id > 0)
         {
             //create the where statement
             val whereStatement = ChecklistItem.COLUMN_NAME_ID + " = ?"
             val whereArgs = arrayOf(checklistItem.id.toString() + "")
 
             //update
-            return if (db.update(ChecklistItem.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            if (db.update(ChecklistItem.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 checklistItem.id.toLong()
             else
                 -1
         } else
-            return db.insert(ChecklistItem.TABLE_NAME, null, contentValues)//insert new robotMedia in db
+            db.insert(ChecklistItem.TABLE_NAME, null, contentValues)//insert new robotMedia in db
 
     }
 
@@ -2209,19 +2219,19 @@ class Database(context: MainActivity)
         AppLog.log("Database Save", "Saving ${ChecklistItemResult.TABLE_NAME} with the Id ${checklistItemResult.id}")
 
         //robotMedia already exists in DB, update
-        if (checklistItemResult.id > 0)
+        return if (checklistItemResult.id > 0)
         {
             //create the where statement
             val whereStatement = ChecklistItemResult.COLUMN_NAME_ID + " = ?"
             val whereArgs = arrayOf(checklistItemResult.id.toString() + "")
 
             //update
-            return if (db.update(ChecklistItemResult.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
+            if (db.update(ChecklistItemResult.TABLE_NAME, contentValues, whereStatement, whereArgs) == 1)
                 checklistItemResult.id.toLong()
             else
                 -1
         } else
-            return db.insert(ChecklistItemResult.TABLE_NAME, null, contentValues)//insert new robotMedia in db
+            db.insert(ChecklistItemResult.TABLE_NAME, null, contentValues)//insert new robotMedia in db
 
     }
 
