@@ -128,7 +128,7 @@ class ScoutCardInfoFragment : MasterFragment()
 
                                         ScoutCardInfoKey.DataTypes.INT ->
                                         {
-                                            InfoKeyValue.text = "0"
+                                            InfoKeyValue.text = infoKey.minValue.toString()
                                         }
 
                                         ScoutCardInfoKey.DataTypes.BOOL ->
@@ -203,7 +203,7 @@ class ScoutCardInfoFragment : MasterFragment()
                             {
                                 IntegerLinearLayout.visibility = View.VISIBLE
 
-                                InfoKeyValue.text = if (scoutCardInfo?.propertyValue?.isNotBlank() == true) scoutCardInfo?.propertyValue ?: "0" else infoKey.minValue?.toString() ?: "0"
+                                InfoKeyValue.text = if (scoutCardInfo?.propertyValue?.isNotBlank() == true) scoutCardInfo?.propertyValue ?: infoKey.minValue?.toString() ?: "0" else infoKey.minValue?.toString() ?: "0"
 
                                 PlusButton.backgroundTintList = this@ScoutCardInfoFragment.context.buttonBackground
                                 (PlusButton as MaterialButton).rippleColor = this@ScoutCardInfoFragment.context.buttonRipple
