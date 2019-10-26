@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/InfoKeyTitle"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="@dimen/material_padding"
@@ -76,8 +76,9 @@
 
     <LinearLayout
         android:id="@+id/TextLinearLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="horizontal"
         android:visibility="gone">
 
