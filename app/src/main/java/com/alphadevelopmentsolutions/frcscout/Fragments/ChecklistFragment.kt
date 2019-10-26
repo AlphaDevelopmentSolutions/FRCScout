@@ -132,8 +132,6 @@ class ChecklistFragment : MasterFragment()
 
             context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
             view = inflater.inflate(R.layout.fragment_checklist, container, false)
-            context.currentZIndex++
-            view.z = zIndex
             recyclerView = view.findViewById(R.id.ChecklistItemsRecyclerView)
 
             val checklistItemListRecyclerViewAdapter = ChecklistItemListRecyclerViewAdapter(match!!, ChecklistItem.getObjects(null, database)!!, context)
@@ -158,15 +156,6 @@ class ChecklistFragment : MasterFragment()
 
         super.onDestroyView()
     }
-
-    override fun onDetach()
-    {
-        if(match != null)
-            context.currentZIndex--
-
-        super.onDetach()
-    }
-
 
     companion object
     {

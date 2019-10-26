@@ -294,7 +294,7 @@ class QuickStatsFragment : MasterFragment()
 
         isLoading = true
 
-        return super.onCreateView(view, false)
+        return super.onCreateView(view)
     }
 
     companion object

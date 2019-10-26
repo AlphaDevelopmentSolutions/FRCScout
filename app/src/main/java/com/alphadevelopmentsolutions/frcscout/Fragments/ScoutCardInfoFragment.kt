@@ -378,7 +378,7 @@ class ScoutCardInfoFragment : MasterFragment()
         //update the title of the page to display the match
         context.setToolbarTitle(match!!.matchType.toString(match!!))
 
-        return super.onCreateView(view, true)
+        return super.onCreateView(view)
     }
 
     override fun onDestroyView()

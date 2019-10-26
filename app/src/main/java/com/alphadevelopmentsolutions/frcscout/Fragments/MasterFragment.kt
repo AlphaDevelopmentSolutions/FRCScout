@@ -43,8 +43,6 @@ abstract class MasterFragment : Fragment()
 
     private var mListener: OnFragmentInteractionListener? = null
 
-    protected var zIndex: Float = -1f
-
     override fun onAttach(context: Context)
     {
         super.onAttach(context)
@@ -54,7 +52,7 @@ abstract class MasterFragment : Fragment()
         }
         else
         {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
+            throw RuntimeException("$context must implement OnFragmentInteractionListener")
         }
     }
 
@@ -62,8 +60,6 @@ abstract class MasterFragment : Fragment()
     {
         super.onDetach()
         mListener = null
-        context.currentZIndex--
-        context.currentZIndex--
     }
 
     interface OnFragmentInteractionListener
@@ -74,21 +70,24 @@ abstract class MasterFragment : Fragment()
     private lateinit var masterLayout: View
     private lateinit var loadingView: View
 
-    protected fun onCreateView(view: View, addZ: Boolean = false): View?
+    protected fun onCreateView(view: View): View?
     {
-        loadingView = LayoutInflater.from(context).inflate(R.layout.layout_view_loading, null)
-        loadingView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
-        loadingView.MainLoadingProgressBar.indeterminateDrawable.setColorFilter(context.primaryColor, PorterDuff.Mode.SRC_IN)
+        loadingView = LayoutInflater.from(context).inflate(R.layout.layout_view_loading, null).apply {
 
-        masterLayout = LayoutInflater.from(context).inflate(R.layout.layout_master, null)
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+            MainLoadingProgressBar.indeterminateDrawable.setColorFilter(this@MasterFragment.context.primaryColor, PorterDuff.Mode.SRC_IN)
 
-        if(addZ)
-            masterLayout.z = zIndex
+        }
 
-        if(isLoading)
-            masterLayout.MasterLinearLayout.addView(loadingView)
+        masterLayout = LayoutInflater.from(context).inflate(R.layout.layout_master, null).apply {
 
-        masterLayout.MasterLinearLayout.addView(view)
+            if(isLoading)
+                MasterLinearLayout.addView(loadingView)
+
+            MasterLinearLayout.addView(view)
+        }
+
+
 
         return masterLayout
     }
@@ -118,10 +117,6 @@ abstract class MasterFragment : Fragment()
         context = activity as MainActivity
         database = context.database
         gson = Gson()
-        context.currentZIndex++
-        context.currentZIndex++
-
-        zIndex = context.currentZIndex.toFloat()
 
         //check if any args were passed, specifically for team and match json
         if (arguments != null)

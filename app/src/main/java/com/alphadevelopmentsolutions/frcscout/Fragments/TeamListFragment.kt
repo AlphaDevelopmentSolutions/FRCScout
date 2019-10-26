@@ -197,7 +197,7 @@ class TeamListFragment : MasterFragment()
 
         }//if match specified, setup the viewpager and hide the recyclerview
 
-        return super.onCreateView(view, !(match == null || allianceColor == AllianceColor.BLUE || allianceColor == AllianceColor.RED))
+        return super.onCreateView(view)
     }
 
     override fun onPause()

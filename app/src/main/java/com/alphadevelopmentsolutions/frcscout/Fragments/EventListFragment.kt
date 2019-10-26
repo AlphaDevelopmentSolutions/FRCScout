@@ -65,7 +65,6 @@ class EventListFragment : MasterFragment()
     {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_event_list, container, false)
-        view.z = zIndex + 4
 
         context.lockDrawerLayout(true, View.OnClickListener { context.changeFragment(YearListFragment.newInstance(), false, true, true) })
         context.isToolbarScrollable = true

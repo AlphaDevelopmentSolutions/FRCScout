@@ -52,7 +52,6 @@ class RobotMediaFragment : MasterFragment()
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_robot_media, container, false)
         context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
-        view.z = zIndex
 
         robotMediaImageView = view.RobotMediaImageView
 

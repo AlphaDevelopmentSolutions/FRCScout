@@ -48,7 +48,6 @@ class YearListFragment : MasterFragment()
     {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_year_list, container, false)
-        view.z = zIndex
 
         context.setToolbarTitle(R.string.years)
         context.lockDrawerLayout()

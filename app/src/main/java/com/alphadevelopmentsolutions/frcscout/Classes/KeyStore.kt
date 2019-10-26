@@ -101,9 +101,7 @@ class KeyStore(val context: MainActivity? = null)
     {
         return with(Constants.SharedPrefKeys)
         {
-            getPreference(API_KEY_KEY, "") != "" &&
-            getPreference(API_CORE_USERNAME, "") != "" &&
-            getPreference(API_CORE_PASSWORD, "") != ""
+            getPreference(API_KEY_KEY, "") != ""
         }
     }
 

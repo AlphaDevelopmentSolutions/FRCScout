@@ -211,7 +211,7 @@ class RobotInfoFragment : MasterFragment()
         loadingThread.join()
         isLoading = true
 
-        return super.onCreateView(view, true)
+        return super.onCreateView(view)
     }
 
     companion object

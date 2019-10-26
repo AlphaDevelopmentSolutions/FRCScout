@@ -104,8 +104,6 @@ class MainActivity : AppCompatActivity(),
         return field
     }
 
-    var currentZIndex = 0
-
     override fun onCreate(savedInstanceState: Bundle?)
     {
         setTheme(R.style.AppTheme)

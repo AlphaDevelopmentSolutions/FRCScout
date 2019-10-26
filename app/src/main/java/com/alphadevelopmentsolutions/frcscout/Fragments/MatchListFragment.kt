@@ -136,7 +136,7 @@ class MatchListFragment : MasterFragment()
 
         isLoading = true
 
-        return super.onCreateView(view, false)
+        return super.onCreateView(view)
     }
 
     override fun onPause()

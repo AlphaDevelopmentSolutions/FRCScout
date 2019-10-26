@@ -61,7 +61,7 @@ class SettingsFragment : MasterFragment()
     {
         when(page)
         {
-            Page.LICENSES -> return super.onCreateView(inflater.inflate(R.layout.layout_licenses, container, false), true)
+            Page.LICENSES -> return super.onCreateView(inflater.inflate(R.layout.layout_licenses, container, false))
 
             else ->
             {
@@ -77,8 +77,7 @@ class SettingsFragment : MasterFragment()
                             LicensesButton.setOnClickListener{
                                 this@SettingsFragment.context.changeFragment(newInstance(Page.LICENSES), true)
                             }
-                        },
-                        true)
+                        })
             }
 
         }
