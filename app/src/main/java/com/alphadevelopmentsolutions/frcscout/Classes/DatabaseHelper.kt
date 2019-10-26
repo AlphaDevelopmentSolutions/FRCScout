@@ -57,7 +57,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
     companion object
     {
 
-        private val DB_VERSION = 15
+        private val DB_VERSION = 16
         private val DB_NAME = "FRCScout.db"
     }
 }
