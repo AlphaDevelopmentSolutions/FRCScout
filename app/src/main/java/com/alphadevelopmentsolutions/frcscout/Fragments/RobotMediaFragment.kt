@@ -1,25 +1,29 @@
 package com.alphadevelopmentsolutions.frcscout.Fragments
 
-import android.app.Activity
-import android.content.Intent
+import android.graphics.Matrix
 import android.os.Bundle
-import android.provider.MediaStore
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.DisplayMetrics
+import android.util.Rational
+import android.view.*
 import android.widget.ImageView
-import androidx.core.content.FileProvider
+import android.widget.LinearLayout
+import androidx.camera.core.*
+import androidx.lifecycle.LifecycleOwner
+import com.alphadevelopmentsolutions.frcscout.Classes.AutoFitPreviewBuilder
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
+import com.alphadevelopmentsolutions.frcscout.Interfaces.AppLog
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_robot_media.view.*
 import java.io.File
+import java.lang.Exception
 import java.util.*
+import java.util.concurrent.Executors
 
 
-class RobotMediaFragment : MasterFragment()
+class RobotMediaFragment : MasterFragment(), LifecycleOwner
 {
     override fun onBackPressed(): Boolean
     {
@@ -34,7 +38,7 @@ class RobotMediaFragment : MasterFragment()
 
     private lateinit var mediaFilePath: String
 
-
+    private val executor = Executors.newSingleThreadExecutor()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -58,38 +62,25 @@ class RobotMediaFragment : MasterFragment()
         //robot media loaded, load image into the imageview
         if (::robotMedia.isInitialized)
         {
-            view.RobotMediaSaveButton.visibility = View.GONE
+            view.CameraControls.visibility = View.GONE
 
             robotMediaImageView.setImageBitmap(robotMedia.imageBitmap)
         }
         else
         {
-            view.RobotMediaSaveButton.backgroundTintList = context.buttonBackground
 
-            //save the new image
-            view.RobotMediaSaveButton.setOnClickListener {
 
-                robotMedia.save(database)
 
-                context.supportFragmentManager.popBackStackImmediate()
-            }
-
-            val tempFile = File.createTempFile(
-                    UUID.randomUUID().toString(),
-                    ".jpeg",
-                    context.getExternalFilesDir(Constants.ROBOT_MEDIA_DIRECTORY)).apply {
-                mediaFilePath = absolutePath
-            }
-
-            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-                takePictureIntent.resolveActivity(context.packageManager)?.also {
-                        tempFile.also {
-
-                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(context, "com.alphadevelopmentsolutions.frcscout.provider", it))
-                            startActivityForResult(takePictureIntent, Constants.ROBOT_MEDIA_REQUEST_CODE)
-                        }
-                }
-            }
+            startCamera(
+                    CameraX.LensFacing.BACK,
+                    view.ViewFinder,
+                    view.SwitchCameraImageView,
+                    view.TakePictureImageView,
+                    view.CancelImageView,
+                    view.SaveImageView,
+                    view.CameraControls,
+                    view.ImageControls
+            )
         }
 
         loadingThread.join()
@@ -99,30 +90,122 @@ class RobotMediaFragment : MasterFragment()
         return view
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    private fun startCamera(
+                            cameraLens: CameraX.LensFacing,
+                            viewFinder: TextureView,
+                            switchCameraImageView: ImageView,
+                            takePictureImageView: ImageView,
+                            cancelImageView: ImageView,
+                            saveImageView: ImageView,
+                            cameraControls: LinearLayout,
+                            imageControls: LinearLayout)
     {
-        super.onActivityResult(requestCode, resultCode, data)
+        viewFinder.post {
+            val viewFinderConfig = PreviewConfig.Builder().apply {
+                setTargetAspectRatio(
+                        with(DisplayMetrics().also { viewFinder.display.getRealMetrics(it) })
+                        {
+                            Rational(widthPixels, heightPixels)
+                        }
+                )
+                setTargetRotation(viewFinder.display.rotation)
+                setLensFacing(cameraLens)
+            }.build()
 
-        when (requestCode)
-        {
-            Constants.ROBOT_MEDIA_REQUEST_CODE ->
-            {
-                if (resultCode == Activity.RESULT_OK)
-                {
-                    robotMedia = RobotMedia(
-                            -1,
-                            year!!.serverId,
-                            event!!.blueAllianceId,
-                            team!!.id,
-                            mediaFilePath,
-                            true)
+            val preview = AutoFitPreviewBuilder.build(viewFinderConfig, viewFinder).apply {
+                setOnPreviewOutputUpdateListener {
 
-                    robotMediaImageView.setImageBitmap(robotMedia.imageBitmap)
+                    // To update the SurfaceTexture, we have to remove it and re-add it
+                    val parent = viewFinder.parent as ViewGroup
+                    parent.removeView(viewFinder)
+                    parent.addView(viewFinder, 0)
+
+                    viewFinder.surfaceTexture = it.surfaceTexture
                 }
-
-                else if(resultCode == Activity.RESULT_CANCELED)
-                    context.supportFragmentManager.popBackStackImmediate()
             }
+
+
+            val imageCapture = ImageCapture(ImageCaptureConfig.Builder().apply {
+                setCaptureMode(ImageCapture.CaptureMode.MIN_LATENCY)
+            }.build())
+
+            takePictureImageView.setOnClickListener {
+                imageCapture.takePicture(
+                        File.createTempFile(
+                                UUID.randomUUID().toString(),
+                                ".jpeg",
+                                context.getExternalFilesDir(Constants.ROBOT_MEDIA_DIRECTORY)).apply {
+                            mediaFilePath = absolutePath
+                        },
+                        object : ImageCapture.OnImageSavedListener {
+                            override fun onError(
+                                    imageCaptureError: ImageCapture.ImageCaptureError,
+                                    message: String,
+                                    exc: Throwable?
+                            ) {
+                                AppLog.error(Exception(exc))
+                            }
+
+                            override fun onImageSaved(file: File)
+                            {
+                                cameraControls.visibility = View.GONE
+                                imageControls.visibility = View.VISIBLE
+
+                                cancelImageView.setOnClickListener {
+
+                                    imageControls.visibility = View.GONE
+                                    cameraControls.visibility = View.VISIBLE
+
+                                    if(file.exists())
+                                        file.delete()
+
+                                    startCamera(
+                                            cameraLens,
+                                            viewFinder,
+                                            switchCameraImageView,
+                                            takePictureImageView,
+                                            cancelImageView,
+                                            saveImageView,
+                                            cameraControls,
+                                            imageControls
+                                    )
+                                }
+
+                                saveImageView.setOnClickListener {
+                                    robotMedia = RobotMedia(
+                                            -1,
+                                            year!!.serverId,
+                                            event!!.blueAllianceId,
+                                            team!!.id,
+                                            file.absolutePath,
+                                            true).apply { save(context.database) }
+
+                                    context.supportFragmentManager.popBackStackImmediate()
+                                }
+
+                                CameraX.unbindAll()
+                            }
+                        })
+            }
+
+            switchCameraImageView.setOnClickListener {
+
+                CameraX.unbindAll()
+
+                startCamera(
+                        if(cameraLens == CameraX.LensFacing.FRONT) CameraX.LensFacing.BACK else CameraX.LensFacing.FRONT,
+                        viewFinder,
+                        switchCameraImageView,
+                        takePictureImageView,
+                        cancelImageView,
+                        saveImageView,
+                        cameraControls,
+                        imageControls
+                )
+            }
+
+
+            CameraX.bindToLifecycle(this, preview, imageCapture)
         }
     }
 

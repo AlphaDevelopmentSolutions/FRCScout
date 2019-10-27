@@ -19,6 +19,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
 import com.alphadevelopmentsolutions.frcscout.Api.Api
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import com.alphadevelopmentsolutions.frcscout.Classes.KeyStore
