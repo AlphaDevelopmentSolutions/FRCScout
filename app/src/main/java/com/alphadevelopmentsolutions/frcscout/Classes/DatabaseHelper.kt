@@ -24,7 +24,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
         db.execSQL(RobotInfo.CREATE_TABLE)
         db.execSQL(RobotInfoKey.CREATE_TABLE)
 
-        db.execSQL(User.CREATE_TABLE)
+        User.createTable(db)
 
         db.execSQL(ChecklistItem.CREATE_TABLE)
         db.execSQL(ChecklistItemResult.CREATE_TABLE)

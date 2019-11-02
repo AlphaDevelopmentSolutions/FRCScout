@@ -110,6 +110,8 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+
         context = this
         database = Database(context)
         database.open()

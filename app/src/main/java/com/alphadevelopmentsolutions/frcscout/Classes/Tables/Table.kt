@@ -1,62 +1,40 @@
 package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
+import com.alphadevelopmentsolutions.frcscout.Classes.MasterContentValues
+import com.alphadevelopmentsolutions.frcscout.Interfaces.ParentTableCompanion
 import java.util.*
 
 abstract class Table protected constructor(
-        private val TABLE_NAME: String,
-        private val COLUMN_NAME_ID: String,
-        private val CREATE_TABLE: String)
+    var tableName: String = DEFAULT_STRING,
+    var localId: Long = DEFAULT_LONG,
+    var serverId: Long = DEFAULT_LONG
+)
 {
-
     abstract fun load(database: Database): Boolean
     abstract fun save(database: Database): Int
     abstract fun delete(database: Database): Boolean
+    abstract fun getValues(): MasterContentValues
     abstract override fun toString(): String
 
-    companion object
+    companion object: ParentTableCompanion
     {
         val DEFAULT_STRING: String
-            get()
-            {
-                return ""
-            }
+            get() = ""
 
         val DEFAULT_INT: Int
-            get()
-            {
-                return -1
-            }
+            get() = -1
 
         val DEFAULT_LONG: Long
-            get()
-            {
-                return -1
-            }
+            get() = -1
 
         val DEFAULT_DOUBLE: Double
-            get()
-            {
-                return -1.0
-            }
+            get() = -1.0
 
         val DEFAULT_DATE: Date
-            get()
-            {
-                return Date()
-            }
+            get() = Date()
 
         val DEFAULT_BOOLEAN: Boolean
-            get()
-            {
-                return false
-            }
-
-
-        @JvmStatic
-        protected fun clearTable(database: Database, tableName: String, clearDrafts: Boolean? = null)
-        {
-            database.clearTable(tableName, clearDrafts)
-        }
+            get() = false
     }
 }

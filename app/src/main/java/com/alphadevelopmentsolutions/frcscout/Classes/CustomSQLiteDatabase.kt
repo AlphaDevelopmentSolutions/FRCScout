@@ -31,7 +31,7 @@ class CustomSQLiteDatabase
         database?.execSQL(sql)
     }
 
-    fun query(table: String, columns: Array<String>, selection: String, selectionArgs: Array<String>, groupBy: String?, having: String?, orderBy: String?): DatabaseCursor?
+    fun query(table: String, columns: Array<String>?, selection: String, selectionArgs: Array<String>?, groupBy: String?, having: String?, orderBy: String?): DatabaseCursor?
     {
         with(database?.query(table, columns, selection, selectionArgs, groupBy, having, orderBy))
         {
@@ -52,7 +52,7 @@ class CustomSQLiteDatabase
         return database?.insert(table, nullColumnHack, values.contentValues)?: -1
     }
 
-    fun delete(table: String, whereClause: String, whereArgs: Array<String>): Int
+    fun delete(table: String, whereClause: String?, whereArgs: Array<String>?): Int
     {
         return database?.delete(table, whereClause, whereArgs)?: -1
     }

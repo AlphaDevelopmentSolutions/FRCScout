@@ -1,53 +1,79 @@
 package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
+import com.alphadevelopmentsolutions.frcscout.Classes.MasterContentValues
+import com.alphadevelopmentsolutions.frcscout.Classes.TableColumn
+import com.alphadevelopmentsolutions.frcscout.Interfaces.SQLiteDataTypes
+import com.alphadevelopmentsolutions.frcscout.Interfaces.ChildTableCompanion
 import java.util.*
+import kotlin.collections.ArrayList
 
 class User(
-        var id: Int = DEFAULT_INT,
         var firstName: String = DEFAULT_STRING,
-        var lastName: String = DEFAULT_STRING) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var lastName: String = DEFAULT_STRING) : Table()
 {
-    companion object
+    companion object: ChildTableCompanion
     {
-        val TABLE_NAME = "users"
-        val COLUMN_NAME_ID = "Id"
-        val COLUMN_NAME_FIRST_NAME = "FirstName"
-        val COLUMN_NAME_LAST_NAME = "LastName"
+        override val TABLE_NAME: String
+            get() = "users"
 
-        val CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                COLUMN_NAME_FIRST_NAME + " TEXT," +
-                COLUMN_NAME_LAST_NAME + " TEXT)"
+        const val COLUMN_NAME_FIRST_NAME = "FirstName"
+        const val COLUMN_NAME_LAST_NAME = "LastName"
+
+        override val childColumns: ArrayList<TableColumn>
+            get() = ArrayList<TableColumn>().apply {
+                add(TableColumn(COLUMN_NAME_FIRST_NAME, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_LAST_NAME, SQLiteDataTypes.TEXT))
+            }
 
         /**
-         * Clears all data from the classes table
-         * @param database used to clear table
+         * Returns [ArrayList] of [User] with specified filters from [database]
+         * @param user if specified, filters [User] by [user] id
+         * @param database used to load [User]
+         * @return [ArrayList] of [User]
          */
-        fun clearTable(database: Database)
+        fun getObjects(user: User?, database: Database): ArrayList<User>
         {
-            clearTable(database, TABLE_NAME)
-        }
+            val users = ArrayList<User>()
 
-        /**
-         * Returns arraylist of users with specified filters from database
-         * @param user if specified, filters users by user id
-         * @param database used to load users
-         * @return arraylist of users
-         */
-        fun getObjects(user: User?, database: Database): ArrayList<User>?
-        {
-            return database.getUsers(user)
+            val whereStatement = StringBuilder()
+            val whereArgs = ArrayList<String>()
+
+            if (user != null)
+            {
+                whereStatement.append(User.COLUMN_NAME_ID + " = ?")
+                whereArgs.add(user.id.toString())
+            }
+            
+            
+            with(database.getObjects(
+                    TABLE_NAME,
+                    whereStatement.toString(),
+                    whereArgs))
+            {
+                //make sure the cursor isn't null, else we die
+                if (this != null)
+                {
+                    while (moveToNext())
+                    {
+
+                        val id = getInt(getColumnIndex(User.COLUMN_NAME_ID))
+                        val firstName = getString(getColumnIndex(COLUMN_NAME_FIRST_NAME))
+                        val lastName = getString(getColumnIndex(COLUMN_NAME_LAST_NAME))
+
+                        users.add(User(id, firstName, lastName))
+                    }
+
+                    close()
+
+                    return users
+                }
+            }
+
+
+            return null
         }
     }
-
-    override fun toString(): String
-    {
-        return "$firstName $lastName"
-    }
-
-
-    //region Load, Save & Delete
 
     /**
      * Loads the object from the database and populates all values
@@ -91,9 +117,9 @@ class User(
         if (database.isOpen)
             id = database.setUser(this).toInt()
 
-        //set the id if the save was successful
-        if (id > 0)
-            this.id = id
+//        set the id if the save was successful
+//        if (id > 0)
+//            this.id = id
 
         return id
     }
@@ -119,5 +145,16 @@ class User(
         return successful
     }
 
-    //endregion
+    override fun getValues(): MasterContentValues
+    {
+        return MasterContentValues().apply {
+            put(COLUMN_NAME_FIRST_NAME, firstName)
+            put(COLUMN_NAME_LAST_NAME, lastName)
+        }
+    }
+
+    override fun toString(): String
+    {
+        return "$firstName $lastName"
+    }
 }
