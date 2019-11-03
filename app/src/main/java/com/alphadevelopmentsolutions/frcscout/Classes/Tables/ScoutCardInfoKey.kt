@@ -71,8 +71,13 @@ class ScoutCardInfoKey(
                 //filter by object
                 if (scoutCardInfoKey != null)
                 {
-                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("$COLUMN_NAME_LOCAL_ID = ?")
-                    whereArgs.add(scoutCardInfoKey.localId.toString())
+                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("${if(scoutCardInfoKey.localId != DEFAULT_LONG) COLUMN_NAME_LOCAL_ID else COLUMN_NAME_SERVER_ID} = ? ")
+                    whereArgs.add(
+                            if(scoutCardInfoKey.localId != DEFAULT_LONG)
+                                scoutCardInfoKey.localId.toString()
+                            else
+                                scoutCardInfoKey.serverId.toString()
+                    )
                 }
 
                 //add all object records to array list
@@ -140,7 +145,7 @@ class ScoutCardInfoKey(
             {
                 if (this != null)
                 {
-                    loadParentValues(this)
+                    this@ScoutCardInfoKey.loadParentValues(this)
                     this@ScoutCardInfoKey.yearId = yearId
                     this@ScoutCardInfoKey.sortOrder = sortOrder
                     this@ScoutCardInfoKey.keyState = keyState
@@ -170,7 +175,7 @@ class ScoutCardInfoKey(
             put(COLUMN_NAME_MAX_VALUE, maxValue)
             put(COLUMN_NAME_NULL_ZEROS, nullZeros)
             put(COLUMN_NAME_INCLUDE_IN_STATS, includeInStats)
-            put(COLUMN_NAME_DATA_TYPE, dataType)
+            put(COLUMN_NAME_DATA_TYPE, dataType.toString())
         }
 
     /**

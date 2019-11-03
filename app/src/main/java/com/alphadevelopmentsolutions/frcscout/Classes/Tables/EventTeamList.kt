@@ -89,7 +89,7 @@ class EventTeamList(
             {
                 if (this != null)
                 {
-                    loadParentValues(this)
+                    this@EventTeamList.loadParentValues(this)
                     this@EventTeamList.teamId = teamId
                     this@EventTeamList.eventId = eventId
                     return true

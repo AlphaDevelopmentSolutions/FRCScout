@@ -18,13 +18,14 @@ interface ChildTableCompanion : ParentTableCompanion
                 "(" +
                 with(columns)
                 {
-                    var columnsString = StringBuilder()
 
-                    this.forEach {
-                        columnsString.append("${it.columnName} ${it.columnType}${if(columnsString.isEmpty()) " PRIMARY KEY" else ""}${if(iterator().hasNext()) "," else ""}")
-                    }
+                    StringBuilder().apply {
+                        for(i in 0 until size)
+                        {
+                            append("${Database.quote(columns[i].columnName)} ${columns[i].columnType}${if(isEmpty()) " PRIMARY KEY" else ""}${if(i + 1 < size) ", " else ""}")
 
-                    columnsString.toString()
+                        }
+                    }.toString()
                 } +
                 ")")
     }

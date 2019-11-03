@@ -17,6 +17,5 @@ interface ParentTableCompanion
         get() = ArrayList<TableColumn>().apply {
             add(TableColumn(COLUMN_NAME_LOCAL_ID, SQLiteDataTypes.INTEGER))
             add(TableColumn(COLUMN_NAME_SERVER_ID, SQLiteDataTypes.INTEGER))
-            add(TableColumn(COLUMN_NAME_IS_DRAFT, SQLiteDataTypes.TEXT))
         }
 }

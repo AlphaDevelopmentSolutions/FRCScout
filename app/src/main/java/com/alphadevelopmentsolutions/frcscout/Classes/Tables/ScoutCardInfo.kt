@@ -144,7 +144,7 @@ class ScoutCardInfo(
             {
                 if (this != null)
                 {
-                    loadParentValues(this)
+                    this@ScoutCardInfo.loadParentValues(this)
                     this@ScoutCardInfo.yearId = yearId
                     this@ScoutCardInfo.eventId = eventId
                     this@ScoutCardInfo.matchId = matchId

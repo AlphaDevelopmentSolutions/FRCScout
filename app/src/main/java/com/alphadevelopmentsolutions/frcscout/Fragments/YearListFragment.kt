@@ -8,6 +8,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.Adapters.YearListRecyclerViewAdapter
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Table
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
@@ -54,8 +55,8 @@ class YearListFragment : MasterFragment()
         context.isToolbarScrollable = true
 
         //showing this view means the user has not selected an event or year, clear the shared pref
-        context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1)
-        context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) //default to current calendar year
+        context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, Table.DEFAULT_LONG)
+        context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR).toLong()) //default to current calendar year
 
         yearListRecyclerView = view.findViewById(R.id.YearListRecyclerView)
 

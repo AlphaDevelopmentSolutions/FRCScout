@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.Adapters.EventListRecyclerViewAdapter
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Table
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Year
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
@@ -53,7 +54,7 @@ class EventListFragment : MasterFragment()
             if (yearJson != null && yearJson != "")
                 year = Gson().fromJson(yearJson, Year::class.java)
 
-            events = Event.getObjects(year, null, Team(context.keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Long).apply { load(context.database) }, database)
+            events = Event.getObjects(year, null, Team(Table.DEFAULT_LONG, context.keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, Table.DEFAULT_LONG) as Long).apply { load(context.database) }, database)
             searchedEvents = ArrayList(events)
         })
 
@@ -74,7 +75,7 @@ class EventListFragment : MasterFragment()
         context.setToolbarTitle(year!!.serverId.toString())
 
         //showing this view means the user has not selected an event, clear the shared pref
-        context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1)
+        context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, Table.DEFAULT_LONG)
 
         eventListRecyclerView = view.findViewById(R.id.EventListRecyclerView)
 

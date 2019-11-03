@@ -180,7 +180,13 @@ abstract class Api internal constructor(
                         val key = serverConfigObject.getString("Key")
                         val value = serverConfigObject.getString("Value")
 
-                        context.keyStore.setPreference(key, if(serverConfigObject.getString("Value").toIntOrNull() == null) value else value.toInt())
+                        context.keyStore.setPreference(
+                                key,
+                                if(serverConfigObject.getString("Value").toLongOrNull() == null)
+                                    value
+                                else
+                                    value.toLong()
+                        )
                     }
 
                     true
@@ -230,7 +236,7 @@ abstract class Api internal constructor(
         {
             override fun execute(): Boolean
             {
-                try
+                return try
                 {
                     query(this)
 
@@ -240,16 +246,21 @@ abstract class Api internal constructor(
                         val key = serverConfigObject.getString("Key")
                         val value = serverConfigObject.getString("Value")
 
-                        context.keyStore.setPreference(key, if(serverConfigObject.getString("Value").toIntOrNull() == null) value else value.toInt())
+                        context.keyStore.setPreference(
+                                key,
+                                if(serverConfigObject.getString("Value").toLongOrNull() == null)
+                                    value
+                                else
+                                    value.toLong())
                     }
 
-                    return true
+                    true
                 }
                 catch (e: ApiException)
                 {
                     context.showSnackbar(String.format(context.getString(R.string.server_get_failure), context.getString(R.string.app_config)))
                     AppLog.error(e)
-                    return false
+                    false
                 }
 
             }
@@ -302,7 +313,7 @@ abstract class Api internal constructor(
 
                         teams.add(
                                 Team(
-                                    -1,
+                                    Table.DEFAULT_LONG,
                                     teamId,
                                     name,
                                     city,
@@ -372,7 +383,7 @@ abstract class Api internal constructor(
 
                             eventTeamList.add(
                                     EventTeamList(
-                                        -1,
+                                            Table.DEFAULT_LONG,
                                         serverId,
                                         teamId,
                                         eventId
@@ -430,7 +441,7 @@ abstract class Api internal constructor(
 
                             users.add(
                                     User(
-                                        -1,
+                                            Table.DEFAULT_LONG,
                                         serverId,
                                         firstName,
                                         lastName
@@ -497,7 +508,7 @@ abstract class Api internal constructor(
 
                             scoutCardInfos.add(
                                     ScoutCardInfo(
-                                            -1,
+                                            Table.DEFAULT_LONG,
                                             serverId,
                                             yearId,
                                             eventId,
@@ -570,7 +581,7 @@ abstract class Api internal constructor(
 
                             scoutCardInfoKeys.add(
                                     ScoutCardInfoKey(
-                                            -1,
+                                            Table.DEFAULT_LONG,
                                             serverId,
                                             yearId,
                                             keyState,
@@ -642,7 +653,7 @@ abstract class Api internal constructor(
 
                             robotInfoList.add(
                                     RobotInfo(
-                                            -1,
+                                            Table.DEFAULT_LONG,
                                             serverId,
                                             yearId,
                                             eventId,
@@ -710,7 +721,7 @@ abstract class Api internal constructor(
 
                             robotInfoKeyList.add(
                                     RobotInfoKey(
-                                            -1,
+                                            Table.DEFAULT_LONG,
                                             serverId,
                                             yearId,
                                             keyState,
@@ -787,7 +798,7 @@ abstract class Api internal constructor(
 
                             matches.add(
                                     Match(
-                                        -1,
+                                        Table.DEFAULT_LONG,
                                         serverId,
                                         date,
                                         eventId,
@@ -865,7 +876,7 @@ abstract class Api internal constructor(
 
                             robotMedia.add(
                                     RobotMedia(
-                                            -1,
+                                            Table.DEFAULT_LONG,
                                             serverId,
                                             yearId,
                                             eventId,
@@ -930,7 +941,7 @@ abstract class Api internal constructor(
 
                             years.add(
                                     Year(
-                                        -1,
+                                        Table.DEFAULT_LONG,
                                         serverId,
                                         name,
                                         startDate,
@@ -1001,7 +1012,7 @@ abstract class Api internal constructor(
 
                             events.add(
                                     Event(
-                                        -1,
+                                        Table.DEFAULT_LONG,
                                         serverId,
                                         yearId,
                                         blueAllianceId,
@@ -1066,7 +1077,7 @@ abstract class Api internal constructor(
 
                             checklistItems.add(
                                     ChecklistItem(
-                                            -1,
+                                            Table.DEFAULT_LONG,
                                             serverId,
                                             title,
                                             description
@@ -1126,7 +1137,7 @@ abstract class Api internal constructor(
 
                             checklistItemResults.add(
                                     ChecklistItemResult(
-                                            -1,
+                                            Table.DEFAULT_LONG,
                                             serverId,
                                             checklistItemId,
                                             matchId,

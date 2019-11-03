@@ -27,4 +27,9 @@ class MasterContentValues
             put(contentValue.key, contentValue.value)
         }
     }
+
+    fun remove(key: String)
+    {
+        contentValues.remove(key)
+    }
 }

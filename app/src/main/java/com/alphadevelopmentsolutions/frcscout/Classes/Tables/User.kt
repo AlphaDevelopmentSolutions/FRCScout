@@ -82,7 +82,7 @@ class User(
             {
                 if (this != null)
                 {
-                    loadParentValues(this)
+                    this@User.loadParentValues(this)
                     this@User.firstName = firstName
                     this@User.lastName = lastName
                     return true

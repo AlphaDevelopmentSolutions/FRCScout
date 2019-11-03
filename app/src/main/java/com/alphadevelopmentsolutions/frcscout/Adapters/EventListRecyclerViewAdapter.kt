@@ -17,13 +17,7 @@ import java.util.*
 internal class EventListRecyclerViewAdapter(private val eventList: ArrayList<Event>, private val context: MainActivity) : RecyclerView.Adapter<EventListRecyclerViewAdapter.ViewHolder>()
 {
 
-    private val simpleDateFormat: SimpleDateFormat
-
-    init
-    {
-
-        simpleDateFormat = SimpleDateFormat("MMM d, yyyy")
-    }
+    private val simpleDateFormat: SimpleDateFormat = SimpleDateFormat("MMM d, yyyy")
 
     internal class ViewHolder(val view: View, context: MainActivity) : RecyclerView.ViewHolder(view)
     {

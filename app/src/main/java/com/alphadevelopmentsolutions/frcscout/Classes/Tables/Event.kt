@@ -70,7 +70,7 @@ class Event(
                 {
                     whereStatement
                             .append(if (whereStatement.isNotEmpty()) " AND " else "")
-                            .append("$Event.COLUMN_NAME_ID = ?")
+                            .append("$COLUMN_NAME_LOCAL_ID = ?")
                     whereArgs.add(event.localId.toString())
                 }
 
@@ -194,7 +194,7 @@ class Event(
             {
                 if (this != null)
                 {
-                    loadParentValues(this)
+                    this@Event.loadParentValues(this)
                     this@Event.yearId = yearId
                     this@Event.blueAllianceId = blueAllianceId
                     this@Event.name = name

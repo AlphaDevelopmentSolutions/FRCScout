@@ -85,6 +85,7 @@ class TeamFragment : MasterFragment()
                         .load(Uri.fromFile(File(team!!.imageFileURI)))
                         .fit()
                         .centerCrop()
+                        .placeholder(R.mipmap.ic_launcher)
                         .into(TeamLogoImageView)
 
             //checks to see if the team has a valid URL for each social media, if not hide the icon

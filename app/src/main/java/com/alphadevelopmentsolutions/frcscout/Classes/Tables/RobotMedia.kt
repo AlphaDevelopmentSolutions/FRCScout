@@ -192,7 +192,7 @@ class RobotMedia(
             {
                 if (this != null)
                 {
-                    loadParentValues(this)
+                    this@RobotMedia.loadParentValues(this)
                     this@RobotMedia.yearId = yearId
                     this@RobotMedia.eventId = eventId
                     this@RobotMedia.teamId = teamId

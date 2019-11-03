@@ -125,7 +125,7 @@ class ChecklistItemResult(
             {
                 if (this != null)
                 {
-                    loadParentValues(this)
+                    this@ChecklistItemResult.loadParentValues(this)
                     this@ChecklistItemResult.checklistItemId = checklistItemId
                     this@ChecklistItemResult.matchId = matchId
                     this@ChecklistItemResult.status = status

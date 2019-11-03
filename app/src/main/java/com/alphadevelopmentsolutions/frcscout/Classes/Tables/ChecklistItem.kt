@@ -95,7 +95,7 @@ class ChecklistItem(
             {
                 if (this != null)
                 {
-                    loadParentValues(this)
+                    this@ChecklistItem.loadParentValues(this)
                     this@ChecklistItem.title = title
                     this@ChecklistItem.description = description
                     return true

@@ -120,7 +120,9 @@ class Match(
                     with(database.getObjects(
                             TABLE_NAME,
                             whereStatement.toString(),
-                            whereArgs))
+                            whereArgs,
+                            null,
+                            "$COLUMN_NAME_MATCH_NUMBER $sortDirection"))
                     {
                         if (this != null) {
                             while (moveToNext()) {
@@ -363,7 +365,7 @@ class Match(
             {
                 if (this != null)
                 {
-                    loadParentValues(this)
+                    this@Match.loadParentValues(this)
                     this@Match.date = date
                     this@Match.blueAllianceTeamOneId = blueAllianceTeamOneId
                     this@Match.blueAllianceTeamTwoId = blueAllianceTeamTwoId
@@ -395,9 +397,9 @@ class Match(
             put(COLUMN_NAME_DATE, date)
             put(COLUMN_NAME_EVENT_ID, eventId)
             put(COLUMN_NAME_KEY, key)
-            put(COLUMN_NAME_MATCH_TYPE, matchType)
-            put(COLUMN_NAME_MATCH_NUMBER, setNumber)
-            put(COLUMN_NAME_SET_NUMBER, matchNumber)
+            put(COLUMN_NAME_MATCH_TYPE, matchType.toString())
+            put(COLUMN_NAME_MATCH_NUMBER, matchNumber)
+            put(COLUMN_NAME_SET_NUMBER, setNumber)
             put(COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID, blueAllianceTeamOneId)
             put(COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID, blueAllianceTeamTwoId)
             put(COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID, blueAllianceTeamThreeId)

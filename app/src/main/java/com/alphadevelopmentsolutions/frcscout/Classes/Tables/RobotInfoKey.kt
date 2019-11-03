@@ -55,8 +55,13 @@ class RobotInfoKey(
                 //filter by object
                 if (robotInfoKey != null)
                 {
-                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("$COLUMN_NAME_LOCAL_ID = ?")
-                    whereArgs.add(robotInfoKey.localId.toString())
+                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("${if(robotInfoKey.localId != DEFAULT_LONG) COLUMN_NAME_LOCAL_ID else COLUMN_NAME_SERVER_ID} = ? ")
+                    whereArgs.add(
+                            if(robotInfoKey.localId != DEFAULT_LONG)
+                                robotInfoKey.localId.toString()
+                            else
+                                robotInfoKey.serverId.toString()
+                    )
                 }
 
                 //add all object records to array list
@@ -97,7 +102,7 @@ class RobotInfoKey(
             {
                 if (this != null)
                 {
-                    loadParentValues(this)
+                    this@RobotInfoKey.loadParentValues(this)
                     this@RobotInfoKey.yearId = yearId
                     this@RobotInfoKey.sortOrder = sortOrder
                     this@RobotInfoKey.keyState = keyState
@@ -116,9 +121,9 @@ class RobotInfoKey(
     override val childValues: MasterContentValues
         get() = MasterContentValues().apply {
             put(COLUMN_NAME_YEAR_ID, yearId)
-            put(COLUMN_NAME_SORT_ORDER, keyState)
-            put(COLUMN_NAME_KEY_STATE, keyName)
-            put(COLUMN_NAME_KEY_NAME, sortOrder)
+            put(COLUMN_NAME_SORT_ORDER, sortOrder)
+            put(COLUMN_NAME_KEY_STATE, keyState)
+            put(COLUMN_NAME_KEY_NAME, keyName)
         }
 
     /**

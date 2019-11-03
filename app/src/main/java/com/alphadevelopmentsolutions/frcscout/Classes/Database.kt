@@ -150,13 +150,16 @@ class Database(context: MainActivity)
 
         //Record doesn't exist, insert
         else {
-            AppLog.log("Database Insert", "Saving ${table.tableName} with Local Id: {${table.localId} and Server Id: ${table.serverId}")
+            AppLog.log("Database Insert", "Saving ${table.tableName} with Local Id: ${table.localId} and Server Id: ${table.serverId}")
 
             // Row ID if inserted, or -1 if failed
             return db.insert(
                     table.tableName,
                     null,
-                    table.tableValues)
+                    table.tableValues.apply {
+                        remove(Table.COLUMN_NAME_LOCAL_ID)
+                    }
+            )
         }
     }
 

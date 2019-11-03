@@ -98,35 +98,41 @@ class Team(
                 //filter by object
                 if (team != null)
                 {
-
-                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("$COLUMN_NAME_LOCAL_ID = ? ")
-                    whereArgs.add(team.localId.toString())
+                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("${if(team.localId != DEFAULT_LONG) COLUMN_NAME_LOCAL_ID else COLUMN_NAME_SERVER_ID} = ? ")
+                    whereArgs.add(
+                                if(team.localId != DEFAULT_LONG)
+                                    team.localId.toString()
+                                else
+                                    team.serverId.toString()
+                            )
                 }
 
                 //add all object records to array list
                 with(database.getObjects(
                         TABLE_NAME,
                         whereStatement.toString(),
-                        whereArgs))
+                        whereArgs,
+                        null,
+                        "$COLUMN_NAME_SERVER_ID ASC"))
                 {
                     if (this != null) {
                         while (moveToNext()) {
                             add(
-                                    Team(
-                                            getLong(COLUMN_NAME_LOCAL_ID),
-                                            getLong(COLUMN_NAME_SERVER_ID),
-                                            getString(COLUMN_NAME_NAME),
-                                            getStringOrNull(COLUMN_NAME_CITY),
-                                            getStringOrNull(COLUMN_NAME_STATEPROVINCE),
-                                            getStringOrNull(COLUMN_NAME_COUNTRY),
-                                            getIntOrNull(COLUMN_NAME_ROOKIE_YEAR),
-                                            getStringOrNull(COLUMN_NAME_FACEBOOK_URL),
-                                            getStringOrNull(COLUMN_NAME_TWITTER_URL),
-                                            getStringOrNull(COLUMN_NAME_INSTAGRAM_URL),
-                                            getStringOrNull(COLUMN_NAME_YOUTUBE_URL),
-                                            getStringOrNull(COLUMN_NAME_WEBSITE_URL),
-                                            getStringOrNull(COLUMN_NAME_IMAGE_FILE_URI)
-                                    )
+                                Team(
+                                    getLong(COLUMN_NAME_LOCAL_ID),
+                                    getLong(COLUMN_NAME_SERVER_ID),
+                                    getString(COLUMN_NAME_NAME),
+                                    getStringOrNull(COLUMN_NAME_CITY),
+                                    getStringOrNull(COLUMN_NAME_STATEPROVINCE),
+                                    getStringOrNull(COLUMN_NAME_COUNTRY),
+                                    getIntOrNull(COLUMN_NAME_ROOKIE_YEAR),
+                                    getStringOrNull(COLUMN_NAME_FACEBOOK_URL),
+                                    getStringOrNull(COLUMN_NAME_TWITTER_URL),
+                                    getStringOrNull(COLUMN_NAME_INSTAGRAM_URL),
+                                    getStringOrNull(COLUMN_NAME_YOUTUBE_URL),
+                                    getStringOrNull(COLUMN_NAME_WEBSITE_URL),
+                                    getStringOrNull(COLUMN_NAME_IMAGE_FILE_URI)
+                                )
                             )
                         }
 
@@ -236,7 +242,7 @@ class Team(
             {
                 if (this != null)
                 {
-                    loadParentValues(this)
+                    this@Team.loadParentValues(this)
                     this@Team.name = name
                     this@Team.city = city
                     this@Team.stateProvince = stateProvince

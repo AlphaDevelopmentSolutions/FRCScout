@@ -47,13 +47,18 @@ class Year(
 
                 //filter by object
                 if (year != null) {
-                    whereStatement.append(COLUMN_NAME_SERVER_ID).append(" = ?")
-                    whereArgs.add(year.serverId.toString())
+                    whereStatement.append("${if(year.localId != DEFAULT_LONG) COLUMN_NAME_LOCAL_ID else COLUMN_NAME_SERVER_ID} = ?")
+                    whereArgs.add(
+                            if(year.localId != DEFAULT_LONG)
+                                year.localId.toString()
+                            else
+                                year.serverId.toString()
+                        )
                 }
 
                 //add all object records to array list
                 with(database.getObjects(
-                        User.TABLE_NAME,
+                        TABLE_NAME,
                         whereStatement.toString(),
                         whereArgs))
                 {
@@ -103,7 +108,7 @@ class Year(
             {
                 if (this != null)
                 {
-                    loadParentValues(this)
+                    this@Year.loadParentValues(this)
                     this@Year.name = name
                     this@Year.startDate = startDate
                     this@Year.endDate = endDate

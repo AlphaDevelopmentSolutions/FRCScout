@@ -134,7 +134,7 @@ class RobotInfo(
             {
                 if (this != null)
                 {
-                    loadParentValues(this)
+                    this@RobotInfo.loadParentValues(this)
                     this@RobotInfo.yearId = yearId
                     this@RobotInfo.eventId = eventId
                     this@RobotInfo.teamId = teamId

@@ -53,7 +53,11 @@ internal class TeamListRecyclerViewAdapter(private val match: Match?, private va
                         .load(Uri.fromFile(File(team.imageFileURI)))
                         .fit()
                         .centerCrop()
+                        .placeholder(R.mipmap.ic_launcher)
                         .into(viewHolder.view.TeamLogoImageView)
+            else
+                viewHolder.view.TeamLogoImageView.setImageDrawable(context.getDrawable(R.mipmap.ic_launcher))
+
 
             //Sends you to the team fragment
             if (match == null)

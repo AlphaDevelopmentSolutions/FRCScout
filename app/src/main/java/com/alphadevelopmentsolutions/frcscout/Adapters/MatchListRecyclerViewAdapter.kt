@@ -8,10 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Event
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfo
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor
 import com.alphadevelopmentsolutions.frcscout.Fragments.ChecklistFragment
 import com.alphadevelopmentsolutions.frcscout.Fragments.ScoutCardInfoFragment
@@ -93,7 +90,7 @@ internal class MatchListRecyclerViewAdapter(
         if (team?.serverId != match.blueAllianceTeamOneId)
         {
             viewHolder.view.BlueAllianceTeamOneIdTextView.setOnClickListener {
-                with(Team(match.blueAllianceTeamOneId))
+                with(Team(Table.DEFAULT_LONG, match.blueAllianceTeamOneId))
                 {
                     if(load(context.database))
                         context.changeFragment(TeamFragment.newInstance(this), true)
@@ -106,7 +103,7 @@ internal class MatchListRecyclerViewAdapter(
         if (team?.serverId != match.blueAllianceTeamTwoId)
         {
             viewHolder.view.BlueAllianceTeamTwoIdTextView.setOnClickListener {
-                with(Team(match.blueAllianceTeamTwoId))
+                with(Team(Table.DEFAULT_LONG, match.blueAllianceTeamTwoId))
                 {
                     if(load(context.database))
                         context.changeFragment(TeamFragment.newInstance(this), true)
@@ -119,7 +116,7 @@ internal class MatchListRecyclerViewAdapter(
         if (team?.serverId != match.blueAllianceTeamThreeId)
         {
             viewHolder.view.BlueAllianceTeamThreeIdTextView.setOnClickListener {
-                with(Team(match.blueAllianceTeamThreeId))
+                with(Team(Table.DEFAULT_LONG, match.blueAllianceTeamThreeId))
                 {
                     if(load(context.database))
                         context.changeFragment(TeamFragment.newInstance(this), true)
@@ -131,7 +128,7 @@ internal class MatchListRecyclerViewAdapter(
         if (team?.serverId != match.redAllianceTeamOneId)
         {
             viewHolder.view.RedAllianceTeamOneIdTextView.setOnClickListener {
-                with(Team(match.redAllianceTeamOneId))
+                with(Team(Table.DEFAULT_LONG, match.redAllianceTeamOneId))
                 {
                     if(load(context.database))
                         context.changeFragment(TeamFragment.newInstance(this), true)
@@ -143,7 +140,7 @@ internal class MatchListRecyclerViewAdapter(
         if (team?.serverId != match.redAllianceTeamTwoId)
         {
             viewHolder.view.RedAllianceTeamTwoIdTextView.setOnClickListener {
-                with(Team(match.redAllianceTeamTwoId))
+                with(Team(Table.DEFAULT_LONG, match.redAllianceTeamTwoId))
                 {
                     if(load(context.database))
                         context.changeFragment(TeamFragment.newInstance(this), true)
@@ -155,7 +152,7 @@ internal class MatchListRecyclerViewAdapter(
         if (team?.serverId != match.redAllianceTeamThreeId)
         {
             viewHolder.view.RedAllianceTeamThreeIdTextView.setOnClickListener {
-                with(Team(match.redAllianceTeamThreeId))
+                with(Team(Table.DEFAULT_LONG, match.redAllianceTeamThreeId))
                 {
                     if(load(context.database))
                         context.changeFragment(TeamFragment.newInstance(this), true)

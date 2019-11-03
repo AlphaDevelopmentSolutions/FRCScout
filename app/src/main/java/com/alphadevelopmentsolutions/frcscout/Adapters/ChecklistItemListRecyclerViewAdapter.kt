@@ -7,10 +7,7 @@ import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItem
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ChecklistItemResult
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.User
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Status
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.android.material.button.MaterialButton
@@ -79,8 +76,8 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
         //no result found, default a new one
         if (checklistItemResult == null)
             checklistItemResult = ChecklistItemResult(
-                    -1,
-                    -1,
+                    Table.DEFAULT_LONG,
+                    Table.DEFAULT_LONG,
                     checklistItem.serverId,
                     match.key,
                     Status.UNSET,
