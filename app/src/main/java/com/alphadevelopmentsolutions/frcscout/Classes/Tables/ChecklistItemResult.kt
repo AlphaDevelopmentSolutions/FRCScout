@@ -11,12 +11,13 @@ import java.util.*
 class ChecklistItemResult(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
+        lastUpdated: Date = DEFAULT_DATE,
         var checklistItemId: Long = DEFAULT_LONG,
         var matchId: String = DEFAULT_STRING,
         var status: String = DEFAULT_STRING,
         var completedBy: String? = null,
         var completedDate: Date? = null,
-        var isDraft: Boolean) : Table(TABLE_NAME, localId, serverId)
+        var isDraft: Boolean) : Table(TABLE_NAME, localId, serverId, lastUpdated)
 {
     companion object: ChildTableCompanion
     {
@@ -84,6 +85,7 @@ class ChecklistItemResult(
                                     ChecklistItemResult(
                                             getLong(COLUMN_NAME_LOCAL_ID),
                                             getLong(COLUMN_NAME_SERVER_ID),
+                                            getDate(COLUMN_NAME_LAST_UPDATED),
                                             getLong(COLUMN_NAME_CHECKLIST_ITEM_ID),
                                             getString(COLUMN_NAME_MATCH_ID),
                                             getString(COLUMN_NAME_STATUS),

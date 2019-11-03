@@ -5,12 +5,15 @@ import com.alphadevelopmentsolutions.frcscout.Classes.MasterContentValues
 import com.alphadevelopmentsolutions.frcscout.Classes.TableColumn
 import com.alphadevelopmentsolutions.frcscout.Interfaces.ChildTableCompanion
 import com.alphadevelopmentsolutions.frcscout.Interfaces.SQLiteDataTypes
+import java.util.*
+import kotlin.collections.ArrayList
 
 class Robot(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
+        lastUpdated: Date = DEFAULT_DATE,
         var name: String = DEFAULT_STRING,
-        var teamNumber: Int = DEFAULT_INT) : Table(TABLE_NAME, localId, serverId)
+        var teamNumber: Int = DEFAULT_INT) : Table(TABLE_NAME, localId, serverId, lastUpdated)
 {
     companion object: ChildTableCompanion
     {

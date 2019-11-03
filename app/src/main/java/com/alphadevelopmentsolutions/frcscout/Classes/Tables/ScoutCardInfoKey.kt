@@ -10,6 +10,7 @@ import java.util.*
 class ScoutCardInfoKey(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
+        lastUpdated: Date = DEFAULT_DATE,
         var yearId: Int = DEFAULT_INT,
         var keyState: String = DEFAULT_STRING,
         var keyName: String = DEFAULT_STRING,
@@ -18,12 +19,12 @@ class ScoutCardInfoKey(
         var maxValue: Int? = null,
         var nullZeros: Boolean? = null,
         var includeInStats: Boolean? = null,
-        var dataType: DataTypes = DataTypes.TEXT) : Table(TABLE_NAME, localId, serverId)
+        var dataType: DataTypes = DataTypes.TEXT) : Table(TABLE_NAME, localId, serverId, lastUpdated)
 {
     companion object: ChildTableCompanion
     {
         override val TABLE_NAME = "scout_card_info_keys"
-        
+
         const val COLUMN_NAME_YEAR_ID = "YearId"
         const val COLUMN_NAME_KEY_STATE = "KeyState"
         const val COLUMN_NAME_KEY_NAME = "KeyName"
@@ -92,6 +93,7 @@ class ScoutCardInfoKey(
                                     ScoutCardInfoKey(
                                             getLong(COLUMN_NAME_LOCAL_ID),
                                             getLong(COLUMN_NAME_SERVER_ID),
+                                            getDate(COLUMN_NAME_LAST_UPDATED),
                                             getInt(COLUMN_NAME_YEAR_ID),
                                             getString(COLUMN_NAME_KEY_STATE),
                                             getString(COLUMN_NAME_KEY_NAME),

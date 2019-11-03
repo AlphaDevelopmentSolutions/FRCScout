@@ -8,10 +8,14 @@ import com.alphadevelopmentsolutions.frcscout.Classes.TableColumn
 import com.alphadevelopmentsolutions.frcscout.Interfaces.ChildTableCompanion
 import com.alphadevelopmentsolutions.frcscout.Interfaces.SQLiteDataTypes
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class Team(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
+        lastUpdated: Date = DEFAULT_DATE,
         var name: String = DEFAULT_STRING,
         var city: String? = null,
         var stateProvince: String? = null,
@@ -22,7 +26,7 @@ class Team(
         var instagramURL: String? = null,
         var youtubeURL: String? = null,
         var websiteURL: String? = null,
-        var imageFileURI: String? = null) : Table(TABLE_NAME, localId, serverId)
+        var imageFileURI: String? = null) : Table(TABLE_NAME, localId, serverId, lastUpdated)
 {
     companion object: ChildTableCompanion
     {
@@ -121,6 +125,7 @@ class Team(
                                 Team(
                                     getLong(COLUMN_NAME_LOCAL_ID),
                                     getLong(COLUMN_NAME_SERVER_ID),
+                                    getDate(COLUMN_NAME_LAST_UPDATED),
                                     getString(COLUMN_NAME_NAME),
                                     getStringOrNull(COLUMN_NAME_CITY),
                                     getStringOrNull(COLUMN_NAME_STATEPROVINCE),

@@ -10,6 +10,9 @@ interface ParentTableCompanion
     val COLUMN_NAME_SERVER_ID: String
         get() = "Id"
 
+    val COLUMN_NAME_LAST_UPDATED: String
+        get() = "LastUpdated"
+
     val COLUMN_NAME_IS_DRAFT: String
         get() = "IsDraft"
 

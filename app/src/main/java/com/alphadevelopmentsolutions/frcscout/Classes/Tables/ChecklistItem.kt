@@ -10,8 +10,9 @@ import java.util.*
 class ChecklistItem(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
+        lastUpdated: Date = DEFAULT_DATE,
         var title: String = DEFAULT_STRING,
-        var description: String) : Table(TABLE_NAME, localId, serverId)
+        var description: String) : Table(TABLE_NAME, localId, serverId, lastUpdated)
 {
     companion object: ChildTableCompanion
     {
@@ -57,6 +58,7 @@ class ChecklistItem(
                                     ChecklistItem(
                                             getLong(COLUMN_NAME_LOCAL_ID),
                                             getLong(COLUMN_NAME_SERVER_ID),
+                                            getDate(COLUMN_NAME_LAST_UPDATED),
                                             getString(COLUMN_NAME_TITLE),
                                             getString(COLUMN_NAME_DESCRIPTION)
                                     )

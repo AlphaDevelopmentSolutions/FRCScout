@@ -12,10 +12,11 @@ import java.util.*
 class Year(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
+        lastUpdated: Date = DEFAULT_DATE,
         var name: String = DEFAULT_STRING,
         var startDate: Date = DEFAULT_DATE,
         var endDate: Date = DEFAULT_DATE,
-        var imageUri: String = DEFAULT_STRING) : Table(TABLE_NAME, localId, serverId)
+        var imageUri: String = DEFAULT_STRING) : Table(TABLE_NAME, localId, serverId, lastUpdated)
 {
     companion object: ChildTableCompanion
     {
@@ -65,10 +66,10 @@ class Year(
                     if (this != null) {
                         while (moveToNext()) {
                             add(
-
                                  Year(
                                     getLong(COLUMN_NAME_LOCAL_ID),
                                     getLong(COLUMN_NAME_SERVER_ID),
+                                    getDate(COLUMN_NAME_LAST_UPDATED),
                                     getString(COLUMN_NAME_NAME),
                                     getDate(COLUMN_NAME_START_DATE),
                                     getDate(COLUMN_NAME_END_DATE),

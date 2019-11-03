@@ -10,10 +10,11 @@ import java.util.*
 class RobotInfoKey(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
+        lastUpdated: Date = DEFAULT_DATE,
         var yearId: Int = DEFAULT_INT,
         var keyState: String = DEFAULT_STRING,
         var keyName: String = DEFAULT_STRING,
-        var sortOrder: Int = DEFAULT_INT) : Table(TABLE_NAME, localId, serverId)
+        var sortOrder: Int = DEFAULT_INT) : Table(TABLE_NAME, localId, serverId, lastUpdated)
 {
     companion object: ChildTableCompanion
     {
@@ -76,6 +77,7 @@ class RobotInfoKey(
                                  RobotInfoKey(
                                          getLong(COLUMN_NAME_LOCAL_ID),
                                          getLong(COLUMN_NAME_SERVER_ID),
+                                         getDate(COLUMN_NAME_LAST_UPDATED),
                                          getInt(COLUMN_NAME_YEAR_ID),
                                          getString(COLUMN_NAME_KEY_STATE),
                                          getString(COLUMN_NAME_KEY_NAME),

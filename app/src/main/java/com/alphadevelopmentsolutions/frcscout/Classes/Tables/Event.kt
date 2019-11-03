@@ -11,6 +11,7 @@ import kotlin.math.round
 class Event(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
+        lastUpdated: Date = DEFAULT_DATE,
         var yearId: Int = DEFAULT_INT,
         var blueAllianceId: String = DEFAULT_STRING,
         var name: String = DEFAULT_STRING,
@@ -18,7 +19,7 @@ class Event(
         var stateProvince: String = DEFAULT_STRING,
         var country: String = DEFAULT_STRING,
         var startDate: Date = DEFAULT_DATE,
-        var endDate: Date = DEFAULT_DATE) : Table(TABLE_NAME, localId, serverId)
+        var endDate: Date = DEFAULT_DATE) : Table(TABLE_NAME, localId, serverId, lastUpdated)
 {
     companion object: ChildTableCompanion
     {
@@ -95,6 +96,7 @@ class Event(
                                     Event(
                                             getLong(COLUMN_NAME_LOCAL_ID),
                                             getLong(COLUMN_NAME_SERVER_ID),
+                                            getDate(COLUMN_NAME_LAST_UPDATED),
                                             getInt(COLUMN_NAME_YEAR_ID),
                                             getString(COLUMN_NAME_BLUE_ALLIANCE_ID),
                                             getString(COLUMN_NAME_NAME),

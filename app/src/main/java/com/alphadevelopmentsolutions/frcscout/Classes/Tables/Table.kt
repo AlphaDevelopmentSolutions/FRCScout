@@ -8,7 +8,8 @@ import java.util.*
 abstract class Table protected constructor(
     val tableName: String,
     var localId: Long,
-    var serverId: Long
+    var serverId: Long,
+    var lastUpdated: Date
 )
 {
     /**
@@ -53,6 +54,7 @@ abstract class Table protected constructor(
         get() = MasterContentValues().apply {
             put(COLUMN_NAME_LOCAL_ID, localId)
             put(COLUMN_NAME_SERVER_ID, serverId)
+            put(COLUMN_NAME_LAST_UPDATED, lastUpdated)
             putAll(childValues)
         }
 
@@ -62,6 +64,7 @@ abstract class Table protected constructor(
     {
         localId = table.localId
         serverId = table.serverId
+        lastUpdated = table.lastUpdated
     }
 
     companion object: ParentTableCompanion

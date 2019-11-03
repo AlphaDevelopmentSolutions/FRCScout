@@ -17,11 +17,12 @@ import java.util.*
 class RobotMedia(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
+        lastUpdated: Date = DEFAULT_DATE,
         var yearId: Long = DEFAULT_LONG,
         var eventId: String = DEFAULT_STRING,
         var teamId: Long = DEFAULT_LONG,
         var fileUri: String = DEFAULT_STRING,
-        var isDraft: Boolean = DEFAULT_BOOLEAN) : Table(TABLE_NAME, localId, serverId)
+        var isDraft: Boolean = DEFAULT_BOOLEAN) : Table(TABLE_NAME, localId, serverId, lastUpdated)
 {
     companion object: ChildTableCompanion
     {
@@ -103,6 +104,7 @@ class RobotMedia(
                                     RobotMedia(
                                             getLong(COLUMN_NAME_LOCAL_ID),
                                             getLong(COLUMN_NAME_SERVER_ID),
+                                            getDate(COLUMN_NAME_LAST_UPDATED),
                                             getLong(COLUMN_NAME_YEAR_ID),
                                             getString(COLUMN_NAME_EVENT_ID),
                                             getLong(COLUMN_NAME_TEAM_ID),

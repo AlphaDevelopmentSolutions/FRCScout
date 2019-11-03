@@ -10,8 +10,9 @@ import java.util.*
 class EventTeamList(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
+        lastUpdated: Date = DEFAULT_DATE,
         var teamId: Long = DEFAULT_LONG,
-        var eventId: String = DEFAULT_STRING) : Table(TABLE_NAME, localId, serverId)
+        var eventId: String = DEFAULT_STRING) : Table(TABLE_NAME, localId, serverId, lastUpdated)
 {
     companion object: ChildTableCompanion
     {
@@ -65,6 +66,7 @@ class EventTeamList(
                                     EventTeamList(
                                             getLong(COLUMN_NAME_LOCAL_ID),
                                             getLong(COLUMN_NAME_SERVER_ID),
+                                            getDate(COLUMN_NAME_LAST_UPDATED),
                                             getLong(COLUMN_NAME_TEAM_ID),
                                             getString(COLUMN_NAME_EVENT_ID)
                                     )

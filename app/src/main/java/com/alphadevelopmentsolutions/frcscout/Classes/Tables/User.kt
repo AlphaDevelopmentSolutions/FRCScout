@@ -5,13 +5,15 @@ import com.alphadevelopmentsolutions.frcscout.Classes.MasterContentValues
 import com.alphadevelopmentsolutions.frcscout.Classes.TableColumn
 import com.alphadevelopmentsolutions.frcscout.Interfaces.SQLiteDataTypes
 import com.alphadevelopmentsolutions.frcscout.Interfaces.ChildTableCompanion
+import java.util.*
 import kotlin.collections.ArrayList
 
 class User(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
+        lastUpdated: Date = DEFAULT_DATE,
         var firstName: String = DEFAULT_STRING,
-        var lastName: String = DEFAULT_STRING) : Table(TABLE_NAME, localId, serverId)
+        var lastName: String = DEFAULT_STRING) : Table(TABLE_NAME, localId, serverId, lastUpdated)
 {
     companion object: ChildTableCompanion
     {
@@ -55,12 +57,13 @@ class User(
                     if (this != null) {
                         while (moveToNext()) {
                             add(
-                                    User(
-                                            getLong(COLUMN_NAME_LOCAL_ID),
-                                            getLong(COLUMN_NAME_SERVER_ID),
-                                            getString(COLUMN_NAME_FIRST_NAME),
-                                            getString(COLUMN_NAME_LAST_NAME)
-                                    )
+                                User(
+                                    getLong(COLUMN_NAME_LOCAL_ID),
+                                    getLong(COLUMN_NAME_SERVER_ID),
+                                    getDate(COLUMN_NAME_LAST_UPDATED),
+                                    getString(COLUMN_NAME_FIRST_NAME),
+                                    getString(COLUMN_NAME_LAST_NAME)
+                                )
                             )
                         }
 

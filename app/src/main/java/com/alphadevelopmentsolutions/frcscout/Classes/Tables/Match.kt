@@ -14,6 +14,7 @@ import kotlin.math.round
 class Match(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
+        lastUpdated: Date = DEFAULT_DATE,
         var date: Date = DEFAULT_DATE,
         var eventId: String = DEFAULT_STRING,
         var key: String = DEFAULT_STRING,
@@ -27,7 +28,7 @@ class Match(
         var redAllianceTeamTwoId: Long = DEFAULT_LONG,
         var redAllianceTeamThreeId: Long = DEFAULT_LONG,
         var blueAllianceScore: Int? = null,
-        var redAllianceScore: Int? = null) : Table(TABLE_NAME, localId, serverId)
+        var redAllianceScore: Int? = null) : Table(TABLE_NAME, localId, serverId, lastUpdated)
 {
     companion object: ChildTableCompanion
     {
@@ -130,6 +131,7 @@ class Match(
                                         Match(
                                                 getLong(COLUMN_NAME_LOCAL_ID),
                                                 getLong(COLUMN_NAME_SERVER_ID),
+                                                getDate(COLUMN_NAME_LAST_UPDATED),
                                                 getDate(COLUMN_NAME_DATE),
                                                 getString(COLUMN_NAME_EVENT_ID),
                                                 getString(COLUMN_NAME_KEY),

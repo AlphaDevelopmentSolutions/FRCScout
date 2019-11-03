@@ -10,6 +10,7 @@ import java.util.*
 class ScoutCardInfo(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
+        lastUpdated: Date = DEFAULT_DATE,
         var yearId: Long = DEFAULT_LONG,
         var eventId: String = DEFAULT_STRING,
         var matchId: String = DEFAULT_STRING,
@@ -17,7 +18,7 @@ class ScoutCardInfo(
         var completedBy: String = DEFAULT_STRING,
         var propertyValue: String = DEFAULT_STRING,
         var propertyKeyId: Long = DEFAULT_LONG,
-        var isDraft: Boolean = DEFAULT_BOOLEAN) : Table(TABLE_NAME, localId, serverId)
+        var isDraft: Boolean = DEFAULT_BOOLEAN) : Table(TABLE_NAME, localId, serverId, lastUpdated)
 {
     companion object: ChildTableCompanion
     {
@@ -113,6 +114,7 @@ class ScoutCardInfo(
                                     ScoutCardInfo(
                                             getLong(COLUMN_NAME_LOCAL_ID),
                                             getLong(COLUMN_NAME_SERVER_ID),
+                                            getDate(COLUMN_NAME_LAST_UPDATED),
                                             getLong(COLUMN_NAME_YEAR_ID),
                                             getString(COLUMN_NAME_EVENT_ID),
                                             getString(COLUMN_NAME_MATCH_ID),
