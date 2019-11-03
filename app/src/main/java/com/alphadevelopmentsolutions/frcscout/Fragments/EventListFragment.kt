@@ -53,7 +53,7 @@ class EventListFragment : MasterFragment()
             if (yearJson != null && yearJson != "")
                 year = Gson().fromJson(yearJson, Year::class.java)
 
-            events = Event.getObjects(year, null, Team(context.keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Int).apply { load(context.database) }, database)
+            events = Event.getObjects(year, null, Team(context.keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Long).apply { load(context.database) }, database)
             searchedEvents = ArrayList(events)
         })
 

@@ -54,7 +54,7 @@ internal class EventListRecyclerViewAdapter(private val eventList: ArrayList<Eve
         //Sends you to the teamlist fragment
         viewHolder.view.ViewEventButton.setOnClickListener {
             //store the selected event in the shared pref
-            context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, eventList[viewHolder.adapterPosition].id)
+            context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, eventList[viewHolder.adapterPosition].localId)
             context.setCheckedMenuItem(0)
             context.updateNavText(eventList[viewHolder.adapterPosition])
             context.changeFragment(MatchListFragment.newInstance(null), false, false)

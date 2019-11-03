@@ -288,7 +288,7 @@ abstract class Api internal constructor(
                     {
                         val teamObject = NullableJSONObject(apiResponse.response.getJSONObject(i))
 
-                        val teamId = teamObject.getInt(Team.COLUMN_NAME_ID)
+                        val teamId = teamObject.getLong(Team.COLUMN_NAME_SERVER_ID)
                         val name = teamObject.getString(Team.COLUMN_NAME_NAME)
                         val city = teamObject.getStringOrNull(Team.COLUMN_NAME_CITY)
                         val stateProvince = teamObject.getStringOrNull(Team.COLUMN_NAME_STATEPROVINCE)
@@ -300,19 +300,23 @@ abstract class Api internal constructor(
                         val youtubeURL = teamObject.getStringOrNull(Team.COLUMN_NAME_YOUTUBE_URL)
                         val websiteUrl = teamObject.getStringOrNull(Team.COLUMN_NAME_WEBSITE_URL)
 
-                        teams.add(Team(
-                                teamId,
-                                name,
-                                city,
-                                stateProvince,
-                                country,
-                                rookieYear,
-                                if (facebookURL == "null") "" else "https://www.facebook.com/$facebookURL",
-                                if (twitterURL == "null") "" else "https://www.twitter.com/$twitterURL",
-                                if (instagramURL == "null") "" else "https://www.instagram.com/$instagramURL",
-                                if (youtubeURL == "null") "" else "https://www.youtube.com/$youtubeURL",
-                                websiteUrl,
-                                ""))
+                        teams.add(
+                                Team(
+                                    -1,
+                                    teamId,
+                                    name,
+                                    city,
+                                    stateProvince,
+                                    country,
+                                    rookieYear,
+                                    if (facebookURL == "null") "" else "https://www.facebook.com/$facebookURL",
+                                    if (twitterURL == "null") "" else "https://www.twitter.com/$twitterURL",
+                                    if (instagramURL == "null") "" else "https://www.instagram.com/$instagramURL",
+                                    if (youtubeURL == "null") "" else "https://www.youtube.com/$youtubeURL",
+                                    websiteUrl,
+                                    ""
+                                )
+                        )
                     }
 
                     return true
@@ -362,13 +366,18 @@ abstract class Api internal constructor(
 
                         with(EventTeamList)
                         {
-                            val teamId = eventTeamListObj.getInt(COLUMN_NAME_TEAM_ID)
+                            val serverId = eventTeamListObj.getLong(COLUMN_NAME_SERVER_ID)
+                            val teamId = eventTeamListObj.getLong(COLUMN_NAME_TEAM_ID)
                             val eventId = eventTeamListObj.getString(COLUMN_NAME_EVENT_ID)
 
-                            eventTeamList.add(EventTeamList(
-                                    -1,
-                                    teamId,
-                                    eventId))
+                            eventTeamList.add(
+                                    EventTeamList(
+                                        -1,
+                                        serverId,
+                                        teamId,
+                                        eventId
+                                    )
+                            )
                         }
                     }
 
@@ -413,10 +422,21 @@ abstract class Api internal constructor(
                     {
                         val teamObject = apiResponse.response.getJSONObject(i)
 
-                        val firstName = teamObject.getString(User.COLUMN_NAME_FIRST_NAME)
-                        val lastName = teamObject.getString(User.COLUMN_NAME_LAST_NAME)
+                        with(User)
+                        {
+                            val serverId = teamObject.getLong(COLUMN_NAME_SERVER_ID)
+                            val firstName = teamObject.getString(COLUMN_NAME_FIRST_NAME)
+                            val lastName = teamObject.getString(COLUMN_NAME_LAST_NAME)
 
-                        users.add(User(-1, firstName, lastName))
+                            users.add(
+                                    User(
+                                        -1,
+                                        serverId,
+                                        firstName,
+                                        lastName
+                                    )
+                            )
+                        }
                     }
 
                     return true
@@ -466,29 +486,26 @@ abstract class Api internal constructor(
 
                         with(ScoutCardInfo)
                         {
-                            val yearId = scoutCardInfoObject.getInt(COLUMN_NAME_YEAR_ID)
+                            val serverId = scoutCardInfoObject.getLong(COLUMN_NAME_SERVER_ID)
+                            val yearId = scoutCardInfoObject.getLong(COLUMN_NAME_YEAR_ID)
                             val eventId = scoutCardInfoObject.getString(COLUMN_NAME_EVENT_ID)
                             val matchId = scoutCardInfoObject.getString(COLUMN_NAME_MATCH_ID)
-                            val teamId = scoutCardInfoObject.getInt(COLUMN_NAME_TEAM_ID)
-
+                            val teamId = scoutCardInfoObject.getLong(COLUMN_NAME_TEAM_ID)
                             val completedBy = scoutCardInfoObject.getString(COLUMN_NAME_COMPLETED_BY)
-
                             val propertyValue = scoutCardInfoObject.getString(COLUMN_NAME_PROPERTY_VALUE)
-                            val propertyKeyId = scoutCardInfoObject.getInt(COLUMN_NAME_PROPERTY_KEY_ID)
+                            val propertyKeyId = scoutCardInfoObject.getLong(COLUMN_NAME_PROPERTY_KEY_ID)
 
                             scoutCardInfos.add(
                                     ScoutCardInfo(
                                             -1,
+                                            serverId,
                                             yearId,
                                             eventId,
                                             matchId,
                                             teamId,
-
                                             completedBy,
-
                                             propertyValue,
                                             propertyKeyId,
-
                                             false))
                         }
                     }
@@ -538,41 +555,35 @@ abstract class Api internal constructor(
                     {
                         val robotInfoKeyObject = NullableJSONObject(apiResponse.response.getJSONObject(i))
 
-                        val serverId = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_SERVER_ID)
-                        val yearId = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_YEAR_ID)
+                        with(ScoutCardInfoKey)
+                        {
+                            val serverId = robotInfoKeyObject.getLong(COLUMN_NAME_SERVER_ID)
+                            val yearId = robotInfoKeyObject.getInt(COLUMN_NAME_YEAR_ID)
+                            val keyState = robotInfoKeyObject.getString(COLUMN_NAME_KEY_STATE)
+                            val keyName = robotInfoKeyObject.getString(COLUMN_NAME_KEY_NAME)
+                            val sortOrder = robotInfoKeyObject.getInt(COLUMN_NAME_SORT_ORDER)
+                            val minValue = robotInfoKeyObject.getIntOrNull(COLUMN_NAME_MIN_VALUE)
+                            val maxValue = robotInfoKeyObject.getIntOrNull(COLUMN_NAME_MAX_VALUE)
+                            val nullZeros = robotInfoKeyObject.getBoolean(COLUMN_NAME_NULL_ZEROS)
+                            val includeInStats = robotInfoKeyObject.getBoolean(COLUMN_NAME_INCLUDE_IN_STATS)
+                            val dataType = ScoutCardInfoKey.DataTypes.parseString(robotInfoKeyObject.getString(COLUMN_NAME_DATA_TYPE))
 
-                        val keyState = robotInfoKeyObject.getString(ScoutCardInfoKey.COLUMN_NAME_KEY_STATE)
-                        val keyName = robotInfoKeyObject.getString(ScoutCardInfoKey.COLUMN_NAME_KEY_NAME)
-
-                        val sortOrder = robotInfoKeyObject.getInt(ScoutCardInfoKey.COLUMN_NAME_SORT_ORDER)
-
-                        val minValue = robotInfoKeyObject.getIntOrNull(ScoutCardInfoKey.COLUMN_NAME_MIN_VALUE)
-                        val maxValue = robotInfoKeyObject.getIntOrNull(ScoutCardInfoKey.COLUMN_NAME_MAX_VALUE)
-
-                        val nullZeros = robotInfoKeyObject.getBoolean(ScoutCardInfoKey.COLUMN_NAME_NULL_ZEROS)
-                        val includeInStats = robotInfoKeyObject.getBoolean(ScoutCardInfoKey.COLUMN_NAME_INCLUDE_IN_STATS)
-
-                        val dataType = ScoutCardInfoKey.DataTypes.parseString(robotInfoKeyObject.getString(ScoutCardInfoKey.COLUMN_NAME_DATA_TYPE))
-
-                        scoutCardInfoKeys.add(ScoutCardInfoKey(
-                                -1,
-
-                                serverId,
-                                yearId,
-
-                                keyState,
-                                keyName,
-
-                                sortOrder,
-
-                                minValue,
-                                maxValue,
-
-                                nullZeros,
-                                includeInStats,
-
-                                dataType
-                        ))
+                            scoutCardInfoKeys.add(
+                                    ScoutCardInfoKey(
+                                            -1,
+                                            serverId,
+                                            yearId,
+                                            keyState,
+                                            keyName,
+                                            sortOrder,
+                                            minValue,
+                                            maxValue,
+                                            nullZeros,
+                                            includeInStats,
+                                            dataType
+                                    )
+                            )
+                        }
                     }
 
                     return true
@@ -622,24 +633,25 @@ abstract class Api internal constructor(
 
                         with(RobotInfo)
                         {
-                            val yearId = robotInfoObject.getInt(COLUMN_NAME_YEAR_ID)
+                            val serverId = robotInfoObject.getLong(COLUMN_NAME_SERVER_ID)
+                            val yearId = robotInfoObject.getLong(COLUMN_NAME_YEAR_ID)
                             val eventId = robotInfoObject.getString(COLUMN_NAME_EVENT_ID)
-                            val teamId = robotInfoObject.getInt(COLUMN_NAME_TEAM_ID)
-
+                            val teamId = robotInfoObject.getLong(COLUMN_NAME_TEAM_ID)
                             val propertyValue = robotInfoObject.getString(COLUMN_NAME_PROPERTY_VALUE)
-                            val propertyKeyId = robotInfoObject.getInt(COLUMN_NAME_PROPERTY_KEY_ID)
+                            val propertyKeyId = robotInfoObject.getLong(COLUMN_NAME_PROPERTY_KEY_ID)
 
-                            robotInfoList.add(RobotInfo(
-                                    -1,
-                                    yearId,
-                                    eventId,
-                                    teamId,
-
-                                    propertyValue,
-                                    propertyKeyId,
-
-                                    false
-                            ))
+                            robotInfoList.add(
+                                    RobotInfo(
+                                            -1,
+                                            serverId,
+                                            yearId,
+                                            eventId,
+                                            teamId,
+                                            propertyValue,
+                                            propertyKeyId,
+                                            false
+                                    )
+                            )
                         }
                     }
 
@@ -688,24 +700,25 @@ abstract class Api internal constructor(
                     {
                         val robotInfoKeyObject = apiResponse.response.getJSONObject(i)
 
-                        val serverId = robotInfoKeyObject.getInt(RobotInfoKey.COLUMN_NAME_SERVER_ID)
-                        val yearId = robotInfoKeyObject.getInt(RobotInfoKey.COLUMN_NAME_YEAR_ID)
+                        with(RobotInfoKey)
+                        {
+                            val serverId = robotInfoKeyObject.getLong(COLUMN_NAME_SERVER_ID)
+                            val yearId = robotInfoKeyObject.getInt(COLUMN_NAME_YEAR_ID)
+                            val keyState = robotInfoKeyObject.getString(COLUMN_NAME_KEY_STATE)
+                            val keyName = robotInfoKeyObject.getString(COLUMN_NAME_KEY_NAME)
+                            val sortOrder = robotInfoKeyObject.getInt(COLUMN_NAME_SORT_ORDER)
 
-                        val keyState = robotInfoKeyObject.getString(RobotInfoKey.COLUMN_NAME_KEY_STATE)
-                        val keyName = robotInfoKeyObject.getString(RobotInfoKey.COLUMN_NAME_KEY_NAME)
-
-                        val sortOrder = robotInfoKeyObject.getInt(RobotInfoKey.COLUMN_NAME_SORT_ORDER)
-
-                        robotInfoKeyList.add(RobotInfoKey(
-                                -1,
-                                serverId,
-                                yearId,
-
-                                keyState,
-                                keyName,
-
-                                sortOrder
-                        ))
+                            robotInfoKeyList.add(
+                                    RobotInfoKey(
+                                            -1,
+                                            serverId,
+                                            yearId,
+                                            keyState,
+                                            keyName,
+                                            sortOrder
+                                )
+                            )
+                        }
                     }
 
                     return true
@@ -753,45 +766,46 @@ abstract class Api internal constructor(
                     {
                         val matchObject = NullableJSONObject(apiResponse.response.getJSONObject(i))
 
-                        val date = simpleDateFormat.parse(matchObject.getString(Match.COLUMN_NAME_DATE))
-                        val eventId = matchObject.getString(Match.COLUMN_NAME_EVENT_ID)
-                        val key = matchObject.getString(Match.COLUMN_NAME_KEY)
-                        val matchType = Match.Type.getTypeFromString(matchObject.getString(Match.COLUMN_NAME_MATCH_TYPE))
-                        val setNumber = matchObject.getInt(Match.COLUMN_NAME_SET_NUMBER)
-                        val matchNumber = matchObject.getInt(Match.COLUMN_NAME_MATCH_NUMBER)
+                        with(Match)
+                        {
+                            val serverId = matchObject.getLong(COLUMN_NAME_SERVER_ID)
+                            val date = simpleDateFormat.parse(matchObject.getString(COLUMN_NAME_DATE))
+                            val eventId = matchObject.getString(COLUMN_NAME_EVENT_ID)
+                            val key = matchObject.getString(COLUMN_NAME_KEY)
+                            val matchType = Match.Type.getTypeFromString(matchObject.getString(COLUMN_NAME_MATCH_TYPE))
+                            val setNumber = matchObject.getInt(COLUMN_NAME_SET_NUMBER)
+                            val matchNumber = matchObject.getInt(COLUMN_NAME_MATCH_NUMBER)
+                            val blueAllianceTeamOneId = matchObject.getLong(COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID)
+                            val blueAllianceTeamTwoId = matchObject.getLong(COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID)
+                            val blueAllianceTeamThreeId = matchObject.getLong(COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID)
+                            val redAllianceTeamOneId = matchObject.getLong(COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID)
+                            val redAllianceTeamTwoId = matchObject.getLong(COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID)
+                            val redAllianceTeamThreeId = matchObject.getLong(COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID)
+                            val blueAllianceScore = matchObject.getIntOrNull(COLUMN_NAME_BLUE_ALLIANCE_SCORE)
+                            val redAllianceScore = matchObject.getIntOrNull(COLUMN_NAME_RED_ALLIANCE_SCORE)
 
-                        val blueAllianceTeamOneId = matchObject.getInt(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID)
-                        val blueAllianceTeamTwoId = matchObject.getInt(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID)
-                        val blueAllianceTeamThreeId = matchObject.getInt(Match.COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID)
 
-                        val redAllianceTeamOneId = matchObject.getInt(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID)
-                        val redAllianceTeamTwoId = matchObject.getInt(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID)
-                        val redAllianceTeamThreeId = matchObject.getInt(Match.COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID)
-
-                        val blueAllianceScore = matchObject.getIntOrNull(Match.COLUMN_NAME_BLUE_ALLIANCE_SCORE)
-                        val redAllianceScore = matchObject.getIntOrNull(Match.COLUMN_NAME_RED_ALLIANCE_SCORE)
-
-
-                        matches.add(Match(
-                                -1,
-                                date,
-                                eventId,
-                                key,
-                                matchType,
-                                setNumber,
-                                matchNumber,
-
-                                blueAllianceTeamOneId,
-                                blueAllianceTeamTwoId,
-                                blueAllianceTeamThreeId,
-
-                                redAllianceTeamOneId,
-                                redAllianceTeamTwoId,
-                                redAllianceTeamThreeId,
-
-                                blueAllianceScore,
-                                redAllianceScore
-                        ))
+                            matches.add(
+                                    Match(
+                                        -1,
+                                        serverId,
+                                        date,
+                                        eventId,
+                                        key,
+                                        matchType,
+                                        setNumber,
+                                        matchNumber,
+                                        blueAllianceTeamOneId,
+                                        blueAllianceTeamTwoId,
+                                        blueAllianceTeamThreeId,
+                                        redAllianceTeamOneId,
+                                        redAllianceTeamTwoId,
+                                        redAllianceTeamThreeId,
+                                        blueAllianceScore,
+                                        redAllianceScore
+                                )
+                            )
+                        }
                     }
 
                     return true
@@ -821,7 +835,7 @@ abstract class Api internal constructor(
                             init
                             {
                                 put(API_PARAM_API_ACTION, "GetRobotMedia")
-                                put(com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia.COLUMN_NAME_TEAM_ID, team?.id?.toString() ?: "")
+                                put(com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia.COLUMN_NAME_TEAM_ID, team?.serverId?.toString() ?: "")
                             }
                         }
                 )
@@ -841,20 +855,24 @@ abstract class Api internal constructor(
 
                         with(RobotMedia)
                         {
-                            val yearId = robotMediaJson.getInt(COLUMN_NAME_YEAR_ID)
+                            val serverId = robotMediaJson.getLong(COLUMN_NAME_SERVER_ID)
+                            val yearId = robotMediaJson.getLong(COLUMN_NAME_YEAR_ID)
                             val eventId = robotMediaJson.getString(COLUMN_NAME_EVENT_ID)
-                            val teamId = robotMediaJson.getInt(COLUMN_NAME_TEAM_ID)
+                            val teamId = robotMediaJson.getLong(COLUMN_NAME_TEAM_ID)
                             var fileUri = Constants.WEB_URL + "/assets/robot-media/originals/" + context.keyStore.getPreference(Constants.SharedPrefKeys.TEAM_ROBOT_MEDIA_DIR_KEY, "") + "/" + robotMediaJson.getString(COLUMN_NAME_FILE_URI)
 
                             fileUri = apiResponse.downloadImage(fileUri, Constants.ROBOT_MEDIA_DIRECTORY, context).absolutePath
 
-                            robotMedia.add(RobotMedia(
-                                    -1,
-                                    yearId,
-                                    eventId,
-                                    teamId,
-                                    fileUri,
-                                    false)
+                            robotMedia.add(
+                                    RobotMedia(
+                                            -1,
+                                            serverId,
+                                            yearId,
+                                            eventId,
+                                            teamId,
+                                            fileUri,
+                                            false
+                                    )
                             )
                         }
                     }
@@ -900,23 +918,28 @@ abstract class Api internal constructor(
                     {
                         val yearsJson = apiResponse.response.getJSONObject(i)
 
-                        val serverId = yearsJson.getInt(Year.COLUMN_NAME_SERVER_ID)
-                        val name = yearsJson.getString(Year.COLUMN_NAME_NAME)
-                        val startDate = simpleDateFormat.parse(yearsJson.getString(Year.COLUMN_NAME_START_DATE))
-                        val endDate = simpleDateFormat.parse(yearsJson.getString(Year.COLUMN_NAME_END_DATE))
-                        var fileUri = Constants.WEB_URL + "/assets/year-media/" + yearsJson.getString(Year.COLUMN_NAME_IMAGE_URI)
+                        with(Year)
+                        {
+                            val serverId = yearsJson.getLong(COLUMN_NAME_SERVER_ID)
+                            val name = yearsJson.getString(COLUMN_NAME_NAME)
+                            val startDate = simpleDateFormat.parse(yearsJson.getString(COLUMN_NAME_START_DATE))
+                            val endDate = simpleDateFormat.parse(yearsJson.getString(COLUMN_NAME_END_DATE))
+                            var fileUri = Constants.WEB_URL + "/assets/year-media/" + yearsJson.getString(COLUMN_NAME_IMAGE_URI)
 
-                        fileUri = apiResponse.downloadImage(fileUri, Constants.YEAR_MEDIA_DIRECTORY, context).absolutePath
+                            fileUri = apiResponse.downloadImage(fileUri, Constants.YEAR_MEDIA_DIRECTORY, context).absolutePath
 
-                        years.add(Year(
-                                -1,
-                                serverId,
-                                name,
-                                startDate,
-                                endDate,
-                                fileUri
-                        ))
+                            years.add(
+                                    Year(
+                                        -1,
+                                        serverId,
+                                        name,
+                                        startDate,
+                                        endDate,
+                                        fileUri
+                                )
+                            )
 
+                        }
                     }
 
                     return true
@@ -946,7 +969,7 @@ abstract class Api internal constructor(
                             init
                             {
                                 put(API_PARAM_API_ACTION, "GetEvents")
-                                put("TeamId", team?.id?.toString() ?: "")
+                                put("TeamId", team?.serverId?.toString() ?: "")
                             }
                         }
                 )
@@ -964,25 +987,33 @@ abstract class Api internal constructor(
                     {
                         val eventObject = apiResponse.response.getJSONObject(i)
 
-                        val yearId = eventObject.getInt(Event.COLUMN_NAME_YEAR_ID)
-                        val blueAllianceId = eventObject.getString(Event.COLUMN_NAME_BLUE_ALLIANCE_ID)
-                        val name = eventObject.getString(Event.COLUMN_NAME_NAME)
-                        val city = eventObject.getString(Event.COLUMN_NAME_CITY)
-                        val stateProvince = eventObject.getString(Event.COLUMN_NAME_STATEPROVINCE)
-                        val country = eventObject.getString(Event.COLUMN_NAME_COUNTRY)
-                        val startDate = eventObject.getString(Event.COLUMN_NAME_START_DATE)
-                        val endDate = eventObject.getString(Event.COLUMN_NAME_END_DATE)
+                        with(Event)
+                        {
+                            val serverId = eventObject.getLong(COLUMN_NAME_SERVER_ID)
+                            val yearId = eventObject.getInt(COLUMN_NAME_YEAR_ID)
+                            val blueAllianceId = eventObject.getString(COLUMN_NAME_BLUE_ALLIANCE_ID)
+                            val name = eventObject.getString(COLUMN_NAME_NAME)
+                            val city = eventObject.getString(COLUMN_NAME_CITY)
+                            val stateProvince = eventObject.getString(COLUMN_NAME_STATEPROVINCE)
+                            val country = eventObject.getString(COLUMN_NAME_COUNTRY)
+                            val startDate = eventObject.getString(COLUMN_NAME_START_DATE)
+                            val endDate = eventObject.getString(COLUMN_NAME_END_DATE)
 
-                        events.add(Event(
-                                -1,
-                                yearId,
-                                blueAllianceId,
-                                name,
-                                city,
-                                stateProvince,
-                                country,
-                                simpleDateFormat.parse(startDate),
-                                simpleDateFormat.parse(endDate)))
+                            events.add(
+                                    Event(
+                                        -1,
+                                        serverId,
+                                        yearId,
+                                        blueAllianceId,
+                                        name,
+                                        city,
+                                        stateProvince,
+                                        country,
+                                        simpleDateFormat.parse(startDate),
+                                        simpleDateFormat.parse(endDate)
+                                    )
+                            )
+                        }
                     }
 
 
@@ -1027,17 +1058,21 @@ abstract class Api internal constructor(
                     {
                         val checklistItemObject = apiResponse.response.getJSONObject(i)
 
-                        val serverId = checklistItemObject.getInt(ChecklistItem.COLUMN_NAME_SERVER_ID)
+                        with(ChecklistItem)
+                        {
+                            val serverId = checklistItemObject.getLong(COLUMN_NAME_SERVER_ID)
+                            val title = checklistItemObject.getString(COLUMN_NAME_TITLE)
+                            val description = checklistItemObject.getString(COLUMN_NAME_DESCRIPTION)
 
-                        val title = checklistItemObject.getString(ChecklistItem.COLUMN_NAME_TITLE)
-                        val description = checklistItemObject.getString(ChecklistItem.COLUMN_NAME_DESCRIPTION)
-
-                        checklistItems.add(
-                                ChecklistItem(
-                                        -1,
-                                        serverId,
-                                        title,
-                                        description))
+                            checklistItems.add(
+                                    ChecklistItem(
+                                            -1,
+                                            serverId,
+                                            title,
+                                            description
+                                    )
+                            )
+                        }
                     }
 
                     return true
@@ -1080,26 +1115,28 @@ abstract class Api internal constructor(
                     {
                         val checklistItemResultObject = NullableJSONObject(apiResponse.response.getJSONObject(i))
 
-                        val checklistItemId = checklistItemResultObject.getInt(ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID)
+                        with(ChecklistItemResult)
+                        {
+                            val serverId = checklistItemResultObject.getLong(COLUMN_NAME_CHECKLIST_ITEM_ID)
+                            val checklistItemId = checklistItemResultObject.getLong(COLUMN_NAME_CHECKLIST_ITEM_ID)
+                            val matchId = checklistItemResultObject.getString(COLUMN_NAME_MATCH_ID)
+                            val status = checklistItemResultObject.getString(COLUMN_NAME_STATUS)
+                            val completedBy = checklistItemResultObject.getStringOrNull(COLUMN_NAME_COMPLETED_BY)
+                            val completedDate = with(checklistItemResultObject.getStringOrNull(COLUMN_NAME_COMPLETED_DATE)) { if (this != null) simpleDateFormat.parse(this) else null }
 
-                        val matchId = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_MATCH_ID)
-                        val status = checklistItemResultObject.getString(ChecklistItemResult.COLUMN_NAME_STATUS)
-                        val completedBy = checklistItemResultObject.getStringOrNull(ChecklistItemResult.COLUMN_NAME_COMPLETED_BY)
-
-                        val completedDate = with(checklistItemResultObject.getStringOrNull(ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE)) { if (this != null) simpleDateFormat.parse(this) else null }
-
-                        checklistItemResults.add(
-                                ChecklistItemResult(
-                                        -1,
-                                        checklistItemId,
-                                        matchId,
-
-                                        status,
-                                        completedBy,
-
-                                        completedDate,
-                                        false
-                                ))
+                            checklistItemResults.add(
+                                    ChecklistItemResult(
+                                            -1,
+                                            serverId,
+                                            checklistItemId,
+                                            matchId,
+                                            status,
+                                            completedBy,
+                                            completedDate,
+                                            false
+                                    )
+                            )
+                        }
                     }
 
 

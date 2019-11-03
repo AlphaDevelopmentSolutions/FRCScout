@@ -10,11 +10,11 @@ import java.util.*
 class RobotInfo(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
-        var yearId: Int = DEFAULT_INT,
+        var yearId: Long = DEFAULT_LONG,
         var eventId: String = DEFAULT_STRING,
-        var teamId: Int = DEFAULT_INT,
+        var teamId: Long = DEFAULT_LONG,
         var propertyValue: String= DEFAULT_STRING,
-        var propertyKeyId: Int = DEFAULT_INT,
+        var propertyKeyId: Long = DEFAULT_LONG,
         var isDraft: Boolean = DEFAULT_BOOLEAN) : Table(TABLE_NAME, localId, serverId)
 {
     companion object: ChildTableCompanion
@@ -106,11 +106,11 @@ class RobotInfo(
                                     RobotInfo(
                                             getLong(COLUMN_NAME_LOCAL_ID),
                                             getLong(COLUMN_NAME_SERVER_ID),
-                                            getInt(COLUMN_NAME_YEAR_ID),
+                                            getLong(COLUMN_NAME_YEAR_ID),
                                             getString(COLUMN_NAME_EVENT_ID),
-                                            getInt(COLUMN_NAME_TEAM_ID),
+                                            getLong(COLUMN_NAME_TEAM_ID),
                                             getString(COLUMN_NAME_PROPERTY_VALUE),
-                                            getInt(COLUMN_NAME_PROPERTY_KEY_ID),
+                                            getLong(COLUMN_NAME_PROPERTY_KEY_ID),
                                             getBoolean(COLUMN_NAME_IS_DRAFT)
                                     )
                             )

@@ -130,9 +130,9 @@ abstract class MasterFragment : Fragment()
         //create and start the thread to load the json vars
         loadingThread = Thread(Runnable {
 
-            year = Year(-1, context.keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int).apply { load(context.database) }
+            year = Year(-1, context.keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Long).apply { load(context.database) }
 
-            val eventId = context.keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int
+            val eventId = context.keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Long
             if (eventId > 0)
                 event = Event(eventId).apply { load(context.database) }
 

@@ -17,7 +17,7 @@ import java.util.*
 class RobotMedia(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
-        var yearId: Int = DEFAULT_INT,
+        var yearId: Long = DEFAULT_LONG,
         var eventId: String = DEFAULT_STRING,
         var teamId: Long = DEFAULT_LONG,
         var fileUri: String = DEFAULT_STRING,
@@ -103,7 +103,7 @@ class RobotMedia(
                                     RobotMedia(
                                             getLong(COLUMN_NAME_LOCAL_ID),
                                             getLong(COLUMN_NAME_SERVER_ID),
-                                            getInt(COLUMN_NAME_YEAR_ID),
+                                            getLong(COLUMN_NAME_YEAR_ID),
                                             getString(COLUMN_NAME_EVENT_ID),
                                             getLong(COLUMN_NAME_TEAM_ID),
                                             getString(COLUMN_NAME_FILE_URI),

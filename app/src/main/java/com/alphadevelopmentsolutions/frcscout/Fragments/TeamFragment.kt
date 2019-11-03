@@ -116,7 +116,7 @@ class TeamFragment : MasterFragment()
                     WebsiteButton.visibility = View.GONE
             }
 
-            TeamNumberNameTextView.text = "${team!!.id.toString()} - ${team!!.name}"
+            TeamNumberNameTextView.text = "${team!!.serverId.toString()} - ${team!!.name}"
             TeamLocationTextView.text = "${team!!.city}, ${team!!.stateProvince}, ${team!!.country}"
 
             TeamViewPager.adapter = teamViewPagerAdapter

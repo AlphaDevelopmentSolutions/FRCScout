@@ -27,7 +27,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
         val userNames = ArrayList<String>()
 
         //get all users
-        for (user in User.getObjects(null, context.database)!!)
+        for (user in User.getObjects(null, context.database))
         {
             userNames.add(user.toString())
         }
@@ -80,11 +80,10 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
         if (checklistItemResult == null)
             checklistItemResult = ChecklistItemResult(
                     -1,
+                    -1,
                     checklistItem.serverId,
                     match.key,
-
                     Status.UNSET,
-
                     "",
                     Date(),
 

@@ -10,7 +10,7 @@ import java.util.*
 class ScoutCardInfo(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
-        var yearId: Int = DEFAULT_INT,
+        var yearId: Long = DEFAULT_LONG,
         var eventId: String = DEFAULT_STRING,
         var matchId: String = DEFAULT_STRING,
         var teamId: Long = DEFAULT_LONG,
@@ -113,7 +113,7 @@ class ScoutCardInfo(
                                     ScoutCardInfo(
                                             getLong(COLUMN_NAME_LOCAL_ID),
                                             getLong(COLUMN_NAME_SERVER_ID),
-                                            getInt(COLUMN_NAME_YEAR_ID),
+                                            getLong(COLUMN_NAME_YEAR_ID),
                                             getString(COLUMN_NAME_EVENT_ID),
                                             getString(COLUMN_NAME_MATCH_ID),
                                             getLong(COLUMN_NAME_TEAM_ID),

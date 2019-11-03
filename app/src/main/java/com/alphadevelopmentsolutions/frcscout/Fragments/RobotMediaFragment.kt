@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.FileProvider
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotMedia
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Table
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
@@ -94,7 +95,7 @@ class RobotMediaFragment : MasterFragment()
 
         loadingThread.join()
 
-        context.setToolbarTitle("${team!!.id} Robot Media")
+        context.setToolbarTitle("${team!!.serverId} Robot Media")
 
         return view
     }
@@ -109,11 +110,13 @@ class RobotMediaFragment : MasterFragment()
             {
                 if (resultCode == Activity.RESULT_OK)
                 {
+                    //Create new robot media
                     robotMedia = RobotMedia(
-                            -1,
+                            Table.DEFAULT_LONG,
+                            Table.DEFAULT_LONG,
                             year!!.serverId,
                             event!!.blueAllianceId,
-                            team!!.id,
+                            team!!.serverId,
                             mediaFilePath,
                             true)
 
@@ -129,7 +132,7 @@ class RobotMediaFragment : MasterFragment()
     override fun onDetach()
     {
         //robot media never saved, delete image
-        if ((!::robotMedia.isInitialized && ::mediaFilePath.isInitialized) || (::robotMedia.isInitialized && robotMedia.id == -1))
+        if ((!::robotMedia.isInitialized && ::mediaFilePath.isInitialized) || (::robotMedia.isInitialized && robotMedia.localId == Table.DEFAULT_LONG))
             File(mediaFilePath).apply {
                 if(exists())
                     delete()

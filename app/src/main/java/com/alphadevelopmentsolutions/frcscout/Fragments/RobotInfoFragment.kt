@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfo
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.RobotInfoKey
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Table
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
 import com.alphadevelopmentsolutions.frcscout.R
 import kotlinx.android.synthetic.main.fragment_robot_info.view.*
@@ -128,10 +129,11 @@ class RobotInfoFragment : MasterFragment()
                                     if (robotInfo?.isDraft != true)
                                     {
                                         robotInfo = RobotInfo(
-                                                -1,
+                                                Table.DEFAULT_LONG,
+                                                Table.DEFAULT_LONG,
                                                 year!!.serverId,
                                                 event!!.blueAllianceId,
-                                                team!!.id,
+                                                team!!.serverId,
                                                 "",
                                                 infoKey.serverId,
                                                 true

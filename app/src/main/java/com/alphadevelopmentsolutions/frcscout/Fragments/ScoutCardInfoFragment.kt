@@ -8,10 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Match
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfo
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.ScoutCardInfoKey
-import com.alphadevelopmentsolutions.frcscout.Classes.Tables.Team
+import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_scout_card_info.view.*
@@ -41,7 +38,7 @@ class ScoutCardInfoFragment : MasterFragment()
             val scoutCardInfoKeys = ScoutCardInfoKey.getObjects(year, null, database)
             val scoutCardInfos = ScoutCardInfo.getObjects(event, match, team, null, null, false, database)
 
-            for(scoutCardInfoKey in scoutCardInfoKeys!!)
+            for(scoutCardInfoKey in scoutCardInfoKeys)
             {
                 if(scoutCardInfoKeyStates[scoutCardInfoKey.keyState] != null)
                     scoutCardInfoKeyStates[scoutCardInfoKey.keyState]!!.add(scoutCardInfoKey)
@@ -164,11 +161,12 @@ class ScoutCardInfoFragment : MasterFragment()
                                             if (scoutCardInfo?.isDraft != true)
                                             {
                                                 scoutCardInfo = ScoutCardInfo(
-                                                        -1,
+                                                        Table.DEFAULT_LONG,
+                                                        Table.DEFAULT_LONG,
                                                         year!!.serverId,
                                                         event!!.blueAllianceId,
                                                         match!!.key,
-                                                        team!!.id,
+                                                        team!!.serverId,
                                                         "",
                                                         "",
                                                         infoKey.serverId,
@@ -222,11 +220,12 @@ class ScoutCardInfoFragment : MasterFragment()
                                         if (scoutCardInfo?.isDraft != true)
                                         {
                                             scoutCardInfo = ScoutCardInfo(
-                                                    -1,
+                                                    Table.DEFAULT_LONG,
+                                                    Table.DEFAULT_LONG,
                                                     year!!.serverId,
                                                     event!!.blueAllianceId,
                                                     match!!.key,
-                                                    team!!.id,
+                                                    team!!.serverId,
                                                     "",
                                                     "",
                                                     infoKey.serverId,
@@ -265,11 +264,12 @@ class ScoutCardInfoFragment : MasterFragment()
                                         if (scoutCardInfo?.isDraft != true)
                                         {
                                             scoutCardInfo = ScoutCardInfo(
-                                                    -1,
+                                                    Table.DEFAULT_LONG,
+                                                    Table.DEFAULT_LONG,
                                                     year!!.serverId,
                                                     event!!.blueAllianceId,
                                                     match!!.key,
-                                                    team!!.id,
+                                                    team!!.serverId,
                                                     "",
                                                     "",
                                                     infoKey.serverId,
@@ -307,11 +307,12 @@ class ScoutCardInfoFragment : MasterFragment()
                                         if (scoutCardInfo?.isDraft != true)
                                         {
                                             scoutCardInfo = ScoutCardInfo(
-                                                    -1,
+                                                    Table.DEFAULT_LONG,
+                                                    Table.DEFAULT_LONG,
                                                     year!!.serverId,
                                                     event!!.blueAllianceId,
                                                     match!!.key,
-                                                    team!!.id,
+                                                    team!!.serverId,
                                                     "",
                                                     "",
                                                     infoKey.serverId,

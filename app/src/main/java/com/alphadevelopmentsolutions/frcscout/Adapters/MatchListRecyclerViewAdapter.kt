@@ -90,7 +90,7 @@ internal class MatchListRecyclerViewAdapter(
 
         //set the click listeners for each team on the match
         //clicking their number will bring you to their team page
-        if (team?.id != match.blueAllianceTeamOneId)
+        if (team?.serverId != match.blueAllianceTeamOneId)
         {
             viewHolder.view.BlueAllianceTeamOneIdTextView.setOnClickListener {
                 with(Team(match.blueAllianceTeamOneId))
@@ -103,7 +103,7 @@ internal class MatchListRecyclerViewAdapter(
             }
         }
 
-        if (team?.id != match.blueAllianceTeamTwoId)
+        if (team?.serverId != match.blueAllianceTeamTwoId)
         {
             viewHolder.view.BlueAllianceTeamTwoIdTextView.setOnClickListener {
                 with(Team(match.blueAllianceTeamTwoId))
@@ -116,7 +116,7 @@ internal class MatchListRecyclerViewAdapter(
             }
         }
 
-        if (team?.id != match.blueAllianceTeamThreeId)
+        if (team?.serverId != match.blueAllianceTeamThreeId)
         {
             viewHolder.view.BlueAllianceTeamThreeIdTextView.setOnClickListener {
                 with(Team(match.blueAllianceTeamThreeId))
@@ -128,7 +128,7 @@ internal class MatchListRecyclerViewAdapter(
                 }
             }        }
 
-        if (team?.id != match.redAllianceTeamOneId)
+        if (team?.serverId != match.redAllianceTeamOneId)
         {
             viewHolder.view.RedAllianceTeamOneIdTextView.setOnClickListener {
                 with(Team(match.redAllianceTeamOneId))
@@ -140,7 +140,7 @@ internal class MatchListRecyclerViewAdapter(
                 }
             }        }
 
-        if (team?.id != match.redAllianceTeamTwoId)
+        if (team?.serverId != match.redAllianceTeamTwoId)
         {
             viewHolder.view.RedAllianceTeamTwoIdTextView.setOnClickListener {
                 with(Team(match.redAllianceTeamTwoId))
@@ -152,7 +152,7 @@ internal class MatchListRecyclerViewAdapter(
                 }
             }        }
 
-        if (team?.id != match.redAllianceTeamThreeId)
+        if (team?.serverId != match.redAllianceTeamThreeId)
         {
             viewHolder.view.RedAllianceTeamThreeIdTextView.setOnClickListener {
                 with(Team(match.redAllianceTeamThreeId))
@@ -172,7 +172,7 @@ internal class MatchListRecyclerViewAdapter(
         if (team != null)
         {
 
-            var spannableString = SpannableString(team.id.toString())
+            var spannableString = SpannableString(team.serverId.toString())
             spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
 
             var selectedTeamAllianceColor: AllianceColor? = null
@@ -180,47 +180,47 @@ internal class MatchListRecyclerViewAdapter(
             //add the underline when viewing matches for a specific team
             when
             {
-                team.id == match.blueAllianceTeamOneId ->
+                team.serverId == match.blueAllianceTeamOneId ->
                 {
 
                     viewHolder.view.BlueAllianceTeamOneIdTextView.text = spannableString
                     selectedTeamAllianceColor = AllianceColor.BLUE
                 }
-                team.id == match.blueAllianceTeamTwoId ->
+                team.serverId == match.blueAllianceTeamTwoId ->
                 {
-                    spannableString = SpannableString(team.id.toString())
+                    spannableString = SpannableString(team.serverId.toString())
                     spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
                     viewHolder.view.BlueAllianceTeamTwoIdTextView.text = spannableString
 
                     selectedTeamAllianceColor = AllianceColor.BLUE
                 }
-                team.id == match.blueAllianceTeamThreeId ->
+                team.serverId == match.blueAllianceTeamThreeId ->
                 {
-                    spannableString = SpannableString(team.id.toString())
+                    spannableString = SpannableString(team.serverId.toString())
                     spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
                     viewHolder.view.BlueAllianceTeamThreeIdTextView.text = spannableString
 
                     selectedTeamAllianceColor = AllianceColor.BLUE
                 }
-                team.id == match.redAllianceTeamOneId ->
+                team.serverId == match.redAllianceTeamOneId ->
                 {
-                    spannableString = SpannableString(team.id.toString())
+                    spannableString = SpannableString(team.serverId.toString())
                     spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
                     viewHolder.view.RedAllianceTeamOneIdTextView.text = spannableString
 
                     selectedTeamAllianceColor = AllianceColor.RED
                 }
-                team.id == match.redAllianceTeamTwoId ->
+                team.serverId == match.redAllianceTeamTwoId ->
                 {
-                    spannableString = SpannableString(team.id.toString())
+                    spannableString = SpannableString(team.serverId.toString())
                     spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
                     viewHolder.view.RedAllianceTeamTwoIdTextView.text = spannableString
 
                     selectedTeamAllianceColor = AllianceColor.RED
                 }
-                team.id == match.redAllianceTeamThreeId ->
+                team.serverId == match.redAllianceTeamThreeId ->
                 {
-                    spannableString = SpannableString(team.id.toString())
+                    spannableString = SpannableString(team.serverId.toString())
                     spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
                     viewHolder.view.RedAllianceTeamThreeIdTextView.text = spannableString
 

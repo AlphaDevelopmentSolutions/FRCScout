@@ -134,7 +134,7 @@ class ChecklistFragment : MasterFragment()
             view = inflater.inflate(R.layout.fragment_checklist, container, false)
             recyclerView = view.findViewById(R.id.ChecklistItemsRecyclerView)
 
-            val checklistItemListRecyclerViewAdapter = ChecklistItemListRecyclerViewAdapter(match!!, ChecklistItem.getObjects(null, database)!!, context)
+            val checklistItemListRecyclerViewAdapter = ChecklistItemListRecyclerViewAdapter(match!!, ChecklistItem.getObjects(null, database), context)
             recyclerView.adapter = checklistItemListRecyclerViewAdapter
             recyclerView.layoutManager = LinearLayoutManager(context)
 

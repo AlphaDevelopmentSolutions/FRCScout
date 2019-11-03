@@ -11,7 +11,7 @@ import java.util.*
 class ChecklistItemResult(
         localId: Long = DEFAULT_LONG,
         serverId: Long = DEFAULT_LONG,
-        var checklistItemId: Int = DEFAULT_INT,
+        var checklistItemId: Long = DEFAULT_LONG,
         var matchId: String = DEFAULT_STRING,
         var status: String = DEFAULT_STRING,
         var completedBy: String? = null,
@@ -84,7 +84,7 @@ class ChecklistItemResult(
                                     ChecklistItemResult(
                                             getLong(COLUMN_NAME_LOCAL_ID),
                                             getLong(COLUMN_NAME_SERVER_ID),
-                                            getInt(COLUMN_NAME_CHECKLIST_ITEM_ID),
+                                            getLong(COLUMN_NAME_CHECKLIST_ITEM_ID),
                                             getString(COLUMN_NAME_MATCH_ID),
                                             getString(COLUMN_NAME_STATUS),
                                             getStringOrNull(COLUMN_NAME_COMPLETED_BY),

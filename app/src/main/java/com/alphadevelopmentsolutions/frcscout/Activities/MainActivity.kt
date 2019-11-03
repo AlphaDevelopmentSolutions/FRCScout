@@ -787,7 +787,7 @@ class MainActivity : AppCompatActivity(),
                  */
                 if (!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.UPLOAD_CHECKLISTS_KEY, false) as Boolean && withFilters))
                 {
-                    for (checklistItemResult in ChecklistItemResult.getObjects(null, null, true, database)!!)
+                    for (checklistItemResult in ChecklistItemResult.getObjects(null, null, true, database))
                     {
                         val submitChecklistItemResult = Api.Set.ChecklistItemResult(context, checklistItemResult)
                         if (submitChecklistItemResult.execute())

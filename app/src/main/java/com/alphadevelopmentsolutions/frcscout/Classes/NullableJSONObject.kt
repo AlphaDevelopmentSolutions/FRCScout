@@ -14,6 +14,16 @@ class NullableJSONObject(private val jsonObject: JSONObject)
         return jsonObject.getInt(fieldName)
     }
 
+    fun getLongOrNull(fieldName: String) : Long?
+    {
+        return if(jsonObject.isNull(fieldName)) null else jsonObject.getLong(fieldName)
+    }
+
+    fun getLong(fieldName: String): Long
+    {
+        return jsonObject.getLong(fieldName)
+    }
+
     fun getStringOrNull(fieldName: String) : String?
     {
         return if(jsonObject.isNull(fieldName)) null else jsonObject.getString(fieldName)
