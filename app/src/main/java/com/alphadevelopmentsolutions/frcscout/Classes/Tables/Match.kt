@@ -1,84 +1,155 @@
 package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
+import com.alphadevelopmentsolutions.frcscout.Classes.MasterContentValues
+import com.alphadevelopmentsolutions.frcscout.Classes.TableColumn
 import com.alphadevelopmentsolutions.frcscout.Enums.AllianceColor
+import com.alphadevelopmentsolutions.frcscout.Interfaces.ChildTableCompanion
+import com.alphadevelopmentsolutions.frcscout.Interfaces.SQLiteDataTypes
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.math.round
 
 class Match(
-        var id: Int = DEFAULT_INT,
+        localId: Long = DEFAULT_LONG,
+        serverId: Long = DEFAULT_LONG,
         var date: Date = DEFAULT_DATE,
         var eventId: String = DEFAULT_STRING,
         var key: String = DEFAULT_STRING,
         var matchType: Type = Type.qm,
         var setNumber: Int = DEFAULT_INT,
         var matchNumber: Int = DEFAULT_INT,
-        var blueAllianceTeamOneId: Int = DEFAULT_INT,
-        var blueAllianceTeamTwoId: Int = DEFAULT_INT,
-        var blueAllianceTeamThreeId: Int = DEFAULT_INT,
-        var redAllianceTeamOneId: Int = DEFAULT_INT,
-        var redAllianceTeamTwoId: Int = DEFAULT_INT,
-        var redAllianceTeamThreeId: Int = DEFAULT_INT,
+        var blueAllianceTeamOneId: Long = DEFAULT_LONG,
+        var blueAllianceTeamTwoId: Long = DEFAULT_LONG,
+        var blueAllianceTeamThreeId: Long = DEFAULT_LONG,
+        var redAllianceTeamOneId: Long = DEFAULT_LONG,
+        var redAllianceTeamTwoId: Long = DEFAULT_LONG,
+        var redAllianceTeamThreeId: Long = DEFAULT_LONG,
         var blueAllianceScore: Int? = null,
-        var redAllianceScore: Int? = null) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var redAllianceScore: Int? = null) : Table(TABLE_NAME, localId, serverId)
 {
-    companion object
+    companion object: ChildTableCompanion
     {
-        val TABLE_NAME = "matches"
-        val COLUMN_NAME_ID = "Id"
-        val COLUMN_NAME_DATE = "Date"
-        val COLUMN_NAME_EVENT_ID = "EventId"
-        val COLUMN_NAME_KEY = "Key"
-        val COLUMN_NAME_MATCH_TYPE = "MatchType"
-        val COLUMN_NAME_MATCH_NUMBER = "MatchNumber"
-        val COLUMN_NAME_SET_NUMBER = "SetNumber"
-        val COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID = "BlueAllianceTeamOneId"
-        val COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID = "BlueAllianceTeamTwoId"
-        val COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID = "BlueAllianceTeamThreeId"
-        val COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID = "RedAllianceTeamOneId"
-        val COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID = "RedAllianceTeamTwoId"
-        val COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID = "RedAllianceTeamThreeId"
-        val COLUMN_NAME_BLUE_ALLIANCE_SCORE = "BlueAllianceScore"
-        val COLUMN_NAME_RED_ALLIANCE_SCORE = "RedAllianceScore"
+        override val TABLE_NAME = "matches"
+        const val COLUMN_NAME_DATE = "Date"
+        const val COLUMN_NAME_EVENT_ID = "EventId"
+        const val COLUMN_NAME_KEY = "Key"
+        const val COLUMN_NAME_MATCH_TYPE = "MatchType"
+        const val COLUMN_NAME_MATCH_NUMBER = "MatchNumber"
+        const val COLUMN_NAME_SET_NUMBER = "SetNumber"
+        const val COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID = "BlueAllianceTeamOneId"
+        const val COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID = "BlueAllianceTeamTwoId"
+        const val COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID = "BlueAllianceTeamThreeId"
+        const val COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID = "RedAllianceTeamOneId"
+        const val COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID = "RedAllianceTeamTwoId"
+        const val COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID = "RedAllianceTeamThreeId"
+        const val COLUMN_NAME_BLUE_ALLIANCE_SCORE = "BlueAllianceScore"
+        const val COLUMN_NAME_RED_ALLIANCE_SCORE = "RedAllianceScore"
 
-        val CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                COLUMN_NAME_DATE + " INTEGER," +
-                COLUMN_NAME_EVENT_ID + " TEXT," +
-                "\"" + COLUMN_NAME_KEY + "\" TEXT," +
-                COLUMN_NAME_MATCH_TYPE + " TEXT," +
-                COLUMN_NAME_SET_NUMBER + " INTEGER," +
-                COLUMN_NAME_MATCH_NUMBER + " INTEGER," +
-                COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID + " INTEGER," +
-                COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID + " INTEGER," +
-                COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID + " INTEGER," +
-                COLUMN_NAME_BLUE_ALLIANCE_SCORE + " INTEGER," +
-                COLUMN_NAME_RED_ALLIANCE_SCORE + " INTEGER," +
-                COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID + " INTEGER," +
-                COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID + " INTEGER," +
-                COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID + " INTEGER)"
-
-        /**
-         * Clears all data from the classes table
-         * @param database used to clear table
-         */
-        fun clearTable(database: Database)
-        {
-            clearTable(database, TABLE_NAME)
-        }
+        override val childColumns: ArrayList<TableColumn>
+            get() = ArrayList<TableColumn>().apply {
+                add(TableColumn(COLUMN_NAME_DATE, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_EVENT_ID, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_KEY, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_MATCH_TYPE, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_SET_NUMBER, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_MATCH_NUMBER, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_BLUE_ALLIANCE_SCORE, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_RED_ALLIANCE_SCORE, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID, SQLiteDataTypes.INTEGER))
+            }
 
         /**
-         * Returns arraylist of teams with specified filters from database
-         * @param event if specified, filters teams by event id
-         * @param team if specified, filters teams by team id
-         * @param database used to load teams
-         * @return arraylist of teams
+         * Returns [ArrayList] of [Match] with specified filters from [database]
+         * @param event if specified, filters [Match] by [event] id
+         * @param match if specified, filters [Match] by [match] id
+         * @param team if specified, filters [Match] by [team] id
+         * @param database used to load [Match]
+         * @param sortDirection direction to sort [Match] records
+         * @return [ArrayList] of [Match]
          */
-        fun getObjects(event: Event?, match: Match?, team: Team?, database: Database, sortDirection: Database.SortDirection = Database.SortDirection.DESC): ArrayList<Match>
-        {
-            return database.getMatches(event, match, team, sortDirection)
+        fun getObjects(event: Event?, match: Match?, team: Team?, database: Database, sortDirection: Database.SortDirection = Database.SortDirection.DESC): ArrayList<Match> {
+            return ArrayList<Match>().apply {
+
+                Type.getTypes().forEach {
+
+                    val whereStatement = StringBuilder()
+                    val whereArgs = ArrayList<String>()
+
+                    //filter by object
+                    if (event != null) {
+                        whereStatement.append("$COLUMN_NAME_EVENT_ID = ?")
+                        whereArgs.add(event.blueAllianceId)
+                    }
+
+                    //filter by object
+                    if (match != null) {
+                        whereStatement
+                                .append(if (whereStatement.isNotEmpty()) " AND " else "")
+                                .append("$COLUMN_NAME_KEY = ?")
+                        whereArgs.add(match.key)
+                    }
+
+                    //filter by object
+                    if (team != null) {
+                        whereStatement
+                                .append(if (whereStatement.isNotEmpty()) " AND " else "")
+                                .append(team.serverId).append(" IN (")
+
+                                .append("$COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID, ")
+                                .append("$COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID, ")
+                                .append("$COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID, ")
+
+                                .append("$COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID, ")
+                                .append("$COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID, ")
+                                .append("$COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID)")
+                    }
+
+                    whereStatement
+                            .append(if (whereStatement.isNotEmpty()) " AND " else "")
+                            .append(" $COLUMN_NAME_MATCH_TYPE = ? ")
+                    whereArgs.add(it.toString())
+
+                    //add all object records to array list
+                    with(database.getObjects(
+                            TABLE_NAME,
+                            whereStatement.toString(),
+                            whereArgs))
+                    {
+                        if (this != null) {
+                            while (moveToNext()) {
+                                add(
+                                        Match(
+                                                getLong(COLUMN_NAME_LOCAL_ID),
+                                                getLong(COLUMN_NAME_SERVER_ID),
+                                                getDate(COLUMN_NAME_DATE),
+                                                getString(COLUMN_NAME_EVENT_ID),
+                                                getString(COLUMN_NAME_KEY),
+                                                Type.getTypeFromString(getString(COLUMN_NAME_MATCH_TYPE)),
+                                                getInt(COLUMN_NAME_SET_NUMBER),
+                                                getInt(COLUMN_NAME_MATCH_NUMBER),
+                                                getLong(COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID),
+                                                getLong(COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID),
+                                                getLong(COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID),
+                                                getLong(COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID),
+                                                getLong(COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID),
+                                                getLong(COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID),
+                                                getIntOrNull(COLUMN_NAME_BLUE_ALLIANCE_SCORE),
+                                                getIntOrNull(COLUMN_NAME_RED_ALLIANCE_SCORE))
+                                )
+                            }
+
+                            close()
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -173,43 +244,17 @@ class Match(
      */
     fun getTeamAllianceColor(team: Team): AllianceColor
     {
-        if (blueAllianceTeamOneId == team.id ||
-                blueAllianceTeamTwoId == team.id ||
-                blueAllianceTeamThreeId == team.id)
+        if (blueAllianceTeamOneId == team.serverId ||
+                blueAllianceTeamTwoId == team.serverId ||
+                blueAllianceTeamThreeId == team.serverId)
             return AllianceColor.BLUE
-        else if (redAllianceTeamOneId == team.id ||
-                redAllianceTeamTwoId == team.id ||
-                redAllianceTeamThreeId == team.id)
+        else if (redAllianceTeamOneId == team.serverId ||
+                redAllianceTeamTwoId == team.serverId ||
+                redAllianceTeamThreeId == team.serverId)
             return AllianceColor.RED
 
         //default to blue
         return AllianceColor.NONE
-    }
-
-    /**
-     * Gets all scout cards associated with the match
-     * @param event if specified, filters scout cards by event id
-     * @param team if specified, filters scout cards by team id
-     * @param scoutCardInfo if specified, filters scout cards by scoutcard id
-     * @param onlyDrafts boolean if you only want drafts
-     * @param database used for loading cards
-     * @return arraylist of scout cards
-     */
-    fun getScoutCards(event: Event?, team: Team?, scoutCardInfo: ScoutCardInfo?, onlyDrafts: Boolean, database: Database): ArrayList<ScoutCardInfo>?
-    {
-        return ScoutCardInfo.getObjects(event, this, team, null, scoutCardInfo, onlyDrafts, database)
-    }
-
-    /**
-     * Gets all teams associated with the match
-     * @param event if specified, filters teams by event id
-     * @param team if specified, filters teams by team id
-     * @param database used for loading cards
-     * @return arraylist of scout cards
-     */
-    fun getTeams(event: Event?, team: Team?, database: Database): ArrayList<Team>?
-    {
-        return Team.getObjects(event, this, team, database)
     }
 
     /**
@@ -233,7 +278,7 @@ class Match(
 
         if(!scoutCardInfoKeys.isNullOrEmpty() && !scoutCardInfos.isNullOrEmpty())
         {
-            val teamList = ArrayList<Int>().apply {
+            val teamList = ArrayList<Long>().apply {
 
                 add(blueAllianceTeamOneId)
                 add(blueAllianceTeamTwoId)
@@ -307,51 +352,35 @@ class Match(
         return statsHashMap
     }
 
-
     /**
-     * Converts the match object into a string title
-     * @return string title of match
-     */
-    override fun toString(): String
-    {
-        return matchType.toString(this)
-    }
-
-    //region Load, Save & Delete
-
-    /**
-     * Loads the Match from the database and populates all values
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
+     * @see Table.load
      */
     override fun load(database: Database): Boolean
     {
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
+        with(getObjects(null, this, null, database))
         {
-            val matches = getObjects(null, this, null, database)
-            val match = if (matches.size > 0) matches[0] else null
-
-            if (match != null)
+            with(if (size > 0) this[0] else null)
             {
-                date = match.date
-                blueAllianceTeamOneId = match.blueAllianceTeamOneId
-                blueAllianceTeamTwoId = match.blueAllianceTeamTwoId
-                blueAllianceTeamThreeId = match.blueAllianceTeamThreeId
-                date = match.date
-                eventId = match.eventId
-                key = match.key
-                matchType = match.matchType
-                setNumber = match.setNumber
-                matchNumber = match.matchNumber
-                blueAllianceScore = match.blueAllianceScore
-                redAllianceScore = match.redAllianceScore
-                redAllianceTeamOneId = match.redAllianceTeamOneId
-                redAllianceTeamTwoId = match.redAllianceTeamTwoId
-                redAllianceTeamThreeId = match.redAllianceTeamThreeId
-                return true
+                if (this != null)
+                {
+                    loadParentValues(this)
+                    this@Match.date = date
+                    this@Match.blueAllianceTeamOneId = blueAllianceTeamOneId
+                    this@Match.blueAllianceTeamTwoId = blueAllianceTeamTwoId
+                    this@Match.blueAllianceTeamThreeId = blueAllianceTeamThreeId
+                    this@Match.date = date
+                    this@Match.eventId = eventId
+                    this@Match.key = key
+                    this@Match.matchType = matchType
+                    this@Match.setNumber = setNumber
+                    this@Match.matchNumber = matchNumber
+                    this@Match.blueAllianceScore = blueAllianceScore
+                    this@Match.redAllianceScore = redAllianceScore
+                    this@Match.redAllianceTeamOneId = redAllianceTeamOneId
+                    this@Match.redAllianceTeamTwoId = redAllianceTeamTwoId
+                    this@Match.redAllianceTeamThreeId = redAllianceTeamThreeId
+                    return true
+                }
             }
         }
 
@@ -359,48 +388,31 @@ class Match(
     }
 
     /**
-     * Saves the Match into the database
-     * @param database used for interacting with the SQLITE db
-     * @return int id of the saved Match
+     * @see Table.childValues
      */
-    override fun save(database: Database): Int
-    {
-        var id = -1
-
-        //try to open the DB if it is not open
-        if (!database.isOpen)
-            database.open()
-
-        if (database.isOpen)
-            id = database.setMatch(this).toInt()
-
-        //set the id if the save was successful
-        if (id > 0)
-            this.id = id
-
-        return id
-    }
-
-    /**
-     * Deletes the Match from the database
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
-     */
-    override fun delete(database: Database): Boolean
-    {
-        var successful = false
-
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
-        {
-            successful = database.deleteMatch(this)
-
+    override val childValues: MasterContentValues
+        get() = MasterContentValues().apply {
+            put(COLUMN_NAME_DATE, date)
+            put(COLUMN_NAME_EVENT_ID, eventId)
+            put(COLUMN_NAME_KEY, key)
+            put(COLUMN_NAME_MATCH_TYPE, matchType)
+            put(COLUMN_NAME_MATCH_NUMBER, setNumber)
+            put(COLUMN_NAME_SET_NUMBER, matchNumber)
+            put(COLUMN_NAME_BLUE_ALLIANCE_TEAM_ONE_ID, blueAllianceTeamOneId)
+            put(COLUMN_NAME_BLUE_ALLIANCE_TEAM_TWO_ID, blueAllianceTeamTwoId)
+            put(COLUMN_NAME_BLUE_ALLIANCE_TEAM_THREE_ID, blueAllianceTeamThreeId)
+            put(COLUMN_NAME_RED_ALLIANCE_TEAM_ONE_ID, redAllianceTeamOneId)
+            put(COLUMN_NAME_RED_ALLIANCE_TEAM_TWO_ID, redAllianceTeamTwoId)
+            put(COLUMN_NAME_RED_ALLIANCE_TEAM_THREE_ID, redAllianceTeamThreeId)
+            put(COLUMN_NAME_BLUE_ALLIANCE_SCORE, blueAllianceScore)
+            put(COLUMN_NAME_RED_ALLIANCE_SCORE, redAllianceScore)
         }
 
-        return successful
+    /**
+     * @see Table.toString
+     */
+    override fun toString(): String
+    {
+        return matchType.toString(this)
     }
-
-    //endregion
 }

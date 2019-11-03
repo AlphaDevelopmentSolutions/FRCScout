@@ -129,7 +129,7 @@ class MainActivity : AppCompatActivity(),
         updateAppColors()
 
         //Update nav text
-        updateNavText(Event((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int)).apply { load(database) })
+        updateNavText(Event((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Long)).apply { load(database) })
 
         //Load the view for the fragments
         loadView(savedInstanceState)
@@ -714,7 +714,7 @@ class MainActivity : AppCompatActivity(),
 
                             with(objs[i])
                             {
-                                if (save(database) > 0)
+                                if (save(database))
                                 {
                                     val team = Team(teamId).apply { load(database) }
                                     team.imageFileURI = fileUri
@@ -728,7 +728,7 @@ class MainActivity : AppCompatActivity(),
                 database.finishTransaction()
 
                 runOnUiThread {
-                    val year = Year(-1, (keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!).apply { load(database) }
+                    val year = Year(-1, (keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Long?)!!).apply { load(database) }
 
                     //set the year when showing the event list frag
                     keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, year.serverId)
@@ -739,7 +739,7 @@ class MainActivity : AppCompatActivity(),
                         context.recreate()
 
                     else
-                        changeFragment(EventListFragment.newInstance(Year(-1, (keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!).apply { load(database) }), false, false)
+                        changeFragment(EventListFragment.newInstance(Year(-1, (keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Long?)!!).apply { load(database) }), false, false)
                 }
             })
 
@@ -924,9 +924,9 @@ class MainActivity : AppCompatActivity(),
 
             R.id.nav_teams -> changeFragment(TeamListFragment.newInstance(null, null), false, false)
 
-            R.id.nav_checklist -> changeFragment(ChecklistFragment.newInstance(Team((keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Int)).apply { load(database) }, null), false, false)
+            R.id.nav_checklist -> changeFragment(ChecklistFragment.newInstance(Team((keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Long)).apply { load(database) }, null), false, false)
 
-            R.id.nav_events -> changeFragment(EventListFragment.newInstance(Year(-1, keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int).apply { load(database) }), false, false)
+            R.id.nav_events -> changeFragment(EventListFragment.newInstance(Year(-1, keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Long).apply { load(database) }), false, false)
         }
 
         MainDrawerLayout.closeDrawer(GravityCompat.START)
@@ -1385,7 +1385,7 @@ class MainActivity : AppCompatActivity(),
      */
     fun updateNavText(event: Event?)
     {
-        navHeader.EventNameTextView.text = if (event?.id != -1) event.toString() else ""
+        navHeader.EventNameTextView.text = if (event?.localId != (-1).toLong()) event.toString() else ""
         navHeader.TeamNameTextView.text = "${keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1)} - ${keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NAME_KEY, "")}"
     }
 
@@ -1517,7 +1517,7 @@ class MainActivity : AppCompatActivity(),
                 //No event selected, default to yar list
                 else
                 {
-                    val year = Year(-1, (keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int)).apply { load(database) }
+                    val year = Year(-1, (keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Long)).apply { load(database) }
                     changeFragment(EventListFragment.newInstance(year), false, false)
                 }
 

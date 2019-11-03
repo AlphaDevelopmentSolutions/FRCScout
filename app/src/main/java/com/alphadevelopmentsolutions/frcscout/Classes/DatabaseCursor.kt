@@ -8,44 +8,49 @@ class DatabaseCursor(private val cursor: Cursor?)
     val count: Int
         get() { return cursor?.count ?: 0 }
 
-    fun getDate(columnIndex: Int): Date
+    fun getDate(columnName: String): Date
     {
-        return Date(cursor?.getLong(columnIndex) ?: 0)
+        return Date(cursor?.getLong(getColumnIndex(columnName)) ?: 0)
     }
 
-    fun getString(columnIndex: Int): String
+    fun getString(columnName: String): String
     {
-        return cursor?.getString(columnIndex) ?: ""
+        return cursor?.getString(getColumnIndex(columnName)) ?: ""
     }
 
-    fun getInt(columnIndex: Int): Int
+    fun getInt(columnName: String): Int
     {
-        return cursor?.getInt(columnIndex) ?: -1
+        return cursor?.getInt(getColumnIndex(columnName)) ?: -1
     }
 
-    fun getBoolean(columnIndex: Int): Boolean
+    fun getLong(columnName: String): Long
     {
-        return cursor?.getInt(columnIndex) == 1
+        return cursor?.getLong(getColumnIndex(columnName)) ?: -1
     }
 
-    fun getBooleanOrNull(columnIndex: Int): Boolean?
+    fun getBoolean(columnName: String): Boolean
     {
-        return if(cursor?.isNull(columnIndex) == true) null else cursor?.getInt(columnIndex) == 1
+        return cursor?.getInt(getColumnIndex(columnName)) == 1
     }
 
-    fun getStringOrNull(columnIndex: Int): String?
+    fun getBooleanOrNull(columnName: String): Boolean?
     {
-        return if(cursor?.isNull(columnIndex) == true) null else cursor?.getString(columnIndex)
+        return if(cursor?.isNull(getColumnIndex(columnName)) == true) null else cursor?.getInt(getColumnIndex(columnName)) == 1
     }
 
-    fun getIntOrNull(columnIndex: Int): Int?
+    fun getStringOrNull(columnName: String): String?
     {
-        return if(cursor?.isNull(columnIndex) == true) null else cursor?.getInt(columnIndex)
+        return if(cursor?.isNull(getColumnIndex(columnName)) == true) null else cursor?.getString(getColumnIndex(columnName))
     }
 
-    fun getDateOrNull(columnIndex: Int): Date?
+    fun getIntOrNull(columnName: String): Int?
     {
-        return if(cursor?.isNull(columnIndex) == true) null else Date(cursor?.getLong(columnIndex) ?: 0)
+        return if(cursor?.isNull(getColumnIndex(columnName)) == true) null else cursor?.getInt(getColumnIndex(columnName))
+    }
+
+    fun getDateOrNull(columnName: String): Date?
+    {
+        return if(cursor?.isNull(getColumnIndex(columnName)) == true) null else Date(cursor?.getLong(getColumnIndex(columnName)) ?: 0)
     }
 
     fun moveToNext(): Boolean

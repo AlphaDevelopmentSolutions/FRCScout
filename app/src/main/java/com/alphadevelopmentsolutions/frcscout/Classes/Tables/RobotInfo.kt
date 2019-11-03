@@ -1,100 +1,148 @@
 package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
+import com.alphadevelopmentsolutions.frcscout.Classes.MasterContentValues
+import com.alphadevelopmentsolutions.frcscout.Classes.TableColumn
+import com.alphadevelopmentsolutions.frcscout.Interfaces.ChildTableCompanion
+import com.alphadevelopmentsolutions.frcscout.Interfaces.SQLiteDataTypes
 import java.util.*
 
 class RobotInfo(
-        var id: Int = DEFAULT_INT,
+        localId: Long = DEFAULT_LONG,
+        serverId: Long = DEFAULT_LONG,
         var yearId: Int = DEFAULT_INT,
         var eventId: String = DEFAULT_STRING,
         var teamId: Int = DEFAULT_INT,
         var propertyValue: String= DEFAULT_STRING,
         var propertyKeyId: Int = DEFAULT_INT,
-        var isDraft: Boolean = DEFAULT_BOOLEAN) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var isDraft: Boolean = DEFAULT_BOOLEAN) : Table(TABLE_NAME, localId, serverId)
 {
-    companion object
+    companion object: ChildTableCompanion
     {
-        val TABLE_NAME = "robot_info"
-        val COLUMN_NAME_ID = "Id"
-        val COLUMN_NAME_YEAR_ID = "YearId"
-        val COLUMN_NAME_EVENT_ID = "EventId"
-        val COLUMN_NAME_TEAM_ID = "TeamId"
+        override val TABLE_NAME = "robot_info"
 
-        val COLUMN_NAME_PROPERTY_VALUE = "PropertyValue"
-        val COLUMN_NAME_PROPERTY_KEY_ID = "PropertyKeyId"
+        const val COLUMN_NAME_YEAR_ID = "YearId"
+        const val COLUMN_NAME_EVENT_ID = "EventId"
+        const val COLUMN_NAME_TEAM_ID = "TeamId"
+        const val COLUMN_NAME_PROPERTY_VALUE = "PropertyValue"
+        const val COLUMN_NAME_PROPERTY_KEY_ID = "PropertyKeyId"
 
-        val COLUMN_NAME_IS_DRAFT = "IsDraft"
-
-        val CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                COLUMN_NAME_YEAR_ID + " INTEGER," +
-                COLUMN_NAME_EVENT_ID + " TEXT," +
-                COLUMN_NAME_TEAM_ID + " INTEGER," +
-
-                COLUMN_NAME_PROPERTY_VALUE + " TEXT," +
-                COLUMN_NAME_PROPERTY_KEY_ID + " INTEGER," +
-
-                COLUMN_NAME_IS_DRAFT + " INTEGER)"
-
+        override val childColumns: ArrayList<TableColumn>
+            get() = ArrayList<TableColumn>().apply {
+                add(TableColumn(COLUMN_NAME_YEAR_ID, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_EVENT_ID, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_TEAM_ID, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_PROPERTY_VALUE, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_PROPERTY_KEY_ID, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_IS_DRAFT, SQLiteDataTypes.INTEGER))
+            }
+        
         /**
-         * Clears all data from the classes table
-         * @param database used to clear table
-         * @param clearDrafts boolean if you want to include drafts in the clear
-         */
-        fun clearTable(database: Database, clearDrafts: Boolean = false)
-        {
-            clearTable(database, TABLE_NAME, clearDrafts)
-        }
-
-        /**
-         * Returns arraylist of pit cards with specified filters from database
-         * @param year if specified, filters by year id
-         * @param event if specified, filters by event id
-         * @param team if specified, filters by team id
-         * @param robotInfo if specified, filters by robotinfo id
-         * @param onlyDrafts if true, filters by draft
+         * Returns [ArrayList] of [RobotInfo] with specified filters from [database]
+         * @param year if specified, filters by [year] id
+         * @param event if specified, filters by [event] id
+         * @param team if specified, filters by [team] id
+         * @param robotInfo if specified, filters by [robotInfo] id
+         * @param onlyDrafts if true, filters by [isDraft]
          * @param database used to load
-         * @return arraylist of robotInfo
+         * @return [ArrayList] of [RobotInfo]
          */
-        fun getObjects(year: Year?, event: Event?, team: Team?, robotInfoKey: RobotInfoKey?, robotInfo: RobotInfo?, onlyDrafts: Boolean, database: Database): ArrayList<RobotInfo>
-        {
-            return database.getRobotInfo(year, event, team, robotInfoKey, robotInfo, onlyDrafts)
+        fun getObjects(year: Year?, event: Event?, team: Team?, robotInfoKey: RobotInfoKey?, robotInfo: RobotInfo?, onlyDrafts: Boolean, database: Database): ArrayList<RobotInfo> {
+            return ArrayList<RobotInfo>().apply {
+
+                val whereStatement = StringBuilder()
+                val whereArgs = ArrayList<String>()
+
+                //filter by object
+                if (year != null)
+                {
+                    whereStatement.append("$COLUMN_NAME_YEAR_ID = ? ")
+                    whereArgs.add(year.serverId.toString())
+                }
+
+                //filter by object
+                if (event != null)
+                {
+                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("$COLUMN_NAME_EVENT_ID = ? ")
+                    whereArgs.add(event.blueAllianceId)
+                }
+
+                //filter by object
+                if (team != null)
+                {
+                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("$COLUMN_NAME_TEAM_ID = ? ")
+                    whereArgs.add(team.serverId.toString())
+                }
+
+                //filter by object
+                if (robotInfoKey != null)
+                {
+                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("$COLUMN_NAME_PROPERTY_KEY_ID = ? ")
+                    whereArgs.add(robotInfoKey.serverId.toString())
+                }
+
+                //filter by object
+                if (robotInfo != null)
+                {
+                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("$COLUMN_NAME_LOCAL_ID = ? ")
+                    whereArgs.add(robotInfo.localId.toString())
+                }
+
+                //filter by object
+                if (onlyDrafts)
+                {
+                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("$COLUMN_NAME_IS_DRAFT = 1 ")
+                }
+
+                //add all object records to array list
+                with(database.getObjects(
+                        TABLE_NAME,
+                        whereStatement.toString(),
+                        whereArgs))
+                {
+                    if (this != null) {
+                        while (moveToNext()) {
+                            add(
+                                    RobotInfo(
+                                            getLong(COLUMN_NAME_LOCAL_ID),
+                                            getLong(COLUMN_NAME_SERVER_ID),
+                                            getInt(COLUMN_NAME_YEAR_ID),
+                                            getString(COLUMN_NAME_EVENT_ID),
+                                            getInt(COLUMN_NAME_TEAM_ID),
+                                            getString(COLUMN_NAME_PROPERTY_VALUE),
+                                            getInt(COLUMN_NAME_PROPERTY_KEY_ID),
+                                            getBoolean(COLUMN_NAME_IS_DRAFT)
+                                    )
+                            )
+                        }
+
+                        close()
+                    }
+                }
+            }
         }
     }
-
-    override fun toString(): String
-    {
-        return "Team $teamId - Robot Info"
-    }
-
-    //region Load, Save & Delete
 
     /**
-     * Loads the object from the database and populates all values
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
+     * @see Table.load
      */
     override fun load(database: Database): Boolean
     {
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
+        with(getObjects(null, null, null, null, this, false, database))
         {
-            val robotInfoList = getObjects(null, null, null, null, this, false, database)
-            val robotInfo = if (robotInfoList.size > 0) robotInfoList[0] else null
-
-            if (robotInfo != null)
+            with(if (size > 0) this[0] else null)
             {
-                yearId = robotInfo.yearId
-                eventId = robotInfo.eventId
-                teamId = robotInfo.teamId
-
-                propertyValue = robotInfo.propertyValue
-                propertyKeyId = robotInfo.propertyKeyId
-
-                isDraft = robotInfo.isDraft
-                return true
+                if (this != null)
+                {
+                    loadParentValues(this)
+                    this@RobotInfo.yearId = yearId
+                    this@RobotInfo.eventId = eventId
+                    this@RobotInfo.teamId = teamId
+                    this@RobotInfo.propertyValue = propertyValue
+                    this@RobotInfo.propertyKeyId = propertyKeyId
+                    this@RobotInfo.isDraft = isDraft
+                    return true
+                }
             }
         }
 
@@ -102,48 +150,23 @@ class RobotInfo(
     }
 
     /**
-     * Saves the object into the database
-     * @param database used for interacting with the SQLITE db
-     * @return int id of the saved object
+     * @see Table.childValues
      */
-    override fun save(database: Database): Int
-    {
-        var id = -1
-
-        //try to open the DB if it is not open
-        if (!database.isOpen)
-            database.open()
-
-        if (database.isOpen)
-            id = database.setRobotInfo(this).toInt()
-
-        //set the id if the save was successful
-        if (id > 0)
-            this.id = id
-
-        return id
-    }
-
-    /**
-     * Deletes the object from the database
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
-     */
-    override fun delete(database: Database): Boolean
-    {
-        var successful = false
-
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
-        {
-            successful = database.deleteRobotInfo(this)
-
+    override val childValues: MasterContentValues
+        get() = MasterContentValues().apply {
+            put(COLUMN_NAME_YEAR_ID, yearId)
+            put(COLUMN_NAME_EVENT_ID, eventId)
+            put(COLUMN_NAME_TEAM_ID, teamId)
+            put(COLUMN_NAME_PROPERTY_VALUE, propertyValue)
+            put(COLUMN_NAME_PROPERTY_KEY_ID, propertyKeyId)
+            put(COLUMN_NAME_IS_DRAFT, isDraft)
         }
 
-        return successful
+    /**
+     * @see Table.toString
+     */
+    override fun toString(): String
+    {
+        return "Team $teamId - Robot Info"
     }
-
-    //endregion
 }

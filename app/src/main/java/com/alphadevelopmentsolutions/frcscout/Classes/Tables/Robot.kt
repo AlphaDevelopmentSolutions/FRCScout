@@ -1,110 +1,52 @@
 package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
+import com.alphadevelopmentsolutions.frcscout.Classes.MasterContentValues
+import com.alphadevelopmentsolutions.frcscout.Classes.TableColumn
+import com.alphadevelopmentsolutions.frcscout.Interfaces.ChildTableCompanion
+import com.alphadevelopmentsolutions.frcscout.Interfaces.SQLiteDataTypes
 
 class Robot(
-        var id: Int = DEFAULT_INT,
+        localId: Long = DEFAULT_LONG,
+        serverId: Long = DEFAULT_LONG,
         var name: String = DEFAULT_STRING,
-        var teamNumber: Int = DEFAULT_INT) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var teamNumber: Int = DEFAULT_INT) : Table(TABLE_NAME, localId, serverId)
 {
-    companion object
+    companion object: ChildTableCompanion
     {
-        val TABLE_NAME = "robots"
-        val COLUMN_NAME_ID = "Id"
-        val COLUMN_NAME_NAME = "Name"
-        val COLUMN_NAME_TEAM_NUMBER = "TeamId"
+        override val TABLE_NAME = "robots"
+        const val COLUMN_NAME_NAME = "Name"
+        const val COLUMN_NAME_TEAM_NUMBER = "TeamId"
 
-        val CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                COLUMN_NAME_NAME + " TEXT," +
-                COLUMN_NAME_TEAM_NUMBER + " INTEGER)"
-
-        /**
-         * Clears all data from the classes table
-         * @param database used to clear table
-         */
-        fun clearTable(database: Database)
-        {
-            clearTable(database, TABLE_NAME)
-        }
+        override val childColumns: ArrayList<TableColumn>
+            get() = ArrayList<TableColumn>().apply {
+                add(TableColumn(COLUMN_NAME_NAME, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_TEAM_NUMBER, SQLiteDataTypes.INTEGER))
+            }
     }
-
-    override fun toString(): String
-    {
-        return name
-    }
-
-    //region Load, Save & Delete
 
     /**
-     * Loads the robot from the database and populates all values
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
+     * @see Table.load
      */
     override fun load(database: Database): Boolean
     {
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
-        {
-            val robot = database.getRobot(this)
-
-
-            if (robot != null)
-            {
-                name = robot.name
-                teamNumber = robot.teamNumber
-                return true
-            }
-        }
-
         return false
     }
 
     /**
-     * Saves the robot into the database
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
+     * @see Table.childValues
      */
-    override fun save(database: Database): Int
-    {
-        var id = -1
-
-        //try to open the DB if it is not open
-        if (!database.isOpen)
-            database.open()
-
-        if (database.isOpen)
-            id = database.setRobot(this).toInt()
-
-        //set the id if the save was successful
-        if (id > 0)
-            this.id = id
-
-        return id
-    }
-
-    /**
-     * Deletes robot team from the database
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
-     */
-    override fun delete(database: Database): Boolean
-    {
-        var successful = false
-
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
-        {
-            successful = database.deleteRobot(this)
-
+    override val childValues: MasterContentValues
+        get() = MasterContentValues().apply {
+            put(COLUMN_NAME_NAME, name)
+            put(COLUMN_NAME_TEAM_NUMBER, teamNumber)
         }
 
-        return successful
+    /**
+     * @see Table.toString
+     */
+    override fun toString(): String
+    {
+        return name
     }
-
-    //endregion
 }

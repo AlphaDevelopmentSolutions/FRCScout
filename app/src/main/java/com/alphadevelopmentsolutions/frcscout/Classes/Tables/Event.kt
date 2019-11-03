@@ -1,11 +1,16 @@
 package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
+import com.alphadevelopmentsolutions.frcscout.Classes.MasterContentValues
+import com.alphadevelopmentsolutions.frcscout.Classes.TableColumn
+import com.alphadevelopmentsolutions.frcscout.Interfaces.ChildTableCompanion
+import com.alphadevelopmentsolutions.frcscout.Interfaces.SQLiteDataTypes
 import java.util.*
 import kotlin.math.round
 
 class Event(
-        var id: Int = DEFAULT_INT,
+        localId: Long = DEFAULT_LONG,
+        serverId: Long = DEFAULT_LONG,
         var yearId: Int = DEFAULT_INT,
         var blueAllianceId: String = DEFAULT_STRING,
         var name: String = DEFAULT_STRING,
@@ -13,93 +18,100 @@ class Event(
         var stateProvince: String = DEFAULT_STRING,
         var country: String = DEFAULT_STRING,
         var startDate: Date = DEFAULT_DATE,
-        var endDate: Date = DEFAULT_DATE) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var endDate: Date = DEFAULT_DATE) : Table(TABLE_NAME, localId, serverId)
 {
-    companion object
+    companion object: ChildTableCompanion
     {
-        val TABLE_NAME = "events"
-        val COLUMN_NAME_ID = "Id"
-        val COLUMN_NAME_YEAR_ID = "YearId"
-        val COLUMN_NAME_BLUE_ALLIANCE_ID = "BlueAllianceId"
-        val COLUMN_NAME_NAME = "Name"
-        val COLUMN_NAME_CITY = "City"
-        val COLUMN_NAME_STATEPROVINCE = "StateProvince"
-        val COLUMN_NAME_COUNTRY = "Country"
-        val COLUMN_NAME_START_DATE = "StartDate"
-        val COLUMN_NAME_END_DATE = "EndDate"
+        override val TABLE_NAME = "events"
+        const val COLUMN_NAME_YEAR_ID = "YearId"
+        const val COLUMN_NAME_BLUE_ALLIANCE_ID = "BlueAllianceId"
+        const val COLUMN_NAME_NAME = "Name"
+        const val COLUMN_NAME_CITY = "City"
+        const val COLUMN_NAME_STATEPROVINCE = "StateProvince"
+        const val COLUMN_NAME_COUNTRY = "Country"
+        const val COLUMN_NAME_START_DATE = "StartDate"
+        const val COLUMN_NAME_END_DATE = "EndDate"
 
-        val CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                COLUMN_NAME_YEAR_ID + " INTEGER," +
-                COLUMN_NAME_BLUE_ALLIANCE_ID + " TEXT," +
-                COLUMN_NAME_NAME + " TEXT," +
-                COLUMN_NAME_CITY + " TEXT," +
-                COLUMN_NAME_STATEPROVINCE + " TEXT," +
-                COLUMN_NAME_COUNTRY + " TEXT," +
-                COLUMN_NAME_START_DATE + " INTEGER," +
-                COLUMN_NAME_END_DATE + " INTEGER)"
+        override val childColumns: ArrayList<TableColumn>
+            get() = ArrayList<TableColumn>().apply {
+                add(TableColumn(COLUMN_NAME_YEAR_ID, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_BLUE_ALLIANCE_ID, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_NAME, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_CITY, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_STATEPROVINCE, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_COUNTRY, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_START_DATE, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_END_DATE, SQLiteDataTypes.INTEGER))
+            }
 
         /**
-         * Clears all data from the classes table
-         * @param database used to clear table
+         * Returns [ArrayList] of [Event] with specified filters from [database]
+         * @param year if specified, filters [Event] by [year] id
+         * @param event if specified, filters [Event] by [event] id
+         * @param team if specified, filters [Event] by [team] id
+         * @param database used to load [Event]
+         * @return [ArrayList] of [Event]
          */
-        fun clearTable(database: Database)
-        {
-            clearTable(database, TABLE_NAME)
+        fun getObjects(year: Year?, event: Event?, team: Team?, database: Database): ArrayList<Event> {
+            return ArrayList<Event>().apply {
+
+                val whereStatement = StringBuilder()
+                val whereArgs = ArrayList<String>()
+
+                //filter by object
+                if (year != null)
+                {
+                    whereStatement.append("$COLUMN_NAME_YEAR_ID = ?")
+                    whereArgs.add(year.serverId.toString())
+                }
+
+                //filter by object
+                if (event != null)
+                {
+                    whereStatement
+                            .append(if (whereStatement.isNotEmpty()) " AND " else "")
+                            .append("$Event.COLUMN_NAME_ID = ?")
+                    whereArgs.add(event.localId.toString())
+                }
+
+                //filter by object
+                if (team != null)
+                {
+                    whereStatement
+                            .append(if (whereStatement.isNotEmpty()) " AND " else "")
+                            .append("$COLUMN_NAME_BLUE_ALLIANCE_ID IN (SELECT ${EventTeamList.COLUMN_NAME_EVENT_ID} FROM ${EventTeamList.TABLE_NAME} WHERE ${EventTeamList.COLUMN_NAME_TEAM_ID} = ?)")
+                    whereArgs.add(team.serverId.toString())
+                }
+
+                //add all object records to array list
+                with(database.getObjects(
+                        TABLE_NAME,
+                        whereStatement.toString(),
+                        whereArgs))
+                {
+                    if (this != null) {
+                        while (moveToNext()) {
+                            add(
+                                    Event(
+                                            getLong(COLUMN_NAME_LOCAL_ID),
+                                            getLong(COLUMN_NAME_SERVER_ID),
+                                            getInt(COLUMN_NAME_YEAR_ID),
+                                            getString(COLUMN_NAME_BLUE_ALLIANCE_ID),
+                                            getString(COLUMN_NAME_NAME),
+                                            getString(COLUMN_NAME_CITY),
+                                            getString(COLUMN_NAME_STATEPROVINCE),
+                                            getString(COLUMN_NAME_COUNTRY),
+                                            getDate(COLUMN_NAME_START_DATE),
+                                            getDate(COLUMN_NAME_END_DATE)
+                                    )
+                            )
+                        }
+
+                        close()
+                    }
+                }
+            }
         }
-
-        /**
-         * Returns arraylist of events with specified filters from database
-         * @param year if specified, filters events by year id
-         * @param event if specified, filters events by event id
-         * @param database used to load events
-         * @return arraylist of events
-         */
-        fun getObjects(year: Year?, event: Event?, team: Team?, database: Database): ArrayList<Event>
-        {
-            return database.getEvents(year, event, team)
-        }
-    }
-
-    /**
-     * Gets matches from a specific event
-     * @param match if specified, filters matches by match id
-     * @param team if specified, filters matches by team id
-     * @param database used to get matches
-     * @return arraylist of matches
-     */
-    fun getMatches(match: Match?, team: Team?, database: Database): ArrayList<Match>?
-    {
-        return Match.getObjects(this, match, team, database)
-    }
-
-    /**
-     * Gets teams from a specific event
-     * @param match if specified, filters matches by match id
-     * @param team if specified, filters teams by team id
-     * @param database used to get teams
-     * @return arraylist of teams
-     */
-    fun getTeams(match: Match?, team: Team?, database: Database): ArrayList<Team>?
-    {
-        return Team.getObjects(this, match, team, database)
-    }
-
-    /**
-     * Gets event team list from a specific event
-     * @param eventTeamList if specified, filters event team list by eventteamlist id
-     * @param database used to get event team list
-     * @return arraylist of teams
-     */
-    fun getEventTeamList(eventTeamList: EventTeamList?, database: Database): ArrayList<EventTeamList>?
-    {
-        return EventTeamList.getObjects(eventTeamList, this, database)
-    }
-
-
-    override fun toString(): String
-    {
-        return name
     }
 
     /**
@@ -171,36 +183,28 @@ class Event(
         return statsHashMap
     }
 
-    //endregion
-
-    //region Load, Save & Delete
-
     /**
-     * Loads the event from the database and populates all values
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
+     * @see Table.load
      */
     override fun load(database: Database): Boolean
     {
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
+        with(getObjects(null, this, null, database))
         {
-            val events = getObjects(null, this, null, database)
-            val event = if (events.size > 0) events[0] else null
-
-            if (event != null)
+            with(if (size > 0) this[0] else null)
             {
-                yearId = event.yearId
-                blueAllianceId = event.blueAllianceId
-                name = event.name
-                city = event.city
-                stateProvince = event.stateProvince
-                country = event.country
-                startDate = event.startDate
-                endDate = event.endDate
-                return true
+                if (this != null)
+                {
+                    loadParentValues(this)
+                    this@Event.yearId = yearId
+                    this@Event.blueAllianceId = blueAllianceId
+                    this@Event.name = name
+                    this@Event.city = city
+                    this@Event.stateProvince = stateProvince
+                    this@Event.country = country
+                    this@Event.startDate = startDate
+                    this@Event.endDate = endDate
+                    return true
+                }
             }
         }
 
@@ -208,47 +212,25 @@ class Event(
     }
 
     /**
-     * Saves the event into the database
-     * @param database used for interacting with the SQLITE db
-     * @return int id of the saved event
+     * @see Table.childValues
      */
-    override fun save(database: Database): Int
-    {
-        var id = -1
-
-        //try to open the DB if it is not open
-        if (!database.isOpen)
-            database.open()
-
-        if (database.isOpen)
-            id = database.setEvent(this).toInt()
-
-        //set the id if the save was successful
-        if (id > 0)
-            this.id = id
-
-        return id
-    }
-
-    /**
-     * Deletes the event from the database
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
-     */
-    override fun delete(database: Database): Boolean
-    {
-        var successful = false
-
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
-        {
-            successful = database.deleteEvent(this)
+    override val childValues: MasterContentValues
+        get() = MasterContentValues().apply {
+            put(COLUMN_NAME_YEAR_ID, yearId)
+            put(COLUMN_NAME_BLUE_ALLIANCE_ID, blueAllianceId)
+            put(COLUMN_NAME_NAME, name)
+            put(COLUMN_NAME_CITY, city)
+            put(COLUMN_NAME_STATEPROVINCE, stateProvince)
+            put(COLUMN_NAME_COUNTRY, country)
+            put(COLUMN_NAME_START_DATE, startDate)
+            put(COLUMN_NAME_END_DATE, endDate)
         }
 
-        return successful
+    /**
+     * @see Table.toString
+     */
+    override fun toString(): String
+    {
+        return name
     }
-
-    //endregion
 }

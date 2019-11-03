@@ -1,87 +1,109 @@
 package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
+import com.alphadevelopmentsolutions.frcscout.Classes.MasterContentValues
+import com.alphadevelopmentsolutions.frcscout.Classes.TableColumn
+import com.alphadevelopmentsolutions.frcscout.Interfaces.ChildTableCompanion
+import com.alphadevelopmentsolutions.frcscout.Interfaces.SQLiteDataTypes
 import java.util.*
 
 class RobotInfoKey(
-        var id: Int = DEFAULT_INT,
-        var serverId: Int = DEFAULT_INT,
+        localId: Long = DEFAULT_LONG,
+        serverId: Long = DEFAULT_LONG,
         var yearId: Int = DEFAULT_INT,
         var keyState: String = DEFAULT_STRING,
         var keyName: String = DEFAULT_STRING,
-        var sortOrder: Int = DEFAULT_INT) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var sortOrder: Int = DEFAULT_INT) : Table(TABLE_NAME, localId, serverId)
 {
-    companion object
+    companion object: ChildTableCompanion
     {
-        val TABLE_NAME = "robot_info_keys"
-        val COLUMN_NAME_ID = "LocalId"
-        val COLUMN_NAME_SERVER_ID = "Id"
-        val COLUMN_NAME_YEAR_ID = "YearId"
-        val COLUMN_NAME_SORT_ORDER = "SortOrder"
-        val COLUMN_NAME_KEY_STATE = "KeyState"
-        val COLUMN_NAME_KEY_NAME = "KeyName"
+        override val TABLE_NAME = "robot_info_keys"
 
-        val CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                COLUMN_NAME_SERVER_ID + " INTEGER," +
-                COLUMN_NAME_YEAR_ID + " INTEGER," +
-                COLUMN_NAME_SORT_ORDER + " INTEGER," +
-                COLUMN_NAME_KEY_STATE + " TEXT," +
-                COLUMN_NAME_KEY_NAME + " TEXT)"
+        const val COLUMN_NAME_YEAR_ID = "YearId"
+        const val COLUMN_NAME_SORT_ORDER = "SortOrder"
+        const val COLUMN_NAME_KEY_STATE = "KeyState"
+        const val COLUMN_NAME_KEY_NAME = "KeyName"
+
+        override val childColumns: ArrayList<TableColumn>
+            get() = ArrayList<TableColumn>().apply {
+                add(TableColumn(COLUMN_NAME_YEAR_ID, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_SORT_ORDER, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_KEY_STATE, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_KEY_NAME, SQLiteDataTypes.TEXT))
+            }
 
         /**
-         * Clears all data from the classes table
-         * @param database used to clear table
+         * Returns [ArrayList] of [RobotInfoKey] with specified filters from [database]
+         * @param year if specified, filters [RobotInfoKey] by [year] id
+         * @param robotInfoKey if specified, filters [RobotInfoKey] by [robotInfoKey] id
+         * @param database used to load [RobotInfoKey]
+         * @return [ArrayList] of [RobotInfoKey]
          */
-        fun clearTable(database: Database)
-        {
-            clearTable(database, TABLE_NAME)
-        }
+        fun getObjects(year: Year?, robotInfoKey: RobotInfoKey?, database: Database): ArrayList<RobotInfoKey> {
+            return ArrayList<RobotInfoKey>().apply {
 
-        /**
-         * Returns arraylist of pit cards with specified filters from database
-         * @param year if specified, filters by year id
-         * @param robotInfoKey if specified, filters by robotInfoKey id
-         * @param database used to load
-         * @return arraylist of robotInfoKeys
-         */
-        fun getObjects(year: Year?, robotInfoKey: RobotInfoKey?, database: Database): ArrayList<RobotInfoKey>
-        {
-            return database.getRobotInfoKeys(year, robotInfoKey)
+                val whereStatement = StringBuilder()
+                val whereArgs = ArrayList<String>()
+
+                //filter by object
+                if (year != null)
+                {
+                    whereStatement.append("$COLUMN_NAME_YEAR_ID = ? ")
+                    whereArgs.add(year.serverId.toString())
+                }
+
+                //filter by object
+                if (robotInfoKey != null)
+                {
+                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("$COLUMN_NAME_LOCAL_ID = ?")
+                    whereArgs.add(robotInfoKey.localId.toString())
+                }
+
+                //add all object records to array list
+                with(database.getObjects(
+                        TABLE_NAME,
+                        whereStatement.toString(),
+                        whereArgs))
+                {
+                    if (this != null) {
+                        while (moveToNext()) {
+                            add(
+                                 RobotInfoKey(
+                                         getLong(COLUMN_NAME_LOCAL_ID),
+                                         getLong(COLUMN_NAME_SERVER_ID),
+                                         getInt(COLUMN_NAME_YEAR_ID),
+                                         getString(COLUMN_NAME_KEY_STATE),
+                                         getString(COLUMN_NAME_KEY_NAME),
+                                         getInt(COLUMN_NAME_SORT_ORDER)
+                                 )
+                            )
+                        }
+
+                        close()
+                    }
+                }
+            }
         }
     }
-
-    override fun toString(): String
-    {
-        return ""
-    }
-
-
-    //region Load, Save & Delete
 
     /**
-     * Loads the object from the database and populates all values
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
+     * @see Table.load
      */
     override fun load(database: Database): Boolean
     {
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
+        with(getObjects(null, this, database))
         {
-            val robotInfoKeyList = getObjects(null, this, database)
-            val robotInfoKey = if (robotInfoKeyList.size > 0) robotInfoKeyList[0] else null
-
-            if (robotInfoKey != null)
+            with(if (size > 0) this[0] else null)
             {
-                serverId = robotInfoKey.serverId
-                yearId = robotInfoKey.yearId
-                sortOrder = robotInfoKey.sortOrder
-                keyState = robotInfoKey.keyState
-                keyName = robotInfoKey.keyName
-                return true
+                if (this != null)
+                {
+                    loadParentValues(this)
+                    this@RobotInfoKey.yearId = yearId
+                    this@RobotInfoKey.sortOrder = sortOrder
+                    this@RobotInfoKey.keyState = keyState
+                    this@RobotInfoKey.keyName = keyName
+                    return true
+                }
             }
         }
 
@@ -89,48 +111,21 @@ class RobotInfoKey(
     }
 
     /**
-     * Saves the object into the database
-     * @param database used for interacting with the SQLITE db
-     * @return int id of the saved object
+     * @see Table.childValues
      */
-    override fun save(database: Database): Int
-    {
-        var id = -1
-
-        //try to open the DB if it is not open
-        if (!database.isOpen)
-            database.open()
-
-        if (database.isOpen)
-            id = database.setRobotInfoKey(this).toInt()
-
-        //set the id if the save was successful
-        if (id > 0)
-            this.id = id
-
-        return id
-    }
-
-    /**
-     * Deletes the object from the database
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
-     */
-    override fun delete(database: Database): Boolean
-    {
-        var successful = false
-
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
-        {
-            successful = database.deleteRobotInfoKey(this)
-
+    override val childValues: MasterContentValues
+        get() = MasterContentValues().apply {
+            put(COLUMN_NAME_YEAR_ID, yearId)
+            put(COLUMN_NAME_SORT_ORDER, keyState)
+            put(COLUMN_NAME_KEY_STATE, keyName)
+            put(COLUMN_NAME_KEY_NAME, sortOrder)
         }
 
-        return successful
+    /**
+     * @see Table.toString
+     */
+    override fun toString(): String
+    {
+        return ""
     }
-
-    //endregion
 }

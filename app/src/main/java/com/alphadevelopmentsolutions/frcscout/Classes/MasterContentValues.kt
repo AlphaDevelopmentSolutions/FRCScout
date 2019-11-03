@@ -19,4 +19,12 @@ class MasterContentValues
             value == null -> contentValues.putNull(key)
         }
     }
+
+    fun putAll(contentValues: MasterContentValues)
+    {
+        for(contentValue in contentValues.contentValues.valueSet())
+        {
+            put(contentValue.key, contentValue.value)
+        }
+    }
 }

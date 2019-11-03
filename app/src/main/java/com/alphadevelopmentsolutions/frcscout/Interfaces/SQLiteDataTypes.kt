@@ -9,6 +9,6 @@ interface SQLiteDataTypes
     companion object
     {
         const val TEXT = "TEXT"
-        const val NUMBER = "INTEGER"
+        const val INTEGER = "INTEGER"
     }
 }

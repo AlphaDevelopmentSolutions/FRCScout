@@ -1,62 +1,105 @@
 package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
+import com.alphadevelopmentsolutions.frcscout.Classes.MasterContentValues
+import com.alphadevelopmentsolutions.frcscout.Classes.TableColumn
+import com.alphadevelopmentsolutions.frcscout.Interfaces.ChildTableCompanion
+import com.alphadevelopmentsolutions.frcscout.Interfaces.SQLiteDataTypes
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ChecklistItemResult(
-        var id: Int = DEFAULT_INT,
+        localId: Long = DEFAULT_LONG,
+        serverId: Long = DEFAULT_LONG,
         var checklistItemId: Int = DEFAULT_INT,
         var matchId: String = DEFAULT_STRING,
         var status: String = DEFAULT_STRING,
         var completedBy: String? = null,
         var completedDate: Date? = null,
-        var isDraft: Boolean) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var isDraft: Boolean) : Table(TABLE_NAME, localId, serverId)
 {
-    companion object
+    companion object: ChildTableCompanion
     {
-        val TABLE_NAME = "checklist_item_results"
-        val COLUMN_NAME_ID = "Id"
-        val COLUMN_NAME_CHECKLIST_ITEM_ID = "ChecklistItemId"
-        val COLUMN_NAME_MATCH_ID = "MatchId"
-        val COLUMN_NAME_STATUS = "Status"
-        val COLUMN_NAME_COMPLETED_BY = "CompletedBy"
-        val COLUMN_NAME_COMPLETED_DATE = "CompletedDate"
-        val COLUMN_NAME_IS_DRAFT = "IsDraft"
+        override val TABLE_NAME = "checklist_item_results"
 
-        val CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                COLUMN_NAME_CHECKLIST_ITEM_ID + " INTEGER," +
-                COLUMN_NAME_MATCH_ID + " TEXT," +
-                COLUMN_NAME_STATUS + " TEXT," +
-                COLUMN_NAME_COMPLETED_BY + " TEXT," +
-                COLUMN_NAME_COMPLETED_DATE + " INTEGER," +
-                COLUMN_NAME_IS_DRAFT + " INTEGER)"
+        const val COLUMN_NAME_CHECKLIST_ITEM_ID = "ChecklistItemId"
+        const val COLUMN_NAME_MATCH_ID = "MatchId"
+        const val COLUMN_NAME_STATUS = "Status"
+        const val COLUMN_NAME_COMPLETED_BY = "CompletedBy"
+        const val COLUMN_NAME_COMPLETED_DATE = "CompletedDate"
 
-        /**
-         * Clears all data from the classes table
-         * @param database used to clear table
-         * @param clearDrafts boolean if you want to include drafts in the clear
-         */
-        fun clearTable(database: Database, clearDrafts: Boolean = false)
-        {
-            clearTable(database, TABLE_NAME, clearDrafts)
-        }
+        override val childColumns: ArrayList<TableColumn>
+            get() = ArrayList<TableColumn>().apply {
+                add(TableColumn(COLUMN_NAME_CHECKLIST_ITEM_ID, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_MATCH_ID, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_STATUS, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_COMPLETED_BY, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_COMPLETED_DATE, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_IS_DRAFT, SQLiteDataTypes.INTEGER))
+            }
 
         /**
-         * Returns arraylist of checklist items with specified filters from database
-         * @param checklistItem if specified, filters checklist items by checklistItem id
-         * @param checklistItemResult if specified, filters checklist items by checklistItemResult id
-         * @param onlyDrafts if true, filters checklist items by draft
-         * @param database used to load checklist items
-         * @return arraylist of checklist items
+         * Returns [ArrayList] of [ChecklistItemResult] with specified filters from [database]
+         * @param checklistItem if specified, filters [ChecklistItemResult] by [checklistItem] id
+         * @param checklistItemResult if specified, filters [ChecklistItemResult] by [checklistItemResult] id
+         * @param onlyDrafts if specified, filters [ChecklistItemResult] by [isDraft]
+         * @param database used to load [ChecklistItemResult]
+         * @return [ArrayList] of [ChecklistItemResult]
          */
-        fun getObjects(checklistItem: ChecklistItem?, checklistItemResult: ChecklistItemResult?, onlyDrafts: Boolean, database: Database): ArrayList<ChecklistItemResult>?
-        {
-            return database.getChecklistItemResults(checklistItem, checklistItemResult, onlyDrafts)
+        fun getObjects(checklistItem: ChecklistItem?, checklistItemResult: ChecklistItemResult?, onlyDrafts: Boolean, database: Database): ArrayList<ChecklistItemResult> {
+            return ArrayList<ChecklistItemResult>().apply {
+
+                val whereStatement = StringBuilder()
+                val whereArgs = ArrayList<String>()
+
+                //filter by object
+                if (checklistItem != null)
+                {
+                    whereStatement.append("$COLUMN_NAME_CHECKLIST_ITEM_ID = ?")
+                    whereArgs.add(checklistItem.serverId.toString())
+                }
+
+                //filter by object
+                if (checklistItemResult != null)
+                {
+                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("$COLUMN_NAME_LOCAL_ID = ?")
+                    whereArgs.add(checklistItemResult.localId.toString())
+                }
+
+                //filter by object
+                if (onlyDrafts)
+                {
+                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("$COLUMN_NAME_IS_DRAFT = 1")
+                }
+
+                //add all object records to array list
+                with(database.getObjects(
+                        TABLE_NAME,
+                        whereStatement.toString(),
+                        whereArgs))
+                {
+                    if (this != null) {
+                        while (moveToNext()) {
+                            add(
+                                    ChecklistItemResult(
+                                            getLong(COLUMN_NAME_LOCAL_ID),
+                                            getLong(COLUMN_NAME_SERVER_ID),
+                                            getInt(COLUMN_NAME_CHECKLIST_ITEM_ID),
+                                            getString(COLUMN_NAME_MATCH_ID),
+                                            getString(COLUMN_NAME_STATUS),
+                                            getStringOrNull(COLUMN_NAME_COMPLETED_BY),
+                                            getDateOrNull(COLUMN_NAME_COMPLETED_DATE),
+                                            getBoolean(COLUMN_NAME_IS_DRAFT)
+                                    )
+                            )
+                        }
+
+                        close()
+                    }
+                }
+            }
         }
     }
-
 
     /**
      * Gets the completed date formated for MySQL timestamp
@@ -71,37 +114,26 @@ class ChecklistItemResult(
         }
 
 
-    override fun toString(): String
-    {
-        return ""
-    }
-
-    //region Load, Save & Delete
-
     /**
-     * Loads the object from the database and populates all values
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
+     * @see Table.load
      */
     override fun load(database: Database): Boolean
     {
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
+        with(getObjects(null, this, false, database))
         {
-            val checklistItemResults = getObjects(null, this, false, database)
-            val checklistItemResult = if (checklistItemResults!!.size > 0) checklistItemResults[0] else null
-
-            if (checklistItemResult != null)
+            with(if (size > 0) this[0] else null)
             {
-                checklistItemId = checklistItemResult.checklistItemId
-                matchId = checklistItemResult.matchId
-                status = checklistItemResult.status
-                completedBy = checklistItemResult.completedBy
-                completedDate = checklistItemResult.completedDate
-                isDraft = checklistItemResult.isDraft
-                return true
+                if (this != null)
+                {
+                    loadParentValues(this)
+                    this@ChecklistItemResult.checklistItemId = checklistItemId
+                    this@ChecklistItemResult.matchId = matchId
+                    this@ChecklistItemResult.status = status
+                    this@ChecklistItemResult.completedBy = completedBy
+                    this@ChecklistItemResult.completedDate = completedDate
+                    this@ChecklistItemResult.isDraft = isDraft
+                    return true
+                }
             }
         }
 
@@ -109,47 +141,24 @@ class ChecklistItemResult(
     }
 
     /**
-     * Saves the object into the database
-     * @param database used for interacting with the SQLITE db
-     * @return int id of the saved object
+     * @see Table.childValues
      */
-    override fun save(database: Database): Int
-    {
-        var id = -1
-
-        //try to open the DB if it is not open
-        if (!database.isOpen)
-            database.open()
-
-        if (database.isOpen)
-            id = database.setChecklistItemResult(this).toInt()
-
-        //set the id if the save was successful
-        if (id > 0)
-            this.id = id
-
-        return id
-    }
-
-    /**
-     * Deletes the object from the database
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
-     */
-    override fun delete(database: Database): Boolean
-    {
-        var successful = false
-
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
-        {
-            successful = database.deleteChecklistItemResult(this)
+    override val childValues: MasterContentValues
+        get() = MasterContentValues().apply {
+            put(COLUMN_NAME_CHECKLIST_ITEM_ID, checklistItemId)
+            put(COLUMN_NAME_MATCH_ID, matchId)
+            put(COLUMN_NAME_STATUS, status)
+            put(COLUMN_NAME_COMPLETED_BY, completedBy)
+            put(COLUMN_NAME_COMPLETED_DATE, completedDate)
+            put(COLUMN_NAME_IS_DRAFT, isDraft)
         }
 
-        return successful
+    /**
+     * @see Table.toString
+     */
+    override fun toString(): String
+    {
+        return ""
     }
 
-    //endregion
 }

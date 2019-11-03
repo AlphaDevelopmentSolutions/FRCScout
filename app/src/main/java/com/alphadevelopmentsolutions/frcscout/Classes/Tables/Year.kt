@@ -3,52 +3,79 @@ package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
+import com.alphadevelopmentsolutions.frcscout.Classes.MasterContentValues
+import com.alphadevelopmentsolutions.frcscout.Classes.TableColumn
+import com.alphadevelopmentsolutions.frcscout.Interfaces.ChildTableCompanion
+import com.alphadevelopmentsolutions.frcscout.Interfaces.SQLiteDataTypes
 import java.util.*
 
 class Year(
-        var id: Int = DEFAULT_INT,
-        var serverId: Int = DEFAULT_INT,
+        localId: Long = DEFAULT_LONG,
+        serverId: Long = DEFAULT_LONG,
         var name: String = DEFAULT_STRING,
         var startDate: Date = DEFAULT_DATE,
         var endDate: Date = DEFAULT_DATE,
-        var imageUri: String = DEFAULT_STRING) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var imageUri: String = DEFAULT_STRING) : Table(TABLE_NAME, localId, serverId)
 {
-    companion object
+    companion object: ChildTableCompanion
     {
-        val TABLE_NAME = "years"
-        val COLUMN_NAME_ID = "LocalId"
-        val COLUMN_NAME_SERVER_ID = "Id"
-        val COLUMN_NAME_NAME = "Name"
-        val COLUMN_NAME_START_DATE = "StartDate"
-        val COLUMN_NAME_END_DATE = "EndDate"
-        val COLUMN_NAME_IMAGE_URI = "ImageUri"
+        override val TABLE_NAME = "years"
+        const val COLUMN_NAME_NAME = "Name"
+        const val COLUMN_NAME_START_DATE = "StartDate"
+        const val COLUMN_NAME_END_DATE = "EndDate"
+        const val COLUMN_NAME_IMAGE_URI = "ImageUri"
 
-        val CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                COLUMN_NAME_SERVER_ID + " INTEGER," +
-                COLUMN_NAME_NAME + " TEXT," +
-                COLUMN_NAME_START_DATE + " INTEGER," +
-                COLUMN_NAME_END_DATE + " INTEGER," +
-                COLUMN_NAME_IMAGE_URI + " TEXT)"
+        override val childColumns: ArrayList<TableColumn>
+            get() = ArrayList<TableColumn>().apply {
+                add(TableColumn(COLUMN_NAME_NAME, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_START_DATE, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_END_DATE, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_IMAGE_URI, SQLiteDataTypes.TEXT))
+            }
 
         /**
-         * Clears all data from the classes table
-         * @param database used to clear table
+         * Returns [ArrayList] of [Year] with specified filters from [database]
+         * @param year if specified, filters [Year] by [year] id
+         * @param database used to load [Year]
+         * @return [ArrayList] of [Year]
          */
-        fun clearTable(database: Database)
-        {
-            clearTable(database, TABLE_NAME)
-        }
+        fun getObjects(year: Year?, database: Database): ArrayList<Year> {
+            return ArrayList<Year>().apply {
 
-        /**
-         * Returns arraylist of years with specified filters from database
-         * @param year if specified, filters years by year id
-         * @param database used to load robot media
-         * @return ArrayList of years
-         */
-        fun getObjects(year: Year?, database: Database): ArrayList<Year>
-        {
-            return database.getYears(year)
+                val whereStatement = StringBuilder()
+                val whereArgs = ArrayList<String>()
+
+                //filter by object
+                if (year != null) {
+                    whereStatement.append(COLUMN_NAME_SERVER_ID).append(" = ?")
+                    whereArgs.add(year.serverId.toString())
+                }
+
+                //add all object records to array list
+                with(database.getObjects(
+                        User.TABLE_NAME,
+                        whereStatement.toString(),
+                        whereArgs))
+                {
+                    if (this != null) {
+                        while (moveToNext()) {
+                            add(
+
+                                 Year(
+                                    getLong(COLUMN_NAME_LOCAL_ID),
+                                    getLong(COLUMN_NAME_SERVER_ID),
+                                    getString(COLUMN_NAME_NAME),
+                                    getDate(COLUMN_NAME_START_DATE),
+                                    getDate(COLUMN_NAME_END_DATE),
+                                    getString(COLUMN_NAME_IMAGE_URI)
+                                )
+                            )
+                        }
+
+                        close()
+                    }
+                }
+            }
         }
     }
     
@@ -65,33 +92,24 @@ class Year(
         return "$serverId - $name"
     }
 
-    //endregion
-
-    //region Load, Save & Delete
-
     /**
-     * Loads the object from the database and populates all values
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
+     * @see Table.load
      */
     override fun load(database: Database): Boolean
     {
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
+        with(getObjects(this, database))
         {
-            val yearArrayList = getObjects(this, database)
-            val year = if (yearArrayList.size > 0) yearArrayList[0] else null
-
-            if (year != null)
+            with(if (size > 0) this[0] else null)
             {
-                id = year.id
-                name = year.name
-                startDate = year.startDate
-                endDate = year.endDate
-                imageUri = year.imageUri
-                return true
+                if (this != null)
+                {
+                    loadParentValues(this)
+                    this@Year.name = name
+                    this@Year.startDate = startDate
+                    this@Year.endDate = endDate
+                    this@Year.imageUri = imageUri
+                    return true
+                }
             }
         }
 
@@ -99,48 +117,13 @@ class Year(
     }
 
     /**
-     * Saves the object into the database
-     * @param database used for interacting with the SQLITE db
-     * @return int id of the saved object
+     * @see Table.childValues
      */
-    override fun save(database: Database): Int
-    {
-        var id = -1
-
-        //try to open the DB if it is not open
-        if (!database.isOpen)
-            database.open()
-
-        if (database.isOpen)
-            id = database.setYears(this).toInt()
-
-        //set the id if the save was successful
-        if (id > 0)
-            this.id = id
-
-        return id
-    }
-
-    /**
-     * Deletes the object from the database
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
-     */
-    override fun delete(database: Database): Boolean
-    {
-        var successful = false
-
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
-        {
-            successful = database.deleteYears(this)
-
+    override val childValues: MasterContentValues
+        get() = MasterContentValues().apply {
+            put(COLUMN_NAME_NAME, name)
+            put(COLUMN_NAME_START_DATE, startDate)
+            put(COLUMN_NAME_END_DATE, endDate)
+            put(COLUMN_NAME_IMAGE_URI, imageUri)
         }
-
-        return successful
-    }
-
-    //endregion
 }

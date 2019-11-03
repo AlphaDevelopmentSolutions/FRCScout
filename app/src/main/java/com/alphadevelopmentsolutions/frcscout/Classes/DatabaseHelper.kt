@@ -10,24 +10,24 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
 
     override fun onCreate(db: SQLiteDatabase)
     {
-        db.execSQL(Year.CREATE_TABLE)
-        db.execSQL(Event.CREATE_TABLE)
-        db.execSQL(EventTeamList.CREATE_TABLE)
-        db.execSQL(Match.CREATE_TABLE)
-        db.execSQL(Team.CREATE_TABLE)
+        Year.createTable(db)
+        Event.createTable(db)
+        EventTeamList.createTable(db)
+        Match.createTable(db)
+        Team.createTable(db)
 
-        db.execSQL(Robot.CREATE_TABLE)
-        db.execSQL(RobotMedia.CREATE_TABLE)
+        Robot.createTable(db)
+        RobotMedia.createTable(db)
 
-        db.execSQL(ScoutCardInfo.CREATE_TABLE)
-        db.execSQL(ScoutCardInfoKey.CREATE_TABLE)
-        db.execSQL(RobotInfo.CREATE_TABLE)
-        db.execSQL(RobotInfoKey.CREATE_TABLE)
+        ScoutCardInfo.createTable(db)
+        ScoutCardInfoKey.createTable(db)
+        RobotInfo.createTable(db)
+        RobotInfoKey.createTable(db)
 
         User.createTable(db)
 
-        db.execSQL(ChecklistItem.CREATE_TABLE)
-        db.execSQL(ChecklistItemResult.CREATE_TABLE)
+        ChecklistItem.createTable(db)
+        ChecklistItemResult.createTable(db)
     }
 
     override fun onUpgrade(sqLiteDatabase: SQLiteDatabase, oldVersion: Int, newVersion: Int)

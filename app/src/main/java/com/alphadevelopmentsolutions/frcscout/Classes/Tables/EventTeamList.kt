@@ -1,77 +1,99 @@
 package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
+import com.alphadevelopmentsolutions.frcscout.Classes.MasterContentValues
+import com.alphadevelopmentsolutions.frcscout.Classes.TableColumn
+import com.alphadevelopmentsolutions.frcscout.Interfaces.ChildTableCompanion
+import com.alphadevelopmentsolutions.frcscout.Interfaces.SQLiteDataTypes
 import java.util.*
 
 class EventTeamList(
-        var id: Int = DEFAULT_INT,
-        var teamId: Int = DEFAULT_INT,
-        var eventId: String = DEFAULT_STRING) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        localId: Long = DEFAULT_LONG,
+        serverId: Long = DEFAULT_LONG,
+        var teamId: Long = DEFAULT_LONG,
+        var eventId: String = DEFAULT_STRING) : Table(TABLE_NAME, localId, serverId)
 {
-    companion object
+    companion object: ChildTableCompanion
     {
-        val TABLE_NAME = "event_team_list"
-        val COLUMN_NAME_ID = "Id"
-        val COLUMN_NAME_TEAM_ID = "TeamId"
-        val COLUMN_NAME_EVENT_ID = "EventId"
+        override val TABLE_NAME = "event_team_list"
 
-        val CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                COLUMN_NAME_TEAM_ID + " INTEGER," +
-                COLUMN_NAME_EVENT_ID + " TEXT)"
+        const val COLUMN_NAME_TEAM_ID = "TeamId"
+        const val COLUMN_NAME_EVENT_ID = "EventId"
+
+        override val childColumns: ArrayList<TableColumn>
+            get() = ArrayList<TableColumn>().apply {
+                add(TableColumn(COLUMN_NAME_TEAM_ID, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_EVENT_ID, SQLiteDataTypes.TEXT))
+            }
 
         /**
-         * Clears all data from the classes table
-         * @param database used to clear table
+         * Returns [ArrayList] of [EventTeamList] with specified filters from [database]
+         * @param eventTeamList if specified, filters [EventTeamList] by [eventTeamList] id
+         * @param event if specified, filters [EventTeamList] by [event] id
+         * @param database used to load [EventTeamList]
+         * @return [ArrayList] of [EventTeamList]
          */
-        fun clearTable(database: Database)
-        {
-            clearTable(database, TABLE_NAME)
-        }
+        fun getObjects(eventTeamList: EventTeamList?, event: Event?, database: Database): ArrayList<EventTeamList> {
+            return ArrayList<EventTeamList>().apply {
 
-        /**
-         * Returns arraylist of event team list with specified filters from database
-         * @param eventTeamList if specified, filters event team list by eventTeamList id
-         * @param event if specified, filters event team list by event id
-         * @param database used to load event team list
-         * @return arraylist of event team list
-         */
-        fun getObjects(eventTeamList: EventTeamList?, event: Event?, database: Database): ArrayList<EventTeamList>?
-        {
-            return database.getEventTeamLists(eventTeamList, event)
+                val whereStatement = StringBuilder()
+                val whereArgs = ArrayList<String>()
+
+                //filter by object
+                if (eventTeamList != null)
+                {
+                    whereStatement.append("$COLUMN_NAME_EVENT_ID = ?")
+                    whereArgs.add(eventTeamList.localId.toString())
+                }
+
+                //filter by object
+                if (event != null)
+                {
+                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("$COLUMN_NAME_EVENT_ID = ?")
+                    whereArgs.add(event.blueAllianceId)
+                }
+
+                //add all object records to array list
+                with(database.getObjects(
+                        TABLE_NAME,
+                        whereStatement.toString(),
+                        whereArgs))
+                {
+                    if (this != null) {
+                        while (moveToNext()) {
+                            add(
+                                    EventTeamList(
+                                            getLong(COLUMN_NAME_LOCAL_ID),
+                                            getLong(COLUMN_NAME_SERVER_ID),
+                                            getLong(COLUMN_NAME_TEAM_ID),
+                                            getString(COLUMN_NAME_EVENT_ID)
+                                    )
+                            )
+                        }
+
+                        close()
+                    }
+                }
+            }
         }
     }
-
-    override fun toString(): String
-    {
-        return ""
-    }
-
-
-    //endregion
-
-    //region Load, Save & Delete
 
     /**
-     * Loads the object from the database and populates all values
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
+     * @see Table.load
      */
     override fun load(database: Database): Boolean
     {
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
+        with(getObjects(this, null, database))
         {
-            val eventTeamLists = getObjects(this, null, database)
-            val eventTeamList = if (eventTeamLists!!.size > 0) eventTeamLists[0] else null
-
-            if (eventTeamList != null)
+            with(if (size > 0) this[0] else null)
             {
-                teamId = eventTeamList.teamId
-                eventId = eventTeamList.eventId
-                return true
+                if (this != null)
+                {
+                    loadParentValues(this)
+                    this@EventTeamList.teamId = teamId
+                    this@EventTeamList.eventId = eventId
+                    return true
+                }
             }
         }
 
@@ -79,48 +101,19 @@ class EventTeamList(
     }
 
     /**
-     * Saves the object into the database
-     * @param database used for interacting with the SQLITE db
-     * @return int id of the saved object
+     * @see Table.childValues
      */
-    override fun save(database: Database): Int
-    {
-        var id = -1
-
-        //try to open the DB if it is not open
-        if (!database.isOpen)
-            database.open()
-
-        if (database.isOpen)
-            id = database.setEventTeamList(this).toInt()
-
-        //set the id if the save was successful
-        if (id > 0)
-            this.id = id
-
-        return id
-    }
-
-    /**
-     * Deletes the object from the database
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
-     */
-    override fun delete(database: Database): Boolean
-    {
-        var successful = false
-
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
-        {
-            successful = database.deleteEventTeamList(this)
-
+    override val childValues: MasterContentValues
+        get() = MasterContentValues().apply {
+            put(COLUMN_NAME_TEAM_ID, teamId)
+            put(COLUMN_NAME_EVENT_ID, eventId)
         }
 
-        return successful
+    /**
+     * @see Table.toString
+     */
+    override fun toString(): String
+    {
+        return ""
     }
-
-    //endregion
 }

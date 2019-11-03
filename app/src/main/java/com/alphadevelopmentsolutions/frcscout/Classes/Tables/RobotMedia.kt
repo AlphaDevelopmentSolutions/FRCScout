@@ -6,59 +6,116 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.util.Base64
 import com.alphadevelopmentsolutions.frcscout.Classes.Database
+import com.alphadevelopmentsolutions.frcscout.Classes.MasterContentValues
+import com.alphadevelopmentsolutions.frcscout.Classes.TableColumn
+import com.alphadevelopmentsolutions.frcscout.Interfaces.ChildTableCompanion
+import com.alphadevelopmentsolutions.frcscout.Interfaces.SQLiteDataTypes
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.*
 
 class RobotMedia(
-        var id: Int = DEFAULT_INT,
+        localId: Long = DEFAULT_LONG,
+        serverId: Long = DEFAULT_LONG,
         var yearId: Int = DEFAULT_INT,
         var eventId: String = DEFAULT_STRING,
-        var teamId: Int = DEFAULT_INT,
+        var teamId: Long = DEFAULT_LONG,
         var fileUri: String = DEFAULT_STRING,
-        var isDraft: Boolean = DEFAULT_BOOLEAN) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var isDraft: Boolean = DEFAULT_BOOLEAN) : Table(TABLE_NAME, localId, serverId)
 {
-    companion object
+    companion object: ChildTableCompanion
     {
-        val TABLE_NAME = "robot_media"
-        val COLUMN_NAME_ID = "Id"
-        val COLUMN_NAME_YEAR_ID = "YearId"
-        val COLUMN_NAME_EVENT_ID = "EventId"
-        val COLUMN_NAME_TEAM_ID = "TeamId"
-        val COLUMN_NAME_FILE_URI = "FileURI"
-        val COLUMN_NAME_IS_DRAFT = "IsDraft"
+        override val TABLE_NAME = "robot_media"
+        const val COLUMN_NAME_YEAR_ID = "YearId"
+        const val COLUMN_NAME_EVENT_ID = "EventId"
+        const val COLUMN_NAME_TEAM_ID = "TeamId"
+        const val COLUMN_NAME_FILE_URI = "FileURI"
 
-        val CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                COLUMN_NAME_YEAR_ID + " INTEGER," +
-                COLUMN_NAME_EVENT_ID + " TEXT," +
-                COLUMN_NAME_TEAM_ID + " INTEGER," +
-                COLUMN_NAME_FILE_URI + " TEXT," +
-                COLUMN_NAME_IS_DRAFT + " INTEGER)"
-
-        /**
-         * Clears all data from the classes table
-         * @param database used to clear table
-         * @param clearDrafts boolean if you want to include drafts in the clear
-         */
-        fun clearTable(database: Database, clearDrafts: Boolean = false)
-        {
-            clearTable(database, TABLE_NAME, clearDrafts)
-        }
+        override val childColumns: ArrayList<TableColumn>
+            get() = ArrayList<TableColumn>().apply {
+                add(TableColumn(COLUMN_NAME_YEAR_ID, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_EVENT_ID, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_TEAM_ID, SQLiteDataTypes.INTEGER))
+                add(TableColumn(COLUMN_NAME_FILE_URI, SQLiteDataTypes.TEXT))
+                add(TableColumn(COLUMN_NAME_IS_DRAFT, SQLiteDataTypes.INTEGER))
+            }
 
         /**
-         * Returns arraylist of robot media with specified filters from database
-         * @param robotMedia if specified, filters robot media by robotmedia id
-         * @param year [Year] if specified, filters robot media by id
-         * @param event [Event] if specified, filters robot media by id
-         * @param team [Team] if specified, filters robot media by team id
-         * @param onlyDrafts [Boolean] if true, filters robot media by draft
-         * @param database used to load robot media
-         * @return arraylist of robot media
+         * Returns [ArrayList] of [RobotMedia] with specified filters from [database]
+         * @param robotMedia if specified, filters [RobotMedia] by [robotMedia] id
+         * @param year [Year] if specified, filters [RobotMedia] by [year] id
+         * @param event [Event] if specified, filters [RobotMedia] by [event] id
+         * @param team [Team] if specified, filters [RobotMedia] by [team] id
+         * @param onlyDrafts [Boolean] if true, filters [RobotMedia] [isDraft]
+         * @param database used to load [RobotMedia]
+         * @return [ArrayList] of [RobotMedia]
          */
         fun getObjects(robotMedia: RobotMedia?, year: Year?, event: Event?, team: Team?, onlyDrafts: Boolean, database: Database): ArrayList<RobotMedia>
         {
-            return database.getRobotMedia(robotMedia, year, event, team, onlyDrafts)
+            return ArrayList<RobotMedia>().apply {
+
+                val whereStatement = StringBuilder()
+                val whereArgs = ArrayList<String>()
+
+                //filter by object
+                if (robotMedia != null)
+                {
+                    whereStatement.append("$COLUMN_NAME_LOCAL_ID = ?")
+                    whereArgs.add(robotMedia.localId.toString())
+                }
+
+                //filter by object
+                if (year != null)
+                {
+                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("$COLUMN_NAME_YEAR_ID = ?")
+                    whereArgs.add(year.serverId.toString())
+                }
+
+                //filter by object
+                if (event != null)
+                {
+                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("$COLUMN_NAME_EVENT_ID = ?")
+                    whereArgs.add(event.blueAllianceId)
+                }
+
+                //filter by object
+                if (team != null)
+                {
+                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("$COLUMN_NAME_TEAM_ID = ?")
+                    whereArgs.add(team.serverId.toString())
+                }
+
+                //filter by object
+                if (onlyDrafts)
+                {
+                    whereStatement.append(if (whereStatement.isNotEmpty()) " AND " else "").append("$COLUMN_NAME_IS_DRAFT = 1")
+                }
+
+                //add all object records to array list
+                with(database.getObjects(
+                        TABLE_NAME,
+                        whereStatement.toString(),
+                        whereArgs))
+                {
+                    if (this != null) {
+                        while (moveToNext()) {
+                            add(
+                                    RobotMedia(
+                                            getLong(COLUMN_NAME_LOCAL_ID),
+                                            getLong(COLUMN_NAME_SERVER_ID),
+                                            getInt(COLUMN_NAME_YEAR_ID),
+                                            getString(COLUMN_NAME_EVENT_ID),
+                                            getLong(COLUMN_NAME_TEAM_ID),
+                                            getString(COLUMN_NAME_FILE_URI),
+                                            getBoolean(COLUMN_NAME_IS_DRAFT)
+                                    )
+                            )
+                        }
+
+                        close()
+                    }
+                }
+            }
         }
     }
 
@@ -124,38 +181,25 @@ class RobotMedia(
 
     }
 
-    override fun toString(): String
-    {
-        return "Team $teamId - Robot Media"
-    }
-
-    //endregion
-
-    //region Load, Save & Delete
-
     /**
-     * Loads the object from the database and populates all values
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
+     * @see Table.load
      */
     override fun load(database: Database): Boolean
     {
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
+        with(getObjects(this, null, null, null, false, database))
         {
-            val robotMediaArrayList = getObjects(this, null, null, null, false, database)
-            val robotMedia = if (robotMediaArrayList.size > 0) robotMediaArrayList[0] else null
-
-            if (robotMedia != null)
+            with(if (size > 0) this[0] else null)
             {
-                yearId = robotMedia.yearId
-                eventId = robotMedia.eventId
-                teamId = robotMedia.teamId
-                fileUri = robotMedia.fileUri
-                isDraft = robotMedia.isDraft
-                return true
+                if (this != null)
+                {
+                    loadParentValues(this)
+                    this@RobotMedia.yearId = yearId
+                    this@RobotMedia.eventId = eventId
+                    this@RobotMedia.teamId = teamId
+                    this@RobotMedia.fileUri = fileUri
+                    this@RobotMedia.isDraft = isDraft
+                    return true
+                }
             }
         }
 
@@ -163,55 +207,21 @@ class RobotMedia(
     }
 
     /**
-     * Saves the object into the database
-     * @param database used for interacting with the SQLITE db
-     * @return int id of the saved object
+     * @see Table.childValues
      */
-    override fun save(database: Database): Int
-    {
-        var id = -1
-
-        //try to open the DB if it is not open
-        if (!database.isOpen)
-            database.open()
-
-        if (database.isOpen)
-            id = database.setRobotMedia(this).toInt()
-
-        //set the id if the save was successful
-        if (id > 0)
-            this.id = id
-
-        return id
-    }
-
-    /**
-     * Deletes the object from the database
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
-     */
-    override fun delete(database: Database): Boolean
-    {
-        var successful = false
-
-        //try to open the DB if it is not open
-        if (!database.isOpen)
-            database.open()
-
-        if (database.isOpen)
-            successful = database.deleteRobotMedia(this)
-
-        if(successful)
-        {
-            with(File(fileUri))
-            {
-                if(exists())
-                    delete()
-            }
+    override val childValues: MasterContentValues
+        get() = MasterContentValues().apply {
+            put(COLUMN_NAME_YEAR_ID, yearId)
+            put(COLUMN_NAME_EVENT_ID, eventId)
+            put(COLUMN_NAME_TEAM_ID, teamId)
+            put(COLUMN_NAME_FILE_URI, fileUri)
         }
 
-        return successful
+    /**
+     * @see Table.toString
+     */
+    override fun toString(): String
+    {
+        return "Team $teamId - Robot Media"
     }
-
-    //endregion
 }

@@ -6,16 +6,63 @@ import com.alphadevelopmentsolutions.frcscout.Interfaces.ParentTableCompanion
 import java.util.*
 
 abstract class Table protected constructor(
-    var tableName: String = DEFAULT_STRING,
-    var localId: Long = DEFAULT_LONG,
-    var serverId: Long = DEFAULT_LONG
+    val tableName: String,
+    var localId: Long,
+    var serverId: Long
 )
 {
+    /**
+     * Loads the object from the [database] and populates all values
+     * @param database used for interacting with the SQLite db
+     * @return [Boolean] if successful
+     */
     abstract fun load(database: Database): Boolean
-    abstract fun save(database: Database): Int
-    abstract fun delete(database: Database): Boolean
-    abstract fun getValues(): MasterContentValues
+
+    /**
+     * Saves the object into the [database]
+     * @param database used for interacting with the SQLite db
+     * @return [Int] [localId] of the saved object
+     */
+    fun save(database: Database): Boolean
+    {
+        with(database.insertOrUpdateObject(this))
+        {
+            if(this > 0)
+            {
+                localId = this
+
+                return true
+            }
+        }
+
+        return false
+    }
+
+    /**
+     * Deletes the object from the [database]
+     * @param database used for interacting with the SQLite db
+     * @return [Boolean] if successful
+     */
+    fun delete(database: Database): Boolean
+    {
+        return database.deleteObject(this)
+    }
+
+    protected abstract val childValues: MasterContentValues
+    val tableValues: MasterContentValues
+        get() = MasterContentValues().apply {
+            put(COLUMN_NAME_LOCAL_ID, localId)
+            put(COLUMN_NAME_SERVER_ID, serverId)
+            putAll(childValues)
+        }
+
     abstract override fun toString(): String
+
+    fun loadParentValues(table: Table)
+    {
+        localId = table.localId
+        serverId = table.serverId
+    }
 
     companion object: ParentTableCompanion
     {
