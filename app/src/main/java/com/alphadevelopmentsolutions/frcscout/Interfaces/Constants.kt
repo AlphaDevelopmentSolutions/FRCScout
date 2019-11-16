@@ -43,6 +43,27 @@ interface Constants
         }
     }
 
+    interface TableNames
+    {
+        companion object
+        {
+            const val CHECKLIST_ITEM = "checklist_items"
+            const val CHECKLIST_ITEM_RESULT = "checklist_item_results"
+            const val EVENT = "events"
+            const val EVENT_TEAM_LIST = "event_team_list"
+            const val MATCH = "matches"
+            const val ROBOT = "robots"
+            const val ROBOT_INFO = "robot_info"
+            const val ROBOT_INFO_KEY = "robot_info_keys"
+            const val ROBOT_MEDIA = "robot_media"
+            const val SCOUT_CARD_INFO = "scout_card_info"
+            const val SCOUT_CARD_INFO_KEY = "scout_card_info_keys"
+            const val TEAM = "teams"
+            const val USER = "users"
+            const val YEAR = "years"
+        }
+    }
+
     companion object
     {
         /**
@@ -61,7 +82,7 @@ interface Constants
         const val ROBOT_MEDIA_REQUEST_CODE = 5885
 
         const val WEB_URL = BuildConfig.API_URL
-        const val API_URL = "$WEB_URL/api/"
+        const val API_URL = "$WEB_URL/api/v2/"
 
         const val RECAPTCHA_SITE_KEY = "6Lftl74UAAAAACuMDDwCATDi2sQnQfqK_c4psVt_"
 

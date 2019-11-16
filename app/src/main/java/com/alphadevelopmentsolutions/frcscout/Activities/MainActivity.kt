@@ -20,17 +20,24 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentManager
 import com.alphadevelopmentsolutions.frcscout.Api.Api
-import com.alphadevelopmentsolutions.frcscout.Classes.Database
+import com.alphadevelopmentsolutions.frcscout.Api.ApiResponse
 import com.alphadevelopmentsolutions.frcscout.Classes.KeyStore
 import com.alphadevelopmentsolutions.frcscout.Classes.LoadingDialog
+import com.alphadevelopmentsolutions.frcscout.Classes.RDatabase
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
+import com.alphadevelopmentsolutions.frcscout.Classes.VMProvider
 import com.alphadevelopmentsolutions.frcscout.Fragments.*
+import com.alphadevelopmentsolutions.frcscout.Interfaces.AppLog
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -42,6 +49,9 @@ import kotlinx.android.synthetic.main.layout_dialog_download.view.RobotMediaChec
 import kotlinx.android.synthetic.main.layout_dialog_download.view.ScoutCardInfoCheckBox
 import kotlinx.android.synthetic.main.layout_dialog_upload.view.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 import kotlin.math.round
 
@@ -50,14 +60,6 @@ class MainActivity : AppCompatActivity(),
         MasterFragment.OnFragmentInteractionListener
 {
     private lateinit var context: MainActivity
-    var database: Database = Database(this)
-    get()
-    {
-        if (!field.isOpen)
-            field.open()
-
-        return field
-    }
 
     var keyStore = KeyStore()
     get()
@@ -76,33 +78,12 @@ class MainActivity : AppCompatActivity(),
 
     private var searchView: SearchView? = null
 
-    val dp = fun(height: Int): Int
-    {
-        return (height * context.resources.displayMetrics.density + 0.5f).toInt()
-    }
+    val dp = fun(height: Int) = (height * context.resources.displayMetrics.density + 0.5f).toInt()
 
     private val ACTION_BAR_ELEVATION = 11f
     private var progressDialogProgress: Int = 0
-    var isOnline: Boolean = false
-    get()
-    {
-        field = false
 
-        with(
-            Thread(Runnable {
-                val hello = Api.Connect.Hello(context)
-
-                if (hello.execute())
-                    field = true
-            })
-        )
-        {
-            start()
-            join()
-        }
-
-        return field
-    }
+    private lateinit var disposable: CompositeDisposable
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -111,8 +92,6 @@ class MainActivity : AppCompatActivity(),
         setContentView(R.layout.activity_main)
 
         context = this
-        database = Database(context)
-        database.open()
 
         setSupportActionBar(MainToolbar)
 
@@ -126,632 +105,74 @@ class MainActivity : AppCompatActivity(),
         //Update app colors
         updateAppColors()
 
-        //Update nav text
-        updateNavText(Event((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int)).apply { load(database) })
+        disposable = CompositeDisposable()
+
+        disposable.add(
+            //Update nav text
+            VMProvider(this).eventViewModel.objWithId(keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe (
+                        {
+                            updateNavText(it)
+                        },
+                        {
+                            AppLog.log(this::class.java.simpleName, "Subscribe error")
+                        }
+                    )
+        )
 
         //Load the view for the fragments
         loadView(savedInstanceState)
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        disposable.dispose()
     }
 
     //region Internet Methods
 
-    /**
-     * Downloads app data from the server
-     * @param withFilters [Boolean] whether or not the app should apply download filters
-     * @param refreshActivity [Boolean] whether or not the app recreate the activity on download complete
-     * @return [Thread] download thread
-     */
-    fun downloadApplicationData(withFilters: Boolean = true, refreshActivity: Boolean = true): Thread?
+
+    fun downloadApplicationData(refreshActivity: Boolean = true)
     {
         loadingDialog = LoadingDialog(context, LoadingDialog.Style.PROGRESS)
         loadingDialog.message = getString(R.string.connecting_to_server)
         loadingDialog.show()
 
-        if (isOnline)
+        Api.getInstance().getData().enqueue(object : Callback<ApiResponse.GetData>
         {
-            loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.data))
+            override fun onFailure(call: Call<ApiResponse.GetData>, t: Throwable) {
+                showSnackbar("API FAILURE")
+            }
 
-            val getEvents = Api.Get.Events(context)
-            var getEventsSuccess: Boolean? = null
-            val getEventTeamList = Api.Get.EventTeamList(context)
-            var getEventTeamListSuccess: Boolean? = null
-
-            val getMatches = Api.Get.Matches(context)
-            var getMatchesSuccess: Boolean? = null
-
-            val getTeams = Api.Get.Teams(context)
-            var getTeamsSuccess: Boolean? = null
-
-            val getChecklistItems = Api.Get.ChecklistItems(context)
-            var getChecklistItemsSuccess: Boolean? = null
-            val getChecklistItemResults = Api.Get.ChecklistItemResults(context)
-            var getChecklistItemResultsSuccess: Boolean? = null
-
-            val getRobotInfoKeys = Api.Get.RobotInfoKeys(context)
-            var getRobotInfoKeysSuccess: Boolean? = null
-            val getRobotInfo = Api.Get.RobotInfo(context)
-            var getRobotInfoSuccess: Boolean? = null
-
-            val getScoutCardInfoKeys = Api.Get.ScoutCardInfoKeys(context)
-            var getScoutCardInfoKeysSuccess: Boolean? = null
-            val getScoutCardInfo = Api.Get.ScoutCardInfo(context)
-            var getScoutCardInfoSuccess: Boolean? = null
-            
-            val increaseFactor = 4
-
-            val updateThread = Thread(Runnable {
-
-                database.beginTransaction()
-
-                progressDialogProgress = 0
-
-                context.runOnUiThread {
-                    loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.app_config))
-                    loadingDialog.progress = progressDialogProgress
-                }
-
-                //region Downloading
-
-                /**
-                 * SERVER CONFIG
-                 */
-                //Update Server Config
-                val getServerConfig = Api.Get.ServerConfig(context)
-                if(getServerConfig.execute())
+            override fun onResponse(call: Call<ApiResponse.GetData>, response: Response<ApiResponse.GetData>) {
+                if(response.isSuccessful)
                 {
-                    runOnUiThread{
-
-                        var color = keyStore.getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, "")
-
-                        primaryColor =
-                            if(color != "")
-                                Color.parseColor("#$color")
-                            else
-                                ResourcesCompat.getColor(resources, R.color.primary, null)
-
-                        color = keyStore.getPreference(Constants.SharedPrefKeys.PRIMARY_COLOR_DARK_KEY, "")
-
-                        primaryColorDark =
-                                if(color != "")
-                                    Color.parseColor("#$color")
-                                else
-                                    ResourcesCompat.getColor(resources, R.color.primary_dark, null)
-
-                        updateAppColors()
-                    }
-                }
-
-                context.runOnUiThread {
-                    loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.years))
-                    loadingDialog.progress = progressDialogProgress
-                }
-
-                /**
-                 * YEARS
-                 */
-                //Purge Year Media
-                val mediaFolder = Constants.getFileDirectory(this, Constants.YEAR_MEDIA_DIRECTORY)
-                if (mediaFolder.isDirectory)
-                    for (child in mediaFolder.listFiles())
-                        child.delete()
-
-                //Update Years
-                val getYears = Api.Get.Years(context)
-                if (getYears.execute())
-                {
-                    Year.clearTable(database)
-
-                    for (year in getYears.years)
-                        year.save(database)
-                }
-
-                progressDialogProgress += increaseFactor
-                context.runOnUiThread {
-                    loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.users))
-                    loadingDialog.progress = progressDialogProgress
-                }
-
-                /**
-                 * USERS
-                 */
-                val getUsers = Api.Get.Users(context)
-                if (getUsers.execute())
-                {
-                    User.clearTable(database)
-
-                    for (user in getUsers.users)
-                        user.save(database)
-                }
-
-                /**
-                 * EVENTS
-                 */
-                if(!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_EVENTS_KEY, false) as Boolean && withFilters))
-                {
-                    progressDialogProgress += increaseFactor
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.events))
-                        loadingDialog.progress = progressDialogProgress
-                    }
-
-                    //Update Events
-                    getEventsSuccess = getEvents.execute()
-                    
-                    progressDialogProgress += increaseFactor
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.event_metadata))
-                        loadingDialog.progress = progressDialogProgress
-                    }
-
-                    //Update Event Team List
-                    getEventTeamListSuccess = getEventTeamList.execute()
-                }
-                else
-                    progressDialogProgress += increaseFactor * 2
-
-                /**
-                 * MATCHES
-                 */
-                if(!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_MATCHES_KEY, false) as Boolean && withFilters))
-                {
-                    progressDialogProgress += increaseFactor
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.matches))
-                        loadingDialog.progress = progressDialogProgress
-                    }
-
-                    //Update Matches
-                    getMatchesSuccess = getMatches.execute()
-                }
-                else
-                    progressDialogProgress += increaseFactor
-
-                /**
-                 * TEAMS
-                 */
-                if(!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_TEAMS_KEY, false) as Boolean && withFilters))
-                {
-                    progressDialogProgress += increaseFactor
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.teams))
-                        loadingDialog.progress = progressDialogProgress
-                    }
-
-                    //Update Teams
-                    getTeamsSuccess = getTeams.execute()
-                }
-                else
-                    progressDialogProgress += increaseFactor
-
-                /**
-                 * CHECKLISTS
-                 */
-                if(!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_CHECKLISTS_KEY, false) as Boolean && withFilters))
-                {
-                    progressDialogProgress += increaseFactor
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.checklist))
-                        loadingDialog.progress = progressDialogProgress
-                    }
-
-                    //Update Checklist Items
-                    getChecklistItemsSuccess = getChecklistItems.execute()
-
-                    progressDialogProgress += increaseFactor
-                    context.runOnUiThread {
-                        loadingDialog.progress = progressDialogProgress
-                    }
-
-                    //Update Checklist Items Results
-                    getChecklistItemResultsSuccess = getChecklistItemResults.execute()
-                }
-                else
-                    progressDialogProgress += increaseFactor * 2
-
-                /**
-                 * ROBOT INFO
-                 */
-                if(!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_INFO_KEY, false) as Boolean && withFilters))
-                {
-                    progressDialogProgress += increaseFactor
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.robot_info))
-                        loadingDialog.progress = progressDialogProgress
-                    }
-
-                    //Update Robot Info Keys
-                    getRobotInfoKeysSuccess = getRobotInfoKeys.execute()
-
-                    progressDialogProgress += increaseFactor
-                    context.runOnUiThread {
-                        loadingDialog.progress = progressDialogProgress
-                    }
-
-                    //Update Robot Info
-                    getRobotInfoSuccess = getRobotInfo.execute()
-                }
-                else
-                    progressDialogProgress += increaseFactor * 2
-
-                /**
-                 * SCOUT CARDS
-                 */
-                if(!withFilters || (keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_SCOUT_CARD_INFO_KEY, false) as Boolean && withFilters))
-                {
-                    progressDialogProgress += increaseFactor
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.scout_cards))
-                        loadingDialog.progress = progressDialogProgress
-                    }
-
-                    //Update Scout Card Info Keys
-                    getScoutCardInfoKeysSuccess = getScoutCardInfoKeys.execute()
-                    
-                    progressDialogProgress += increaseFactor
-                    context.runOnUiThread {
-                        loadingDialog.progress = progressDialogProgress
-                    }
-
-                    //Update Scout Card Info
-                    getScoutCardInfoSuccess = getScoutCardInfo.execute()
-                }
-                else
-                    progressDialogProgress += increaseFactor * 2
-
-                //endregion
-
-                //region Importing
-
-                progressDialogProgress += increaseFactor
-                context.runOnUiThread {
-                    loadingDialog.progress = progressDialogProgress
-                }
-
-                if (getEventsSuccess == true)
-                {
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.events))
-                        loadingDialog.percentage = 0
-                    }
-
-                    Event.clearTable(database)
-
-                    val objs = getEvents.events
-                    val objsSize = objs.size
-
-                    for(i in 0 until objsSize)
+                    with(response.body())
                     {
-                        context.runOnUiThread {
-                            loadingDialog.percentage = round((i.toDouble() / objsSize.toDouble()) * 100.00).toInt()
-                        }
-
-                        objs[i].save(database)
-                    }
-                }
-
-                progressDialogProgress += increaseFactor
-                context.runOnUiThread {
-                    loadingDialog.progress = progressDialogProgress
-                }
-
-                if (getEventTeamListSuccess == true)
-                {
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.event_metadata))
-                        loadingDialog.percentage = 0
-                    }
-
-                    EventTeamList.clearTable(database)
-
-                    val objs = getEventTeamList.eventTeamList
-                    val objsSize = objs.size
-
-                    for(i in 0 until objsSize)
-                    {
-                        context.runOnUiThread {
-                            loadingDialog.percentage = round((i.toDouble() / objsSize.toDouble()) * 100.00).toInt()
-                        }
-
-                        objs[i].save(database)
-                    }
-                }
-
-                progressDialogProgress += increaseFactor
-                context.runOnUiThread {
-                    loadingDialog.progress = progressDialogProgress
-                }
-
-                if (getMatchesSuccess == true)
-                {
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.matches))
-                        loadingDialog.percentage = 0
-                    }
-
-                    Match.clearTable(database)
-
-                    val objs = getMatches.matches
-                    val objsSize = objs.size
-
-                    for(i in 0 until objsSize)
-                    {
-                        context.runOnUiThread {
-                            loadingDialog.percentage = round((i.toDouble() / objsSize.toDouble()) * 100.00).toInt()
-                        }
-
-                        objs[i].save(database)
-                    }
-                }
-
-                progressDialogProgress += increaseFactor
-                context.runOnUiThread {
-                    loadingDialog.progress = progressDialogProgress
-                }
-
-                if (getTeamsSuccess == true)
-                {
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.teams))
-                        loadingDialog.percentage = 0
-                    }
-
-                    Team.clearTable(database)
-
-                    val objs = getTeams.teams
-                    val objsSize = objs.size
-
-                    for(i in 0 until objsSize)
-                    {
-                        context.runOnUiThread {
-                            loadingDialog.percentage = round((i.toDouble() / objsSize.toDouble()) * 100.00).toInt()
-                        }
-
-                        objs[i].save(database)
-                    }
-                }
-
-                progressDialogProgress += increaseFactor
-                context.runOnUiThread {
-                    loadingDialog.progress = progressDialogProgress
-                }
-
-                if (getChecklistItemsSuccess == true)
-                {
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.checklist))
-                        loadingDialog.percentage = 0
-                    }
-
-                    ChecklistItem.clearTable(database)
-
-                    val objs = getChecklistItems.checklistItems
-                    val objsSize = objs.size
-
-                    for(i in 0 until objsSize)
-                    {
-                        context.runOnUiThread {
-                            loadingDialog.percentage = round((i.toDouble() / objsSize.toDouble()) * 100.00).toInt()
-                        }
-
-                        objs[i].save(database)
-                    }
-                }
-
-                progressDialogProgress += increaseFactor
-                context.runOnUiThread {
-                    loadingDialog.progress = progressDialogProgress
-                }
-
-                if (getChecklistItemResultsSuccess == true)
-                {
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.checklist_results))
-                        loadingDialog.percentage = 0
-                    }
-
-                    ChecklistItemResult.clearTable(database)
-
-                    val objs = getChecklistItemResults.checklistItemResults
-                    val objsSize = objs.size
-
-                    for(i in 0 until objsSize)
-                    {
-                        context.runOnUiThread {
-                            loadingDialog.percentage = round((i.toDouble() / objsSize.toDouble()) * 100.00).toInt()
-                        }
-
-                        objs[i].save(database)
-                    }
-                }
-
-                progressDialogProgress += increaseFactor
-                context.runOnUiThread {
-                    loadingDialog.progress = progressDialogProgress
-                }
-
-                if (getRobotInfoKeysSuccess == true)
-                {
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.robot_info_metadata))
-                        loadingDialog.percentage = 0
-                    }
-
-                    RobotInfoKey.clearTable(database)
-
-                    val objs = getRobotInfoKeys.robotInfoKeyList
-                    val objsSize = objs.size
-
-                    for(i in 0 until objsSize)
-                    {
-                        context.runOnUiThread {
-                            loadingDialog.percentage = round((i.toDouble() / objsSize.toDouble()) * 100.00).toInt()
-                        }
-
-                        objs[i].save(database)
-                    }
-                }
-
-                progressDialogProgress += increaseFactor
-                context.runOnUiThread {
-                    loadingDialog.progress = progressDialogProgress
-                }
-
-                if (getRobotInfoSuccess == true)
-                {
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.robot_info))
-                        loadingDialog.percentage = 0
-                    }
-
-                    RobotInfo.clearTable(database)
-
-                    val objs = getRobotInfo.robotInfoList
-                    val objsSize = objs.size
-
-                    for(i in 0 until objsSize)
-                    {
-                        context.runOnUiThread {
-                            loadingDialog.percentage = round((i.toDouble() / objsSize.toDouble()) * 100.00).toInt()
-                        }
-
-                        objs[i].save(database)
-                    }
-                }
-
-                progressDialogProgress += increaseFactor
-                context.runOnUiThread {
-                    loadingDialog.progress = progressDialogProgress
-                }
-
-                if (getScoutCardInfoKeysSuccess == true)
-                {
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.scout_card_metadata))
-                        loadingDialog.percentage = 0
-                    }
-
-                    ScoutCardInfoKey.clearTable(database)
-
-                    val objs = getScoutCardInfoKeys.scoutCardInfoKeys
-                    val objsSize = objs.size
-
-                    for(i in 0 until objsSize)
-                    {
-                        context.runOnUiThread {
-                            loadingDialog.percentage = round((i.toDouble() / objsSize.toDouble()) * 100.00).toInt()
-                        }
-
-                        objs[i].save(database)
-                    }
-                }
-
-                progressDialogProgress += increaseFactor
-                context.runOnUiThread {
-                    loadingDialog.progress = progressDialogProgress
-                }
-
-                if (getScoutCardInfoSuccess == true)
-                {
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.importing_data), getString(R.string.scout_cards))
-                        loadingDialog.percentage = 0
-                    }
-
-                    ScoutCardInfo.clearTable(database)
-
-                    val objs = getScoutCardInfo.scoutCardInfos
-                    val objsSize = objs.size
-
-                    for(i in 0 until objsSize)
-                    {
-                        context.runOnUiThread {
-                            loadingDialog.percentage = round((i.toDouble() / objsSize.toDouble()) * 100.00).toInt()
-                        }
-
-                        objs[i].save(database)
-                    }
-                }
-
-                //endregion
-
-                /**
-                 * ROBOT MEDIA
-                 * This has to be ran after teams have been imported
-                 */
-                if(keyStore.getPreference(Constants.SharedPrefKeys.DOWNLOAD_ROBOT_MEDIA_KEY, false) as Boolean && withFilters)
-                {
-                    progressDialogProgress += increaseFactor
-                    context.runOnUiThread {
-                        loadingDialog.message = String.format(context.getString(R.string.downloading_data), getString(R.string.robot_media))
-                        loadingDialog.progress = progressDialogProgress
-                        loadingDialog.percentage = 0
-                        loadingDialog.showPercentage = false
-                    }
-
-                    //Get the folder and purge all files
-                    val mediaFolder = Constants.getFileDirectory(this, Constants.ROBOT_MEDIA_DIRECTORY)
-                    if (mediaFolder.isDirectory)
-                        for (child in mediaFolder.listFiles())
-                            child.delete()
-
-                    val getRobotMedia = Api.Get.RobotMedia(context)
-                    if (getRobotMedia.execute())
-                    {
-
-                        RobotMedia.clearTable(database, true)
-
-                        val objs = getRobotMedia.robotMedia
-                        val objsSize = objs.size
-
-                        for(i in 0 until objsSize)
+                        if(this != null)
                         {
-                            context.runOnUiThread {
-                                loadingDialog.percentage = round((i.toDouble() / objsSize.toDouble()) * 100.00).toInt()
-                            }
-
-                            with(objs[i])
-                            {
-                                if (save(database) > 0)
-                                {
-                                    val team = Team(teamId).apply { load(database) }
-                                    team.imageFileURI = fileUri
-                                    team.save(database)
-                                }
+                            RDatabase.getInstance(this@MainActivity).runInTransaction {
+                                VMProvider(this@MainActivity).checklistItemViewModel.insertAll(checklistItemResults)
+                                VMProvider(this@MainActivity).checklistItemResultViewModel.insertAll(checklistItemResults)
+                                VMProvider(this@MainActivity).eventViewModel.insertAll(events)
+                                VMProvider(this@MainActivity).eventTeamListViewModel.insertAll(eventTeamList)
+                                VMProvider(this@MainActivity).matchViewModel.insertAll(matches)
+                                VMProvider(this@MainActivity).robotInfoViewModel.insertAll(robotInfo)
+                                VMProvider(this@MainActivity).robotInfoKeyViewModel.insertAll(robotInfoKeys)
+                                VMProvider(this@MainActivity).robotMediaViewModel.insertAll(robotMedia)
+                                VMProvider(this@MainActivity).scoutCardInfoViewModel.insertAll(scoutCardInfo)
+                                VMProvider(this@MainActivity).scoutCardInfoKeyViewModel.insertAll(scoutCardInfo)
+                                VMProvider(this@MainActivity).teamViewModel.insertAll(teams)
+                                VMProvider(this@MainActivity).userViewModel.insertAll(users)
+                                VMProvider(this@MainActivity).yearViewModel.insertAll(years)
                             }
                         }
                     }
                 }
-
-                database.finishTransaction()
-
-                runOnUiThread {
-                    val year = Year(-1, (keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!).apply { load(database) }
-
-                    //set the year when showing the event list frag
-                    keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, year.serverId)
-
-                    loadingDialog.dismiss()
-
-                    if(refreshActivity)
-                        context.recreate()
-
-                    else
-                        changeFragment(EventListFragment.newInstance(Year(-1, (keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int?)!!).apply { load(database) }), false, false)
-                }
-            })
-
-            updateThread.start()
-
-            return updateThread
-        } else
-        {
-            loadingDialog.dismiss()
-            showSnackbar(getString(R.string.no_internet))
-        }
-
-
-        return null
+            }
+        })
     }
 
     /**

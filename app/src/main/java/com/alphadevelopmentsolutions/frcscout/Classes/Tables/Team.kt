@@ -2,9 +2,10 @@ package com.alphadevelopmentsolutions.frcscout.Classes.Tables
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import com.alphadevelopmentsolutions.frcscout.Classes.Database
+import androidx.room.Entity
 import java.io.File
 
+@Entity(tableName = "teams")
 class Team(
         var id: Int = DEFAULT_INT,
         var name: String = DEFAULT_STRING,
@@ -17,61 +18,8 @@ class Team(
         var instagramURL: String? = null,
         var youtubeURL: String? = null,
         var websiteURL: String? = null,
-        var imageFileURI: String? = null) : Table(TABLE_NAME, COLUMN_NAME_ID, CREATE_TABLE)
+        var imageFileURI: String? = null) : Table()
 {
-    companion object
-    {
-        val TABLE_NAME = "teams"
-        val COLUMN_NAME_ID = "Id"
-        val COLUMN_NAME_NAME = "Name"
-        val COLUMN_NAME_CITY = "City"
-        val COLUMN_NAME_STATEPROVINCE = "StateProvince"
-        val COLUMN_NAME_COUNTRY = "Country"
-        val COLUMN_NAME_ROOKIE_YEAR = "RookieYear"
-        val COLUMN_NAME_FACEBOOK_URL = "FacebookURL"
-        val COLUMN_NAME_TWITTER_URL = "TwitterURL"
-        val COLUMN_NAME_INSTAGRAM_URL = "InstagramURL"
-        val COLUMN_NAME_YOUTUBE_URL = "YoutubeURL"
-        val COLUMN_NAME_WEBSITE_URL = "WebsiteURL"
-        val COLUMN_NAME_IMAGE_FILE_URI = "ImageFileURI"
-
-        val CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                COLUMN_NAME_NAME + " TEXT," +
-                COLUMN_NAME_CITY + " TEXT," +
-                COLUMN_NAME_STATEPROVINCE + " TEXT," +
-                COLUMN_NAME_COUNTRY + " TEXT," +
-                COLUMN_NAME_ROOKIE_YEAR + " INTEGER," +
-                COLUMN_NAME_FACEBOOK_URL + " TEXT," +
-                COLUMN_NAME_TWITTER_URL + " TEXT," +
-                COLUMN_NAME_INSTAGRAM_URL + " TEXT," +
-                COLUMN_NAME_YOUTUBE_URL + " TEXT," +
-                COLUMN_NAME_WEBSITE_URL + " TEXT," +
-                COLUMN_NAME_IMAGE_FILE_URI + " TEXT)"
-
-        /**
-         * Clears all data from the classes table
-         * @param database used to clear table
-         */
-        fun clearTable(database: Database)
-        {
-            clearTable(database, TABLE_NAME)
-        }
-
-        /**
-         * Returns arraylist of teams with specified filters from database
-         * @param event if specified, filters teams by event id
-         * @param match if specified, filters teams by match id
-         * @param team if specified, filters teams by team id
-         * @param database used to load teams
-         * @return arraylist of teams
-         */
-        fun getObjects(event: Event?, match: Match?, team: Team?, database: Database): ArrayList<Team>?
-        {
-            return database.getTeams(event, match, team)
-        }
-    }
-
     /**
      * Returns the bitmap from the specified file location
      * @return null if no image found, bitmap if image found
@@ -153,106 +101,10 @@ class Team(
     }
 
     /**
-     * Gets all scout cards associated with the team
-     * @param event if specified, filters scout cards by event id
-     * @param match if specified, filters scout cards by match id
-     * @param scoutCardInfo if specified, filters scout cards by scoutcard id
-     * @param database used for loading cards
-     * @param onlyDrafts boolean if you only want drafts
-     * @return arraylist of scout cards
+     * @see Table.toString
      */
-    fun getScoutCards(event: Event?, match: Match?, scoutCardInfo: ScoutCardInfo?, onlyDrafts: Boolean, database: Database): ArrayList<ScoutCardInfo>?
-    {
-        return ScoutCardInfo.getObjects(event, match, this, null, scoutCardInfo, onlyDrafts, database)
-    }
-
     override fun toString(): String
     {
         return "$id - $name"
     }
-
-    //endregion
-
-    //region Load, Save & Delete
-
-    /**
-     * Loads the team from the database and populates all values
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
-     */
-    override fun load(database: Database): Boolean
-    {
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
-        {
-            val teams = getObjects(null, null, this, database)
-            val team = if (teams!!.size > 0) teams[0] else null
-
-            if (team != null)
-            {
-                name = team.name
-                city = team.city
-                stateProvince = team.stateProvince
-                country = team.country
-                rookieYear = team.rookieYear
-                facebookURL = team.facebookURL
-                twitterURL = team.twitterURL
-                instagramURL = team.instagramURL
-                youtubeURL = team.youtubeURL
-                websiteURL = team.websiteURL
-                imageFileURI = team.imageFileURI
-                return true
-            }
-        }
-
-        return false
-    }
-
-    /**
-     * Saves the team into the database
-     * @param database used for interacting with the SQLITE db
-     * @return int id of the saved team
-     */
-    override fun save(database: Database): Int
-    {
-        var id = -1
-
-        //try to open the DB if it is not open
-        if (!database.isOpen)
-            database.open()
-
-        if (database.isOpen)
-            id = database.setTeam(this).toInt()
-
-        //set the id if the save was successful
-        if (id > 0)
-            this.id = id
-
-        return id
-    }
-
-    /**
-     * Deletes the team from the database
-     * @param database used for interacting with the SQLITE db
-     * @return boolean if successful
-     */
-    override fun delete(database: Database): Boolean
-    {
-        var successful = false
-
-        //try to open the DB if it is not open
-        if (!database.isOpen) database.open()
-
-        if (database.isOpen)
-        {
-            successful = database.deleteTeam(this)
-
-        }
-
-        return successful
-    }
-
-    //endregion
 }

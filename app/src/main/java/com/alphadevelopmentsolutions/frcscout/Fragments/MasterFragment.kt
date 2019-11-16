@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.alphadevelopmentsolutions.frcscout.Activities.MainActivity
-import com.alphadevelopmentsolutions.frcscout.Classes.Database
 import com.alphadevelopmentsolutions.frcscout.Classes.Tables.*
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R

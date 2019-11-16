@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.alphadevelopmentsolutions.frcscout.Api.Api
 import com.alphadevelopmentsolutions.frcscout.Classes.LoadingDialog
 import com.alphadevelopmentsolutions.frcscout.Interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
