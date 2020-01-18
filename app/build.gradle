@@ -7,6 +7,8 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 apply plugin: 'com.google.firebase.firebase-perf'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     signingConfigs {
         release {
