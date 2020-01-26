@@ -12,7 +12,7 @@
         android:usesCleartextTraffic="true"
         android:fullBackupContent="@xml/backup_descriptor">
         <activity
-            android:name=".Activities.MainActivity"
+            android:name=".activity.MainActivity"
             android:theme="@style/SplashTheme"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -33,7 +33,7 @@
         </provider>
 
         <service
-            android:name=".Services.FirebaseNotification"
+            android:name=".service.FirebaseNotification"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

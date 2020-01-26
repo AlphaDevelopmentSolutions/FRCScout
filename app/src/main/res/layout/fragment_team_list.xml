@@ -8,7 +8,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context=".Fragments.TeamListFragment">
+    tools:context=".fragment.TeamListFragment">
 
     <LinearLayout
         android:id="@+id/AllianceViewPagerLinearLayout"

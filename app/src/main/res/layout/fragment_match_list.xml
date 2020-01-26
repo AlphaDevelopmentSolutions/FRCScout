@@ -7,6 +7,6 @@
     android:layout_height="match_parent"
     android:scrollbars="vertical"
     tools:listitem="@layout/layout_card_match"
-    tools:context=".Fragments.MatchListFragment">
+    tools:context=".fragment.MatchListFragment">
 
 </androidx.recyclerview.widget.RecyclerView>

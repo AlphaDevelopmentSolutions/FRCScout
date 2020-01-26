@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:scrollbars="vertical"
-    tools:context=".Fragments.QuickStatsFragment">
+    tools:context=".fragment.QuickStatsFragment">
 
     <LinearLayout
         android:id="@+id/StatChartsLinearLayout"
