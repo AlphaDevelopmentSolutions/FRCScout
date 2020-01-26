@@ -36,7 +36,7 @@ internal class EventListRecyclerViewAdapter(private val eventList: ArrayList<Eve
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder
     {
-        //Inflate the event layout for the each item in the list
+        //Inflate the eventId layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_event, viewGroup, false)
 
         return ViewHolder(view, context)
@@ -53,7 +53,7 @@ internal class EventListRecyclerViewAdapter(private val eventList: ArrayList<Eve
 
         //Sends you to the teamlist fragment
         viewHolder.view.ViewEventButton.setOnClickListener {
-            //store the selected event in the shared pref
+            //store the selected eventId in the shared pref
             context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, eventList[viewHolder.adapterPosition].id)
             context.setCheckedMenuItem(0)
             context.updateNavText(eventList[viewHolder.adapterPosition])

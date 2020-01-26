@@ -59,15 +59,6 @@ class MainActivity : AppCompatActivity(),
 {
     private lateinit var context: MainActivity
 
-    var keyStore = KeyStore()
-    get()
-    {
-        if(field.context == null)
-            field = KeyStore(this)
-
-        return field
-    }
-
     private lateinit var actionBarToggle: ActionBarDrawerToggle
 
     private lateinit var navHeader: View
@@ -566,7 +557,7 @@ class MainActivity : AppCompatActivity(),
                 User.clearTable(database)
                 Year.clearTable(database)
 
-                //Purge year media
+                //Purge yearId media
                 var mediaFolder = Constants.getFileDirectory(this, Constants.YEAR_MEDIA_DIRECTORY)
                 if (mediaFolder.isDirectory)
                     for (child in mediaFolder.listFiles())
@@ -798,7 +789,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     /**
-     * Updates the nav bar text for team name and number
+     * Updates the nav bar text for teamId name and number
      */
     fun updateNavText(event: Event?)
     {
@@ -923,7 +914,7 @@ class MainActivity : AppCompatActivity(),
                 if (Year.getObjects(null, database).size == 0)
                     downloadApplicationData(false)?.join()
 
-                //Event previously selected, switch to match list
+                //Event previously selected, switch to matchId list
                 if ((keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int) > 0)
                 {
                     NavigationView.setCheckedItem(R.id.nav_matches)
@@ -931,7 +922,7 @@ class MainActivity : AppCompatActivity(),
 
                 }
 
-                //No event selected, default to yar list
+                //No eventId selected, default to yar list
                 else
                 {
                     val year = Year(-1, (keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int)).apply { load(database) }

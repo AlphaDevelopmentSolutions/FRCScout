@@ -21,5 +21,13 @@ interface AppLog
             else
                 Crashlytics.logException(exception)
         }
+
+        fun error(throwable: Throwable)
+        {
+            if(BuildConfig.DEBUG)
+                throwable.stackTrace
+            else
+                Crashlytics.logException(throwable)
+        }
     }
 }

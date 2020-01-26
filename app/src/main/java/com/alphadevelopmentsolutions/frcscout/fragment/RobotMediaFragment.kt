@@ -94,7 +94,7 @@ class RobotMediaFragment : MasterFragment()
 
         loadingThread.join()
 
-        context.setToolbarTitle("${team!!.id} Robot Media")
+        context.setToolbarTitle("${teamId!!.id} Robot Media")
 
         return view
     }
@@ -111,9 +111,9 @@ class RobotMediaFragment : MasterFragment()
                 {
                     robotMedia = RobotMedia(
                             -1,
-                            year!!.serverId,
-                            event!!.blueAllianceId,
-                            team!!.id,
+                            yearId!!.serverId,
+                            eventId!!.blueAllianceId,
+                            teamId!!.id,
                             mediaFilePath,
                             true)
 
@@ -153,7 +153,7 @@ class RobotMediaFragment : MasterFragment()
             val fragment = RobotMediaFragment()
             val args = Bundle()
             args.putString(ARG_ROBOT_MEDIA, toJson(robotMedia))
-            args.putString(ARG_TEAM_JSON, toJson(team))
+            args.putString(ARG_TEAM_ID, toJson(team))
             fragment.arguments = args
             return fragment
         }

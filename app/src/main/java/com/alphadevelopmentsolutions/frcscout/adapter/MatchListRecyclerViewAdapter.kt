@@ -65,7 +65,7 @@ internal class MatchListRecyclerViewAdapter(
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder
     {
-        //Inflate the event layout for the each item in the list
+        //Inflate the eventId layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_match, viewGroup, false)
 
         return ViewHolder(view, context)
@@ -75,7 +75,7 @@ internal class MatchListRecyclerViewAdapter(
     {
         val match = matches[viewHolder.adapterPosition]
 
-        //set match numbers
+        //set matchId numbers
         viewHolder.view.MatchIdTextView.text = match.toString()
 
         //set teams
@@ -88,8 +88,8 @@ internal class MatchListRecyclerViewAdapter(
         viewHolder.view.RedAllianceTeamThreeIdTextView.text = match.redAllianceTeamThreeId.toString()
 
 
-        //set the click listeners for each team on the match
-        //clicking their number will bring you to their team page
+        //set the click listeners for each teamId on the matchId
+        //clicking their number will bring you to their teamId page
         if (team?.id != match.blueAllianceTeamOneId)
         {
             viewHolder.view.BlueAllianceTeamOneIdTextView.setOnClickListener {
@@ -168,7 +168,7 @@ internal class MatchListRecyclerViewAdapter(
         viewHolder.view.BlueAllianceScoreTextView.text = match.blueAllianceScore.toString()
         viewHolder.view.RedAllianceScoreTextView.text = match.redAllianceScore.toString()
 
-        //team specified, style according to specified team
+        //teamId specified, style according to specified teamId
         if (team != null)
         {
 
@@ -177,7 +177,7 @@ internal class MatchListRecyclerViewAdapter(
 
             var selectedTeamAllianceColor: AllianceColor? = null
 
-            //add the underline when viewing matches for a specific team
+            //add the underline when viewing matches for a specific teamId
             when
             {
                 team.id == match.blueAllianceTeamOneId ->
@@ -227,10 +227,10 @@ internal class MatchListRecyclerViewAdapter(
                     selectedTeamAllianceColor = AllianceColor.RED
                 }
 
-                //underline the score of the selected team
+                //underline the score of the selected teamId
             }
 
-            //underline the score of the selected team
+            //underline the score of the selected teamId
             if (selectedTeamAllianceColor == AllianceColor.BLUE)
             {
                 spannableString = SpannableString(match.blueAllianceScore.toString())
@@ -244,7 +244,7 @@ internal class MatchListRecyclerViewAdapter(
             }
         }
 
-        //set the bold text for the winning team
+        //set the bold text for the winning teamId
         with(match.matchStatus)
         {
             when
@@ -321,14 +321,14 @@ internal class MatchListRecyclerViewAdapter(
 
                     //Sends you to the scout card fragment
                     viewHolder.view.ViewScoutCardButton.setOnClickListener {
-                        //show match
+                        //show matchId
                         context.changeFragment(ScoutCardInfoFragment.newInstance(match, team!!), true)
                     }
                 }
 
                 viewHolder.view.ViewMatchButton.visibility = View.VISIBLE
 
-                //Sends you to the match overview fragment
+                //Sends you to the matchId overview fragment
                 viewHolder.view.ViewMatchButton.setOnClickListener { context.changeFragment(TeamListFragment.newInstance(matches[viewHolder.adapterPosition], null), true) }
             }
             ChecklistFragment::class.java ->
@@ -348,7 +348,7 @@ internal class MatchListRecyclerViewAdapter(
                 viewHolder.view.ViewScoutCardButton.visibility = View.GONE
                 viewHolder.view.AddScoutCardButton.visibility = View.GONE
 
-                //Sends you to the match overview fragment
+                //Sends you to the matchId overview fragment
                 viewHolder.view.ViewMatchButton.setOnClickListener { context.changeFragment(TeamListFragment.newInstance(matches[viewHolder.adapterPosition], null), true) }
             }
         }

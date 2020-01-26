@@ -7,7 +7,6 @@ import java.util.*
 
 @Entity(tableName = "years")
 class Year(
-        var serverId: Int = DEFAULT_INT,
         var name: String = DEFAULT_STRING,
         var startDate: Date = DEFAULT_DATE,
         var endDate: Date = DEFAULT_DATE,

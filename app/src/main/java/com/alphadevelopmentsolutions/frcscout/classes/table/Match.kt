@@ -10,7 +10,7 @@ import kotlin.math.round
 @Entity(tableName = "matches")
 class Match(
         var date: Date = DEFAULT_DATE,
-        var eventId: String = DEFAULT_STRING,
+        var eventId: UUID,
         var key: String = DEFAULT_STRING,
         var matchType: Type = Type.qm,
         var setNumber: Int = DEFAULT_INT,
@@ -25,7 +25,7 @@ class Match(
         var redAllianceScore: Int? = null) : Table()
 {
     /**
-     * Returns either the winning team or tie status from the match
+     * Returns either the winning teamId or tie status from the matchId
      * @return Status enum
      */
     val matchStatus: Status
@@ -160,7 +160,7 @@ class Match(
                 add(redAllianceTeamThreeId)
             }
 
-            //filter the scout cards for the teams included in this match
+            //filter the scout cards for the teams included in this matchId
             val filteredScoutCardInfos = ArrayList<ScoutCardInfo>().apply {
 
                 for(scoutCardInfo in scoutCardInfos)

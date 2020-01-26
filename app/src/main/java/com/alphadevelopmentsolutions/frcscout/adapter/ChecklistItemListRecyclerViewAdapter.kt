@@ -52,7 +52,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder
     {
-        //Inflate the event layout for the each item in the list
+        //Inflate the eventId layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_checklist_item, viewGroup, false)
 
         view.CompletedByAutoCompleteTextView.setAdapter(userNamesAdapter)
@@ -66,7 +66,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
 
         var checklistItemResult: ChecklistItemResult? = null
 
-        //filter by match id
+        //filter by matchId id
         for (storedChecklistItemResult in checklistItem.getResults(null, false, context.database)!!)
         {
             if (storedChecklistItemResult.matchId == match.key)

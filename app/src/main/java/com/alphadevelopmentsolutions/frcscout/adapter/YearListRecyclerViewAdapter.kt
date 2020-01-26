@@ -52,7 +52,7 @@ internal class YearListRecyclerViewAdapter(private val yearList: ArrayList<Year>
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder
     {
-        //Inflate the event layout for the each item in the list
+        //Inflate the eventId layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_year, viewGroup, false)
 
         return YearListRecyclerViewAdapter.ViewHolder(view, context)
@@ -74,7 +74,7 @@ internal class YearListRecyclerViewAdapter(private val yearList: ArrayList<Year>
                     .centerCrop()
                     .into(viewHolder.yearLogoImageView)
 
-        //Sends you to the event list fragment
+        //Sends you to the eventId list fragment
         viewHolder.viewButton.setOnClickListener {
             context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, yearList[viewHolder.adapterPosition].serverId)
             context.changeFragment(EventListFragment.newInstance(yearList[viewHolder.adapterPosition]), false)

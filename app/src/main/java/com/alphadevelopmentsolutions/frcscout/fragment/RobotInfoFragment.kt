@@ -32,8 +32,8 @@ class RobotInfoFragment : MasterFragment()
 
             loadingThread.join()
 
-            val robotInfoKeys = RobotInfoKey.getObjects(year, null, database)
-            val robotInfos = RobotInfo.getObjects(year, event, team, null, null, false, database)
+            val robotInfoKeys = RobotInfoKey.getObjects(yearId, null, database)
+            val robotInfos = RobotInfo.getObjects(yearId, eventId, teamId, null, null, false, database)
             val robotInfoKeyStates: LinkedHashMap<String, ArrayList<RobotInfoKey>> = LinkedHashMap()
 
             //split all info states with their keys
@@ -86,7 +86,7 @@ class RobotInfoFragment : MasterFragment()
                             robotInfo = null
 
                             //get the recent items from the db to replace the deleted one
-                            with(RobotInfo.getObjects(year, event, team, infoKey, null, false, database))
+                            with(RobotInfo.getObjects(yearId, eventId, teamId, infoKey, null, false, database))
                             {
 
                                 //replace with the most recent
@@ -129,9 +129,9 @@ class RobotInfoFragment : MasterFragment()
                                     {
                                         robotInfo = RobotInfo(
                                                 -1,
-                                                year!!.serverId,
-                                                event!!.blueAllianceId,
-                                                team!!.id,
+                                                yearId!!.serverId,
+                                                eventId!!.blueAllianceId,
+                                                teamId!!.id,
                                                 "",
                                                 infoKey.serverId,
                                                 true
@@ -226,7 +226,7 @@ class RobotInfoFragment : MasterFragment()
         {
             val fragment = RobotInfoFragment()
             val args = Bundle()
-            args.putString(ARG_TEAM_JSON, toJson(team))
+            args.putString(ARG_TEAM_ID, toJson(team))
             fragment.arguments = args
             return fragment
         }

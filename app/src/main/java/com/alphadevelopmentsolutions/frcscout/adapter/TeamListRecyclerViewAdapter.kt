@@ -30,7 +30,7 @@ internal class TeamListRecyclerViewAdapter(private val match: Match?, private va
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder
     {
-        //Inflate the event layout for the each item in the list
+        //Inflate the eventId layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_team, viewGroup, false)
 
         return ViewHolder(view, context)
@@ -55,7 +55,7 @@ internal class TeamListRecyclerViewAdapter(private val match: Match?, private va
                         .centerCrop()
                         .into(viewHolder.view.TeamLogoImageView)
 
-            //Sends you to the team fragment
+            //Sends you to the teamId fragment
             if (match == null)
                 ViewTeamButton.setOnClickListener { this@TeamListRecyclerViewAdapter.context.changeFragment(TeamFragment.newInstance(teamList[viewHolder.adapterPosition]), true) }
 

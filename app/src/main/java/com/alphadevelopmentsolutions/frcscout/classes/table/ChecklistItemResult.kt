@@ -6,12 +6,11 @@ import java.util.*
 
 @Entity(tableName = "checklist_item_results")
 class ChecklistItemResult(
-        var checklistItemId: Int = DEFAULT_INT,
-        var matchId: String = DEFAULT_STRING,
+        var checklistItemId: UUID,
+        var matchId: UUID,
         var status: String = DEFAULT_STRING,
         var completedBy: String? = null,
-        var completedDate: Date? = null,
-        var isDraft: Boolean) : Table()
+        var completedDate: Date? = null) : Table()
 {
     /**
      * Gets the completed date formated for MySQL timestamp

@@ -38,8 +38,8 @@ class ScoutCardInfoFragment : MasterFragment()
         layoutCreationThread = Thread(Runnable {
             loadingThread.join()
 
-            val scoutCardInfoKeys = ScoutCardInfoKey.getObjects(year, null, database)
-            val scoutCardInfos = ScoutCardInfo.getObjects(event, match, team, null, null, false, database)
+            val scoutCardInfoKeys = ScoutCardInfoKey.getObjects(yearId, null, database)
+            val scoutCardInfos = ScoutCardInfo.getObjects(eventId, matchId, teamId, null, null, false, database)
 
             for(scoutCardInfoKey in scoutCardInfoKeys!!)
             {
@@ -88,7 +88,7 @@ class ScoutCardInfoFragment : MasterFragment()
                             scoutCardInfo = null
 
                             //get the recent items from the db to replace the deleted one
-                            with(ScoutCardInfo.getObjects(event, match, team, infoKey, null, false, database))
+                            with(ScoutCardInfo.getObjects(eventId, matchId, teamId, infoKey, null, false, database))
                             {
 
                                 //replace with the most recent
@@ -165,10 +165,10 @@ class ScoutCardInfoFragment : MasterFragment()
                                             {
                                                 scoutCardInfo = ScoutCardInfo(
                                                         -1,
-                                                        year!!.serverId,
-                                                        event!!.blueAllianceId,
-                                                        match!!.key,
-                                                        team!!.id,
+                                                        yearId!!.serverId,
+                                                        eventId!!.blueAllianceId,
+                                                        matchId!!.key,
+                                                        teamId!!.id,
                                                         "",
                                                         "",
                                                         infoKey.serverId,
@@ -223,10 +223,10 @@ class ScoutCardInfoFragment : MasterFragment()
                                         {
                                             scoutCardInfo = ScoutCardInfo(
                                                     -1,
-                                                    year!!.serverId,
-                                                    event!!.blueAllianceId,
-                                                    match!!.key,
-                                                    team!!.id,
+                                                    yearId!!.serverId,
+                                                    eventId!!.blueAllianceId,
+                                                    matchId!!.key,
+                                                    teamId!!.id,
                                                     "",
                                                     "",
                                                     infoKey.serverId,
@@ -266,10 +266,10 @@ class ScoutCardInfoFragment : MasterFragment()
                                         {
                                             scoutCardInfo = ScoutCardInfo(
                                                     -1,
-                                                    year!!.serverId,
-                                                    event!!.blueAllianceId,
-                                                    match!!.key,
-                                                    team!!.id,
+                                                    yearId!!.serverId,
+                                                    eventId!!.blueAllianceId,
+                                                    matchId!!.key,
+                                                    teamId!!.id,
                                                     "",
                                                     "",
                                                     infoKey.serverId,
@@ -308,10 +308,10 @@ class ScoutCardInfoFragment : MasterFragment()
                                         {
                                             scoutCardInfo = ScoutCardInfo(
                                                     -1,
-                                                    year!!.serverId,
-                                                    event!!.blueAllianceId,
-                                                    match!!.key,
-                                                    team!!.id,
+                                                    yearId!!.serverId,
+                                                    eventId!!.blueAllianceId,
+                                                    matchId!!.key,
+                                                    teamId!!.id,
                                                     "",
                                                     "",
                                                     infoKey.serverId,
@@ -375,8 +375,8 @@ class ScoutCardInfoFragment : MasterFragment()
         loadingThread.join()
         isLoading = true
 
-        //update the title of the page to display the match
-        context.setToolbarTitle(match!!.matchType.toString(match!!))
+        //update the title of the page to display the matchId
+        context.setToolbarTitle(matchId!!.matchType.toString(matchId!!))
 
         return super.onCreateView(view)
     }
@@ -394,8 +394,8 @@ class ScoutCardInfoFragment : MasterFragment()
         {
             val fragment = ScoutCardInfoFragment()
             val args = Bundle()
-            args.putString(ARG_MATCH_JSON, toJson(match))
-            args.putString(ARG_TEAM_JSON, toJson(team))
+            args.putString(ARG_MATCH_ID, toJson(match))
+            args.putString(ARG_TEAM_ID, toJson(team))
             fragment.arguments = args
             return fragment
         }

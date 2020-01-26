@@ -32,10 +32,10 @@ class RobotMediaListFragment : MasterFragment()
 
             val oldCount = if(::robotMediaListRecyclerViewAdapter.isInitialized) robotMediaListRecyclerViewAdapter.itemCount else 0
 
-            val robotMediaList = RobotMedia.getObjects(null, year, event, team, false, database)
+            val robotMediaList = RobotMedia.getObjects(null, yearId, eventId, teamId, false, database)
 
             if(robotMediaList.size != oldCount)
-                robotMediaListRecyclerViewAdapter = RobotMediaListRecyclerViewAdapter(team!!, robotMediaList, context)
+                robotMediaListRecyclerViewAdapter = RobotMediaListRecyclerViewAdapter(teamId!!, robotMediaList, context)
 
             if(::robotMediaListRecyclerViewAdapter.isInitialized)
             {
@@ -62,7 +62,7 @@ class RobotMediaListFragment : MasterFragment()
         {
             val fragment = RobotMediaListFragment()
             val args = Bundle()
-            args.putString(ARG_TEAM_JSON, toJson(team))
+            args.putString(ARG_TEAM_ID, toJson(team))
             fragment.arguments = args
             return fragment
         }

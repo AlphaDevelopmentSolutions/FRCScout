@@ -77,7 +77,7 @@ interface Constants
         }
 
         const val ROBOT_MEDIA_DIRECTORY = "robot-media"
-        const val YEAR_MEDIA_DIRECTORY = "year-media"
+        const val YEAR_MEDIA_DIRECTORY = "yearId-media"
 
         const val ROBOT_MEDIA_REQUEST_CODE = 5885
 

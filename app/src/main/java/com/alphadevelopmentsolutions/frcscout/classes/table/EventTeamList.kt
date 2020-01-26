@@ -1,11 +1,12 @@
 package com.alphadevelopmentsolutions.frcscout.classes.table
 
 import androidx.room.Entity
+import java.util.*
 
 @Entity(tableName = "event_team_list")
 class EventTeamList(
-        var teamId: Int = DEFAULT_INT,
-        var eventId: String = DEFAULT_STRING) : Table()
+        var teamId: UUID,
+        var eventId: UUID) : Table()
 {
     /**
      * @see Table.toString

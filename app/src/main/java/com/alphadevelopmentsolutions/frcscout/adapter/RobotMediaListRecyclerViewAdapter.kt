@@ -42,7 +42,7 @@ internal class RobotMediaListRecyclerViewAdapter(private val team: Team, private
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder
     {
-        //Inflate the event layout for the each item in the list
+        //Inflate the eventId layout for the each item in the list
         val view = LayoutInflater.from(context).inflate(R.layout.layout_card_robot_media, viewGroup, false)
 
         return ViewHolder(view, context)

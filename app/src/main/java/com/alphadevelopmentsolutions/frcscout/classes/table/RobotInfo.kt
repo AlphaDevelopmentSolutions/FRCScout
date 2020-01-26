@@ -1,15 +1,15 @@
 package com.alphadevelopmentsolutions.frcscout.classes.table
 
 import androidx.room.Entity
+import java.util.*
 
 @Entity(tableName = "robot_info")
 class RobotInfo(
-        var yearId: Int = DEFAULT_INT,
-        var eventId: String = DEFAULT_STRING,
-        var teamId: Int = DEFAULT_INT,
+        var yearId: UUID,
+        var eventId: UUID,
+        var teamId: UUID,
         var propertyValue: String= DEFAULT_STRING,
-        var propertyKeyId: Int = DEFAULT_INT,
-        var isDraft: Boolean = DEFAULT_BOOLEAN) : Table()
+        var propertyKeyId: UUID) : Table()
 {
     /**
      * @see Table.toString

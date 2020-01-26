@@ -8,14 +8,14 @@ import android.util.Base64
 import androidx.room.Entity
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.util.*
 
 @Entity(tableName = "robot_media")
 class RobotMedia(
-        var yearId: Int = DEFAULT_INT,
-        var eventId: String = DEFAULT_STRING,
-        var teamId: Int = DEFAULT_INT,
-        var fileUri: String = DEFAULT_STRING,
-        var isDraft: Boolean = DEFAULT_BOOLEAN) : Table()
+        var yearId: UUID,
+        var eventId: UUID,
+        var teamId: UUID,
+        var fileUri: String = DEFAULT_STRING) : Table()
 {
     /**
      * Converts the current robot media into base64 format for server submission

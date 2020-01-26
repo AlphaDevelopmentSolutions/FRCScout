@@ -11,7 +11,14 @@ import com.alphadevelopmentsolutions.frcscout.adapter.YearListRecyclerViewAdapte
 import com.alphadevelopmentsolutions.frcscout.classes.table.Year
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.classes.KeyStore
+import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
+import com.alphadevelopmentsolutions.frcscout.interfaces.AppLog
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_year_list.view.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class YearListFragment : MasterFragment()
 {
@@ -20,28 +27,8 @@ class YearListFragment : MasterFragment()
         return false
     }
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
-        super.onCreate(savedInstanceState)
-
-        loadYearsThread = Thread(Runnable {
-            loadingThread.join()
-
-            years = Year.getObjects(null, database)
-            searchedYears = ArrayList(years)
-        })
-
-        loadYearsThread.start()
-    }
-
-    private lateinit var years: ArrayList<Year>
-    private lateinit var searchedYears: ArrayList<Year>
-
-    private lateinit var loadYearsThread: Thread
 
     private var previousSearchLength: Int = 0
-
-    private var yearListRecyclerView: RecyclerView? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
@@ -53,79 +40,87 @@ class YearListFragment : MasterFragment()
         context.lockDrawerLayout()
         context.isToolbarScrollable = true
 
-        //showing this view means the user has not selected an event or year, clear the shared pref
-        context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1)
-        context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) //default to current calendar year
+        //showing this view means the user has not selected an eventId or yearId, clear the shared pref
+        KeyStore.getInstance(context).setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, "")
+        KeyStore.getInstance(context).setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, "")
 
-        yearListRecyclerView = view.findViewById(R.id.YearListRecyclerView)
+        val disposable = VMProvider(this).yearViewModel.objs
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { years ->
+                            val yearListRecyclerView = view.YearListRecyclerView
 
-        loadYearsThread.join()
+                            val searchedYears = ArrayList(years)
 
-        val yearListRecyclerViewAdapter = YearListRecyclerViewAdapter(searchedYears, context)
-        yearListRecyclerView!!.adapter = yearListRecyclerViewAdapter
-        yearListRecyclerView!!.layoutManager = LinearLayoutManager(context)
+                            val yearListRecyclerViewAdapter = YearListRecyclerViewAdapter(searchedYears, context) // COPY OF YEARS
+                            yearListRecyclerView!!.adapter = yearListRecyclerViewAdapter
+                            yearListRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        context.isToolbarScrollable = true
-        context.isSearchViewVisible = true
+                            context.isToolbarScrollable = true
+                            context.isSearchViewVisible = true
 
-        context.setSearchViewOnTextChangeListener(object: SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(p0: String?): Boolean
-            {
-                return false
-            }
+                            context.setSearchViewOnTextChangeListener(object: SearchView.OnQueryTextListener{
+                                override fun onQueryTextSubmit(p0: String?): Boolean
+                                {
+                                    return false
+                                }
 
-            override fun onQueryTextChange(searchText: String?): Boolean
-            {
-                val searchLength = searchText?.length ?: 0
+                                override fun onQueryTextChange(searchText: String?): Boolean
+                                {
+                                    val searchLength = searchText?.length ?: 0
 
-                //You only need to reset the list if you are removing from your search, adding the objects back
-                if (searchLength < previousSearchLength)
-                {
-                    //Reset the list
-                    for (i in years.indices)
-                    {
-                        val year = years[i]
+                                    //You only need to reset the list if you are removing from your search, adding the objects back
+                                    if (searchLength < previousSearchLength)
+                                    {
+                                        //Reset the list
+                                        for (i in years.indices)
+                                        {
+                                            val year = years[i]
 
-                        //check if the contact doesn't exist in the viewable list
-                        if (!searchedYears.contains(year))
+                                            //check if the contact doesn't exist in the viewable list
+                                            if (!searchedYears.contains(year))
+                                            {
+                                                //add it and notify the recyclerview
+                                                searchedYears.add(i, year)
+                                                yearListRecyclerViewAdapter.notifyItemInserted(i)
+                                                yearListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedYears.size)
+                                            }
+                                        }
+                                    }
+
+                                    //Delete from the list
+                                    var i = 0
+                                    while (i < searchedYears.size)
+                                    {
+                                        val match = searchedYears[i]
+                                        val name = match.toString()
+
+                                        //If the contacts name doesn't equal the searched name
+                                        if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
+                                        {
+                                            //remove it from the list and notify the recyclerview
+                                            searchedYears.removeAt(i)
+                                            yearListRecyclerViewAdapter.notifyItemRemoved(i)
+                                            yearListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedYears.size)
+
+                                            //this prevents the index from passing the size of the list,
+                                            //stays on the same index until you NEED to move to the next one
+                                            i--
+                                        }
+                                        i++
+                                    }
+
+                                    previousSearchLength = searchLength
+
+                                    return false
+                                }
+                            })
+                        },
                         {
-                            //add it and notify the recyclerview
-                            searchedYears.add(i, year)
-                            yearListRecyclerViewAdapter.notifyItemInserted(i)
-                            yearListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedYears.size)
+                            AppLog.error(it)
                         }
-                    }
-                }
-
-                //Delete from the list
-                var i = 0
-                while (i < searchedYears.size)
-                {
-                    val match = searchedYears[i]
-                    val name = match.toString()
-
-                    //If the contacts name doesn't equal the searched name
-                    if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
-                    {
-                        //remove it from the list and notify the recyclerview
-                        searchedYears.removeAt(i)
-                        yearListRecyclerViewAdapter.notifyItemRemoved(i)
-                        yearListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedYears.size)
-
-                        //this prevents the index from passing the size of the list,
-                        //stays on the same index until you NEED to move to the next one
-                        i--
-                    }
-                    i++
-                }
-
-                previousSearchLength = searchLength
-
-                return false
-            }
-        })
-
-
+                )
         return view
     }
 

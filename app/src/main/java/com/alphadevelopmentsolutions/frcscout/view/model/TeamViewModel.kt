@@ -8,6 +8,7 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.Team
 import com.alphadevelopmentsolutions.frcscout.repository.TeamRepository
 import io.reactivex.Flowable
 import kotlinx.coroutines.launch
+import java.util.*
 
 class TeamViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -25,7 +26,7 @@ class TeamViewModel(application: Application) : AndroidViewModel(application) {
      * @param id specified the id to sort the [Team] object by
      * @see TeamRepository.objWithId
      */
-    fun objWithId(id: String) = repository.objWithId(id)
+    fun objWithId(id: UUID) = repository.objWithId(id)
 
     init {
         objs = repository.objs

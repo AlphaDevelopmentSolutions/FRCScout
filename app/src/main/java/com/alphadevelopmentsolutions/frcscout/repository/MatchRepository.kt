@@ -1,7 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.repository
 
 import androidx.sqlite.db.SimpleSQLiteQuery
-import com.alphadevelopmentsolutions.frcscout.classes.table.Event
 import com.alphadevelopmentsolutions.frcscout.classes.table.Match
 import com.alphadevelopmentsolutions.frcscout.classes.table.Team
 import com.alphadevelopmentsolutions.frcscout.dao.MatchDao
@@ -9,6 +8,7 @@ import com.alphadevelopmentsolutions.frcscout.enums.SortDirection
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import io.reactivex.Flowable
 import java.lang.StringBuilder
+import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -27,7 +27,7 @@ class MatchRepository(private val matchDao: MatchDao) {
      */
     fun objWithId(id: String) = matchDao.getObjWithId(id)
 
-    fun objWithCustom(event: Event?, match: Match?, team: Team?, sortDirection: SortDirection = SortDirection.DESC): Flowable<List<Match>>? {
+    fun objWithCustom(eventId: UUID?, matchId: UUID?, teamId: UUID?, sortDirection: SortDirection = SortDirection.DESC): Flowable<List<Match>>? {
         var returnFlowable: Flowable<List<Match>>? = null
 
         Match.Type.getTypes().forEach {
@@ -37,19 +37,19 @@ class MatchRepository(private val matchDao: MatchDao) {
 
             query.append("SELECT * FROM ${Constants.TableNames.MATCH} WHERE 1=1 ")
 
-            if (event != null) {
+            if (eventId != null) {
                 query.append(" AND eventId = ? ")
-                args.add(event.blueAllianceId)
+                args.add(eventId.blueAllianceId)
             }
 
-            if (match != null) {
+            if (matchId != null) {
                 query.append(" AND `key` = ? ")
-                args.add(match.key)
+                args.add(matchId.key)
             }
 
-            if (team != null) {
+            if (teamId != null) {
                 query
-                        .append(" AND ${team.id} IN (")
+                        .append(" AND ${teamId.id} IN (")
 
                         .append("blueAllianceTeamOneId, ")
                         .append("blueAllianceTeamTwoId, ")

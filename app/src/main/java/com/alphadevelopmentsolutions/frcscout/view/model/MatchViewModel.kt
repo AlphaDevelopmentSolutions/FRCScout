@@ -4,13 +4,13 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.alphadevelopmentsolutions.frcscout.classes.RDatabase
-import com.alphadevelopmentsolutions.frcscout.classes.table.Event
 import com.alphadevelopmentsolutions.frcscout.classes.table.Match
 import com.alphadevelopmentsolutions.frcscout.classes.table.Team
 import com.alphadevelopmentsolutions.frcscout.enums.SortDirection
 import com.alphadevelopmentsolutions.frcscout.repository.MatchRepository
 import io.reactivex.Flowable
 import kotlinx.coroutines.launch
+import java.util.*
 
 class MatchViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -30,7 +30,8 @@ class MatchViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun objWithId(id: String) = repository.objWithId(id)
 
-    fun objWithCustom(event: Event?, match: Match?, team: Team?, sortDirection: SortDirection = SortDirection.DESC) = repository.objWithCustom(event, match, team, sortDirection)
+    fun objWithCustom(eventId: UUID?, matchId: UUID?, teamId: UUID?, sortDirection: SortDirection = SortDirection.DESC) =
+            repository.objWithCustom(eventId, matchId, teamId, sortDirection)
 
     init {
         objs = repository.objs

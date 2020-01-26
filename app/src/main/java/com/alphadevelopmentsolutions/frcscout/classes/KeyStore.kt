@@ -6,14 +6,24 @@ import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import java.util.*
 
-class KeyStore(val context: MainActivity? = null)
+class KeyStore private constructor (val context: MainActivity)
 {
-    private var sharedPreferences: SharedPreferences? = null
+    private val sharedPreferences: SharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(context)
+    }
 
-    init
+    companion object
     {
-        if(context != null)
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        private var INSTANCE: KeyStore? = null
+
+        fun getInstance(context: MainActivity): KeyStore
+        {
+            return INSTANCE ?: let {
+                val tempInstance = KeyStore(context)
+                INSTANCE = tempInstance
+                return tempInstance
+            }
+        }
     }
 
     /**
@@ -23,7 +33,7 @@ class KeyStore(val context: MainActivity? = null)
      */
     fun setPreference(key: String, value: Any)
     {
-        with(sharedPreferences!!.edit())
+        with(sharedPreferences.edit())
         {
 
             when (value)
@@ -44,9 +54,9 @@ class KeyStore(val context: MainActivity? = null)
      * @param key [String] pref key
      * @param defaultValue [Any] default pref value
      */
-    fun getPreference(key: String, defaultValue: Any): Any
+    fun getPreference(key: String, defaultValue: Any): Any?
     {
-        return with(sharedPreferences!!)
+        return with(sharedPreferences)
         {
             when (defaultValue)
             {
@@ -55,6 +65,15 @@ class KeyStore(val context: MainActivity? = null)
                 is Boolean -> getBoolean(key, defaultValue)
                 is Long -> getLong(key, defaultValue)
                 is Float -> getFloat(key, defaultValue)
+                is UUID ->
+                    return if (contains(key))
+                        try {
+                            UUID.fromString(getString(key, null))
+                        } catch (e: IllegalArgumentException) {
+                            null
+                        }
+                    else
+                        null
                 else -> defaultValue
             }
         }

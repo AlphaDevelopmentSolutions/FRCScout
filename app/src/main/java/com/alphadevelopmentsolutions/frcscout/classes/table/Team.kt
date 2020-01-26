@@ -58,7 +58,7 @@ class Team(
             {
                 val statsHashMap = HashMap<String, Int>()
 
-                //filter the cards that match this match
+                //filter the cards that matchId this matchId
                 val filteredScoutCardInfos = ArrayList<ScoutCardInfo>().apply {
 
                     for(scoutCard in scoutCardInfos)
@@ -91,7 +91,7 @@ class Team(
                     }
                 }
 
-                //add the stats to the running list of stats per match
+                //add the stats to the running list of stats per matchId
                 teamStats[match.toString()] = statsHashMap
             }
         }

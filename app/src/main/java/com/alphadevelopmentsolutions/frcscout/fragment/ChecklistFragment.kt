@@ -39,16 +39,14 @@ class ChecklistFragment : MasterFragment()
 
         context.isToolbarScrollable = true
 
-        loadingThread.join()
-
-        //no match selected, show match list
-        if (match == null)
+        //no matchId selected, show match list
+        if (matchId == null)
         {
             view = inflater.inflate(R.layout.fragment_match_list, container, false)
 
             recyclerView = MatchListRecyclerView
 
-            VMProvider(this).matchViewModel.objWithCustom(event, null, team)
+            VMProvider(this).matchViewModel.objWithCustom(eventId, null, teamId)
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.subscribe(
@@ -56,7 +54,7 @@ class ChecklistFragment : MasterFragment()
                                 val searchedMatches = ArrayList(it)
                                 var previousSearchLength = 0
 
-                                var matchListRecyclerViewAdapter = MatchListRecyclerViewAdapter(event!!, team, searchedMatches, context, this.javaClass)
+                                val matchListRecyclerViewAdapter = MatchListRecyclerViewAdapter(eventId!!, teamId, searchedMatches, context, this.javaClass)
                                 recyclerView.adapter = matchListRecyclerViewAdapter
                                 recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -134,14 +132,14 @@ class ChecklistFragment : MasterFragment()
             view = inflater.inflate(R.layout.fragment_checklist, container, false)
             recyclerView = view.findViewById(R.id.ChecklistItemsRecyclerView)
 
-            val checklistItemListRecyclerViewAdapter = ChecklistItemListRecyclerViewAdapter(match!!, ChecklistItem.getObjects(null, database)!!, context)
+            val checklistItemListRecyclerViewAdapter = ChecklistItemListRecyclerViewAdapter(matchId!!, ChecklistItem.getObjects(null, database)!!, context)
             recyclerView.adapter = checklistItemListRecyclerViewAdapter
             recyclerView.layoutManager = LinearLayoutManager(context)
 
-            context.setToolbarTitle(match.toString())
+            context.setToolbarTitle(matchId.toString())
             context.isToolbarScrollable = false
             context.isSearchViewVisible = false
-        }//match and event selected, show the checklist
+        }//matchId and eventId selected, show the checklist
 
 
         return view
@@ -149,7 +147,7 @@ class ChecklistFragment : MasterFragment()
 
     override fun onDestroyView()
     {
-        if (match != null)
+        if (matchId != null)
             context.unlockDrawerLayout()
         
         super.onDestroyView()
@@ -168,8 +166,8 @@ class ChecklistFragment : MasterFragment()
         {
             val fragment = ChecklistFragment()
             val args = Bundle()
-            args.putString(ARG_TEAM_JSON, toJson(team))
-            args.putString(ARG_MATCH_JSON, toJson(match))
+            args.putString(ARG_TEAM_ID, toJson(team))
+            args.putString(ARG_MATCH_ID, toJson(match))
             fragment.arguments = args
             return fragment
         }

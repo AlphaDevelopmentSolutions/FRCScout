@@ -13,7 +13,15 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.Team
 import com.alphadevelopmentsolutions.frcscout.classes.table.Year
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.classes.KeyStore
+import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
+import com.alphadevelopmentsolutions.frcscout.extension.getUUIDOrNull
+import com.alphadevelopmentsolutions.frcscout.extension.putUUID
+import com.alphadevelopmentsolutions.frcscout.interfaces.AppLog
 import com.google.gson.Gson
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_event_list.view.*
 import java.util.*
 
 
@@ -25,39 +33,13 @@ class EventListFragment : MasterFragment()
         return true
     }
 
-    private var yearJson: String? = null
-
-    private var eventListRecyclerView: RecyclerView? = null
-
-    private lateinit var loadYearThread: Thread
-
-    private lateinit var events: ArrayList<Event>
-    private lateinit var searchedEvents: ArrayList<Event>
-
-    private var previousSearchLength: Int = 0
-
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        //check if any args were passed, specifically for team and match json
-        if (arguments != null)
-        {
-            yearJson = arguments!!.getString(ARG_YEAR_JSON)
+        //check if any args were passed, specifically for teamId and matchId json
+        arguments?.let {
+            yearId = it.getUUIDOrNull(ARG_YEAR_ID)
         }
-
-        //create and start the thread to load the json vars
-        loadYearThread = Thread(Runnable {
-            loadingThread.join()
-
-            //load the scout card from json, if available
-            if (yearJson != null && yearJson != "")
-                year = Gson().fromJson(yearJson, Year::class.java)
-
-            events = Event.getObjects(year, null, Team(context.keyStore.getPreference(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, -1) as Int).apply { load(context.database) }, database)
-            searchedEvents = ArrayList(events)
-        })
-
-        loadYearThread.start()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -69,78 +51,91 @@ class EventListFragment : MasterFragment()
         context.lockDrawerLayout(true, View.OnClickListener { context.changeFragment(YearListFragment.newInstance(), false, true, true) })
         context.isToolbarScrollable = true
 
-        loadYearThread.join()
+        //showing this view means the user has not selected an eventId, clear the shared pref
+        KeyStore.getInstance(context).setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, "")
 
-        context.setToolbarTitle(year!!.serverId.toString())
+        val eventListRecyclerView = view.EventListRecyclerView
 
-        //showing this view means the user has not selected an event, clear the shared pref
-        context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1)
+        //GET EVENTS FOR YEAR AND TEAM
+        val disposable = VMProvider(this).eventViewModel.objs
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { events ->
+                            context.setToolbarTitle("TITLE") //TODO: YEAR TITLE
 
-        eventListRecyclerView = view.findViewById(R.id.EventListRecyclerView)
+                            val searchedEvents = ArrayList(events)
 
-        val eventListRecyclerViewAdapter = EventListRecyclerViewAdapter(searchedEvents, context)
-        eventListRecyclerView!!.adapter = eventListRecyclerViewAdapter
-        eventListRecyclerView!!.layoutManager = LinearLayoutManager(context)
+                            var previousSearchLength = 0
 
-        context.isToolbarScrollable = true
-        context.isSearchViewVisible = true
+                            val eventListRecyclerViewAdapter = EventListRecyclerViewAdapter(searchedEvents, context)
+                            eventListRecyclerView.adapter = eventListRecyclerViewAdapter
+                            eventListRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        context.setSearchViewOnTextChangeListener(object: SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(p0: String?): Boolean
-            {
-                return false
-            }
+                            context.isToolbarScrollable = true
+                            context.isSearchViewVisible = true
 
-            override fun onQueryTextChange(searchText: String?): Boolean
-            {
-                val searchLength = searchText?.length ?: 0
+                            context.setSearchViewOnTextChangeListener(object: SearchView.OnQueryTextListener{
+                                override fun onQueryTextSubmit(p0: String?): Boolean
+                                {
+                                    return false
+                                }
 
-                //You only need to reset the list if you are removing from your search, adding the objects back
-                if (searchLength < previousSearchLength)
-                {
-                    //Reset the list
-                    for (i in events.indices)
-                    {
-                        val event = events[i]
+                                override fun onQueryTextChange(searchText: String?): Boolean
+                                {
+                                    val searchLength = searchText?.length ?: 0
 
-                        //check if the contact doesn't exist in the viewable list
-                        if (!searchedEvents.contains(event))
+                                    //You only need to reset the list if you are removing from your search, adding the objects back
+                                    if (searchLength < previousSearchLength)
+                                    {
+                                        //Reset the list
+                                        for (i in events.indices)
+                                        {
+                                            val event = events[i]
+
+                                            //check if the contact doesn't exist in the viewable list
+                                            if (!searchedEvents.contains(event))
+                                            {
+                                                //add it and notify the recyclerview
+                                                searchedEvents.add(i, event)
+                                                eventListRecyclerViewAdapter.notifyItemInserted(i)
+                                                eventListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedEvents.size)
+                                            }
+                                        }
+                                    }
+
+                                    //Delete from the list
+                                    var i = 0
+                                    while (i < searchedEvents.size)
+                                    {
+                                        val event = searchedEvents[i]
+                                        val name = event.toString()
+
+                                        //If the contacts name doesn't equal the searched name
+                                        if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
+                                        {
+                                            //remove it from the list and notify the recyclerview
+                                            searchedEvents.removeAt(i)
+                                            eventListRecyclerViewAdapter.notifyItemRemoved(i)
+                                            eventListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedEvents.size)
+
+                                            //this prevents the index from passing the size of the list,
+                                            //stays on the same index until you NEED to move to the next one
+                                            i--
+                                        }
+                                        i++
+                                    }
+
+                                    previousSearchLength = searchLength
+
+                                    return false
+                                }
+                            })
+                        },
                         {
-                            //add it and notify the recyclerview
-                            searchedEvents.add(i, event)
-                            eventListRecyclerViewAdapter.notifyItemInserted(i)
-                            eventListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedEvents.size)
+                            AppLog.error(it)
                         }
-                    }
-                }
-
-                //Delete from the list
-                var i = 0
-                while (i < searchedEvents.size)
-                {
-                    val event = searchedEvents[i]
-                    val name = event.toString()
-
-                    //If the contacts name doesn't equal the searched name
-                    if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
-                    {
-                        //remove it from the list and notify the recyclerview
-                        searchedEvents.removeAt(i)
-                        eventListRecyclerViewAdapter.notifyItemRemoved(i)
-                        eventListRecyclerViewAdapter.notifyItemRangeChanged(i, searchedEvents.size)
-
-                        //this prevents the index from passing the size of the list,
-                        //stays on the same index until you NEED to move to the next one
-                        i--
-                    }
-                    i++
-                }
-
-                previousSearchLength = searchLength
-
-                return false
-            }
-        })
+                )
 
         return view
     }
@@ -154,20 +149,17 @@ class EventListFragment : MasterFragment()
     companion object
     {
 
-        private const val ARG_YEAR_JSON = "YEAR_JSON"
+        private const val ARG_YEAR_ID = "YEAR_ID"
 
         /**
          * Creates a new instance
          * @param year to grab events from
          * @return A new instance of fragment [EventListFragment].
          */
-        fun newInstance(year: Year): EventListFragment
-        {
-            val fragment = EventListFragment()
-            val args = Bundle()
-            args.putString(ARG_YEAR_JSON, toJson(year))
-            fragment.arguments = args
-            return fragment
+        fun newInstance(year: Year) = EventListFragment().apply {
+            arguments = Bundle().apply {
+                putUUID(ARG_YEAR_ID, year.id)
+            }
         }
     }
 }

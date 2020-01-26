@@ -6,12 +6,18 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageButton
 import android.widget.LinearLayout
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
 import com.alphadevelopmentsolutions.frcscout.classes.table.*
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.classes.KeyStore
+import com.alphadevelopmentsolutions.frcscout.enums.NavBarState
+import com.alphadevelopmentsolutions.frcscout.extension.getUUIDOrNull
+import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.layout_master.view.*
 import kotlinx.android.synthetic.main.layout_view_loading.view.*
@@ -19,26 +25,15 @@ import java.util.*
 
 abstract class MasterFragment : Fragment()
 {
-    //store the context and database in the master fragment which all other fragments extend from
     protected lateinit var context: MainActivity
-    protected lateinit var database: Database
 
-    protected var year: Year? = null
-
-    protected var event: Event? = null
-
-    private var teamJson: String? = null
-    protected var matchJson: String? = null
-    private var scoutCardJson: String? = null
-    private var pitCardJson: String? = null
-
-    protected var team: Team? = null
-    protected var match: Match? = null
-    protected var scoutCardInfo: ScoutCardInfo? = null
-
-    private lateinit var gson: Gson
-
-    protected lateinit var loadingThread: Thread
+    protected var yearId: UUID? = null
+    protected var eventId: UUID? = null
+    protected var teamId: UUID? = null
+    protected var matchId: UUID? = null
+    protected var scoutCardId: UUID? = null
+    protected var pitCardId: UUID? = null
+    protected var scoutCardInfoId: UUID? = null
 
     private var mListener: OnFragmentInteractionListener? = null
 
@@ -66,11 +61,38 @@ abstract class MasterFragment : Fragment()
         fun onFragmentInteraction(uri: Uri)
     }
 
-    private lateinit var masterLayout: View
-    private lateinit var loadingView: View
-
-    protected fun onCreateView(view: View): View?
+    protected var isLoading = false
+    set(value)
     {
+        if(value != field)
+        {
+            masterLayout?.let { masterLayout ->
+
+                loadingView?.let { loadingView->
+                    if (value)
+                        masterLayout.MasterLinearLayout.addView(loadingView)
+                    else
+                        masterLayout.MasterLinearLayout.removeView(loadingView)
+                }
+            }
+
+            field = value
+        }
+    }
+
+    private lateinit var appBarLayout: AppBarLayout
+    private lateinit var toolbar: Toolbar
+    private lateinit var saveButton: ImageButton
+
+    private var masterLayout: View? = null
+    private var loadingView: View? = null
+
+    protected fun onCreateView(
+            view: View,
+            state: NavBarState = NavBarState.DRAWER,
+            title: String? = null
+    ): View {
+
         loadingView = LayoutInflater.from(context).inflate(R.layout.layout_view_loading, null).apply {
 
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
@@ -80,32 +102,21 @@ abstract class MasterFragment : Fragment()
 
         masterLayout = LayoutInflater.from(context).inflate(R.layout.layout_master, null).apply {
 
+            MasterLinearLayout.addView(view)
+
+            appBarLayout = AppBarLayout
+            toolbar = Toolbar
+            saveButton = SaveImageViewButton
+
+            toolbar.title = title ?: getString(R.string.app_name)
+
             if(isLoading)
                 MasterLinearLayout.addView(loadingView)
 
             MasterLinearLayout.addView(view)
         }
 
-
-
-        return masterLayout
-    }
-
-    protected var isLoading = false
-    set(value)
-    {
-        if(value != field)
-        {
-            if(::masterLayout.isInitialized && ::loadingView.isInitialized)
-            {
-                if (value)
-                    masterLayout.MasterLinearLayout.addView(loadingView)
-                else
-                    masterLayout.MasterLinearLayout.removeView(loadingView)
-            }
-
-            field = value
-        }
+        return masterLayout!!
     }
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -114,62 +125,40 @@ abstract class MasterFragment : Fragment()
 
         //assign context and database vars
         context = activity as MainActivity
-        database = context.database
-        gson = Gson()
 
-        //check if any args were passed, specifically for team and match json
-        if (arguments != null)
-        {
-            teamJson = arguments!!.getString(ARG_TEAM_JSON)
-            matchJson = arguments!!.getString(ARG_MATCH_JSON)
-            scoutCardJson = arguments!!.getString(ARG_PARAM_SCOUT_CARD_JSON)
-            pitCardJson = arguments!!.getString(ARG_PARAM_PIT_CARD_JSON)
+        //check if any args were passed, specifically for teamId and matchId json
+        arguments?.let { arguments ->
+
+            teamId = arguments.getUUIDOrNull(ARG_TEAM_ID)
+            matchId = arguments.getUUIDOrNull(ARG_MATCH_ID)
+            scoutCardId = arguments.getUUIDOrNull(ARG_SCOUT_CARD_ID)
+            pitCardId = arguments.getUUIDOrNull(ARG_PIT_CARD_ID)
+
+            yearId = KeyStore.getInstance(context).getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, UUID::class) as UUID
+            eventId = KeyStore.getInstance(context).getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, UUID::class) as UUID
+
         }
-
-        //create and start the thread to load the json vars
-        loadingThread = Thread(Runnable {
-
-            year = Year(-1, context.keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int).apply { load(context.database) }
-
-            val eventId = context.keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int
-            if (eventId > 0)
-                event = Event(eventId).apply { load(context.database) }
-
-            //load the team from json, if available
-            if (teamJson != null && teamJson != "")
-                team = gson.fromJson(teamJson, Team::class.java)
-
-            //load the match from json, if available
-            if (matchJson != null && matchJson != "")
-                match = gson.fromJson(matchJson, Match::class.java)
-
-            //load the scout card from json, if available
-            if (scoutCardJson != null && scoutCardJson != "")
-                scoutCardInfo = gson.fromJson(scoutCardJson, ScoutCardInfo::class.java)
-        })
-
-        loadingThread.start()
     }
 
     /**
-     * Used to override the activities back pressed event
-     * @return [Boolean] true to override activities back press event
+     * Used to override the activities back pressed eventId
+     * @return [Boolean] true to override activities back press eventId
      */
     abstract fun onBackPressed() : Boolean
 
     companion object
     {
         @JvmStatic
-        protected val ARG_TEAM_JSON = "TEAM_JSON"
+        protected val ARG_TEAM_ID = "TEAM_ID"
 
         @JvmStatic
-        protected val ARG_MATCH_JSON = "MATCH_JSON"
+        protected val ARG_MATCH_ID = "MATCH_ID"
 
         @JvmStatic
-        protected val ARG_PARAM_SCOUT_CARD_JSON = "SCOUT_CARD_JSON"
+        protected val ARG_SCOUT_CARD_ID = "SCOUT_CARD_ID"
 
         @JvmStatic
-        protected val ARG_PARAM_PIT_CARD_JSON = "PIT_CARD_JSON"
+        protected val ARG_PIT_CARD_ID = "PIT_CARD_ID"
 
         @JvmStatic
         protected var staticGson: Gson? = null

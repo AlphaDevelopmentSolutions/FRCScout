@@ -9,7 +9,7 @@ import retrofit2.http.POST
 interface Api {
 
     @POST("get")
-    fun getData(): Call<ApiResponse.GetData>
+    fun getData(): Call<AppData>
 
     @POST("hello")
     fun connect(): Call<ApiResponse.Connect>

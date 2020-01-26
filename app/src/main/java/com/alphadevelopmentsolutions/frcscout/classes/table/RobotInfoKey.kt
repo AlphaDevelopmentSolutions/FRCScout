@@ -1,11 +1,11 @@
 package com.alphadevelopmentsolutions.frcscout.classes.table
 
 import androidx.room.Entity
+import java.util.*
 
 @Entity(tableName = "robot_info_keys")
 class RobotInfoKey(
-        var serverId: Int = DEFAULT_INT,
-        var yearId: Int = DEFAULT_INT,
+        var yearId: UUID,
         var keyState: String = DEFAULT_STRING,
         var keyName: String = DEFAULT_STRING,
         var sortOrder: Int = DEFAULT_INT) : Table()

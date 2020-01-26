@@ -52,20 +52,20 @@ class QuickStatsFragment : MasterFragment()
             loadingThread.join()
 
 
-            val matches = Match.getObjects(event!!, null, team!!, database, Database.SortDirection.ASC) //matches for this team
-            val scoutCardInfoKeys = ScoutCardInfoKey.getObjects(year!!, null, database) //scout card info keys for this year
-            val scoutCardInfos = ScoutCardInfo.getObjects(event, null, null, null, null, false, database) //scout card infos for this event
+            val matches = Match.getObjects(eventId!!, null, teamId!!, database, Database.SortDirection.ASC) //matches for this teamId
+            val scoutCardInfoKeys = ScoutCardInfoKey.getObjects(yearId!!, null, database) //scout card info keys for this yearId
+            val scoutCardInfos = ScoutCardInfo.getObjects(eventId, null, null, null, null, false, database) //scout card infos for this eventId
 
             if (!scoutCardInfoKeys.isNullOrEmpty() && !matches.isNullOrEmpty() && !scoutCardInfos.isNullOrEmpty())
             {
-                val eventStatsHashMap = event!!.getStats(year, scoutCardInfoKeys, scoutCardInfos, database) //get event avg data
+                val eventStatsHashMap = eventId!!.getStats(yearId, scoutCardInfoKeys, scoutCardInfos, database) //get eventId avg data
 
-                //get match stats data for each match
+                //get matchId stats data for each matchId
                 val matchStatsHashMap = HashMap<String, HashMap<String, Double>>()
                 for(match in matches)
-                    matchStatsHashMap[match.toString()] = match.getStats(year, event, scoutCardInfoKeys, scoutCardInfos, database)
+                    matchStatsHashMap[match.toString()] = match.getStats(yearId, eventId, scoutCardInfoKeys, scoutCardInfos, database)
 
-                val teamStatsHashMap = team!!.getStats(year, event, matches, scoutCardInfoKeys, scoutCardInfos, database) // get team stats data
+                val teamStatsHashMap = teamId!!.getStats(yearId, eventId, matches, scoutCardInfoKeys, scoutCardInfos, database) // get teamId stats data
                 
                 // get all the states from the scout card info keys
                 val scoutInfoKeyStates = LinkedHashMap<String, ArrayList<ScoutCardInfoKey>>().apply {
@@ -308,7 +308,7 @@ class QuickStatsFragment : MasterFragment()
         {
             val fragment = QuickStatsFragment()
             val args = Bundle()
-            args.putString(ARG_TEAM_JSON, toJson(team))
+            args.putString(ARG_TEAM_ID, toJson(team))
             fragment.arguments = args
             return fragment
         }
