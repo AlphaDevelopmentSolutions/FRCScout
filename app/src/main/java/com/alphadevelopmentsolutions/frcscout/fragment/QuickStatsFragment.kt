@@ -8,10 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.Match
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.ScoutCardInfo
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.ScoutCardInfoKey
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.Team
+import com.alphadevelopmentsolutions.frcscout.classes.table.Match
+import com.alphadevelopmentsolutions.frcscout.classes.table.ScoutCardInfo
+import com.alphadevelopmentsolutions.frcscout.classes.table.ScoutCardInfoKey
+import com.alphadevelopmentsolutions.frcscout.classes.table.Team
 import com.alphadevelopmentsolutions.frcscout.R
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.LineChart

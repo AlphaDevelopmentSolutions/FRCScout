@@ -1,6 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.repository
 
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.ChecklistItem
+import com.alphadevelopmentsolutions.frcscout.classes.table.ChecklistItem
 import com.alphadevelopmentsolutions.frcscout.dao.ChecklistItemDao
 import io.reactivex.Flowable
 

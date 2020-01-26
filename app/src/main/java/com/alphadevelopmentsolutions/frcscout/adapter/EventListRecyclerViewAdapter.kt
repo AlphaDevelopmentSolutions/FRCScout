@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.Event
+import com.alphadevelopmentsolutions.frcscout.classes.table.Event
 import com.alphadevelopmentsolutions.frcscout.fragment.MatchListFragment
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R

@@ -9,8 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.FileProvider
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.RobotMedia
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.Team
+import com.alphadevelopmentsolutions.frcscout.classes.table.RobotMedia
+import com.alphadevelopmentsolutions.frcscout.classes.table.Team
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.gson.Gson

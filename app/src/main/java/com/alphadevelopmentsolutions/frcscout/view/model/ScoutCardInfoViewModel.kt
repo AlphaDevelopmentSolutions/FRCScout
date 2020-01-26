@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.alphadevelopmentsolutions.frcscout.classes.RDatabase
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.ScoutCardInfo
+import com.alphadevelopmentsolutions.frcscout.classes.table.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.repository.ScoutCardInfoRepository
 import io.reactivex.Flowable
 import kotlinx.coroutines.launch

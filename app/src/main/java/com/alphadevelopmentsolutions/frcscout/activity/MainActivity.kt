@@ -24,7 +24,7 @@ import com.alphadevelopmentsolutions.frcscout.api.ApiResponse
 import com.alphadevelopmentsolutions.frcscout.classes.KeyStore
 import com.alphadevelopmentsolutions.frcscout.classes.LoadingDialog
 import com.alphadevelopmentsolutions.frcscout.classes.RDatabase
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.*
+import com.alphadevelopmentsolutions.frcscout.classes.table.*
 import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
 import com.alphadevelopmentsolutions.frcscout.fragment.*
 import com.alphadevelopmentsolutions.frcscout.interfaces.AppLog

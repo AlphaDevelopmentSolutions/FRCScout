@@ -1,6 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.repository
 
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.Event
+import com.alphadevelopmentsolutions.frcscout.classes.table.Event
 import com.alphadevelopmentsolutions.frcscout.dao.EventDao
 import io.reactivex.Flowable
 

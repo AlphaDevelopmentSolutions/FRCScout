@@ -1,6 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.repository
 
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.ScoutCardInfo
+import com.alphadevelopmentsolutions.frcscout.classes.table.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.dao.ScoutCardInfoDao
 import io.reactivex.Flowable
 

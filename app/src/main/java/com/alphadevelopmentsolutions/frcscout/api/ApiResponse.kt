@@ -1,6 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.api
 
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.*
+import com.alphadevelopmentsolutions.frcscout.classes.table.*
 
 class ApiResponse
 {

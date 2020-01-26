@@ -1,4 +1,4 @@
-package com.alphadevelopmentsolutions.frcscout.classes.Tables
+package com.alphadevelopmentsolutions.frcscout.classes.table
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

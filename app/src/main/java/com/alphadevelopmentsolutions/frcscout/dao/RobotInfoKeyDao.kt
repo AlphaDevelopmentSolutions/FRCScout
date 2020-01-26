@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.RobotInfoKey
+import com.alphadevelopmentsolutions.frcscout.classes.table.RobotInfoKey
 import io.reactivex.Flowable
 
 @Dao

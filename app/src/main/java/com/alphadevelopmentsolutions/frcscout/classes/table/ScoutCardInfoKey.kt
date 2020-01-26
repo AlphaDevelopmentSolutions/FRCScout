@@ -1,4 +1,4 @@
-package com.alphadevelopmentsolutions.frcscout.classes.Tables
+package com.alphadevelopmentsolutions.frcscout.classes.table
 
 import androidx.room.Entity
 

@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.*
+import com.alphadevelopmentsolutions.frcscout.classes.table.*
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.gson.Gson

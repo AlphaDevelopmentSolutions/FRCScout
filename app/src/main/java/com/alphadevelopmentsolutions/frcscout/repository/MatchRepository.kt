@@ -1,9 +1,9 @@
 package com.alphadevelopmentsolutions.frcscout.repository
 
 import androidx.sqlite.db.SimpleSQLiteQuery
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.Event
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.Match
-import com.alphadevelopmentsolutions.frcscout.classes.Tables.Team
+import com.alphadevelopmentsolutions.frcscout.classes.table.Event
+import com.alphadevelopmentsolutions.frcscout.classes.table.Match
+import com.alphadevelopmentsolutions.frcscout.classes.table.Team
 import com.alphadevelopmentsolutions.frcscout.dao.MatchDao
 import com.alphadevelopmentsolutions.frcscout.enums.SortDirection
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
