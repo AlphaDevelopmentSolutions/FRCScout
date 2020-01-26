@@ -9,7 +9,6 @@ import kotlin.math.round
 
 @Entity(tableName = "matches")
 class Match(
-        var id: Int = DEFAULT_INT,
         var date: Date = DEFAULT_DATE,
         var eventId: String = DEFAULT_STRING,
         var key: String = DEFAULT_STRING,

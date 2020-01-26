@@ -58,6 +58,7 @@ dependencies {
     def lifecycleVersion = '2.2.0-rc01'
     def androidxArchVersion = '2.1.0'
     def coroutinesVersion = '1.2.0'
+    def lottieVersion = '3.3.1'
     
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -122,4 +123,10 @@ dependencies {
     // RxJava Dependency
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.14'
+
+    // UUID Dependency
+    implementation 'com.fasterxml.uuid:java-uuid-generator:3.2.0'
+
+    // Lottie Dependency
+    implementation "com.airbnb.android:lottie:$lottieVersion"
 }

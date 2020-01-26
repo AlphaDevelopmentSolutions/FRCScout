@@ -7,7 +7,6 @@ import java.io.File
 
 @Entity(tableName = "teams")
 class Team(
-        var id: Int = DEFAULT_INT,
         var name: String = DEFAULT_STRING,
         var city: String? = null,
         var stateProvince: String? = null,

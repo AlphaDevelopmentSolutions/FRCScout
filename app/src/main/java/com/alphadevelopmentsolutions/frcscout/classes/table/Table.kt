@@ -1,8 +1,13 @@
 package com.alphadevelopmentsolutions.frcscout.classes.table
 
+import androidx.room.PrimaryKey
+import com.fasterxml.uuid.EthernetAddress
+import com.fasterxml.uuid.Generators
 import java.util.*
 
-abstract class Table
+abstract class Table protected constructor (
+    @PrimaryKey var id: UUID = DEFAULT_UUID
+)
 {
 
     abstract override fun toString(): String
@@ -44,5 +49,9 @@ abstract class Table
             {
                 return false
             }
+
+        @JvmStatic
+        internal val DEFAULT_UUID: UUID
+            get() = Generators.timeBasedGenerator(EthernetAddress.fromInterface()).generate()
     }
 }

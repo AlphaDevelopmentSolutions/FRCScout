@@ -11,7 +11,6 @@ import java.io.File
 
 @Entity(tableName = "robot_media")
 class RobotMedia(
-        var id: Int = DEFAULT_INT,
         var yearId: Int = DEFAULT_INT,
         var eventId: String = DEFAULT_STRING,
         var teamId: Int = DEFAULT_INT,

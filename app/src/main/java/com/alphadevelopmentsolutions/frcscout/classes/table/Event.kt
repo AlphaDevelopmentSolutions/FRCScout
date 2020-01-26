@@ -6,7 +6,6 @@ import kotlin.math.round
 
 @Entity(tableName = "events")
 class Event(
-        var id: Int = DEFAULT_INT,
         var yearId: Int = DEFAULT_INT,
         var blueAllianceId: String = DEFAULT_STRING,
         var name: String = DEFAULT_STRING,

@@ -6,7 +6,6 @@ import java.util.*
 
 @Entity(tableName = "checklist_item_results")
 class ChecklistItemResult(
-        var id: Int = DEFAULT_INT,
         var checklistItemId: Int = DEFAULT_INT,
         var matchId: String = DEFAULT_STRING,
         var status: String = DEFAULT_STRING,

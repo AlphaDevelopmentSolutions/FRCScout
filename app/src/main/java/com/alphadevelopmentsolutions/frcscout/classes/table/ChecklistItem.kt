@@ -5,7 +5,6 @@ import java.util.*
 
 @Entity(tableName = "checklist_items")
 class ChecklistItem(
-        var id: Int = DEFAULT_INT,
         var serverId: Int = DEFAULT_INT,
         var title: String = DEFAULT_STRING,
         var description: String) : Table()

@@ -4,7 +4,6 @@ import androidx.room.Entity
 
 @Entity(tableName = "scout_card_info")
 class ScoutCardInfo(
-        var id: Int = DEFAULT_INT,
         var yearId: Int = DEFAULT_INT,
         var eventId: String = DEFAULT_STRING,
         var matchId: String = DEFAULT_STRING,
