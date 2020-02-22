@@ -11,7 +11,6 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
-import com.alphadevelopmentsolutions.frcscout.classes.table.*
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.classes.KeyStore
@@ -25,7 +24,7 @@ import java.util.*
 
 abstract class MasterFragment : Fragment()
 {
-    protected lateinit var context: MainActivity
+    protected lateinit var activityContext: MainActivity
 
     protected var yearId: UUID? = null
     protected var eventId: UUID? = null
@@ -93,14 +92,14 @@ abstract class MasterFragment : Fragment()
             title: String? = null
     ): View {
 
-        loadingView = LayoutInflater.from(context).inflate(R.layout.layout_view_loading, null).apply {
+        loadingView = LayoutInflater.from(activityContext).inflate(R.layout.layout_view_loading, null).apply {
 
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
-            MainLoadingProgressBar.indeterminateDrawable.setColorFilter(this@MasterFragment.context.primaryColor, PorterDuff.Mode.SRC_IN)
+            MainLoadingProgressBar.indeterminateDrawable.setColorFilter(this@MasterFragment.activityContext.primaryColor, PorterDuff.Mode.SRC_IN)
 
         }
 
-        masterLayout = LayoutInflater.from(context).inflate(R.layout.layout_master, null).apply {
+        masterLayout = LayoutInflater.from(activityContext).inflate(R.layout.layout_master, null).apply {
 
             MasterLinearLayout.addView(view)
 
@@ -124,7 +123,7 @@ abstract class MasterFragment : Fragment()
         super.onCreate(savedInstanceState)
 
         //assign context and database vars
-        context = activity as MainActivity
+        activityContext = activity as MainActivity
 
         //check if any args were passed, specifically for teamId and matchId json
         arguments?.let { arguments ->
@@ -134,8 +133,8 @@ abstract class MasterFragment : Fragment()
             scoutCardId = arguments.getUUIDOrNull(ARG_SCOUT_CARD_ID)
             pitCardId = arguments.getUUIDOrNull(ARG_PIT_CARD_ID)
 
-            yearId = KeyStore.getInstance(context).getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, UUID::class) as UUID
-            eventId = KeyStore.getInstance(context).getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, UUID::class) as UUID
+            yearId = KeyStore.getInstance(activityContext).getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, UUID::class) as UUID
+            eventId = KeyStore.getInstance(activityContext).getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, UUID::class) as UUID
 
         }
     }
@@ -144,7 +143,7 @@ abstract class MasterFragment : Fragment()
      * Used to override the activities back pressed eventId
      * @return [Boolean] true to override activities back press eventId
      */
-    abstract fun onBackPressed() : Boolean
+    open fun onBackPressed(): Boolean = false
 
     companion object
     {

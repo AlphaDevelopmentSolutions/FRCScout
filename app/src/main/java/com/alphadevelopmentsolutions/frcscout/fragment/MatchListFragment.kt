@@ -39,9 +39,9 @@ class MatchListFragment : MasterFragment()
 
                             if (teamId == null)
                             {
-                                context.setToolbarTitle(context.getString(R.string.matches))
-                                context.isToolbarScrollable = true
-                                context.isSearchViewVisible = true
+                                activityContext.setToolbarTitle(activityContext.getString(R.string.matches))
+                                activityContext.isToolbarScrollable = true
+                                activityContext.isSearchViewVisible = true
 
                                 val searchedMatches = ArrayList(matches)
                                 var previousSearchLength = 0
@@ -50,13 +50,13 @@ class MatchListFragment : MasterFragment()
                                         EVENT GOES HERE,
                                         TEAM GOES HERE,
                                         searchedMatches,
-                                        context,
+                                        activityContext,
                                         if (teamId == null) TeamListFragment::class.java else ScoutCardInfoFragment::class.java
                                 )
 
                                 view.MatchListRecyclerView.adapter = matchListRecyclerViewAdapter
 
-                                context.setSearchViewOnTextChangeListener(object : SearchView.OnQueryTextListener
+                                activityContext.setSearchViewOnTextChangeListener(object : SearchView.OnQueryTextListener
                                 {
                                     override fun onQueryTextSubmit(p0: String?): Boolean
                                     {
@@ -114,7 +114,7 @@ class MatchListFragment : MasterFragment()
                                     }
                                 })
                             } else
-                                context.isToolbarScrollable = false
+                                activityContext.isToolbarScrollable = false
 
                             isLoading = false
                         },
@@ -131,24 +131,24 @@ class MatchListFragment : MasterFragment()
     override fun onPause()
     {
         super.onPause()
-        if(context.isSearchViewVisible)
-            context.isSearchViewVisible = false
+        if(activityContext.isSearchViewVisible)
+            activityContext.isSearchViewVisible = false
     }
 
     override fun onResume()
     {
         super.onResume()
-        if(teamId == null && !context.isSearchViewVisible)
-            context.isSearchViewVisible = true
+        if(teamId == null && !activityContext.isSearchViewVisible)
+            activityContext.isSearchViewVisible = true
 
         if(teamId == null)
-            context.unlockDrawerLayout()
+            activityContext.unlockDrawerLayout()
     }
 
     override fun onDestroyView()
     {
-        if(context.isSearchViewVisible)
-            context.isSearchViewVisible = false
+        if(activityContext.isSearchViewVisible)
+            activityContext.isSearchViewVisible = false
 
         super.onDestroyView()
     }

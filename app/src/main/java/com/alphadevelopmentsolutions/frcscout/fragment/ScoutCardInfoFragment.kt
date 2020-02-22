@@ -53,18 +53,18 @@ class ScoutCardInfoFragment : MasterFragment()
 
             for((infoKeyName, infoKeyValueArray) in scoutCardInfoKeyStates)
             {
-                val view = context.layoutInflater.inflate(R.layout.layout_card_scout_card_info_form, null)
+                val view = activityContext.layoutInflater.inflate(R.layout.layout_card_scout_card_info_form, null)
                 view.ScoutCardInfoFormCardTitle.text = infoKeyName
 
                 for(infoKey in infoKeyValueArray)
                 {
                     var blockTextChange = false
 
-                    val fieldLinearLayout = LinearLayout(context)
+                    val fieldLinearLayout = LinearLayout(activityContext)
                     fieldLinearLayout.orientation = LinearLayout.VERTICAL
                     fieldLinearLayout.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
-                    with(context.layoutInflater.inflate(R.layout.layout_field_info, null))
+                    with(activityContext.layoutInflater.inflate(R.layout.layout_field_info, null))
                     {
 
                         var scoutCardInfo: ScoutCardInfo? = null
@@ -78,9 +78,9 @@ class ScoutCardInfoFragment : MasterFragment()
                         if (scoutCardInfo?.isDraft == true)
                             DeleteButton.visibility = View.VISIBLE
 
-                        InfoKeyTitle.text = infoKey.keyName
+                        InfoKeyTitle.text = infoKey.name
 
-                        DeleteButton.imageTintList = this@ScoutCardInfoFragment.context.buttonBackground
+                        DeleteButton.imageTintList = this@ScoutCardInfoFragment.activityContext.buttonBackground
 
                         //set the delete onclick
                         DeleteButton.setOnClickListener {
@@ -101,17 +101,17 @@ class ScoutCardInfoFragment : MasterFragment()
                                         ScoutCardInfoKey.DataTypes.TEXT ->
                                         {
                                             blockTextChange = true
-                                            TextEditText.setText(scoutCardInfo?.propertyValue)
+                                            TextEditText.setText(scoutCardInfo?.value)
                                         }
 
                                         ScoutCardInfoKey.DataTypes.INT ->
                                         {
-                                            InfoKeyValue.text = scoutCardInfo?.propertyValue
+                                            InfoKeyValue.text = scoutCardInfo?.value
                                         }
 
                                         ScoutCardInfoKey.DataTypes.BOOL ->
                                         {
-                                            BooleanCheckBox.isChecked = scoutCardInfo?.propertyValue == "1"
+                                            BooleanCheckBox.isChecked = scoutCardInfo?.value == "1"
                                         }
                                     }
                                 }
@@ -128,7 +128,7 @@ class ScoutCardInfoFragment : MasterFragment()
 
                                         ScoutCardInfoKey.DataTypes.INT ->
                                         {
-                                            InfoKeyValue.text = infoKey.minValue.toString()
+                                            InfoKeyValue.text = infoKey.min.toString()
                                         }
 
                                         ScoutCardInfoKey.DataTypes.BOOL ->
@@ -147,8 +147,8 @@ class ScoutCardInfoFragment : MasterFragment()
                             ScoutCardInfoKey.DataType.TEXT ->
                             {
                                 TextLinearLayout.visibility = View.VISIBLE
-                                TextEditText.setText(scoutCardInfo?.propertyValue)
-                                TextEditText.backgroundTintList = this@ScoutCardInfoFragment.context.editTextBackground
+                                TextEditText.setText(scoutCardInfo?.value)
+                                TextEditText.backgroundTintList = this@ScoutCardInfoFragment.activityContext.editTextBackground
                                 TextEditText.addTextChangedListener(object : TextWatcher
                                 {
                                     override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int)
@@ -176,7 +176,7 @@ class ScoutCardInfoFragment : MasterFragment()
                                                 )
                                             }
 
-                                            scoutCardInfo!!.propertyValue = searchText.toString()
+                                            scoutCardInfo!!.value = searchText.toString()
                                             scoutCardInfo!!.save(database)
 
 
@@ -203,10 +203,10 @@ class ScoutCardInfoFragment : MasterFragment()
                             {
                                 IntegerLinearLayout.visibility = View.VISIBLE
 
-                                InfoKeyValue.text = if (scoutCardInfo?.propertyValue?.isNotBlank() == true) scoutCardInfo?.propertyValue ?: infoKey.minValue?.toString() ?: "0" else infoKey.minValue?.toString() ?: "0"
+                                InfoKeyValue.text = if (scoutCardInfo?.value?.isNotBlank() == true) scoutCardInfo?.value ?: infoKey.min?.toString() ?: "0" else infoKey.min?.toString() ?: "0"
 
-                                PlusButton.backgroundTintList = this@ScoutCardInfoFragment.context.buttonBackground
-                                (PlusButton as MaterialButton).rippleColor = this@ScoutCardInfoFragment.context.buttonRipple
+                                PlusButton.backgroundTintList = this@ScoutCardInfoFragment.activityContext.buttonBackground
+                                (PlusButton as MaterialButton).rippleColor = this@ScoutCardInfoFragment.activityContext.buttonRipple
 
                                 //Add button click handlers
                                 PlusButton.setOnClickListener {
@@ -214,7 +214,7 @@ class ScoutCardInfoFragment : MasterFragment()
                                     val curr = Integer.parseInt(InfoKeyValue.text.toString())
 
                                     //Check for maximum in key
-                                    if (infoKey.maxValue == null || curr < infoKey.maxValue!!)
+                                    if (infoKey.max == null || curr < infoKey.max!!)
                                     {
                                         InfoKeyValue.text = (curr + 1).toString()
 
@@ -234,7 +234,7 @@ class ScoutCardInfoFragment : MasterFragment()
                                             )
                                         }
 
-                                        scoutCardInfo!!.propertyValue = InfoKeyValue.text.toString()
+                                        scoutCardInfo!!.value = InfoKeyValue.text.toString()
                                         scoutCardInfo!!.save(database)
 
 
@@ -246,18 +246,18 @@ class ScoutCardInfoFragment : MasterFragment()
 
                                     }
                                     else
-                                        this@ScoutCardInfoFragment.context.showSnackbar("This field has a maximum of " + infoKey.maxValue)
+                                        this@ScoutCardInfoFragment.activityContext.showSnackbar("This field has a maximum of " + infoKey.max)
 
                                 }
 
-                                MinusButton.backgroundTintList = this@ScoutCardInfoFragment.context.buttonBackground
-                                (MinusButton as MaterialButton).rippleColor = this@ScoutCardInfoFragment.context.buttonRipple
+                                MinusButton.backgroundTintList = this@ScoutCardInfoFragment.activityContext.buttonBackground
+                                (MinusButton as MaterialButton).rippleColor = this@ScoutCardInfoFragment.activityContext.buttonRipple
 
                                 MinusButton.setOnClickListener {
 
                                     val curr = Integer.parseInt(InfoKeyValue.text.toString())
 
-                                    if (infoKey.minValue == null || curr > infoKey.minValue!!)
+                                    if (infoKey.min == null || curr > infoKey.min!!)
                                     {
                                         InfoKeyValue.text = (curr - 1).toString()
 
@@ -277,7 +277,7 @@ class ScoutCardInfoFragment : MasterFragment()
                                             )
                                         }
 
-                                        scoutCardInfo!!.propertyValue = InfoKeyValue.text.toString()
+                                        scoutCardInfo!!.value = InfoKeyValue.text.toString()
                                         scoutCardInfo!!.save(database)
 
 
@@ -288,7 +288,7 @@ class ScoutCardInfoFragment : MasterFragment()
                                         }
                                     }
                                     else
-                                        this@ScoutCardInfoFragment.context.showSnackbar("This field has a minimum of " + infoKey.minValue)
+                                        this@ScoutCardInfoFragment.activityContext.showSnackbar("This field has a minimum of " + infoKey.min)
                                 }
 
                             }
@@ -297,9 +297,9 @@ class ScoutCardInfoFragment : MasterFragment()
                             ScoutCardInfoKey.DataType.BOOL ->
                             {
                                 BooleanLinearLayout.visibility = View.VISIBLE
-                                BooleanCheckBox.buttonTintList = this@ScoutCardInfoFragment.context.checkboxBackground
-                                (BooleanCheckBox.background as RippleDrawable).setColor(this@ScoutCardInfoFragment.context.checkboxRipple)
-                                BooleanCheckBox.isChecked = if (scoutCardInfo?.propertyValue?.isNotBlank() == true) scoutCardInfo?.propertyValue == "1" else false
+                                BooleanCheckBox.buttonTintList = this@ScoutCardInfoFragment.activityContext.checkboxBackground
+                                (BooleanCheckBox.background as RippleDrawable).setColor(this@ScoutCardInfoFragment.activityContext.checkboxRipple)
+                                BooleanCheckBox.isChecked = if (scoutCardInfo?.value?.isNotBlank() == true) scoutCardInfo?.value == "1" else false
                                 BooleanCheckBox.setOnCheckedChangeListener { _, checked ->
                                     run {
 
@@ -319,7 +319,7 @@ class ScoutCardInfoFragment : MasterFragment()
                                             )
                                         }
 
-                                        scoutCardInfo!!.propertyValue = if (checked) "1" else "0"
+                                        scoutCardInfo!!.value = if (checked) "1" else "0"
                                         scoutCardInfo!!.save(database)
 
 
@@ -356,7 +356,7 @@ class ScoutCardInfoFragment : MasterFragment()
         Thread(Runnable{
             layoutCreationThread.join()
 
-            context.runOnUiThread{
+            activityContext.runOnUiThread{
 
                 //add all the dynamic form frags to the viewpager
                 for(layoutField in layoutFields)
@@ -368,15 +368,15 @@ class ScoutCardInfoFragment : MasterFragment()
         }).start()
 
         //gets rid of the shadow on the actionbar
-        context.dropActionBar()
-        context.isToolbarScrollable = false
-        context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
+        activityContext.dropActionBar()
+        activityContext.isToolbarScrollable = false
+        activityContext.lockDrawerLayout(true, View.OnClickListener { activityContext.onBackPressed() })
 
         loadingThread.join()
         isLoading = true
 
         //update the title of the page to display the matchId
-        context.setToolbarTitle(matchId!!.matchType.toString(matchId!!))
+        activityContext.setToolbarTitle(matchId!!.matchType.toString(matchId!!))
 
         return super.onCreateView(view)
     }

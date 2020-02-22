@@ -50,7 +50,7 @@ class RobotInfoFragment : MasterFragment()
             for((infoKeyName, infoKeyValueArray) in robotInfoKeyStates)
             {
                 //inflate a new info form card and set all the values
-                val view = context.layoutInflater.inflate(R.layout.layout_card_scout_card_info_form, null)
+                val view = activityContext.layoutInflater.inflate(R.layout.layout_card_scout_card_info_form, null)
                 view.ScoutCardInfoFormCardTitle.text = infoKeyName
 
                 //iterate through each info key in the array
@@ -59,11 +59,11 @@ class RobotInfoFragment : MasterFragment()
                     var blockTextChange = false
 
                     //inflate the field info layout and set the values
-                    val fieldLinearLayout = LinearLayout(context)
+                    val fieldLinearLayout = LinearLayout(activityContext)
                     fieldLinearLayout.orientation = LinearLayout.VERTICAL
                     fieldLinearLayout.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
-                    with(context.layoutInflater.inflate(R.layout.layout_field_info, null))
+                    with(activityContext.layoutInflater.inflate(R.layout.layout_field_info, null))
                     {
                         //set the default robot info
                         var robotInfo: RobotInfo? = null
@@ -78,7 +78,7 @@ class RobotInfoFragment : MasterFragment()
                         if (robotInfo?.isDraft == true)
                             DeleteButton.visibility = View.VISIBLE
 
-                        DeleteButton.imageTintList = this@RobotInfoFragment.context.buttonBackground
+                        DeleteButton.imageTintList = this@RobotInfoFragment.activityContext.buttonBackground
 
                         //set the delete onclick
                         DeleteButton.setOnClickListener {
@@ -94,7 +94,7 @@ class RobotInfoFragment : MasterFragment()
                                 {
                                     robotInfo = this[size - 1]
                                     blockTextChange = true
-                                    TextEditText.setText(robotInfo?.propertyValue)
+                                    TextEditText.setText(robotInfo?.value)
                                 }
 
                                 //reset robot info and textview
@@ -108,10 +108,10 @@ class RobotInfoFragment : MasterFragment()
                             }
                         }
 
-                        InfoKeyTitle.text = infoKey.keyName
+                        InfoKeyTitle.text = infoKey.name
                         TextLinearLayout.visibility = View.VISIBLE
-                        TextEditText.setText(robotInfo?.propertyValue)
-                        TextEditText.backgroundTintList = this@RobotInfoFragment.context.editTextBackground
+                        TextEditText.setText(robotInfo?.value)
+                        TextEditText.backgroundTintList = this@RobotInfoFragment.activityContext.editTextBackground
                         TextEditText.addTextChangedListener(object : TextWatcher
                         {
                             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int)
@@ -138,7 +138,7 @@ class RobotInfoFragment : MasterFragment()
                                         )
                                     }
 
-                                    robotInfo!!.propertyValue = searchText.toString()
+                                    robotInfo!!.value = searchText.toString()
                                     robotInfo!!.save(database)
 
 
@@ -180,12 +180,12 @@ class RobotInfoFragment : MasterFragment()
         val view = inflater.inflate(R.layout.fragment_robot_info, container, false)
 
         //gets rid of the shadow on the actionbar
-        context.dropActionBar()
+        activityContext.dropActionBar()
 
         Thread(Runnable{
             layoutCreationThread.join()
 
-            context.runOnUiThread{
+            activityContext.runOnUiThread{
 
                 if(layoutFields.size > 0)
                     with(layoutFields[0].parent)

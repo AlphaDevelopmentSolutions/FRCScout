@@ -2,9 +2,29 @@ package com.alphadevelopmentsolutions.frcscout.classes
 
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
+import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
 import com.alphadevelopmentsolutions.frcscout.view.model.*
 
 class VMProvider(owner: ViewModelStoreOwner) : ViewModelProvider(owner) {
+
+    companion object {
+
+        private var INSTANCE: VMProvider? = null
+
+        fun getInstance(context: MainActivity): VMProvider {
+            return INSTANCE ?: let {
+                val tempInstance = VMProvider(context)
+
+                INSTANCE = tempInstance
+
+                tempInstance
+            }
+        }
+    }
+
+    val apiViewModel by lazy {
+        get(ApiViewModel::class.java)
+    }
 
     val checklistItemResultViewModel by lazy {
         get(ChecklistItemResultViewModel::class.java)

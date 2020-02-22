@@ -25,7 +25,7 @@ class EventListFragment : MasterFragment()
 {
     override fun onBackPressed(): Boolean
     {
-        context.changeFragment(YearListFragment.newInstance(), false, true, true)
+        activityContext.changeFragment(YearListFragment.newInstance(), false, true, true)
         return true
     }
 
@@ -44,11 +44,11 @@ class EventListFragment : MasterFragment()
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_event_list, container, false)
 
-        context.lockDrawerLayout(true, View.OnClickListener { context.changeFragment(YearListFragment.newInstance(), false, true, true) })
-        context.isToolbarScrollable = true
+        activityContext.lockDrawerLayout(true, View.OnClickListener { activityContext.changeFragment(YearListFragment.newInstance(), false, true, true) })
+        activityContext.isToolbarScrollable = true
 
         //showing this view means the user has not selected an eventId, clear the shared pref
-        KeyStore.getInstance(context).setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, "")
+        KeyStore.getInstance(activityContext).setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, "")
 
         val eventListRecyclerView = view.EventListRecyclerView
 
@@ -58,20 +58,20 @@ class EventListFragment : MasterFragment()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { events ->
-                            context.setToolbarTitle("TITLE") //TODO: YEAR TITLE
+                            activityContext.setToolbarTitle("TITLE") //TODO: YEAR TITLE
 
                             val searchedEvents = ArrayList(events)
 
                             var previousSearchLength = 0
 
-                            val eventListRecyclerViewAdapter = EventListRecyclerViewAdapter(searchedEvents, context)
+                            val eventListRecyclerViewAdapter = EventListRecyclerViewAdapter(searchedEvents, activityContext)
                             eventListRecyclerView.adapter = eventListRecyclerViewAdapter
-                            eventListRecyclerView.layoutManager = LinearLayoutManager(context)
+                            eventListRecyclerView.layoutManager = LinearLayoutManager(activityContext)
 
-                            context.isToolbarScrollable = true
-                            context.isSearchViewVisible = true
+                            activityContext.isToolbarScrollable = true
+                            activityContext.isSearchViewVisible = true
 
-                            context.setSearchViewOnTextChangeListener(object: SearchView.OnQueryTextListener{
+                            activityContext.setSearchViewOnTextChangeListener(object: SearchView.OnQueryTextListener{
                                 override fun onQueryTextSubmit(p0: String?): Boolean
                                 {
                                     return false
@@ -139,7 +139,7 @@ class EventListFragment : MasterFragment()
     override fun onDestroyView()
     {
         super.onDestroyView()
-        context.unlockDrawerLayout()
+        activityContext.unlockDrawerLayout()
     }
     
     companion object

@@ -34,10 +34,10 @@ class TeamFragment : MasterFragment()
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_team, container, false)
 
-        with(context)
+        with(activityContext)
         {
             dropActionBar()
-            lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
+            lockDrawerLayout(true, View.OnClickListener { activityContext.onBackPressed() })
             isToolbarScrollable = false
 
             with(view)
@@ -59,17 +59,17 @@ class TeamFragment : MasterFragment()
                             { team ->
 
 
-                                view.AddPhotoFab.setOnClickListener { context.changeFragment(RobotMediaFragment.newInstance(null, team), true) }
+                                view.AddPhotoFab.setOnClickListener { activityContext.changeFragment(RobotMediaFragment.newInstance(null, team), true) }
 
                                 //update the app bar title to the teamId name
-                                context.setToolbarTitle(teamId.toString())
+                                activityContext.setToolbarTitle(teamId.toString())
 
                                 with(view)
                                 {
                                     //load the photo if the file exists
-                                    if (team.imageFileURI != "")
+                                    if (team.avatarUri != "")
                                         Picasso.get()
-                                                .load(Uri.fromFile(File(team.imageFileURI)))
+                                                .load(Uri.fromFile(File(team.avatarUri)))
                                                 .fit()
                                                 .centerCrop()
                                                 .into(TeamLogoImageView)
@@ -165,7 +165,7 @@ class TeamFragment : MasterFragment()
 
     override fun onDestroyView()
     {
-        context.unlockDrawerLayout()
+        activityContext.unlockDrawerLayout()
         super.onDestroyView()
     }
 

@@ -2,11 +2,14 @@ package com.alphadevelopmentsolutions.frcscout.classes.table.account
 
 import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.classes.table.Table
+import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
+import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "users")
+@Entity(tableName = TableName.USER)
 class User(
-        var firstName: String = DEFAULT_STRING,
-        var lastName: String = DEFAULT_STRING) : Table()
+        @SerializedName("first_name") var firstName: String,
+        @SerializedName("last_name") var lastName: String? = null
+) : Table()
 {
     /**
      * @see Table.toString

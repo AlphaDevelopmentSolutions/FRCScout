@@ -20,9 +20,9 @@ class ConfigViewPagerFragment : MasterFragment()
                               savedInstanceState: Bundle?): View?
     {
         //hide the actionbar while connecting
-        context.supportActionBar!!.hide()
-        context.lockDrawerLayout()
-        context.isToolbarScrollable = false
+        activityContext.supportActionBar!!.hide()
+        activityContext.lockDrawerLayout()
+        activityContext.isToolbarScrollable = false
 
         val view = inflater.inflate(R.layout.fragment_config_view_pager, container, false)
 
@@ -30,8 +30,8 @@ class ConfigViewPagerFragment : MasterFragment()
 
         //add all config frags to viewpager
         val viewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
-        viewPagerAdapter.addFragment(ConfigFragment.newInstance(1), context.getString(R.string.welcome))
-        viewPagerAdapter.addFragment(ConfigFragment.newInstance(2), context.getString(R.string.login))
+        viewPagerAdapter.addFragment(ConfigFragment.newInstance(1), activityContext.getString(R.string.welcome))
+        viewPagerAdapter.addFragment(ConfigFragment.newInstance(2), activityContext.getString(R.string.login))
 
         view.ViewPager.adapter = viewPagerAdapter
         view.ViewPagerDots.setViewPager(view.ViewPager)
@@ -51,10 +51,10 @@ class ConfigViewPagerFragment : MasterFragment()
             override fun onPageSelected(p0: Int)
             {
                 if(p0 + 1 == view.ViewPager.adapter!!.count)
-                    view.NextBackButton.text = context.getString(R.string.back)
+                    view.NextBackButton.text = activityContext.getString(R.string.back)
 
                 else
-                    view.NextBackButton.text = context.getString(R.string.next)
+                    view.NextBackButton.text = activityContext.getString(R.string.next)
 
             }
 
@@ -63,7 +63,7 @@ class ConfigViewPagerFragment : MasterFragment()
         //change the page according to button text
         view.NextBackButton.setOnClickListener {
 
-            if(view.NextBackButton.text == context.getString(R.string.next))
+            if(view.NextBackButton.text == activityContext.getString(R.string.next))
                 view.ViewPager.currentItem = view.ViewPager.currentItem + 1
 
             else
@@ -76,8 +76,8 @@ class ConfigViewPagerFragment : MasterFragment()
 
     override fun onDestroyView()
     {
-        context.supportActionBar!!.show()
-        context.unlockDrawerLayout()
+        activityContext.supportActionBar!!.show()
+        activityContext.unlockDrawerLayout()
         super.onDestroyView()
     }
 

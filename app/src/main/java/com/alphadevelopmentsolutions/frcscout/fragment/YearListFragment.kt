@@ -33,13 +33,13 @@ class YearListFragment : MasterFragment()
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_year_list, container, false)
 
-        context.setToolbarTitle(R.string.years)
-        context.lockDrawerLayout()
-        context.isToolbarScrollable = true
+        activityContext.setToolbarTitle(R.string.years)
+        activityContext.lockDrawerLayout()
+        activityContext.isToolbarScrollable = true
 
         //showing this view means the user has not selected an eventId or yearId, clear the shared pref
-        KeyStore.getInstance(context).setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, "")
-        KeyStore.getInstance(context).setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, "")
+        KeyStore.getInstance(activityContext).setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, "")
+        KeyStore.getInstance(activityContext).setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, "")
 
         val disposable = VMProvider(this).yearViewModel.objs
                 .subscribeOn(Schedulers.io())
@@ -50,14 +50,14 @@ class YearListFragment : MasterFragment()
 
                             val searchedYears = ArrayList(years)
 
-                            val yearListRecyclerViewAdapter = YearListRecyclerViewAdapter(searchedYears, context) // COPY OF YEARS
+                            val yearListRecyclerViewAdapter = YearListRecyclerViewAdapter(searchedYears, activityContext) // COPY OF YEARS
                             yearListRecyclerView!!.adapter = yearListRecyclerViewAdapter
-                            yearListRecyclerView.layoutManager = LinearLayoutManager(context)
+                            yearListRecyclerView.layoutManager = LinearLayoutManager(activityContext)
 
-                            context.isToolbarScrollable = true
-                            context.isSearchViewVisible = true
+                            activityContext.isToolbarScrollable = true
+                            activityContext.isSearchViewVisible = true
 
-                            context.setSearchViewOnTextChangeListener(object: SearchView.OnQueryTextListener{
+                            activityContext.setSearchViewOnTextChangeListener(object: SearchView.OnQueryTextListener{
                                 override fun onQueryTextSubmit(p0: String?): Boolean
                                 {
                                     return false

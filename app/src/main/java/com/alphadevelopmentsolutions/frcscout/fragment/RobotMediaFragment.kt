@@ -51,7 +51,7 @@ class RobotMediaFragment : MasterFragment()
     {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_robot_media, container, false)
-        context.lockDrawerLayout(true, View.OnClickListener { context.onBackPressed() })
+        activityContext.lockDrawerLayout(true, View.OnClickListener { activityContext.onBackPressed() })
 
         robotMediaImageView = view.RobotMediaImageView
 
@@ -64,28 +64,28 @@ class RobotMediaFragment : MasterFragment()
         }
         else
         {
-            view.RobotMediaSaveButton.backgroundTintList = context.buttonBackground
+            view.RobotMediaSaveButton.backgroundTintList = activityContext.buttonBackground
 
             //save the new image
             view.RobotMediaSaveButton.setOnClickListener {
 
                 robotMedia.save(database)
 
-                context.supportFragmentManager.popBackStackImmediate()
+                activityContext.supportFragmentManager.popBackStackImmediate()
             }
 
             val tempFile = File.createTempFile(
                     UUID.randomUUID().toString(),
                     ".jpeg",
-                    context.getExternalFilesDir(Constants.ROBOT_MEDIA_DIRECTORY)).apply {
+                    activityContext.getExternalFilesDir(Constants.ROBOT_MEDIA_DIRECTORY)).apply {
                 mediaFilePath = absolutePath
             }
 
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-                takePictureIntent.resolveActivity(context.packageManager)?.also {
+                takePictureIntent.resolveActivity(activityContext.packageManager)?.also {
                         tempFile.also {
 
-                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(context, "com.alphadevelopmentsolutions.frcscout.provider", it))
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(activityContext, "com.alphadevelopmentsolutions.frcscout.provider", it))
                             startActivityForResult(takePictureIntent, Constants.ROBOT_MEDIA_REQUEST_CODE)
                         }
                 }
@@ -94,7 +94,7 @@ class RobotMediaFragment : MasterFragment()
 
         loadingThread.join()
 
-        context.setToolbarTitle("${teamId!!.id} Robot Media")
+        activityContext.setToolbarTitle("${teamId!!.id} Robot Media")
 
         return view
     }
@@ -121,7 +121,7 @@ class RobotMediaFragment : MasterFragment()
                 }
 
                 else if(resultCode == Activity.RESULT_CANCELED)
-                    context.supportFragmentManager.popBackStackImmediate()
+                    activityContext.supportFragmentManager.popBackStackImmediate()
             }
         }
     }

@@ -2,19 +2,22 @@ package com.alphadevelopmentsolutions.frcscout.classes.table.account
 
 import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.classes.table.Table
+import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
+import com.google.gson.annotations.SerializedName
 import java.util.*
 
-@Entity(tableName = "scout_card_info_keys")
+@Entity(tableName = TableName.SCOUT_CARD_INFO_KEY)
 class ScoutCardInfoKey(
-        var yearId: UUID,
-        var keyState: String = DEFAULT_STRING,
-        var keyName: String = DEFAULT_STRING,
-        var sortOrder: Int = DEFAULT_INT,
-        var minValue: Int? = null,
-        var maxValue: Int? = null,
-        var nullZeros: Boolean? = null,
-        var includeInStats: Boolean? = null,
-        var dataType: DataType = DataType.TEXT) : Table()
+        @SerializedName("year_id") var yearId: UUID,
+        var state: String,
+        var name: String,
+        var order: Int,
+        var min: Int? = null,
+        var max: Int? = null,
+        @SerializedName("null_zeros") var nullZeros: Boolean? = null,
+        @SerializedName("include_in_stats") var includeInStats: Boolean? = null,
+        @SerializedName("data_type") var dataType: DataType
+) : Table()
 {
     enum class DataType
     {
@@ -48,6 +51,6 @@ class ScoutCardInfoKey(
      */
     override fun toString(): String
     {
-        return "$keyState $keyName"
+        return "$state $name"
     }
 }

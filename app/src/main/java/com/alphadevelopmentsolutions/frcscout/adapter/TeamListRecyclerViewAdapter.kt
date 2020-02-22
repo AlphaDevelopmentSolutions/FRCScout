@@ -48,9 +48,9 @@ internal class TeamListRecyclerViewAdapter(private val match: Match?, private va
             TeamLocationTextView.text = String.format("%s, %s, %s", team.city, team.stateProvince, team.country)
 
             //load the photo if the file exists
-            if (team.imageFileURI != "")
+            if (team.avatarUri != "")
                 Picasso.get()
-                        .load(Uri.fromFile(File(team.imageFileURI)))
+                        .load(Uri.fromFile(File(team.avatarUri)))
                         .fit()
                         .centerCrop()
                         .into(viewHolder.view.TeamLogoImageView)

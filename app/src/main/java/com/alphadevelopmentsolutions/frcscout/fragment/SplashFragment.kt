@@ -15,7 +15,7 @@ class SplashFragment : MasterFragment()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
-        context.supportActionBar!!.hide()
+        activityContext.supportActionBar!!.hide()
         return inflater.inflate(R.layout.fragment_splash, container, false)
     }
 
@@ -23,7 +23,7 @@ class SplashFragment : MasterFragment()
 
     override fun onDestroyView()
     {
-        context.supportActionBar!!.show()
+        activityContext.supportActionBar!!.show()
         super.onDestroyView()
     }
 

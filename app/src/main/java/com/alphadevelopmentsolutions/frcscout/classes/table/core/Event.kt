@@ -4,27 +4,27 @@ import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfoKey
 import com.alphadevelopmentsolutions.frcscout.classes.table.Table
+import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
+import com.google.gson.annotations.SerializedName
 import java.util.*
 import kotlin.math.round
 
-@Entity(tableName = "events")
+@Entity(tableName = TableName.EVENT)
 class Event(
-        var yearId: UUID,
-        var blueAllianceId: String = DEFAULT_STRING,
-        var name: String = DEFAULT_STRING,
-        var city: String = DEFAULT_STRING,
-        var stateProvince: String = DEFAULT_STRING,
-        var country: String = DEFAULT_STRING,
-        var startDate: Date = DEFAULT_DATE,
-        var endDate: Date = DEFAULT_DATE) : Table()
+        @SerializedName("year_id") var yearId: UUID,
+        @SerializedName("blue_alliance_id") var blueAllianceId: String,
+        var name: String,
+        var city: String? = null,
+        @SerializedName("state_province") var stateProvince: String? = null,
+        var country: String? = null,
+        @SerializedName("start_time") var startTime: Date? = null,
+        @SerializedName("end_time") var endTime: Date? = null
+) : Table()
 {
     /**
      * @see Table.toString
      */
-    override fun toString(): String
-    {
-        return name
-    }
+    override fun toString() = name
 
     /**
      * Calculates all stats for this [Event]

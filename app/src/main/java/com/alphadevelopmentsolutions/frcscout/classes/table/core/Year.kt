@@ -4,14 +4,17 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.classes.table.Table
+import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
 import java.util.*
 
-@Entity(tableName = "years")
+@Entity(tableName = TableName.YEAR)
 class Year(
-        var name: String = DEFAULT_STRING,
-        var startDate: Date = DEFAULT_DATE,
-        var endDate: Date = DEFAULT_DATE,
-        var imageUri: String = DEFAULT_STRING) : Table()
+        var number: Int,
+        var name: String,
+        var startDate: Date? = null,
+        var endDate: Date? = null,
+        var imageUri: String? = null
+) : Table()
 {
     /**
      * Gets a bitmap version of the object
@@ -24,8 +27,5 @@ class Year(
     /**
      * @see Table.toString
      */
-    override fun toString(): String
-    {
-        return "$serverId - $name"
-    }
+    override fun toString() = "$number - $name"
 }

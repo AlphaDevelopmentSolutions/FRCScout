@@ -2,35 +2,25 @@ package com.alphadevelopmentsolutions.frcscout.classes.table.account
 
 import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.classes.table.Table
+import com.alphadevelopmentsolutions.frcscout.interfaces.Status
+import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
+import com.google.gson.annotations.SerializedName
 import java.text.SimpleDateFormat
 import java.util.*
 
-@Entity(tableName = "checklist_item_results")
+@Entity(tableName = TableName.CHECKLIST_ITEM_RESULT)
 class ChecklistItemResult(
-        var checklistItemId: UUID,
-        var matchId: UUID,
-        var status: String = DEFAULT_STRING,
-        var completedBy: String? = null,
-        var completedDate: Date? = null) : Table()
+        @SerializedName("checklist_item_id") var checklistItemId: UUID,
+        @SerializedName("match_id") var matchId: UUID,
+        var status: Status? = null,
+        @SerializedName("completed_by") var completedBy: UUID? = null,
+        @SerializedName("completed_date") var completedDate: Date? = null
+) : Table()
 {
-    /**
-     * Gets the completed date formated for MySQL timestamp
-     * @return MySQL time stamp formatted date
-     */
-    val completedDateForSQL: String
-        get()
-        {
-            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd H:mm:ss")
-
-            return simpleDateFormat.format(completedDate)
-        }
 
 
     /**
      * @see Table.toString
      */
-    override fun toString(): String
-    {
-        return ""
-    }
+    override fun toString() = ""
 }

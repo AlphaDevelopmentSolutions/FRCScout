@@ -5,27 +5,30 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInf
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfoKey
 import com.alphadevelopmentsolutions.frcscout.classes.table.Table
 import com.alphadevelopmentsolutions.frcscout.enums.AllianceColor
+import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
+import com.google.gson.annotations.SerializedName
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.math.round
 
-@Entity(tableName = "matches")
+@Entity(tableName = TableName.MATCH)
 class Match(
-        var date: Date = DEFAULT_DATE,
-        var eventId: UUID,
-        var key: String = DEFAULT_STRING,
-        var matchType: Type = Type.qm,
-        var setNumber: Int = DEFAULT_INT,
-        var matchNumber: Int = DEFAULT_INT,
-        var blueAllianceTeamOneId: Int = DEFAULT_INT,
-        var blueAllianceTeamTwoId: Int = DEFAULT_INT,
-        var blueAllianceTeamThreeId: Int = DEFAULT_INT,
-        var redAllianceTeamOneId: Int = DEFAULT_INT,
-        var redAllianceTeamTwoId: Int = DEFAULT_INT,
-        var redAllianceTeamThreeId: Int = DEFAULT_INT,
-        var blueAllianceScore: Int? = null,
-        var redAllianceScore: Int? = null) : Table()
+        @SerializedName("event_id") var eventId: UUID,
+        var key: String,
+        @SerializedName("match_type") var matchType: Type,
+        @SerializedName("set_number") var setNumber: Int,
+        @SerializedName("match_number") var matchNumber: Int,
+        @SerializedName("blue_alliance_team_one_id") var blueAllianceTeamOneId: UUID,
+        @SerializedName("blue_alliance_team_two_id") var blueAllianceTeamTwoId: UUID,
+        @SerializedName("blue_alliance_team_three_id") var blueAllianceTeamThreeId: UUID,
+        @SerializedName("red_alliance_team_one_id") var redAllianceTeamOneId: UUID,
+        @SerializedName("red_alliance_team_two_id") var redAllianceTeamTwoId: UUID,
+        @SerializedName("red_alliance_team_three_id") var redAllianceTeamThreeId: UUID,
+        @SerializedName("blue_alliance_score") var blueAllianceScore: Int? = null,
+        @SerializedName("red_alliance_score") var redAllianceScore: Int? = null,
+        var time: Date? = null
+) : Table()
 {
     /**
      * Returns either the winning teamId or tie status from the matchId
@@ -184,9 +187,9 @@ class Match(
                     {
                         for(scoutCardInfo in filteredScoutCardInfos)
                         {
-                            if(scoutCardInfo.propertyKeyId == scoutCardInfoKey.serverId)
+                            if(scoutCardInfo.keyId == scoutCardInfoKey.serverId)
                             {
-                                val stat = Integer.parseInt(scoutCardInfo.propertyValue)
+                                val stat = Integer.parseInt(scoutCardInfo.value)
 
                                 statsHashMap[scoutCardInfoKey.toString()] = (statsHashMap[scoutCardInfoKey.toString()] ?: 0.0) + stat //add to the stat record
 

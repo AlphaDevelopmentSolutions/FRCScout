@@ -7,16 +7,18 @@ import android.media.ExifInterface
 import android.util.Base64
 import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.classes.table.Table
+import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
+import com.google.gson.annotations.SerializedName
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.*
 
-@Entity(tableName = "robot_media")
+@Entity(tableName = TableName.ROBOT_MEDIA)
 class RobotMedia(
-        var yearId: UUID,
-        var eventId: UUID,
-        var teamId: UUID,
-        var fileUri: String = DEFAULT_STRING) : Table()
+        @SerializedName("event_id") var eventId: UUID,
+        @SerializedName("team_id") var teamId: UUID,
+        var uri: String
+) : Table()
 {
     /**
      * Converts the current robot media into base64 format for server submission
@@ -25,7 +27,7 @@ class RobotMedia(
     val base64Image: String?
         get()
         {
-            val robotMedia = File(fileUri)
+            val robotMedia = File(uri)
 
             if (robotMedia.exists())
             {
@@ -47,9 +49,9 @@ class RobotMedia(
     val imageBitmap: Bitmap
         get()
         {
-            return with(BitmapFactory.decodeFile(fileUri))
+            return with(BitmapFactory.decodeFile(uri))
             {
-                when (ExifInterface(fileUri).getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED))
+                when (ExifInterface(uri).getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED))
                 {
 
                     ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(this, 90f)

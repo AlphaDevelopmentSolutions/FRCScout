@@ -2,12 +2,16 @@ package com.alphadevelopmentsolutions.frcscout.classes.table.account
 
 import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.classes.table.Table
+import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
+import com.google.gson.annotations.SerializedName
 import java.util.*
 
-@Entity(tableName = "checklist_items")
+@Entity(tableName = TableName.CHECKLIST_ITEM)
 class ChecklistItem(
-        var title: String = DEFAULT_STRING,
-        var description: String) : Table()
+        @SerializedName("year_id") var yearId: UUID,
+        var title: String,
+        var description: String
+) : Table()
 {
     /**
      * Gets the checklist item results from the database, sorted from newest to oldest

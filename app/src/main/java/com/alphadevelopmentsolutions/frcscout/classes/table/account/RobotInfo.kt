@@ -2,15 +2,17 @@ package com.alphadevelopmentsolutions.frcscout.classes.table.account
 
 import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.classes.table.Table
+import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
+import com.google.gson.annotations.SerializedName
 import java.util.*
 
-@Entity(tableName = "robot_info")
+@Entity(tableName = TableName.ROBOT_INFO)
 class RobotInfo(
-        var yearId: UUID,
-        var eventId: UUID,
-        var teamId: UUID,
-        var propertyValue: String= DEFAULT_STRING,
-        var propertyKeyId: UUID) : Table()
+        @SerializedName("event_id") var eventId: UUID,
+        @SerializedName("team_id") var teamId: UUID,
+        @SerializedName("key_id") var keyId: UUID,
+        var value: String
+) : Table()
 {
     /**
      * @see Table.toString

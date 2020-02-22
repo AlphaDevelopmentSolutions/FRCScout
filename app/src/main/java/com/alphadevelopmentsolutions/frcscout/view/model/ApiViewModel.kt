@@ -165,4 +165,8 @@ class ApiViewModel(application: Application) : AndroidViewModel(application) {
 
         return false
     }
+
+    suspend fun login(username: String, password: String): Boolean {
+
+    }
 }

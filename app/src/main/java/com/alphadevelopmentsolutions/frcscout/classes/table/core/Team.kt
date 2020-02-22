@@ -6,21 +6,25 @@ import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfoKey
 import com.alphadevelopmentsolutions.frcscout.classes.table.Table
+import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
+import com.google.gson.annotations.SerializedName
 import java.io.File
 
-@Entity(tableName = "teams")
+@Entity(tableName = TableName.TEAM)
 class Team(
-        var name: String = DEFAULT_STRING,
+        var number: Int,
+        var name: String,
         var city: String? = null,
-        var stateProvince: String? = null,
+        @SerializedName("state_province") var stateProvince: String? = null,
         var country: String? = null,
-        var rookieYear: Int? = null,
-        var facebookURL: String? = null,
-        var twitterURL: String? = null,
-        var instagramURL: String? = null,
-        var youtubeURL: String? = null,
-        var websiteURL: String? = null,
-        var imageFileURI: String? = null) : Table()
+        @SerializedName("rookie_year") var rookieYear: Int? = null,
+        @SerializedName("facebook_url") var facebookURL: String? = null,
+        @SerializedName("twitter_url") var twitterURL: String? = null,
+        @SerializedName("instagram_url") var instagramURL: String? = null,
+        @SerializedName("youtube_url") var youtubeURL: String? = null,
+        @SerializedName("website_url") var websiteURL: String? = null,
+        @SerializedName("avatar_uri") var avatarUri: String? = null
+) : Table()
 {
     /**
      * Returns the bitmap from the specified file location
@@ -30,7 +34,7 @@ class Team(
     val imageBitmap: Bitmap?
         get()
         {
-            val file = File(imageFileURI)
+            val file = File(avatarUri)
             return if (file.exists()) BitmapFactory.decodeFile(file.absolutePath) else null
 
         }
@@ -80,8 +84,8 @@ class Team(
                         {
                             for(scoutCardInfo in filteredScoutCardInfos)
                             {
-                                if(scoutCardInfo.propertyKeyId == scoutCardInfoKey.serverId)
-                                    statsHashMap[scoutCardInfoKey.toString()] = Integer.parseInt(scoutCardInfo.propertyValue) //get the most recent stat and set it
+                                if(scoutCardInfo.keyId == scoutCardInfoKey.serverId)
+                                    statsHashMap[scoutCardInfoKey.toString()] = Integer.parseInt(scoutCardInfo.value) //get the most recent stat and set it
                             }
 
                             //if stat was never set, default to 0
@@ -105,8 +109,5 @@ class Team(
     /**
      * @see Table.toString
      */
-    override fun toString(): String
-    {
-        return "$id - $name"
-    }
+    override fun toString() = "$number - $name"
 }

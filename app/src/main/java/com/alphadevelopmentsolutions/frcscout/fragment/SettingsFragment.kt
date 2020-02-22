@@ -65,7 +65,7 @@ class SettingsFragment : MasterFragment()
 
             else ->
             {
-                context.lockDrawerLayout(true, View.OnClickListener { context.supportFragmentManager.popBackStackImmediate() })
+                activityContext.lockDrawerLayout(true, View.OnClickListener { activityContext.supportFragmentManager.popBackStackImmediate() })
 
                 return super.onCreateView(
                         inflater.inflate(R.layout.fragment_settings, container, false).apply{
@@ -74,7 +74,7 @@ class SettingsFragment : MasterFragment()
                             BuildTypeTextView.text = String.format(context.getString(R.string.build_type), BuildConfig.BUILD_TYPE)
 
                             LicensesButton.setOnClickListener{
-                                this@SettingsFragment.context.changeFragment(newInstance(Page.LICENSES), true)
+                                this@SettingsFragment.activityContext.changeFragment(newInstance(Page.LICENSES), true)
                             }
                         })
             }
@@ -90,7 +90,7 @@ class SettingsFragment : MasterFragment()
     override fun onDetach()
     {
         if(page == Page.SETTINGS)
-            context.unlockDrawerLayout()
+            activityContext.unlockDrawerLayout()
 
         super.onDetach()
     }

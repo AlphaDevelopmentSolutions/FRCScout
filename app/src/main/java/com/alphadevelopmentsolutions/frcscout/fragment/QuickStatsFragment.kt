@@ -85,9 +85,9 @@ class QuickStatsFragment : MasterFragment()
                     //latch used to hold the thread until the runOnUiThread has finished
                     val latch = CountDownLatch(1)
 
-                    context.runOnUiThread {
+                    activityContext.runOnUiThread {
 
-                        tempStatChart = LineChart(context)
+                        tempStatChart = LineChart(activityContext)
 
                         latch.countDown()
 
@@ -101,7 +101,7 @@ class QuickStatsFragment : MasterFragment()
                     with(statChart)
                     {
                         layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                        layoutParams.height = this@QuickStatsFragment.context.dp(250)
+                        layoutParams.height = this@QuickStatsFragment.activityContext.dp(250)
                         setTouchEnabled(false)
                         setDrawGridBackground(true)
                         isDragEnabled = false
@@ -155,7 +155,7 @@ class QuickStatsFragment : MasterFragment()
                         
                     }
 
-                    val teamDataSet = LineDataSet(ArrayList<Entry>(), context.getString(R.string.team_average)).apply{
+                    val teamDataSet = LineDataSet(ArrayList<Entry>(), activityContext.getString(R.string.team_average)).apply{
                         formatDataSets(this)
                         color = Color.parseColor("#03A9F4")
                         setCircleColor(Color.parseColor("#03A9F4"))
@@ -163,7 +163,7 @@ class QuickStatsFragment : MasterFragment()
                     }
                     
 
-                    val matchDataSet = LineDataSet(ArrayList<Entry>(), context.getString(R.string.match_average)).apply{
+                    val matchDataSet = LineDataSet(ArrayList<Entry>(), activityContext.getString(R.string.match_average)).apply{
                         formatDataSets(this)
                         color = Color.parseColor("#FF0000")
                         setCircleColor(Color.parseColor("#FF0000"))
@@ -171,7 +171,7 @@ class QuickStatsFragment : MasterFragment()
                     }
                     
 
-                    val eventAvgDataSet = LineDataSet(ArrayList<Entry>(), context.getString(R.string.event_average)).apply{
+                    val eventAvgDataSet = LineDataSet(ArrayList<Entry>(), activityContext.getString(R.string.event_average)).apply{
                         formatDataSets(this)
                         color = Color.parseColor("#005685")
                         setDrawCircles(false)
@@ -184,15 +184,15 @@ class QuickStatsFragment : MasterFragment()
                     //add stat chart to the statcharts arraylist
                     statCharts.add(
                             //add the linear layout to the stat chart
-                            LinearLayout(context).apply{
+                            LinearLayout(activityContext).apply{
                                 orientation = LinearLayout.VERTICAL
                                 layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                                setPadding(0, 0, 0, this@QuickStatsFragment.context.dp(8))
+                                setPadding(0, 0, 0, this@QuickStatsFragment.activityContext.dp(8))
 
                                 //add the textview with the title to the linear layout
                                 addView(
                                         TextView(context).apply {
-                                            text = scoutCardInfoKeyState[0].keyState
+                                            text = scoutCardInfoKeyState[0].state
                                             setTypeface(null, Typeface.BOLD)
                                             gravity = Gravity.CENTER
                                             setTextColor(Color.BLACK)
@@ -204,8 +204,8 @@ class QuickStatsFragment : MasterFragment()
 
                                             val spinnerArray = ArrayList<String>().apply {
 
-                                                for(scoutCardInfo in scoutInfoKeyStates[scoutCardInfoKeyState[0].keyState]!!)
-                                                    add(scoutCardInfo.keyName)
+                                                for(scoutCardInfo in scoutInfoKeyStates[scoutCardInfoKeyState[0].state]!!)
+                                                    add(scoutCardInfo.name)
                                             }
 
                                             adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, spinnerArray)
@@ -277,7 +277,7 @@ class QuickStatsFragment : MasterFragment()
         Thread(Runnable {
             loadStatsThread.join()
 
-            context.runOnUiThread{
+            activityContext.runOnUiThread{
                 for(statChart in statCharts)
                 {
                     val chartParent = if(statChart.parent != null) statChart.parent as LinearLayout else null

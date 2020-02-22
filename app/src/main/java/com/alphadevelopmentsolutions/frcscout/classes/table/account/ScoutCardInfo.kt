@@ -2,17 +2,18 @@ package com.alphadevelopmentsolutions.frcscout.classes.table.account
 
 import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.classes.table.Table
+import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
+import com.google.gson.annotations.SerializedName
 import java.util.*
 
-@Entity(tableName = "scout_card_info")
+@Entity(tableName = TableName.SCOUT_CARD_INFO)
 class ScoutCardInfo(
-        var yearId: UUID,
-        var eventId: UUID,
-        var matchId: UUID,
-        var teamId: UUID,
-        var completedBy: String = DEFAULT_STRING,
-        var propertyValue: String = DEFAULT_STRING,
-        var propertyKeyId: UUID) : Table()
+        @SerializedName("match_id") var matchId: UUID,
+        @SerializedName("team_id") var teamId: UUID,
+        @SerializedName("completed_by") var completedBy: UUID,
+        var value: String,
+        var keyId: UUID
+) : Table()
 {
     /**
      * @see Table.toString

@@ -1,148 +1,127 @@
 package com.alphadevelopmentsolutions.frcscout.fragment
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import com.alphadevelopmentsolutions.frcscout.classes.LoadingDialog
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.classes.KeyStore
+import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
+import com.alphadevelopmentsolutions.frcscout.databinding.FragmentConfigBinding
+import com.alphadevelopmentsolutions.frcscout.interfaces.AppLog
+import com.alphadevelopmentsolutions.frcscout.interfaces.IntentAction
 import com.google.android.gms.safetynet.SafetyNet
-import kotlinx.android.synthetic.main.fragment_config.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class ConfigFragment : MasterFragment()
 {
-    override fun onBackPressed(): Boolean
-    {
-        return false
-    }
-
-    private var configNumber: Int? = null
+    private var configNumber: Int = 1
     private var loggingIn = false
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        if (arguments != null)
-        {
-            configNumber = arguments!!.getInt(ARG_FRAGMENT_NUMBER)
+
+        arguments?.let {
+            configNumber = it.getInt(ARG_FRAGMENT_NUMBER, 1)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View?
+    private lateinit var fragView: FragmentConfigBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
     {
         //hide the actionbar while connecting
-        context.supportActionBar!!.hide()
-        context.lockDrawerLayout()
-
-        var view: View? = null
+        activityContext.supportActionBar?.hide()
+        activityContext.lockDrawerLayout()
 
         when(configNumber)
         {
-            1 -> view = inflater.inflate(R.layout.layout_welcome, container, false)
+            1 -> return inflater.inflate(R.layout.layout_welcome, container, false)
             2 ->
             {
-                view = inflater.inflate(R.layout.fragment_config, container, false)
+                fragView = DataBindingUtil.inflate(inflater, R.layout.fragment_config, container, false)
 
-                view.SignUpButton.setOnClickListener {
-                    val url = "https://www.frcscout.app/create-account"
-                    val i = Intent(Intent.ACTION_VIEW)
-                    i.data = Uri.parse(url)
-                    startActivity(i)
-                }
+                fragView.handlers = this
 
-                view.ConnectButton!!.setOnClickListener {
-
-                    when {
-                        view.UsernameEditText.text.toString() == "" -> String.format(context.getString(R.string.not_empty), context.getString(R.string.username))
-                        view.PasswordEditText.text.toString() == "" -> String.format(context.getString(R.string.not_empty), context.getString(R.string.password))
-                        else -> login(view.UsernameEditText.text.toString(), view.PasswordEditText.text.toString())
-                    }
-                }
+                return fragView.root
             }
         }
 
 
-        return view
+        return inflater.inflate(R.layout.layout_welcome, container, false)
     }
+
+    fun signup() = IntentAction.website(activityContext, "https://www.frcscout.app/create-account")
 
     /**
      * Attempts to log into the web server
-     * @param username [String] username to send to the web server
-     * @param password [String] password to send to the web server
      */
-    private fun login(username: String, password: String)
+    fun login()
     {
-        if(!loggingIn) {
+        val username = fragView.UsernameEditText.text.toString()
+        val password = fragView.PasswordEditText.text.toString()
 
-            loggingIn = true
+        when {
+            username.isNotBlank() -> activityContext.showSnackbar(String.format(activityContext.getString(R.string.not_empty), activityContext.getString(R.string.username)))
+            password.isNotBlank() -> activityContext.showSnackbar(String.format(activityContext.getString(R.string.not_empty), activityContext.getString(R.string.password)))
+            !loggingIn -> {
 
-            //reCAPTCHA check
-            SafetyNet.getClient(context).verifyWithRecaptcha(Constants.RECAPTCHA_SITE_KEY)
-                    .addOnSuccessListener {
+                loggingIn = true
 
-                        if (it.tokenResult.isNotEmpty()) {
-                            val loadingDialog = LoadingDialog(context, LoadingDialog.Style.SPINNER)
-                            loadingDialog.message = context.getString(R.string.logging_in)
-                            loadingDialog.show()
+                //reCAPTCHA check
+                SafetyNet.getClient(activityContext).verifyWithRecaptcha(Constants.RECAPTCHA_SITE_KEY)
+                        .addOnSuccessListener {
 
-                            Thread(Runnable {
-                                //validate connection
-                                if (context.isOnline) {
-                                    //attempt to login to server
-                                    val login = Api.Account.Login(context, username, password, it.tokenResult)
+                            if (it.tokenResult.isNotEmpty()) {
 
-                                    //valid config
-                                    if (login.execute()) {
+                                val loadingDialog = LoadingDialog(activityContext, LoadingDialog.Style.SPINNER)
+                                loadingDialog.message = activityContext.getString(R.string.logging_in)
+                                loadingDialog.show()
 
-                                        with(context)
-                                        {
+                                //attempt to login to server
+                                GlobalScope.launch(Dispatchers.IO) {
 
-                                            runOnUiThread {
-                                                updateNavText(null)
+                                    val apiViewModel = VMProvider.getInstance(activityContext).apiViewModel
 
-                                                loadingDialog.dismiss()
+                                    if(apiViewModel.login(username, password)) {
 
-                                                downloadApplicationData(false, false)
-                                            }
-                                        }
-                                    } else {
-                                        with(context)
-                                        {
-                                            runOnUiThread {
+                                        if(apiViewModel.fetchData()) {
+
+                                            activityContext.runOnUiThread {
+                                                activityContext.updateNavText(null)
                                                 loadingDialog.dismiss()
                                             }
-
-                                            keyStore.resetData()
-                                            showSnackbar(getString(R.string.invalid_login))
                                         }
-                                    }//invalid config
-                                } else {
-                                    with(context)
-                                    {
-                                        runOnUiThread {
-                                            loadingDialog.dismiss()
-                                        }
-
-                                        keyStore.resetData()
-                                        showSnackbar(getString(R.string.invalid_url))
                                     }
-                                }//invalid connection
-                            }).start()
-                        } else
-                            context.showSnackbar(context.getString(R.string.recaptcha_error))
+                                    else {
+                                        activityContext.runOnUiThread {
+                                            loadingDialog.dismiss()
+                                            KeyStore.getInstance(activityContext).resetData()
+                                            activityContext.showSnackbar(getString(R.string.invalid_login))
+                                        }
+                                    }
 
-                        loggingIn = false
+                                }
+                            } else
+                                activityContext.showSnackbar(activityContext.getString(R.string.recaptcha_error))
 
-                    }
-                    .addOnFailureListener {
-                        context.showSnackbar(context.getString(R.string.recaptcha_error))
+                            loggingIn = false
 
-                        loggingIn = false
-                    }
+                        }
+                        .addOnFailureListener {
+                            activityContext.showSnackbar(activityContext.getString(R.string.recaptcha_error))
+
+                            loggingIn = false
+
+                            AppLog.error(it)
+                        }
+            }
         }
     }
 

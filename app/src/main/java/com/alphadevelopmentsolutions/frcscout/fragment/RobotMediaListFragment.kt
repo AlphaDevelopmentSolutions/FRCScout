@@ -35,12 +35,12 @@ class RobotMediaListFragment : MasterFragment()
             val robotMediaList = RobotMedia.getObjects(null, yearId, eventId, teamId, false, database)
 
             if(robotMediaList.size != oldCount)
-                robotMediaListRecyclerViewAdapter = RobotMediaListRecyclerViewAdapter(teamId!!, robotMediaList, context)
+                robotMediaListRecyclerViewAdapter = RobotMediaListRecyclerViewAdapter(teamId!!, robotMediaList, activityContext)
 
             if(::robotMediaListRecyclerViewAdapter.isInitialized)
             {
-                context.runOnUiThread {
-                    view.RobotMediaRecyclerView.layoutManager = LinearLayoutManager(context)
+                activityContext.runOnUiThread {
+                    view.RobotMediaRecyclerView.layoutManager = LinearLayoutManager(activityContext)
                     view.RobotMediaRecyclerView.adapter = robotMediaListRecyclerViewAdapter
                 }
             }
