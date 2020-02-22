@@ -7,8 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alphadevelopmentsolutions.frcscout.adapter.MatchListRecyclerViewAdapter
-import com.alphadevelopmentsolutions.frcscout.classes.table.Match
-import com.alphadevelopmentsolutions.frcscout.classes.table.Team
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
 import com.alphadevelopmentsolutions.frcscout.interfaces.AppLog

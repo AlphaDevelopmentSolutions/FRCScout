@@ -8,8 +8,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alphadevelopmentsolutions.frcscout.adapter.FragmentViewPagerAdapter
 import com.alphadevelopmentsolutions.frcscout.adapter.TeamListRecyclerViewAdapter
-import com.alphadevelopmentsolutions.frcscout.classes.table.Match
-import com.alphadevelopmentsolutions.frcscout.classes.table.Team
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Match
 import com.alphadevelopmentsolutions.frcscout.enums.AllianceColor
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.classes.VMProvider

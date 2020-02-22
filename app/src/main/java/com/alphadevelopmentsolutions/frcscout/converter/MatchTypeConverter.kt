@@ -1,7 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.converter
 
 import androidx.room.TypeConverter
-import com.alphadevelopmentsolutions.frcscout.classes.table.Match
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Match
 
 class MatchTypeConverter {
 

@@ -1,6 +1,7 @@
-package com.alphadevelopmentsolutions.frcscout.classes.table
+package com.alphadevelopmentsolutions.frcscout.classes.table.core
 
 import androidx.room.Entity
+import com.alphadevelopmentsolutions.frcscout.classes.table.Table
 import java.util.*
 
 @Entity(tableName = "event_team_list")

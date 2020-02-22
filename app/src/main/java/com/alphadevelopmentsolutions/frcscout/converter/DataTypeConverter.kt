@@ -1,7 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.converter
 
 import androidx.room.TypeConverter
-import com.alphadevelopmentsolutions.frcscout.classes.table.ScoutCardInfoKey
+import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfoKey
 
 class DataTypeConverter {
 

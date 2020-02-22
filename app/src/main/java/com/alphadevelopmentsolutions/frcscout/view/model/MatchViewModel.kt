@@ -4,8 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.alphadevelopmentsolutions.frcscout.classes.RDatabase
-import com.alphadevelopmentsolutions.frcscout.classes.table.Match
-import com.alphadevelopmentsolutions.frcscout.classes.table.Team
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Match
 import com.alphadevelopmentsolutions.frcscout.enums.SortDirection
 import com.alphadevelopmentsolutions.frcscout.repository.MatchRepository
 import io.reactivex.Flowable

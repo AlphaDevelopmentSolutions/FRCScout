@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.viewpager.widget.ViewPager
 import com.alphadevelopmentsolutions.frcscout.adapter.FragmentViewPagerAdapter
-import com.alphadevelopmentsolutions.frcscout.classes.table.Team
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
 import com.alphadevelopmentsolutions.frcscout.extension.putUUID

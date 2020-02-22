@@ -1,6 +1,7 @@
-package com.alphadevelopmentsolutions.frcscout.classes.table
+package com.alphadevelopmentsolutions.frcscout.classes.table.account
 
 import androidx.room.Entity
+import com.alphadevelopmentsolutions.frcscout.classes.table.Table
 
 @Entity(tableName = "users")
 class User(

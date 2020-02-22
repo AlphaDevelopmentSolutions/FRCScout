@@ -1,6 +1,7 @@
-package com.alphadevelopmentsolutions.frcscout.classes.table
+package com.alphadevelopmentsolutions.frcscout.classes.table.account
 
 import androidx.room.Entity
+import com.alphadevelopmentsolutions.frcscout.classes.table.Table
 import java.util.*
 
 @Entity(tableName = "robot_info_keys")

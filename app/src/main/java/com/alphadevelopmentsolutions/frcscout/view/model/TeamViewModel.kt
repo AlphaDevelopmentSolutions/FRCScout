@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.alphadevelopmentsolutions.frcscout.classes.RDatabase
-import com.alphadevelopmentsolutions.frcscout.classes.table.Team
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 import com.alphadevelopmentsolutions.frcscout.repository.TeamRepository
 import io.reactivex.Flowable
 import kotlinx.coroutines.launch

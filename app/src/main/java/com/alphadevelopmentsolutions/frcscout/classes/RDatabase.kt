@@ -5,7 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.alphadevelopmentsolutions.frcscout.classes.table.*
+import com.alphadevelopmentsolutions.frcscout.classes.table.account.*
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.*
 import com.alphadevelopmentsolutions.frcscout.converter.DataTypeConverter
 import com.alphadevelopmentsolutions.frcscout.converter.DateConverter
 import com.alphadevelopmentsolutions.frcscout.converter.MatchTypeConverter

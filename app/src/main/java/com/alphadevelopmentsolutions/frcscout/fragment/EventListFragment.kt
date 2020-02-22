@@ -6,11 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.adapter.EventListRecyclerViewAdapter
-import com.alphadevelopmentsolutions.frcscout.classes.table.Event
-import com.alphadevelopmentsolutions.frcscout.classes.table.Team
-import com.alphadevelopmentsolutions.frcscout.classes.table.Year
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Year
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.classes.KeyStore
@@ -18,7 +15,6 @@ import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
 import com.alphadevelopmentsolutions.frcscout.extension.getUUIDOrNull
 import com.alphadevelopmentsolutions.frcscout.extension.putUUID
 import com.alphadevelopmentsolutions.frcscout.interfaces.AppLog
-import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_event_list.view.*

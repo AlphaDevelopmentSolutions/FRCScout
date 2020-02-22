@@ -1,6 +1,9 @@
-package com.alphadevelopmentsolutions.frcscout.classes.table
+package com.alphadevelopmentsolutions.frcscout.classes.table.core
 
 import androidx.room.Entity
+import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfo
+import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfoKey
+import com.alphadevelopmentsolutions.frcscout.classes.table.Table
 import com.alphadevelopmentsolutions.frcscout.enums.AllianceColor
 import java.util.*
 import kotlin.collections.ArrayList
@@ -72,14 +75,14 @@ class Match(
              */
             fun fromString(matchType: String): Type
             {
-                if (matchType.toLowerCase() == Type.qm.name.toLowerCase())
-                    return Type.qm
-                if (matchType.toLowerCase() == Type.qf.name.toLowerCase())
-                    return Type.qf
-                return if (matchType.toLowerCase() == Type.sf.name.toLowerCase())
-                    Type.sf
+                if (matchType.toLowerCase() == qm.name.toLowerCase())
+                    return qm
+                if (matchType.toLowerCase() == qf.name.toLowerCase())
+                    return qf
+                return if (matchType.toLowerCase() == sf.name.toLowerCase())
+                    sf
                 else
-                    Type.f
+                    f
             }
 
             fun getTypes() : ArrayList<Type>

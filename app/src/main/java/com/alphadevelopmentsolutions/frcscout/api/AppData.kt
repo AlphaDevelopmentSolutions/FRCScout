@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.api
 
-import com.alphadevelopmentsolutions.frcscout.classes.table.*
+import com.alphadevelopmentsolutions.frcscout.classes.table.account.*
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.*
 
 class AppData (
         val checklistItems: List<ChecklistItem> = listOf(),

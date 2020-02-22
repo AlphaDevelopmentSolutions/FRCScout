@@ -2,7 +2,7 @@ package com.alphadevelopmentsolutions.frcscout.dao
 
 import androidx.room.*
 import androidx.sqlite.db.SimpleSQLiteQuery
-import com.alphadevelopmentsolutions.frcscout.classes.table.Match
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Match
 import io.reactivex.Flowable
 
 @Dao

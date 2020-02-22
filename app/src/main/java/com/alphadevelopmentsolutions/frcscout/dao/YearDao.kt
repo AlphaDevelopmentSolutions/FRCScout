@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.alphadevelopmentsolutions.frcscout.classes.table.Year
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Year
 import io.reactivex.Flowable
 
 @Dao

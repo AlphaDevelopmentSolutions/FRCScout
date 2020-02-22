@@ -1,6 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.repository
 
-import com.alphadevelopmentsolutions.frcscout.classes.table.User
+import com.alphadevelopmentsolutions.frcscout.classes.table.account.User
 import com.alphadevelopmentsolutions.frcscout.dao.UserDao
 import io.reactivex.Flowable
 

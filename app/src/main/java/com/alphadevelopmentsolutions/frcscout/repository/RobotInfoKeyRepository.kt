@@ -1,6 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.repository
 
-import com.alphadevelopmentsolutions.frcscout.classes.table.RobotInfoKey
+import com.alphadevelopmentsolutions.frcscout.classes.table.account.RobotInfoKey
 import com.alphadevelopmentsolutions.frcscout.dao.RobotInfoKeyDao
 import io.reactivex.Flowable
 

@@ -1,4 +1,4 @@
-package com.alphadevelopmentsolutions.frcscout.classes.table
+package com.alphadevelopmentsolutions.frcscout.classes.table.account
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -6,6 +6,7 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.util.Base64
 import androidx.room.Entity
+import com.alphadevelopmentsolutions.frcscout.classes.table.Table
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.*

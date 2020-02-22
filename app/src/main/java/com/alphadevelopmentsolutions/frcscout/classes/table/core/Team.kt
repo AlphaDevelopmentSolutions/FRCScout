@@ -1,8 +1,11 @@
-package com.alphadevelopmentsolutions.frcscout.classes.table
+package com.alphadevelopmentsolutions.frcscout.classes.table.core
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.room.Entity
+import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfo
+import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfoKey
+import com.alphadevelopmentsolutions.frcscout.classes.table.Table
 import java.io.File
 
 @Entity(tableName = "teams")
@@ -44,7 +47,7 @@ class Team(
      * @param database [Database] used to pull data
      * @return [HashMap] of stats
      */
-    fun getStats(year: Year?, event: Event?, matches: ArrayList<Match>?, scoutCardInfoKeys: ArrayList<ScoutCardInfoKey>?, scoutCardInfos: ArrayList<ScoutCardInfo>?,  database: Database): HashMap<String, HashMap<String, Int>>
+    fun getStats(year: Year?, event: Event?, matches: ArrayList<Match>?, scoutCardInfoKeys: ArrayList<ScoutCardInfoKey>?, scoutCardInfos: ArrayList<ScoutCardInfo>?, database: Database): HashMap<String, HashMap<String, Int>>
     {
         val teamStats = HashMap<String, HashMap<String, Int>>()
 

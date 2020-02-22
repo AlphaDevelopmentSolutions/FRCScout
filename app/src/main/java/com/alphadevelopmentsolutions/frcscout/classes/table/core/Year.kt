@@ -1,8 +1,9 @@
-package com.alphadevelopmentsolutions.frcscout.classes.table
+package com.alphadevelopmentsolutions.frcscout.classes.table.core
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.room.Entity
+import com.alphadevelopmentsolutions.frcscout.classes.table.Table
 import java.util.*
 
 @Entity(tableName = "years")

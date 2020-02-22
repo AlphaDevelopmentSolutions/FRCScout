@@ -1,6 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.repository
 
-import com.alphadevelopmentsolutions.frcscout.classes.table.Team
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 import com.alphadevelopmentsolutions.frcscout.dao.TeamDao
 import io.reactivex.Flowable
 

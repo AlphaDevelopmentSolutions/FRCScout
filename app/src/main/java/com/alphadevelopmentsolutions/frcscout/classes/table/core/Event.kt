@@ -1,6 +1,9 @@
-package com.alphadevelopmentsolutions.frcscout.classes.table
+package com.alphadevelopmentsolutions.frcscout.classes.table.core
 
 import androidx.room.Entity
+import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfo
+import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfoKey
+import com.alphadevelopmentsolutions.frcscout.classes.table.Table
 import java.util.*
 import kotlin.math.round
 

@@ -1,6 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.repository
 
-import com.alphadevelopmentsolutions.frcscout.classes.table.Year
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Year
 import com.alphadevelopmentsolutions.frcscout.dao.YearDao
 import io.reactivex.Flowable
 

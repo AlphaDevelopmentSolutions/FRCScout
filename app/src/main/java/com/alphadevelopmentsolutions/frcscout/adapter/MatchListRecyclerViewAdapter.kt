@@ -8,10 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
-import com.alphadevelopmentsolutions.frcscout.classes.table.Event
-import com.alphadevelopmentsolutions.frcscout.classes.table.Match
-import com.alphadevelopmentsolutions.frcscout.classes.table.ScoutCardInfo
-import com.alphadevelopmentsolutions.frcscout.classes.table.Team
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Event
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Match
+import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfo
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 import com.alphadevelopmentsolutions.frcscout.enums.AllianceColor
 import com.alphadevelopmentsolutions.frcscout.fragment.ChecklistFragment
 import com.alphadevelopmentsolutions.frcscout.fragment.ScoutCardInfoFragment

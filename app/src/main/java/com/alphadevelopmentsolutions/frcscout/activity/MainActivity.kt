@@ -23,13 +23,15 @@ import com.alphadevelopmentsolutions.frcscout.api.Api
 import com.alphadevelopmentsolutions.frcscout.api.ApiResponse
 import com.alphadevelopmentsolutions.frcscout.classes.KeyStore
 import com.alphadevelopmentsolutions.frcscout.classes.LoadingDialog
-import com.alphadevelopmentsolutions.frcscout.classes.RDatabase
-import com.alphadevelopmentsolutions.frcscout.classes.table.*
 import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
 import com.alphadevelopmentsolutions.frcscout.fragment.*
 import com.alphadevelopmentsolutions.frcscout.interfaces.AppLog
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.classes.table.account.*
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Event
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Year
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
