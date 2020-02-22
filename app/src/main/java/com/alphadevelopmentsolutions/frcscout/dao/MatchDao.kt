@@ -24,7 +24,11 @@ interface MatchDao {
     /**
      * Gets all [Match] objects from the database
      */
-    @RawQuery
+    @RawQuery(
+            observedEntities = [
+                Match::class
+            ]
+    )
     fun getObjsWithCustom(sql: SimpleSQLiteQuery): Flowable<List<Match>>
 
     /**

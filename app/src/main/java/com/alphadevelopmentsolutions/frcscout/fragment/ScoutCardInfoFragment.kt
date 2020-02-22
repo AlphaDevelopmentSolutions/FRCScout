@@ -144,7 +144,7 @@ class ScoutCardInfoFragment : MasterFragment()
 
                         when (infoKey.dataType)
                         {
-                            ScoutCardInfoKey.DataTypes.TEXT ->
+                            ScoutCardInfoKey.DataType.TEXT ->
                             {
                                 TextLinearLayout.visibility = View.VISIBLE
                                 TextEditText.setText(scoutCardInfo?.propertyValue)
@@ -199,7 +199,7 @@ class ScoutCardInfoFragment : MasterFragment()
                             }
 
                             //create an int layout
-                            ScoutCardInfoKey.DataTypes.INT ->
+                            ScoutCardInfoKey.DataType.INT ->
                             {
                                 IntegerLinearLayout.visibility = View.VISIBLE
 
@@ -294,7 +294,7 @@ class ScoutCardInfoFragment : MasterFragment()
                             }
 
                             //create a bool layout
-                            ScoutCardInfoKey.DataTypes.BOOL ->
+                            ScoutCardInfoKey.DataType.BOOL ->
                             {
                                 BooleanLinearLayout.visibility = View.VISIBLE
                                 BooleanCheckBox.buttonTintList = this@ScoutCardInfoFragment.context.checkboxBackground

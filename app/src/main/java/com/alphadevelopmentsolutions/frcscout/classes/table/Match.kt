@@ -70,7 +70,7 @@ class Match(
              * @param matchType string enum name
              * @return enum converted from string
              */
-            fun getTypeFromString(matchType: String): Type
+            fun fromString(matchType: String): Type
             {
                 if (matchType.toLowerCase() == Type.qm.name.toLowerCase())
                     return Type.qm

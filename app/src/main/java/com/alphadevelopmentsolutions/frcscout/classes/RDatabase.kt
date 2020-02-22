@@ -4,7 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.alphadevelopmentsolutions.frcscout.classes.table.*
+import com.alphadevelopmentsolutions.frcscout.converter.DataTypeConverter
+import com.alphadevelopmentsolutions.frcscout.converter.DateConverter
+import com.alphadevelopmentsolutions.frcscout.converter.MatchTypeConverter
+import com.alphadevelopmentsolutions.frcscout.converter.UUIDConverter
 import com.alphadevelopmentsolutions.frcscout.dao.*
 
 @Database(
@@ -25,6 +30,14 @@ import com.alphadevelopmentsolutions.frcscout.dao.*
                 Year::class
         ],
         version = 1)
+@TypeConverters(
+        value = [
+            UUIDConverter::class,
+            DateConverter::class,
+            MatchTypeConverter::class,
+            DataTypeConverter::class
+        ]
+)
 abstract class RDatabase : RoomDatabase() {
 
     abstract fun checklistItemDao(): ChecklistItemDao

@@ -13,9 +13,9 @@ class ScoutCardInfoKey(
         var maxValue: Int? = null,
         var nullZeros: Boolean? = null,
         var includeInStats: Boolean? = null,
-        var dataType: DataTypes = DataTypes.TEXT) : Table()
+        var dataType: DataType = DataType.TEXT) : Table()
 {
-    enum class DataTypes
+    enum class DataType
     {
         BOOL,
         INT,
@@ -28,7 +28,7 @@ class ScoutCardInfoKey(
              * @param type string of type to parse
              * @return datatype
              */
-            fun parseString(type: String): DataTypes
+            fun fromString(type: String): DataType
             {
                 return when
                 {
