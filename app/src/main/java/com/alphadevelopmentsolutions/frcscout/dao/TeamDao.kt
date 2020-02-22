@@ -4,8 +4,11 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Event
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
+import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
 import io.reactivex.Flowable
+import java.util.*
 
 @Dao
 interface TeamDao {
@@ -22,6 +25,15 @@ interface TeamDao {
      */
     @Query("SELECT * FROM teams where id = :id")
     fun getObjWithId(id: String): Flowable<Team>
+
+    @Query(
+            """
+                SELECT * FROM ${TableName.TEAM}
+                LEFT JOIN ${TableName.EVENT_TEAM_LIST} ON ${TableName.EVENT_TEAM_LIST}.teamId = ${TableName.TEAM}.id
+                WHERE ${TableName.EVENT_TEAM_LIST}.eventId = :eventId
+            """
+    )
+    fun getObjAtEvent(eventId: UUID): Flowable<List<Team>>
 
     /**
      * Inserts a new [Team] object into the database

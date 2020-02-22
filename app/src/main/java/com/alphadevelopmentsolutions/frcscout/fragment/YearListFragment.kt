@@ -19,12 +19,6 @@ import kotlin.collections.ArrayList
 
 class YearListFragment : MasterFragment()
 {
-    override fun onBackPressed(): Boolean
-    {
-        return false
-    }
-
-
     private var previousSearchLength: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

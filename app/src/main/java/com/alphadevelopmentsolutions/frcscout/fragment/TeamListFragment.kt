@@ -12,7 +12,10 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.core.Match
 import com.alphadevelopmentsolutions.frcscout.enums.AllianceColor
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
+import com.alphadevelopmentsolutions.frcscout.extension.init
 import com.alphadevelopmentsolutions.frcscout.interfaces.AppLog
+import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_team_list.view.*
@@ -41,140 +44,64 @@ class TeamListFragment : MasterFragment()
         }
     }
 
+    private lateinit var flowable: Flowable<List<Team>>
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
     {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_team_list, container, false)
 
-        //gets rid of the shadow on the actionbar
-        activityContext.dropActionBar()
+        eventId?.let {  eventId ->
 
-        activityContext.setToolbarTitle(if (matchId == null) activityContext.getString(R.string.teams) else matchId.toString())
-        activityContext.isSearchViewVisible = matchId == null
-        activityContext.isToolbarScrollable = matchId == null
+            //gets rid of the shadow on the actionbar
+            activityContext.dropActionBar()
 
-        view.AllianceTabLayout.setBackgroundColor(activityContext.primaryColor)
+            activityContext.setToolbarTitle(if (matchId == null) activityContext.getString(R.string.teams) else matchId.toString())
+            activityContext.isSearchViewVisible = matchId == null
+            activityContext.isToolbarScrollable = matchId == null
 
-        if (matchId == null || allianceColor == AllianceColor.BLUE || allianceColor == AllianceColor.RED)
-        {
-            //GET TEAMS AT EVENT ON ALLIANCE
-            val disposable = VMProvider(this).teamViewModel.objs
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            { teams ->
+            view.AllianceTabLayout.setBackgroundColor(activityContext.primaryColor)
 
-                                var previousSearchLength = 0
+            // Team list in match
+            if(matchId != null && allianceColor != null) {
 
-                                //if a matchId and alliance color was specified,
-                                //remove any teams that are not in that matchId or alliance color
-                                val searchedTeams = if (matchId != null && allianceColor != null)
-                                {
-                                    for (team in ArrayList(teams!!))
-                                    {
-                                        //teamId not in matchId / alliance color
-                                        if (matchId!!.getTeamAllianceColor(team) != allianceColor)
-                                            teams!!.remove(team)
-                                    }
+                flowable = VMProvider.getInstance(activityContext).teamViewModel.objAtEvent(eventId).init()
 
-                                    //add all the teams to the searchedTeams arraylist
-                                    ArrayList(teams!!)
-                                } else
-                                //add all the teams to the searchedTeams arraylist
-                                    ArrayList(teams!!)
+                activityContext.setToolbarTitle(matchId.toString())
+                view.AllianceViewPagerLinearLayout.visibility = View.VISIBLE
+                view.TeamsRecyclerView.visibility = View.GONE
 
-                                teamListAdapter = TeamListRecyclerViewAdapter(matchId, searchedTeams!!, activityContext)
-                            },
-                            {
-                                AppLog.error(it)
-                            }
-                    )
+                val viewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
 
-            Thread(Runnable{
+                val blueAllianceFrag = newInstance(match, AllianceColor.BLUE)
+                val redAllianceFrag = newInstance(match, AllianceColor.RED)
+
+                viewPagerAdapter.addFragment(blueAllianceFrag, activityContext.getString(R.string.blue_alliance))
+                viewPagerAdapter.addFragment(redAllianceFrag, activityContext.getString(R.string.red_alliance))
+
+                view.AllianceViewPager.adapter = viewPagerAdapter
+                view.AllianceTabLayout.setupWithViewPager(view.AllianceViewPager)
+                view.AllianceTabLayout.setSelectedTabIndicatorColor(activityContext.primaryColorDark)
+
+                activityContext.lockDrawerLayout(true, View.OnClickListener { activityContext.onBackPressed() })
+
+            }
+
+            // Raw team list at event
+            else {
+
+                flowable = VMProvider.getInstance(activityContext).teamViewModel.objs.init()
 
                 val layoutManager = LinearLayoutManager(activityContext)
 
-                activityContext.runOnUiThread{
+                view.TeamsRecyclerView.layoutManager = layoutManager
+                view.TeamsRecyclerView.adapter = teamListAdapter
 
-                    view.TeamsRecyclerView.layoutManager = layoutManager
-                    view.TeamsRecyclerView.adapter = teamListAdapter
-
-                    isLoading = false
-                }
-
-            }).start()
-
-            if(matchId == null)
-            {
-                activityContext.setSearchViewOnTextChangeListener(object: SearchView.OnQueryTextListener{
-                    override fun onQueryTextSubmit(p0: String?): Boolean
-                    {
-                        return false
-                    }
-
-                    override fun onQueryTextChange(searchText: String?): Boolean
-                    {
-                        val searchLength = searchText?.length ?: 0
-
-                        //You only need to reset the list if you are removing from your search, adding the objects back
-                        if (searchLength < previousSearchLength)
-                        {
-                            //Reset the list
-                            for (i in teams!!.indices)
-                            {
-                                val team = teams!![i]
-
-                                //check if the contact doesn't exist in the viewable list
-                                if (!searchedTeams!!.contains(team))
-                                {
-                                    //add it and notify the recyclerview
-                                    searchedTeams!!.add(i, team)
-                                    teamListAdapter.notifyItemInserted(i)
-                                    teamListAdapter.notifyItemRangeChanged(i, searchedTeams!!.size)
-                                }
-
-                            }
-                        }
-
-                        //Delete from the list
-                        var i = 0
-                        while (i < searchedTeams!!.size)
-                        {
-                            val team = searchedTeams!![i]
-                            val name = team.id.toString() + " - " + team.name
-
-                            //If the contacts name doesn't equal the searched name
-                            if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
-                            {
-                                //remove it from the list and notify the recyclerview
-                                searchedTeams!!.removeAt(i)
-                                teamListAdapter.notifyItemRemoved(i)
-                                teamListAdapter.notifyItemRangeChanged(i, searchedTeams!!.size)
-
-                                //this prevents the index from passing the size of the list,
-                                //stays on the same index until you NEED to move to the next one
-                                i--
-                            }
-                            i++
-                        }
-
-                        previousSearchLength = searchLength
-
-                        return false
-                    }
-
-                })
+                isLoading = false
             }
 
-        }
-
-        else
-        {
-            //GET TEAMS IN MATCH
-            val disposable = VMProvider(this).teamViewModel.objs
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+            flowable
                     .subscribe(
                             { teams ->
 
@@ -182,49 +109,79 @@ class TeamListFragment : MasterFragment()
 
                                 //if a matchId and alliance color was specified,
                                 //remove any teams that are not in that matchId or alliance color
-                                val searchedTeams = if (matchId != null && allianceColor != null)
-                                {
-                                    for (team in ArrayList(teams!!))
-                                    {
-                                        //teamId not in matchId / alliance color
-                                        if (matchId!!.getTeamAllianceColor(team) != allianceColor)
-                                            teams!!.remove(team)
-                                    }
+                                val searchedTeams = teams.toMutableList()
 
-                                    //add all the teams to the searchedTeams arraylist
-                                    ArrayList(teams!!)
-                                } else
-                                //add all the teams to the searchedTeams arraylist
-                                    ArrayList(teams!!)
+                                teamListAdapter = TeamListRecyclerViewAdapter(match, searchedTeams, activityContext)
 
-                                teamListAdapter = TeamListRecyclerViewAdapter(matchId, searchedTeams!!, activityContext)
+                                activityContext.setSearchViewOnTextChangeListener(
+                                        object: SearchView.OnQueryTextListener {
+                                            override fun onQueryTextSubmit(p0: String?) = false
+
+                                            override fun onQueryTextChange(searchText: String?): Boolean
+                                            {
+                                                val searchLength = searchText?.length ?: 0
+
+                                                //You only need to reset the list if you are removing from your search, adding the objects back
+                                                if (searchLength < previousSearchLength)
+                                                {
+                                                    //Reset the list
+                                                    for (i in teams!!.indices)
+                                                    {
+                                                        val team = teams!![i]
+
+                                                        //check if the contact doesn't exist in the viewable list
+                                                        if (!searchedTeams!!.contains(team))
+                                                        {
+                                                            //add it and notify the recyclerview
+                                                            searchedTeams!!.add(i, team)
+                                                            teamListAdapter.notifyItemInserted(i)
+                                                            teamListAdapter.notifyItemRangeChanged(i, searchedTeams!!.size)
+                                                        }
+
+                                                    }
+                                                }
+
+                                                //Delete from the list
+                                                var i = 0
+                                                while (i < searchedTeams!!.size)
+                                                {
+                                                    val team = searchedTeams!![i]
+                                                    val name = team.id.toString() + " - " + team.name
+
+                                                    //If the contacts name doesn't equal the searched name
+                                                    if (!name.toLowerCase().contains(searchText.toString().toLowerCase()))
+                                                    {
+                                                        //remove it from the list and notify the recyclerview
+                                                        searchedTeams!!.removeAt(i)
+                                                        teamListAdapter.notifyItemRemoved(i)
+                                                        teamListAdapter.notifyItemRangeChanged(i, searchedTeams!!.size)
+
+                                                        //this prevents the index from passing the size of the list,
+                                                        //stays on the same index until you NEED to move to the next one
+                                                        i--
+                                                    }
+                                                    i++
+                                                }
+
+                                                previousSearchLength = searchLength
+
+                                                return false
+                                            }
+
+                                        }
+                                )
                             },
                             {
                                 AppLog.error(it)
                             }
                     )
+        }
 
-            activityContext.setToolbarTitle(matchId.toString())
-            view.AllianceViewPagerLinearLayout.visibility = View.VISIBLE
-            view.TeamsRecyclerView.visibility = View.GONE
+        return onCreateView(view)
+    }
 
-            val viewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
+    fun setData() {
 
-            val blueAllianceFrag = newInstance(matchId, AllianceColor.BLUE)
-            val redAllianceFrag = newInstance(matchId, AllianceColor.RED)
-
-            viewPagerAdapter.addFragment(blueAllianceFrag, activityContext.getString(R.string.blue_alliance))
-            viewPagerAdapter.addFragment(redAllianceFrag, activityContext.getString(R.string.red_alliance))
-
-            view.AllianceViewPager.adapter = viewPagerAdapter
-            view.AllianceTabLayout.setupWithViewPager(view.AllianceViewPager)
-            view.AllianceTabLayout.setSelectedTabIndicatorColor(activityContext.primaryColorDark)
-
-            activityContext.lockDrawerLayout(true, View.OnClickListener { activityContext.onBackPressed() })
-
-        }//if matchId specified, setup the viewpager and hide the recyclerview
-
-        return super.onCreateView(view)
     }
 
     override fun onPause()

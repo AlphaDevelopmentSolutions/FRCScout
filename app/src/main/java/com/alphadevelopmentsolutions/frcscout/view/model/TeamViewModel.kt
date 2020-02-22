@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.alphadevelopmentsolutions.frcscout.classes.RDatabase
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Event
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 import com.alphadevelopmentsolutions.frcscout.repository.TeamRepository
 import io.reactivex.Flowable
@@ -19,7 +20,11 @@ class TeamViewModel(application: Application) : AndroidViewModel(application) {
      * Gets all [Team] objects from the database
      * @see TeamRepository.objs
      */
-    val objs: Flowable<List<Team>>
+    val objs by lazy {
+        repository.objs
+    }
+
+    fun objAtEvent(eventId: UUID) = repository.objAtEvent(eventId)
 
     /**
      * Gets all [Team] objects from the database based on [Team.id]
@@ -27,10 +32,6 @@ class TeamViewModel(application: Application) : AndroidViewModel(application) {
      * @see TeamRepository.objWithId
      */
     fun objWithId(id: UUID) = repository.objWithId(id)
-
-    init {
-        objs = repository.objs
-    }
 
     /**
      * Inserts a [Team] object into the database

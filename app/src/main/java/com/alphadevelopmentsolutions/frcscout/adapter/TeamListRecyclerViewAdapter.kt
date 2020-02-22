@@ -16,7 +16,11 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.layout_card_team.view.*
 import java.io.File
 
-internal class TeamListRecyclerViewAdapter(private val match: Match?, private val teamList: ArrayList<Team>, private val context: MainActivity) : RecyclerView.Adapter<TeamListRecyclerViewAdapter.ViewHolder>()
+internal class TeamListRecyclerViewAdapter(
+        private val match: Match?,
+        private val teamList: MutableList<Team>,
+        private val context: MainActivity
+) : RecyclerView.Adapter<TeamListRecyclerViewAdapter.ViewHolder>()
 {
 
     internal class ViewHolder(val view: View, context: MainActivity) : RecyclerView.ViewHolder(view)

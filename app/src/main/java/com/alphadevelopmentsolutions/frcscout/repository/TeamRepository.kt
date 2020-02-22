@@ -1,8 +1,10 @@
 package com.alphadevelopmentsolutions.frcscout.repository
 
+import com.alphadevelopmentsolutions.frcscout.classes.table.core.Event
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 import com.alphadevelopmentsolutions.frcscout.dao.TeamDao
 import io.reactivex.Flowable
+import java.util.*
 
 
 class TeamRepository(private val teamDao: TeamDao) {
@@ -11,7 +13,11 @@ class TeamRepository(private val teamDao: TeamDao) {
      * Gets all [Team] objects from the database
      * @see TeamDao.getObjs
      */
-    val objs: Flowable<List<Team>> = teamDao.getObjs()
+    val objs by lazy {
+        teamDao.getObjs()
+    }
+
+    fun objAtEvent(eventId: UUID) = teamDao.getObjAtEvent(eventId)
 
     /**
      * Gets all [Team] objects from the database based on [Team.id]
