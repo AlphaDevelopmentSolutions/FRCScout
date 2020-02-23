@@ -46,4 +46,6 @@ class ScoutCardInfoViewModel(application: Application) : AndroidViewModel(applic
     fun insertAll(scoutCardInfos: List<ScoutCardInfo>) = viewModelScope.launch {
         repository.insertAll(scoutCardInfos)
     }
+
+    fun delete(scoutCardInfo: ScoutCardInfo) = repository.delete(scoutCardInfo)
 }

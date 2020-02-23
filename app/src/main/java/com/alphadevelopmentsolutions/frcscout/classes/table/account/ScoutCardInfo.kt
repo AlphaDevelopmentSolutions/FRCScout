@@ -18,8 +18,5 @@ class ScoutCardInfo(
     /**
      * @see Table.toString
      */
-    override fun toString(): String
-    {
-        return "Team $teamId - Scout Card"
-    }
+    override fun toString() = value
 }

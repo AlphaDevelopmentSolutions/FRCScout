@@ -40,4 +40,5 @@ class ScoutCardInfoRepository(private val scoutCardInfoDao: ScoutCardInfoDao) {
         scoutCardInfoDao.insertAll(scoutCardInfos)
     }
 
+    fun delete(scoutCardInfo: ScoutCardInfo) = scoutCardInfoDao.delete(scoutCardInfo)
 }

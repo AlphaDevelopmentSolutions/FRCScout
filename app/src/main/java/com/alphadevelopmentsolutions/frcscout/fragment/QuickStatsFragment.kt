@@ -49,220 +49,218 @@ class QuickStatsFragment : MasterFragment()
         super.onCreate(savedInstanceState)
 
         loadStatsThread = Thread(Runnable {
-            loadingThread.join()
 
-
-            val matches = Match.getObjects(eventId!!, null, teamId!!, database, Database.SortDirection.ASC) //matches for this teamId
-            val scoutCardInfoKeys = ScoutCardInfoKey.getObjects(yearId!!, null, database) //scout card info keys for this yearId
-            val scoutCardInfos = ScoutCardInfo.getObjects(eventId, null, null, null, null, false, database) //scout card infos for this eventId
-
-            if (!scoutCardInfoKeys.isNullOrEmpty() && !matches.isNullOrEmpty() && !scoutCardInfos.isNullOrEmpty())
-            {
-                val eventStatsHashMap = eventId!!.getStats(yearId, scoutCardInfoKeys, scoutCardInfos, database) //get eventId avg data
-
-                //get matchId stats data for each matchId
-                val matchStatsHashMap = HashMap<String, HashMap<String, Double>>()
-                for(match in matches)
-                    matchStatsHashMap[match.toString()] = match.getStats(yearId, eventId, scoutCardInfoKeys, scoutCardInfos, database)
-
-                val teamStatsHashMap = teamId!!.getStats(yearId, eventId, matches, scoutCardInfoKeys, scoutCardInfos, database) // get teamId stats data
-                
-                // get all the states from the scout card info keys
-                val scoutInfoKeyStates = LinkedHashMap<String, ArrayList<ScoutCardInfoKey>>().apply {
-                    
-                    for(scoutCardInfoKey in scoutCardInfoKeys)
-                    {
-                        if(scoutCardInfoKey.includeInStats == true)
-                            this[scoutCardInfoKey.keyState] = (this[scoutCardInfoKey.keyState] ?: ArrayList()).apply {
-                                add(scoutCardInfoKey)
-                            }
-                    }
-                }
-                
-                //iterate through all the info key states
-                for(scoutCardInfoKeyState in scoutInfoKeyStates.values)
-                {
-                    //latch used to hold the thread until the runOnUiThread has finished
-                    val latch = CountDownLatch(1)
-
-                    activityContext.runOnUiThread {
-
-                        tempStatChart = LineChart(activityContext)
-
-                        latch.countDown()
-
-                    }
-
-                    latch.await()
-
-                    val statChart = tempStatChart
-
-                    //set stat chart properties
-                    with(statChart)
-                    {
-                        layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                        layoutParams.height = this@QuickStatsFragment.activityContext.dp(250)
-                        setTouchEnabled(false)
-                        setDrawGridBackground(true)
-                        isDragEnabled = false
-                        setPinchZoom(false)
-                        isDoubleTapToZoomEnabled = false
-                        description.isEnabled = false
-                        xAxis.position = XAxis.XAxisPosition.BOTTOM
-                        xAxis.granularity = 1f
-                        xAxis.labelRotationAngle = -45f
-                        xAxis.labelCount = matches.size
-                        xAxis.valueFormatter = object: ValueFormatter(){
-
-                            override fun getFormattedValue(value: Float): String
-                            {
-                                return matches[value.toInt()].toString()
-                            }
-                        }
-                        axisLeft.granularity = 1f
-                        axisRight.isEnabled = false
-                        legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-                        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
-                        legend.yOffset = 15f
-                    }
-                    
-                    //list of entries to show on the stat chart
-                    val teamStats = ArrayList<Entry>()
-                    val matchStats = ArrayList<Entry>()
-                    val eventAvg = ArrayList<Entry>()
-                    
-                    //array to hold entries
-                    val dataSets = ArrayList<ILineDataSet>()
-                    
-                    //data to hold data sets
-                    var data: LineData
-                    val filler = IFillFormatter { _, _ -> statChart.axisLeft.axisMinimum }
-                    
-                    //sets default data set properties
-                    val formatDataSets = fun (dataSet: LineDataSet)
-                    {
-                        with(dataSet)
-                        {
-                            mode = LineDataSet.Mode.HORIZONTAL_BEZIER
-                            setDrawValues(false)
-                            lineWidth = 2f
-                            circleRadius = 3f
-                            setDrawCircleHole(false)
-                            valueTextSize = 9f
-                            setDrawFilled(true)
-                            fillFormatter = filler
-                        }
-                        
-                    }
-
-                    val teamDataSet = LineDataSet(ArrayList<Entry>(), activityContext.getString(R.string.team_average)).apply{
-                        formatDataSets(this)
-                        color = Color.parseColor("#03A9F4")
-                        setCircleColor(Color.parseColor("#03A9F4"))
-                        fillColor = Color.argb(49, 3, 169, 244)
-                    }
-                    
-
-                    val matchDataSet = LineDataSet(ArrayList<Entry>(), activityContext.getString(R.string.match_average)).apply{
-                        formatDataSets(this)
-                        color = Color.parseColor("#FF0000")
-                        setCircleColor(Color.parseColor("#FF0000"))
-                        fillColor = Color.argb(49, 244, 0, 0)
-                    }
-                    
-
-                    val eventAvgDataSet = LineDataSet(ArrayList<Entry>(), activityContext.getString(R.string.event_average)).apply{
-                        formatDataSets(this)
-                        color = Color.parseColor("#005685")
-                        setDrawCircles(false)
-                        setDrawCircleHole(false)
-                        setDrawFilled(false)
-                        enableDashedLine(25f, 20f, 1f)
-                    }
-                    
-
-                    //add stat chart to the statcharts arraylist
-                    statCharts.add(
-                            //add the linear layout to the stat chart
-                            LinearLayout(activityContext).apply{
-                                orientation = LinearLayout.VERTICAL
-                                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                                setPadding(0, 0, 0, this@QuickStatsFragment.activityContext.dp(8))
-
-                                //add the textview with the title to the linear layout
-                                addView(
-                                        TextView(context).apply {
-                                            text = scoutCardInfoKeyState[0].state
-                                            setTypeface(null, Typeface.BOLD)
-                                            gravity = Gravity.CENTER
-                                            setTextColor(Color.BLACK)
-                                        })
-
-                                //add the spinner selector to the linear layout
-                                addView(
-                                        Spinner(context).apply {
-
-                                            val spinnerArray = ArrayList<String>().apply {
-
-                                                for(scoutCardInfo in scoutInfoKeyStates[scoutCardInfoKeyState[0].state]!!)
-                                                    add(scoutCardInfo.name)
-                                            }
-
-                                            adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, spinnerArray)
-
-                                            onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
-                                                override fun onNothingSelected(p0: AdapterView<*>?)
-                                                {
-
-                                                }
-
-                                                //when new item selected, update the chart
-                                                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long)
-                                                {
-                                                    //used to find min / max values
-                                                    val chartPoints = ArrayList<Float>()
-
-                                                    teamStats.clear()
-                                                    matchDataSet.clear()
-                                                    eventAvgDataSet.clear()
-
-                                                    for (i in 0 until matches.size)
-                                                    {
-                                                        val teamStat = teamStatsHashMap[matches[i].toString()]!![scoutCardInfoKeyState[p2].toString()]!!.toFloat()
-                                                        val matchStat = matchStatsHashMap[matches[i].toString()]!![scoutCardInfoKeyState[p2].toString()]!!.toDouble().toFloat()
-
-                                                        chartPoints.add(teamStat)
-                                                        chartPoints.add(matchStat)
-
-                                                        teamStats.add(Entry(i.toFloat(), teamStat))
-                                                        matchStats.add(Entry(i.toFloat(), matchStat))
-
-                                                        eventAvg.add(Entry(i.toFloat(), eventStatsHashMap[scoutCardInfoKeyState[p2].toString()]!!.toFloat()))
-                                                    }
-
-                                                    teamDataSet.values = teamStats
-                                                    matchDataSet.values = matchStats
-                                                    eventAvgDataSet.values = eventAvg
-
-                                                    dataSets.clear()
-                                                    dataSets.add(teamDataSet)
-                                                    dataSets.add(matchDataSet)
-                                                    dataSets.add(eventAvgDataSet)
-
-                                                    data = LineData(dataSets)
-
-                                                    statChart.data = data
-                                                    statChart.axisLeft.axisMinimum = Collections.min(chartPoints)
-                                                    statChart.animateY(750, Easing.EaseOutQuart)
-                                                }
-                                            }
-                                        }
-                                )
-
-                                addView(statChart)
-                    })
-                }
-            }
+//            val matches = Match.getObjects(eventId!!, null, teamId!!, database, Database.SortDirection.ASC) //matches for this teamId
+//            val scoutCardInfoKeys = ScoutCardInfoKey.getObjects(yearId!!, null, database) //scout card info keys for this yearId
+//            val scoutCardInfos = ScoutCardInfo.getObjects(eventId, null, null, null, null, false, database) //scout card infos for this eventId
+//
+//            if (!scoutCardInfoKeys.isNullOrEmpty() && !matches.isNullOrEmpty() && !scoutCardInfos.isNullOrEmpty())
+//            {
+//                val eventStatsHashMap = eventId!!.getStats(yearId, scoutCardInfoKeys, scoutCardInfos, database) //get eventId avg data
+//
+//                //get matchId stats data for each matchId
+//                val matchStatsHashMap = HashMap<String, HashMap<String, Double>>()
+//                for(match in matches)
+//                    matchStatsHashMap[match.toString()] = match.getStats(yearId, eventId, scoutCardInfoKeys, scoutCardInfos, database)
+//
+//                val teamStatsHashMap = teamId!!.getStats(yearId, eventId, matches, scoutCardInfoKeys, scoutCardInfos, database) // get teamId stats data
+//
+//                // get all the states from the scout card info keys
+//                val scoutInfoKeyStates = LinkedHashMap<String, ArrayList<ScoutCardInfoKey>>().apply {
+//
+//                    for(scoutCardInfoKey in scoutCardInfoKeys)
+//                    {
+//                        if(scoutCardInfoKey.includeInStats == true)
+//                            this[scoutCardInfoKey.keyState] = (this[scoutCardInfoKey.keyState] ?: ArrayList()).apply {
+//                                add(scoutCardInfoKey)
+//                            }
+//                    }
+//                }
+//
+//                //iterate through all the info key states
+//                for(scoutCardInfoKeyState in scoutInfoKeyStates.values)
+//                {
+//                    //latch used to hold the thread until the runOnUiThread has finished
+//                    val latch = CountDownLatch(1)
+//
+//                    activityContext.runOnUiThread {
+//
+//                        tempStatChart = LineChart(activityContext)
+//
+//                        latch.countDown()
+//
+//                    }
+//
+//                    latch.await()
+//
+//                    val statChart = tempStatChart
+//
+//                    //set stat chart properties
+//                    with(statChart)
+//                    {
+//                        layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+//                        layoutParams.height = this@QuickStatsFragment.activityContext.dp(250)
+//                        setTouchEnabled(false)
+//                        setDrawGridBackground(true)
+//                        isDragEnabled = false
+//                        setPinchZoom(false)
+//                        isDoubleTapToZoomEnabled = false
+//                        description.isEnabled = false
+//                        xAxis.position = XAxis.XAxisPosition.BOTTOM
+//                        xAxis.granularity = 1f
+//                        xAxis.labelRotationAngle = -45f
+//                        xAxis.labelCount = matches.size
+//                        xAxis.valueFormatter = object: ValueFormatter(){
+//
+//                            override fun getFormattedValue(value: Float): String
+//                            {
+//                                return matches[value.toInt()].toString()
+//                            }
+//                        }
+//                        axisLeft.granularity = 1f
+//                        axisRight.isEnabled = false
+//                        legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+//                        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+//                        legend.yOffset = 15f
+//                    }
+//
+//                    //list of entries to show on the stat chart
+//                    val teamStats = ArrayList<Entry>()
+//                    val matchStats = ArrayList<Entry>()
+//                    val eventAvg = ArrayList<Entry>()
+//
+//                    //array to hold entries
+//                    val dataSets = ArrayList<ILineDataSet>()
+//
+//                    //data to hold data sets
+//                    var data: LineData
+//                    val filler = IFillFormatter { _, _ -> statChart.axisLeft.axisMinimum }
+//
+//                    //sets default data set properties
+//                    val formatDataSets = fun (dataSet: LineDataSet)
+//                    {
+//                        with(dataSet)
+//                        {
+//                            mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+//                            setDrawValues(false)
+//                            lineWidth = 2f
+//                            circleRadius = 3f
+//                            setDrawCircleHole(false)
+//                            valueTextSize = 9f
+//                            setDrawFilled(true)
+//                            fillFormatter = filler
+//                        }
+//
+//                    }
+//
+//                    val teamDataSet = LineDataSet(ArrayList<Entry>(), activityContext.getString(R.string.team_average)).apply{
+//                        formatDataSets(this)
+//                        color = Color.parseColor("#03A9F4")
+//                        setCircleColor(Color.parseColor("#03A9F4"))
+//                        fillColor = Color.argb(49, 3, 169, 244)
+//                    }
+//
+//
+//                    val matchDataSet = LineDataSet(ArrayList<Entry>(), activityContext.getString(R.string.match_average)).apply{
+//                        formatDataSets(this)
+//                        color = Color.parseColor("#FF0000")
+//                        setCircleColor(Color.parseColor("#FF0000"))
+//                        fillColor = Color.argb(49, 244, 0, 0)
+//                    }
+//
+//
+//                    val eventAvgDataSet = LineDataSet(ArrayList<Entry>(), activityContext.getString(R.string.event_average)).apply{
+//                        formatDataSets(this)
+//                        color = Color.parseColor("#005685")
+//                        setDrawCircles(false)
+//                        setDrawCircleHole(false)
+//                        setDrawFilled(false)
+//                        enableDashedLine(25f, 20f, 1f)
+//                    }
+//
+//
+//                    //add stat chart to the statcharts arraylist
+//                    statCharts.add(
+//                            //add the linear layout to the stat chart
+//                            LinearLayout(activityContext).apply{
+//                                orientation = LinearLayout.VERTICAL
+//                                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+//                                setPadding(0, 0, 0, this@QuickStatsFragment.activityContext.dp(8))
+//
+//                                //add the textview with the title to the linear layout
+//                                addView(
+//                                        TextView(context).apply {
+//                                            text = scoutCardInfoKeyState[0].state
+//                                            setTypeface(null, Typeface.BOLD)
+//                                            gravity = Gravity.CENTER
+//                                            setTextColor(Color.BLACK)
+//                                        })
+//
+//                                //add the spinner selector to the linear layout
+//                                addView(
+//                                        Spinner(context).apply {
+//
+//                                            val spinnerArray = ArrayList<String>().apply {
+//
+//                                                for(scoutCardInfo in scoutInfoKeyStates[scoutCardInfoKeyState[0].state]!!)
+//                                                    add(scoutCardInfo.name)
+//                                            }
+//
+//                                            adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, spinnerArray)
+//
+//                                            onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+//                                                override fun onNothingSelected(p0: AdapterView<*>?)
+//                                                {
+//
+//                                                }
+//
+//                                                //when new item selected, update the chart
+//                                                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long)
+//                                                {
+//                                                    //used to find min / max values
+//                                                    val chartPoints = ArrayList<Float>()
+//
+//                                                    teamStats.clear()
+//                                                    matchDataSet.clear()
+//                                                    eventAvgDataSet.clear()
+//
+//                                                    for (i in 0 until matches.size)
+//                                                    {
+//                                                        val teamStat = teamStatsHashMap[matches[i].toString()]!![scoutCardInfoKeyState[p2].toString()]!!.toFloat()
+//                                                        val matchStat = matchStatsHashMap[matches[i].toString()]!![scoutCardInfoKeyState[p2].toString()]!!.toDouble().toFloat()
+//
+//                                                        chartPoints.add(teamStat)
+//                                                        chartPoints.add(matchStat)
+//
+//                                                        teamStats.add(Entry(i.toFloat(), teamStat))
+//                                                        matchStats.add(Entry(i.toFloat(), matchStat))
+//
+//                                                        eventAvg.add(Entry(i.toFloat(), eventStatsHashMap[scoutCardInfoKeyState[p2].toString()]!!.toFloat()))
+//                                                    }
+//
+//                                                    teamDataSet.values = teamStats
+//                                                    matchDataSet.values = matchStats
+//                                                    eventAvgDataSet.values = eventAvg
+//
+//                                                    dataSets.clear()
+//                                                    dataSets.add(teamDataSet)
+//                                                    dataSets.add(matchDataSet)
+//                                                    dataSets.add(eventAvgDataSet)
+//
+//                                                    data = LineData(dataSets)
+//
+//                                                    statChart.data = data
+//                                                    statChart.axisLeft.axisMinimum = Collections.min(chartPoints)
+//                                                    statChart.animateY(750, Easing.EaseOutQuart)
+//                                                }
+//                                            }
+//                                        }
+//                                )
+//
+//                                addView(statChart)
+//                    })
+//                }
+//            }
         })
 
         loadStatsThread.start()
@@ -278,14 +276,14 @@ class QuickStatsFragment : MasterFragment()
             loadStatsThread.join()
 
             activityContext.runOnUiThread{
-                for(statChart in statCharts)
-                {
-                    val chartParent = if(statChart.parent != null) statChart.parent as LinearLayout else null
-                    if(chartParent != null && chartParent.childCount > 0)
-                        chartParent.removeAllViews()
-
-                    view.StatChartsLinearLayout.addView(statChart)
-                }
+//                for(statChart in statCharts)
+//                {
+//                    val chartParent = if(statChart.parent != null) statChart.parent as LinearLayout else null
+//                    if(chartParent != null && chartParent.childCount > 0)
+//                        chartParent.removeAllViews()
+//
+//                    view.StatChartsLinearLayout.addView(statChart)
+//                }
 
                 isLoading = false
             }
@@ -293,7 +291,7 @@ class QuickStatsFragment : MasterFragment()
 
         isLoading = true
 
-        return super.onCreateView(view)
+        return onCreateView(view)
     }
 
     companion object

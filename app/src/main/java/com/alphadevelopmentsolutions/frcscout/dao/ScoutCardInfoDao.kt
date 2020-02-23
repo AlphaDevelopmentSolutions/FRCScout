@@ -1,9 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
 import com.alphadevelopmentsolutions.frcscout.view.database.ScoutCardInfoDatabaseView
@@ -52,4 +49,7 @@ interface ScoutCardInfoDao {
      */
     @Query("DELETE FROM scout_card_info")
     suspend fun clear()
+
+    @Delete
+    fun delete(scoutCardInfo: ScoutCardInfo)
 }

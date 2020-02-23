@@ -17,8 +17,5 @@ class RobotInfo(
     /**
      * @see Table.toString
      */
-    override fun toString(): String
-    {
-        return "Team $teamId - Robot Info"
-    }
+    override fun toString() = value
 }

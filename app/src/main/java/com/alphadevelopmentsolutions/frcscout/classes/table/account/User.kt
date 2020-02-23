@@ -14,8 +14,5 @@ class User(
     /**
      * @see Table.toString
      */
-    override fun toString(): String
-    {
-        return "$firstName $lastName"
-    }
+    override fun toString() = "$firstName $lastName"
 }

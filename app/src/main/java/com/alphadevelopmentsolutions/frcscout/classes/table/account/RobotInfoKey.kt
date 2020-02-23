@@ -17,8 +17,5 @@ class RobotInfoKey(
     /**
      * @see Table.toString
      */
-    override fun toString(): String
-    {
-        return ""
-    }
+    override fun toString() = ""
 }

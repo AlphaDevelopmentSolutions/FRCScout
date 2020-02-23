@@ -6,6 +6,8 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInf
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfoKey
 import com.alphadevelopmentsolutions.frcscout.classes.table.Table
 import com.alphadevelopmentsolutions.frcscout.enums.AllianceColor
+import com.alphadevelopmentsolutions.frcscout.enums.MatchStatus
+import com.alphadevelopmentsolutions.frcscout.enums.MatchType
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
 import com.google.gson.annotations.SerializedName
 import java.util.*
@@ -17,7 +19,7 @@ import kotlin.math.round
 class Match(
         @SerializedName("event_id") var eventId: UUID,
         var key: String,
-        @SerializedName("match_type") var matchType: Type,
+        @SerializedName("match_type") var matchType: MatchType,
         @SerializedName("set_number") var setNumber: Int,
         @SerializedName("match_number") var matchNumber: Int,
         @SerializedName("blue_alliance_team_one_id") var blueAllianceTeamOneId: UUID,
@@ -35,85 +37,13 @@ class Match(
      * Returns either the winning teamId or tie status from the matchId
      * @return Status enum
      */
-    val matchStatus: Status
-        get() = when
-        {
-            blueAllianceScore == redAllianceScore -> Status.TIE
-            blueAllianceScore?: 0 > redAllianceScore?: 0 -> Status.BLUE
-            else -> Status.RED
-        }
-
-    /**
-     * This references the types defined by the blue alliance API
-     * When assigning a type, use the TypeReference interface for a more
-     * plain english aproach
-     */
-    enum class Type
-    {
-        qm,
-        qf,
-        sf,
-        f;
-
-        fun toString(match: Match): String
-        {
-            return when (this)
-            {
-                qm -> "Quals " + match.matchNumber
-
-                qf -> "Quarters " + match.setNumber + " - " + match.matchNumber
-
-                sf -> "Semis " + match.setNumber + " - " + match.matchNumber
-
-                f -> "Finals " + match.matchNumber
+    val matchStatus: MatchStatus
+        get() =
+            when {
+                blueAllianceScore == redAllianceScore -> MatchStatus.TIE
+                blueAllianceScore?: 0 > redAllianceScore?: 0 -> MatchStatus.BLUE
+                else -> MatchStatus.RED
             }
-        }
-
-        companion object
-        {
-
-            /**
-             * Converts a string value to enum
-             * @param matchType string enum name
-             * @return enum converted from string
-             */
-            fun fromString(matchType: String): Type
-            {
-                if (matchType.toLowerCase() == qm.name.toLowerCase())
-                    return qm
-                if (matchType.toLowerCase() == qf.name.toLowerCase())
-                    return qf
-                return if (matchType.toLowerCase() == sf.name.toLowerCase())
-                    sf
-                else
-                    f
-            }
-
-            fun getTypes() : ArrayList<Type>
-            {
-                return arrayListOf(qm, qf, sf, f)
-            }
-        }
-    }
-
-    interface TypeReference
-    {
-        companion object
-        {
-            val QUALIFICATIONS = Type.qm
-            val QUARTER_FINALS = Type.qf
-            val SEMI_FINALS = Type.sf
-            val FINALS = Type.f
-        }
-    }
-
-    enum class Status
-    {
-        TIE,
-        BLUE,
-        RED
-    }
-
 
     /**
      * Finds the alliance color of the teamnumber sent in the param

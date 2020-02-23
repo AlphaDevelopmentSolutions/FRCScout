@@ -21,28 +21,6 @@ class RobotMedia(
 ) : Table()
 {
     /**
-     * Converts the current robot media into base64 format for server submission
-     * @return base64 bitmap image
-     */
-    val base64Image: String?
-        get()
-        {
-            val robotMedia = File(uri)
-
-            if (robotMedia.exists())
-            {
-                val byteArrayOutputStream = ByteArrayOutputStream()
-                this.imageBitmap.compress(Bitmap.CompressFormat.JPEG, 15, byteArrayOutputStream)
-                val robotMediaBytes = byteArrayOutputStream.toByteArray()
-
-                return Base64.encodeToString(robotMediaBytes, Base64.DEFAULT)
-            }
-
-
-            return null
-        }
-
-    /**
      * Gets a bitmap version of the robot image
      * @return bitmap version of robot image
      */
@@ -85,8 +63,5 @@ class RobotMedia(
     /**
      * @see Table.toString
      */
-    override fun toString(): String
-    {
-        return "Team $teamId - Robot Media"
-    }
+    override fun toString() = uri
 }
