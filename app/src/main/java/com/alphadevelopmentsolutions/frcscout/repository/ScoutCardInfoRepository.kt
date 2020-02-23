@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.repository
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.dao.ScoutCardInfoDao
 import io.reactivex.Flowable
+import java.util.*
 
 
 class ScoutCardInfoRepository(private val scoutCardInfoDao: ScoutCardInfoDao) {
@@ -19,6 +20,9 @@ class ScoutCardInfoRepository(private val scoutCardInfoDao: ScoutCardInfoDao) {
      * @see ScoutCardInfoDao.getObjWithId
      */
     fun objWithId(id: String) = scoutCardInfoDao.getObjWithId(id)
+
+    fun objsViewForTeam(teamId: UUID, matchId: UUID) = scoutCardInfoDao.getObjsViewForTeam(teamId, matchId)
+
 
     /**
      * Inserts a [ScoutCardInfo] object into the database

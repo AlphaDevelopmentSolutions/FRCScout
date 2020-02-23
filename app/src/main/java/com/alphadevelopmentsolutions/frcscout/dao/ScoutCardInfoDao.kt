@@ -5,7 +5,10 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfo
+import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
+import com.alphadevelopmentsolutions.frcscout.view.database.ScoutCardInfoDatabaseView
 import io.reactivex.Flowable
+import java.util.*
 
 @Dao
 interface ScoutCardInfoDao {
@@ -22,6 +25,15 @@ interface ScoutCardInfoDao {
      */
     @Query("SELECT * FROM scout_card_info where id = :id")
     fun getObjWithId(id: String): Flowable<ScoutCardInfo>
+
+    @Query(
+            """
+                SELECT * FROM ${TableName.SCOUT_CARD_INFO_KEY}
+                LEFT JOIN ${TableName.SCOUT_CARD_INFO} ON ${TableName.SCOUT_CARD_INFO}.keyId = ${TableName.SCOUT_CARD_INFO_KEY}.id
+                WHERE ${TableName.SCOUT_CARD_INFO}.teamId = :teamId AND ${TableName.SCOUT_CARD_INFO}.matchId  = :matchId
+            """
+    )
+    fun getObjsViewForTeam(teamId: UUID, matchId: UUID): Flowable<List<ScoutCardInfoDatabaseView>>
 
     /**
      * Inserts a new [ScoutCardInfo] object into the database

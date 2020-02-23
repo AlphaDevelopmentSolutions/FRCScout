@@ -8,6 +8,7 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInf
 import com.alphadevelopmentsolutions.frcscout.repository.ScoutCardInfoRepository
 import io.reactivex.Flowable
 import kotlinx.coroutines.launch
+import java.util.*
 
 class ScoutCardInfoViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -18,8 +19,9 @@ class ScoutCardInfoViewModel(application: Application) : AndroidViewModel(applic
      * Gets all [ScoutCardInfo] objects from the database
      * @see ScoutCardInfoRepository.objs
      */
-    val objs: Flowable<List<ScoutCardInfo>>
-
+    val objs by lazy {
+        repository.objs
+    }
     /**
      * Gets all [ScoutCardInfo] objects from the database based on [ScoutCardInfo.id]
      * @param id specified the id to sort the [ScoutCardInfo] object by
@@ -27,9 +29,7 @@ class ScoutCardInfoViewModel(application: Application) : AndroidViewModel(applic
      */
     fun objWithId(id: String) = repository.objWithId(id)
 
-    init {
-        objs = repository.objs
-    }
+    fun objsViewForTeam(teamId: UUID, matchId: UUID) = repository.objsViewForTeam(teamId, matchId)
 
     /**
      * Inserts a [ScoutCardInfo] object into the database
