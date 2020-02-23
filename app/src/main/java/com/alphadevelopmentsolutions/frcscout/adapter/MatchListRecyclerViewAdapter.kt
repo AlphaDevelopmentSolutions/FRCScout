@@ -13,11 +13,9 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.core.Match
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 import com.alphadevelopmentsolutions.frcscout.enums.AllianceColor
-import com.alphadevelopmentsolutions.frcscout.fragment.ChecklistFragment
-import com.alphadevelopmentsolutions.frcscout.fragment.ScoutCardInfoFragment
-import com.alphadevelopmentsolutions.frcscout.fragment.TeamFragment
-import com.alphadevelopmentsolutions.frcscout.fragment.TeamListFragment
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.fragment.*
+import com.alphadevelopmentsolutions.frcscout.view.database.MatchDatabaseView
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.layout_card_match.view.*
 import java.lang.reflect.Type
@@ -26,25 +24,10 @@ import java.util.*
 internal class MatchListRecyclerViewAdapter(
         event: Event,
         private val team: Team?,
-        private val matches: ArrayList<Match>,
+        private val matches: MutableList<MatchDatabaseView>,
         private val context: MainActivity,
         private val fragmentOnClick: Type) : RecyclerView.Adapter<MatchListRecyclerViewAdapter.ViewHolder>()
 {
-    private val scoutCards: HashMap<Match, ArrayList<ScoutCardInfo>> = HashMap()
-
-    init
-    {
-        if(fragmentOnClick == ScoutCardInfoFragment::class.java)
-        {
-            for(match in matches)
-            {
-                scoutCards[match] = ScoutCardInfo.getObjects(event, match, team, null, null, false, context.database)
-            }
-        }
-
-
-    }
-
     internal class ViewHolder(val view: View, context: MainActivity) : RecyclerView.ViewHolder(view)
     {
         init
@@ -73,100 +56,73 @@ internal class MatchListRecyclerViewAdapter(
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
     {
-        val match = matches[viewHolder.adapterPosition]
+        val matchView = matches[viewHolder.adapterPosition]
 
         //set matchId numbers
-        viewHolder.view.MatchIdTextView.text = match.toString()
+        viewHolder.view.MatchIdTextView.text = matchView.toString()
 
         //set teams
-        viewHolder.view.BlueAllianceTeamOneIdTextView.text = match.blueAllianceTeamOneId.toString()
-        viewHolder.view.BlueAllianceTeamTwoIdTextView.text = match.blueAllianceTeamTwoId.toString()
-        viewHolder.view.BlueAllianceTeamThreeIdTextView.text = match.blueAllianceTeamThreeId.toString()
+        viewHolder.view.BlueAllianceTeamOneIdTextView.text = matchView.blueAllianceTeamOne.toString()
+        viewHolder.view.BlueAllianceTeamTwoIdTextView.text = matchView.blueAllianceTeamTwo.toString()
+        viewHolder.view.BlueAllianceTeamThreeIdTextView.text = matchView.blueAllianceTeamThree.toString()
 
-        viewHolder.view.RedAllianceTeamOneIdTextView.text = match.redAllianceTeamOneId.toString()
-        viewHolder.view.RedAllianceTeamTwoIdTextView.text = match.redAllianceTeamTwoId.toString()
-        viewHolder.view.RedAllianceTeamThreeIdTextView.text = match.redAllianceTeamThreeId.toString()
+        viewHolder.view.RedAllianceTeamOneIdTextView.text = matchView.redAllianceTeamOne.toString()
+        viewHolder.view.RedAllianceTeamTwoIdTextView.text = matchView.redAllianceTeamTwo.toString()
+        viewHolder.view.RedAllianceTeamThreeIdTextView.text = matchView.redAllianceTeamThree.toString()
 
 
         //set the click listeners for each teamId on the matchId
         //clicking their number will bring you to their teamId page
-        if (team?.id != match.blueAllianceTeamOneId)
+        if (team?.id != matchView.match.blueAllianceTeamOneId)
         {
             viewHolder.view.BlueAllianceTeamOneIdTextView.setOnClickListener {
-                with(Team(match.blueAllianceTeamOneId))
-                {
-                    if(load(context.database))
-                        context.changeFragment(TeamFragment.newInstance(this), true)
-                    else
-                        context.showSnackbar(String.format(context.getString(R.string.load_fail), context.getString(R.string.team)))
-                }
+                context.changeFragment(TeamFragment.newInstance(matchView.blueAllianceTeamOne), true)
             }
         }
 
-        if (team?.id != match.blueAllianceTeamTwoId)
+        if (team?.id != matchView.match.blueAllianceTeamTwoId)
         {
             viewHolder.view.BlueAllianceTeamTwoIdTextView.setOnClickListener {
-                with(Team(match.blueAllianceTeamTwoId))
-                {
-                    if(load(context.database))
-                        context.changeFragment(TeamFragment.newInstance(this), true)
-                    else
-                        context.showSnackbar(String.format(context.getString(R.string.load_fail), context.getString(R.string.team)))
-                }
+                context.changeFragment(TeamFragment.newInstance(matchView.blueAllianceTeamTwo), true)
             }
         }
 
-        if (team?.id != match.blueAllianceTeamThreeId)
+        if (team?.id != matchView.match.blueAllianceTeamThreeId)
         {
             viewHolder.view.BlueAllianceTeamThreeIdTextView.setOnClickListener {
-                with(Team(match.blueAllianceTeamThreeId))
-                {
-                    if(load(context.database))
-                        context.changeFragment(TeamFragment.newInstance(this), true)
-                    else
-                        context.showSnackbar(String.format(context.getString(R.string.load_fail), context.getString(R.string.team)))
-                }
-            }        }
+                context.changeFragment(TeamFragment.newInstance(matchView.blueAllianceTeamThree), true)
+            }
+        }
 
-        if (team?.id != match.redAllianceTeamOneId)
+        if (team?.id != matchView.match.redAllianceTeamOneId)
         {
             viewHolder.view.RedAllianceTeamOneIdTextView.setOnClickListener {
-                with(Team(match.redAllianceTeamOneId))
-                {
-                    if(load(context.database))
-                        context.changeFragment(TeamFragment.newInstance(this), true)
-                    else
-                        context.showSnackbar(String.format(context.getString(R.string.load_fail), context.getString(R.string.team)))
-                }
-            }        }
+                context.changeFragment(TeamFragment.newInstance(matchView.redAllianceTeamOne), true)
+            }
+        }
 
-        if (team?.id != match.redAllianceTeamTwoId)
+        if (team?.id != matchView.match.redAllianceTeamTwoId)
         {
             viewHolder.view.RedAllianceTeamTwoIdTextView.setOnClickListener {
-                with(Team(match.redAllianceTeamTwoId))
-                {
-                    if(load(context.database))
-                        context.changeFragment(TeamFragment.newInstance(this), true)
-                    else
-                        context.showSnackbar(String.format(context.getString(R.string.load_fail), context.getString(R.string.team)))
-                }
-            }        }
+                context.changeFragment(TeamFragment.newInstance(matchView.redAllianceTeamTwo), true)
+            }
+        }
 
-        if (team?.id != match.redAllianceTeamThreeId)
+        if (team?.id != matchView.match.redAllianceTeamThreeId)
         {
             viewHolder.view.RedAllianceTeamThreeIdTextView.setOnClickListener {
-                with(Team(match.redAllianceTeamThreeId))
-                {
-                    if(load(context.database))
-                        context.changeFragment(TeamFragment.newInstance(this), true)
-                    else
-                        context.showSnackbar(String.format(context.getString(R.string.load_fail), context.getString(R.string.team)))
-                }
-            }        }
+                context.changeFragment(TeamFragment.newInstance(matchView.redAllianceTeamThree), true)
+            }
+        }
 
         //set score
-        viewHolder.view.BlueAllianceScoreTextView.text = match.blueAllianceScore.toString()
-        viewHolder.view.RedAllianceScoreTextView.text = match.redAllianceScore.toString()
+        matchView.match.blueAllianceScore?.let {
+            viewHolder.view.BlueAllianceScoreTextView.text = it.toString()
+        }
+
+        matchView.match.redAllianceScore?.let {
+            viewHolder.view.RedAllianceScoreTextView.text = it.toString()
+        }
 
         //teamId specified, style according to specified teamId
         if (team != null)
@@ -180,13 +136,13 @@ internal class MatchListRecyclerViewAdapter(
             //add the underline when viewing matches for a specific teamId
             when
             {
-                team.id == match.blueAllianceTeamOneId ->
+                team.id == matchView.match.blueAllianceTeamOneId ->
                 {
 
                     viewHolder.view.BlueAllianceTeamOneIdTextView.text = spannableString
                     selectedTeamAllianceColor = AllianceColor.BLUE
                 }
-                team.id == match.blueAllianceTeamTwoId ->
+                team.id == matchView.match.blueAllianceTeamTwoId ->
                 {
                     spannableString = SpannableString(team.id.toString())
                     spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
@@ -194,7 +150,7 @@ internal class MatchListRecyclerViewAdapter(
 
                     selectedTeamAllianceColor = AllianceColor.BLUE
                 }
-                team.id == match.blueAllianceTeamThreeId ->
+                team.id == matchView.match.blueAllianceTeamThreeId ->
                 {
                     spannableString = SpannableString(team.id.toString())
                     spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
@@ -202,7 +158,7 @@ internal class MatchListRecyclerViewAdapter(
 
                     selectedTeamAllianceColor = AllianceColor.BLUE
                 }
-                team.id == match.redAllianceTeamOneId ->
+                team.id == matchView.match.redAllianceTeamOneId ->
                 {
                     spannableString = SpannableString(team.id.toString())
                     spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
@@ -210,7 +166,7 @@ internal class MatchListRecyclerViewAdapter(
 
                     selectedTeamAllianceColor = AllianceColor.RED
                 }
-                team.id == match.redAllianceTeamTwoId ->
+                team.id == matchView.match.redAllianceTeamTwoId ->
                 {
                     spannableString = SpannableString(team.id.toString())
                     spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
@@ -218,7 +174,7 @@ internal class MatchListRecyclerViewAdapter(
 
                     selectedTeamAllianceColor = AllianceColor.RED
                 }
-                team.id == match.redAllianceTeamThreeId ->
+                team.id == matchView.match.redAllianceTeamThreeId ->
                 {
                     spannableString = SpannableString(team.id.toString())
                     spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
@@ -233,19 +189,25 @@ internal class MatchListRecyclerViewAdapter(
             //underline the score of the selected teamId
             if (selectedTeamAllianceColor == AllianceColor.BLUE)
             {
-                spannableString = SpannableString(match.blueAllianceScore.toString())
-                spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
-                viewHolder.view.BlueAllianceScoreTextView.text = spannableString
-            } else
+                matchView.match.blueAllianceScore?.let {
+                    spannableString = SpannableString(it.toString())
+                    spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
+                    viewHolder.view.BlueAllianceScoreTextView.text = spannableString
+                }
+
+            }
+            else
             {
-                spannableString = SpannableString(match.redAllianceScore.toString())
-                spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
-                viewHolder.view.RedAllianceScoreTextView.text = spannableString
+                matchView.match.redAllianceScore?.let {
+                    spannableString = SpannableString(it.toString())
+                    spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
+                    viewHolder.view.RedAllianceScoreTextView.text = spannableString
+                }
             }
         }
 
         //set the bold text for the winning teamId
-        with(match.matchStatus)
+        with(matchView.match.matchStatus)
         {
             when
             {
@@ -302,34 +264,26 @@ internal class MatchListRecyclerViewAdapter(
                 viewHolder.view.ViewScoutCardButton.visibility = View.GONE
                 viewHolder.view.AddScoutCardButton.visibility = View.GONE
 
-                //no card available, show the add card button
-                if (scoutCards[match]!!.size < 1)
-                {
-                    viewHolder.view.AddScoutCardButton.visibility = View.VISIBLE
-
-                    //Sends you to the scout card fragment
-                    viewHolder.view.AddScoutCardButton.setOnClickListener {
-                        //add new card
-                        context.changeFragment(ScoutCardInfoFragment.newInstance(match, team!!), true)
-                    }
-                }
-
-                //card available, show the view scout card button
-                else
-                {
-                    viewHolder.view.ViewScoutCardButton.visibility = View.VISIBLE
-
-                    //Sends you to the scout card fragment
-                    viewHolder.view.ViewScoutCardButton.setOnClickListener {
-                        //show matchId
-                        context.changeFragment(ScoutCardInfoFragment.newInstance(match, team!!), true)
-                    }
+                //Sends you to the scout card fragment
+                viewHolder.view.ViewScoutCardButton.setOnClickListener {
+                    //show matchId
+                    context.changeFragment(
+                            ScoutCardInfoFragment.newInstance(matches[viewHolder.adapterPosition].match, team!!),
+                            true
+                    )
                 }
 
                 viewHolder.view.ViewMatchButton.visibility = View.VISIBLE
 
                 //Sends you to the matchId overview fragment
-                viewHolder.view.ViewMatchButton.setOnClickListener { context.changeFragment(TeamListFragment.newInstance(matches[viewHolder.adapterPosition], null), true) }
+                viewHolder.view.ViewMatchButton.setOnClickListener {
+                    context.changeFragment(
+                            MatchFragment.newInstance(
+                                    matches[viewHolder.adapterPosition].match
+                            ),
+                            true
+                    )
+                }
             }
             ChecklistFragment::class.java ->
             {
@@ -339,7 +293,15 @@ internal class MatchListRecyclerViewAdapter(
                 viewHolder.view.AddScoutCardButton.visibility = View.GONE
 
                 //Sends you to the checklist fragment
-                viewHolder.view.ViewChecklistItemButton.setOnClickListener { context.changeFragment(ChecklistFragment.newInstance(team!!, matches[viewHolder.adapterPosition]), true) }
+                viewHolder.view.ViewChecklistItemButton.setOnClickListener {
+                    context.changeFragment(
+                            ChecklistFragment.newInstance(
+                                    team!!,
+                                    matches[viewHolder.adapterPosition].match
+                            ),
+                            true
+                    )
+                }
             }
             TeamListFragment::class.java ->
             {
@@ -349,7 +311,14 @@ internal class MatchListRecyclerViewAdapter(
                 viewHolder.view.AddScoutCardButton.visibility = View.GONE
 
                 //Sends you to the matchId overview fragment
-                viewHolder.view.ViewMatchButton.setOnClickListener { context.changeFragment(TeamListFragment.newInstance(matches[viewHolder.adapterPosition], null), true) }
+                viewHolder.view.ViewMatchButton.setOnClickListener {
+                    context.changeFragment(
+                            MatchFragment.newInstance(
+                                    matches[viewHolder.adapterPosition].match
+                            ),
+                            true
+                    )
+                }
             }
         }
     }
