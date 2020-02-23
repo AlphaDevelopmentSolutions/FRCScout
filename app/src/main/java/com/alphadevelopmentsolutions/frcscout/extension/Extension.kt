@@ -14,6 +14,6 @@ fun Bundle.getUUIDOrNull(key: String): UUID? {
         null
 }
 
-fun Bundle.putUUID(key: String, uuid: UUID) {
-    putString(key, uuid.toString())
+fun Bundle.putUUID(key: String, uuid: UUID?) {
+    putString(key, uuid?.toString())
 }

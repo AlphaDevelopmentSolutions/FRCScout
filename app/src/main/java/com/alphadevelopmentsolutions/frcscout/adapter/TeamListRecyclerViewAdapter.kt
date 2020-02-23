@@ -15,9 +15,10 @@ import com.google.android.material.button.MaterialButton
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.layout_card_team.view.*
 import java.io.File
+import java.util.*
 
 internal class TeamListRecyclerViewAdapter(
-        private val match: Match?,
+        private val matchId: UUID?,
         private val teamList: MutableList<Team>,
         private val context: MainActivity
 ) : RecyclerView.Adapter<TeamListRecyclerViewAdapter.ViewHolder>()
