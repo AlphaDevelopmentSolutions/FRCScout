@@ -310,6 +310,5 @@
     <string name="recaptcha_error">There was an issue verifying the reCAPTCHA. Please try again.</string>
     <string name="logging_in">Logging in please wait&#8230;</string>
     <string name="not_empty">%1$s must not be empty.</string>
-    <string name="login">Login</string>
 
 </resources>

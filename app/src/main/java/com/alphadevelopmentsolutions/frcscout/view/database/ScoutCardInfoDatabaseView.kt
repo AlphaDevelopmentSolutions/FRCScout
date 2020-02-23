@@ -9,5 +9,5 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 
 class ScoutCardInfoDatabaseView(
         @Embedded val scoutCardInfoKey: ScoutCardInfoKey,
-        @Relation(parentColumn = "id", entityColumn = "keyId", entity = ScoutCardInfo::class) val scoutCardInfo: ScoutCardInfo
+        @Relation(parentColumn = "id", entityColumn = "keyId", entity = ScoutCardInfo::class) val scoutCardInfo: List<ScoutCardInfo>
 )

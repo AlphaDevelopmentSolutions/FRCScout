@@ -6,19 +6,27 @@ import androidx.lifecycle.viewModelScope
 import com.alphadevelopmentsolutions.frcscout.classes.RDatabase
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Event
 import com.alphadevelopmentsolutions.frcscout.repository.EventRepository
+import com.alphadevelopmentsolutions.frcscout.repository.ScoutCardInfoRepository
 import io.reactivex.Flowable
 import kotlinx.coroutines.launch
+import java.util.HashMap
+import kotlin.math.round
 
 class EventViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository =
-            EventRepository(RDatabase.getInstance(application).eventDao())
+    private val repository by lazy {
+        EventRepository(RDatabase.getInstance(application).eventDao())
+    }
+
+    private val context = application
 
     /**
      * Gets all [Event] objects from the database
      * @see EventRepository.objs
      */
-    val objs: Flowable<List<Event>>
+    val objs by lazy {
+        repository.objs
+    }
 
     /**
      * Gets all [Event] objects from the database based on [Event.id]
@@ -26,10 +34,6 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
      * @see EventRepository.objWithId
      */
     fun objWithId(id: Int) = repository.objWithId(id)
-
-    init {
-        objs = repository.objs
-    }
 
     /**
      * Inserts a [Event] object into the database
@@ -45,5 +49,12 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun insertAll(events: List<Event>) = viewModelScope.launch {
         repository.insertAll(events)
+    }
+
+    suspend fun getStats(event: Event): HashMap<String, Double> {
+
+        val scoutCardInfoRepo = ScoutCardInfoRepository(RDatabase.getInstance(context).scoutCardInfoDao())
+
+        return scoutCardInfoRepo.calculateStats(scoutCardInfoRepo.objsViewForEvent(event.id))
     }
 }

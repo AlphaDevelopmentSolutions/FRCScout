@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.alphadevelopmentsolutions.frcscout.classes.RDatabase
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.repository.ScoutCardInfoRepository
+import com.alphadevelopmentsolutions.frcscout.view.database.ScoutCardInfoDatabaseView
 import io.reactivex.Flowable
 import kotlinx.coroutines.launch
+import java.lang.Math.round
 import java.util.*
 
 class ScoutCardInfoViewModel(application: Application) : AndroidViewModel(application) {

@@ -32,6 +32,26 @@ interface ScoutCardInfoDao {
     )
     fun getObjsViewForTeam(teamId: UUID, matchId: UUID): Flowable<List<ScoutCardInfoDatabaseView>>
 
+    @Query(
+            """
+                SELECT * FROM ${TableName.SCOUT_CARD_INFO_KEY}
+                LEFT JOIN ${TableName.SCOUT_CARD_INFO} ON ${TableName.SCOUT_CARD_INFO}.keyId = ${TableName.SCOUT_CARD_INFO_KEY}.id
+                LEFT JOIN ${TableName.MATCH} ON ${TableName.MATCH}.id = ${TableName.SCOUT_CARD_INFO}.matchId
+                WHERE ${TableName.MATCH}.eventId = :eventId
+            """
+    )
+    fun getObjsViewForEvent(eventId: UUID): List<ScoutCardInfoDatabaseView>
+
+    @Query(
+            """
+                SELECT * FROM ${TableName.SCOUT_CARD_INFO_KEY}
+                LEFT JOIN ${TableName.SCOUT_CARD_INFO} ON ${TableName.SCOUT_CARD_INFO}.keyId = ${TableName.SCOUT_CARD_INFO_KEY}.id
+                WHERE ${TableName.SCOUT_CARD_INFO}.matchId = :matchId
+            """
+    )
+    fun getObjsViewForMatch(matchId: UUID): List<ScoutCardInfoDatabaseView>
+
+
     /**
      * Inserts a new [ScoutCardInfo] object into the database
      */

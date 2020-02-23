@@ -15,8 +15,8 @@ class ScoutCardInfoKey(
         var order: Int,
         var min: Int? = null,
         var max: Int? = null,
-        @SerializedName("null_zeros") var nullZeros: Boolean? = null,
-        @SerializedName("include_in_stats") var includeInStats: Boolean? = null,
+        @SerializedName("null_zeros") var nullZeros: Boolean = false,
+        @SerializedName("include_in_stats") var includeInStats: Boolean = false,
         @SerializedName("data_type") var dataType: DataType
 ) : Table()
 {
