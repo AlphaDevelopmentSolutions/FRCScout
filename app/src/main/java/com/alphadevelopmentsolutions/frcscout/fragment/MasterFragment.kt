@@ -133,8 +133,8 @@ abstract class MasterFragment : Fragment()
             scoutCardId = arguments.getUUIDOrNull(ARG_SCOUT_CARD_ID)
             pitCardId = arguments.getUUIDOrNull(ARG_PIT_CARD_ID)
 
-            yearId = KeyStore.getInstance(activityContext).getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, UUID::class) as UUID
-            eventId = KeyStore.getInstance(activityContext).getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, UUID::class) as UUID
+            yearId = KeyStore.getInstance(activityContext).selectedYearId
+            eventId = KeyStore.getInstance(activityContext).selectedEventId
 
         }
     }

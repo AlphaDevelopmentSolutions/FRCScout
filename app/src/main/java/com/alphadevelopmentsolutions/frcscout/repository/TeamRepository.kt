@@ -42,4 +42,6 @@ class TeamRepository(private val teamDao: TeamDao) {
         teamDao.insertAll(teams)
     }
 
+    suspend fun clearData() = teamDao.clear()
+
 }

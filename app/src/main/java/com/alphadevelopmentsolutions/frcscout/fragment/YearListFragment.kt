@@ -32,8 +32,8 @@ class YearListFragment : MasterFragment()
         activityContext.isToolbarScrollable = true
 
         //showing this view means the user has not selected an eventId or yearId, clear the shared pref
-        KeyStore.getInstance(activityContext).setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, "")
-        KeyStore.getInstance(activityContext).setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, "")
+        KeyStore.getInstance(activityContext).selectedEventId = null
+        KeyStore.getInstance(activityContext).selectedYearId = null
 
         val disposable = VMProvider(this).yearViewModel.objs
                 .subscribeOn(Schedulers.io())

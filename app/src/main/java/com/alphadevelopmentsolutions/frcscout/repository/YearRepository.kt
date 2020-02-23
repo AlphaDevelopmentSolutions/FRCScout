@@ -36,4 +36,6 @@ class YearRepository(private val yearDao: YearDao) {
         yearDao.insertAll(listings)
     }
 
+    suspend fun clearData() = yearDao.clear()
+
 }

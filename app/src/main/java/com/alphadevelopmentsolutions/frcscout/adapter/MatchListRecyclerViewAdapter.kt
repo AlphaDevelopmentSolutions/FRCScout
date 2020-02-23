@@ -14,6 +14,7 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInf
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 import com.alphadevelopmentsolutions.frcscout.enums.AllianceColor
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.enums.MatchStatus
 import com.alphadevelopmentsolutions.frcscout.fragment.*
 import com.alphadevelopmentsolutions.frcscout.view.database.MatchDatabaseView
 import com.google.android.material.button.MaterialButton
@@ -205,7 +206,7 @@ internal class MatchListRecyclerViewAdapter(
         {
             when
             {
-                this === Match.Status.BLUE ->
+                this === MatchStatus.BLUE ->
                 {
                     viewHolder.view.BlueAllianceTeamOneIdTextView.setTypeface(null, Typeface.BOLD)
                     viewHolder.view.BlueAllianceTeamTwoIdTextView.setTypeface(null, Typeface.BOLD)
@@ -217,7 +218,7 @@ internal class MatchListRecyclerViewAdapter(
                     viewHolder.view.RedAllianceTeamThreeIdTextView.setTypeface(null, Typeface.NORMAL)
                     viewHolder.view.RedAllianceScoreTextView.setTypeface(null, Typeface.NORMAL)
                 }
-                this === Match.Status.RED ->
+                this === MatchStatus.RED ->
                 {
                     viewHolder.view.BlueAllianceTeamOneIdTextView.setTypeface(null, Typeface.NORMAL)
                     viewHolder.view.BlueAllianceTeamTwoIdTextView.setTypeface(null, Typeface.NORMAL)
@@ -229,7 +230,7 @@ internal class MatchListRecyclerViewAdapter(
                     viewHolder.view.RedAllianceTeamThreeIdTextView.setTypeface(null, Typeface.BOLD)
                     viewHolder.view.RedAllianceScoreTextView.setTypeface(null, Typeface.BOLD)
                 }
-                this === Match.Status.TIE ->
+                this === MatchStatus.TIE ->
                 {
                     viewHolder.view.BlueAllianceTeamOneIdTextView.setTypeface(null, Typeface.NORMAL)
                     viewHolder.view.BlueAllianceTeamTwoIdTextView.setTypeface(null, Typeface.NORMAL)

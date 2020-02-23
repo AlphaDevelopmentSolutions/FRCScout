@@ -46,4 +46,6 @@ class ChecklistItemViewModel(application: Application) : AndroidViewModel(applic
     fun insertAll(years: List<Year>) = viewModelScope.launch {
         repository.insertAll(years)
     }
+
+    suspend fun clearData() = repository.clearData()
 }

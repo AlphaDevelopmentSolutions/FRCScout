@@ -1,35 +1,29 @@
 package com.alphadevelopmentsolutions.frcscout.fragment
 
-import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import com.alphadevelopmentsolutions.frcscout.classes.table.core.Match
-import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfo
-import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfoKey
-import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
+import androidx.databinding.DataBindingUtil
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
 import com.alphadevelopmentsolutions.frcscout.classes.table.Table
+import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfo
+import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfoKey
+import com.alphadevelopmentsolutions.frcscout.databinding.LayoutCardScoutCardInfoFormBinding
+import com.alphadevelopmentsolutions.frcscout.databinding.LayoutFieldInfoBinding
+import com.alphadevelopmentsolutions.frcscout.enums.DataType
 import com.alphadevelopmentsolutions.frcscout.extension.init
 import com.alphadevelopmentsolutions.frcscout.extension.putUUID
 import com.alphadevelopmentsolutions.frcscout.interfaces.AppLog
-import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_scout_card_info.view.*
-import kotlinx.android.synthetic.main.layout_card_scout_card_info_form.view.*
-import kotlinx.android.synthetic.main.layout_field_info.view.*
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.LinkedHashMap
 
 class ScoutCardInfoFragment : MasterFragment()
 {
     private var layoutFields: ArrayList<View> = ArrayList()
-    private var scoutCardInfoKeyStates: LinkedHashMap<String, ArrayList<ScoutCardInfoKey>> = LinkedHashMap()
+//    private var scoutCardInfoKeyStates: LinkedHashMap<String, ArrayList<ScoutCardInfoKey>> = LinkedHashMap()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
@@ -37,263 +31,54 @@ class ScoutCardInfoFragment : MasterFragment()
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_scout_card_info, container, false)
 
-        Thread(Runnable{
+        val d = VMProvider.getInstance(activityContext).scoutCardInfoViewModel.objsViewForTeam(teamId!!, matchId!!).init()
+                .subscribe(
+                        { scoutCardInfoViewList ->
 
-            VMProvider.getInstance(activityContext).scoutCardInfoViewModel.objsViewForTeam(teamId!!, matchId!!).init()
-                    .subscribe(
-                            { scoutCardInfoViewList ->
+                            var previousScoutCardInfoKey: ScoutCardInfoKey? = null
+                            var groupLayout = DataBindingUtil.inflate<LayoutCardScoutCardInfoFormBinding>(inflater, R.layout.layout_card_scout_card_info_form, null, false)
 
-                                for(scoutCardInfoView in scoutCardInfoViewList)
-                                {
-                                    if(scoutCardInfoKeyStates[scoutCardInfoView.scoutCardInfoKey.state] != null)
-                                        scoutCardInfoKeyStates[scoutCardInfoView.scoutCardInfoKey.state]!!.add(scoutCardInfoView.scoutCardInfoKey)
+                            scoutCardInfoViewList.forEach { scoutCardInfoView ->
 
-                                    else
-                                        scoutCardInfoKeyStates[scoutCardInfoView.scoutCardInfoKey.state] = arrayListOf(scoutCardInfoView.scoutCardInfoKey)
+                                // Add the group layout to the view if the state has changed, also reset the group view
+                                previousScoutCardInfoKey?.let {
+                                    if(scoutCardInfoView.scoutCardInfoKey.state != it.state)
+                                        view.ScoutCardInfoFormListLinearLayout.addView(groupLayout.root)
+
+                                    groupLayout = DataBindingUtil.inflate(inflater, R.layout.layout_card_scout_card_info_form, null, false)
                                 }
 
+                                previousScoutCardInfoKey = scoutCardInfoView.scoutCardInfoKey
 
-                                for((infoKeyName, infoKeyValueArray) in scoutCardInfoKeyStates)
-                                {
-                                    val view = activityContext.layoutInflater.inflate(R.layout.layout_card_scout_card_info_form, null)
-                                    view.ScoutCardInfoFormCardTitle.text = infoKeyName
+                                val fieldView = DataBindingUtil.inflate<LayoutFieldInfoBinding>(inflater, R.layout.layout_field_info, null, false)
 
-                                    for(infoKey in infoKeyValueArray)
-                                    {
-                                        var blockTextChange = false
+                                val scoutCardInfo =
+                                        scoutCardInfoView.scoutCardInfo.let { scoutCardInfoList ->
+                                            if(scoutCardInfoList.isNotEmpty())
+                                                scoutCardInfoList[scoutCardInfoList.size - 1]
+                                            else
+                                                ScoutCardInfo(
+                                                        matchId!!,
+                                                        teamId!!,
+                                                        Table.DEFAULT_UUID,
+                                                        "",
+                                                        scoutCardInfoView.scoutCardInfoKey.id
+                                                )
 
-                                        val fieldLinearLayout = LinearLayout(activityContext)
-                                        fieldLinearLayout.orientation = LinearLayout.VERTICAL
-                                        fieldLinearLayout.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-
-                                        with(activityContext.layoutInflater.inflate(R.layout.layout_field_info, null))
-                                        {
-
-                                            var scoutCardInfo: ScoutCardInfo? = null
-
-                                            for (scoutCardInfoView in scoutCardInfoViewList)
-                                            {
-                                                if (scoutCardInfoView.scoutCardInfo.keyId == infoKey.id && scoutCardInfo == null)
-                                                    scoutCardInfo = scoutCardInfoView.scoutCardInfo
-                                            }
-
-                                            if (scoutCardInfo?.isDraft == true)
-                                                DeleteButton.visibility = View.VISIBLE
-
-                                            InfoKeyTitle.text = infoKey.name
-
-                                            DeleteButton.imageTintList = this@ScoutCardInfoFragment.activityContext.buttonBackground
-
-                                            //set the delete onclick
-                                            DeleteButton.setOnClickListener {
-                                                scoutCardInfo?.let {
-                                                    VMProvider.getInstance(activityContext).scoutCardInfoViewModel.delete(it)
-                                                }
-
-                                                scoutCardInfo = null
-                                            }
-
-                                            when (infoKey.dataType)
-                                            {
-                                                ScoutCardInfoKey.DataType.TEXT ->
-                                                {
-                                                    TextLinearLayout.visibility = View.VISIBLE
-                                                    TextEditText.setText(scoutCardInfo?.value)
-                                                    TextEditText.backgroundTintList = this@ScoutCardInfoFragment.activityContext.editTextBackground
-                                                    TextEditText.addTextChangedListener(object : TextWatcher
-                                                    {
-                                                        override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int)
-                                                        {
-
-                                                        }
-
-                                                        override fun onTextChanged(searchText: CharSequence, start: Int, before: Int, count: Int)
-                                                        {
-                                                            if (!blockTextChange)
-                                                            {
-                                                                //if the current robot info isn't a draft, create a new robot info item to save
-                                                                if (scoutCardInfo?.isDraft != true)
-                                                                {
-                                                                    scoutCardInfo = ScoutCardInfo(
-                                                                            matchId!!,
-                                                                            teamId!!,
-                                                                            Table.DEFAULT_UUID,
-                                                                            "",
-                                                                            infoKey.id
-                                                                    )
-                                                                }
-
-                                                                scoutCardInfo!!.value = searchText.toString()
-
-                                                                VMProvider.getInstance(activityContext).scoutCardInfoViewModel.insert(scoutCardInfo!!)
-
-                                                                with(DeleteButton)
-                                                                {
-                                                                    if (visibility != View.VISIBLE)
-                                                                        visibility = View.VISIBLE
-                                                                }
-                                                            }
-
-                                                            blockTextChange = false
-                                                        }
-
-                                                        override fun afterTextChanged(editable: Editable)
-                                                        {
-
-                                                        }
-                                                    })
-
-                                                }
-
-                                                //create an int layout
-                                                ScoutCardInfoKey.DataType.INT ->
-                                                {
-                                                    IntegerLinearLayout.visibility = View.VISIBLE
-
-                                                    InfoKeyValue.text = if (scoutCardInfo?.value?.isNotBlank() == true) scoutCardInfo?.value ?: infoKey.min?.toString() ?: "0" else infoKey.min?.toString() ?: "0"
-
-                                                    PlusButton.backgroundTintList = this@ScoutCardInfoFragment.activityContext.buttonBackground
-                                                    (PlusButton as MaterialButton).rippleColor = this@ScoutCardInfoFragment.activityContext.buttonRipple
-
-                                                    //Add button click handlers
-                                                    PlusButton.setOnClickListener {
-
-                                                        val curr = Integer.parseInt(InfoKeyValue.text.toString())
-
-                                                        //Check for maximum in key
-                                                        if (infoKey.max == null || curr < infoKey.max!!)
-                                                        {
-                                                            InfoKeyValue.text = (curr + 1).toString()
-
-                                                            //if the current robot info isn't a draft, create a new robot info item to save
-                                                            if (scoutCardInfo?.isDraft != true)
-                                                            {
-                                                                scoutCardInfo = ScoutCardInfo(
-                                                                        matchId!!,
-                                                                        teamId!!,
-                                                                        Table.DEFAULT_UUID,
-                                                                        "",
-                                                                        infoKey.id
-                                                                )
-                                                            }
-
-                                                            scoutCardInfo!!.value = InfoKeyValue.text.toString()
-                                                            VMProvider.getInstance(activityContext).scoutCardInfoViewModel.insert(scoutCardInfo!!)
-
-
-                                                            with(DeleteButton)
-                                                            {
-                                                                if (visibility != View.VISIBLE)
-                                                                    visibility = View.VISIBLE
-                                                            }
-
-                                                        }
-                                                        else
-                                                            this@ScoutCardInfoFragment.activityContext.showSnackbar("This field has a maximum of " + infoKey.max)
-
-                                                    }
-
-                                                    MinusButton.backgroundTintList = this@ScoutCardInfoFragment.activityContext.buttonBackground
-                                                    (MinusButton as MaterialButton).rippleColor = this@ScoutCardInfoFragment.activityContext.buttonRipple
-
-                                                    MinusButton.setOnClickListener {
-
-                                                        val curr = Integer.parseInt(InfoKeyValue.text.toString())
-
-                                                        if (infoKey.min == null || curr > infoKey.min!!)
-                                                        {
-                                                            InfoKeyValue.text = (curr - 1).toString()
-
-                                                            //if the current robot info isn't a draft, create a new robot info item to save
-                                                            if (scoutCardInfo?.isDraft != true)
-                                                            {
-                                                                scoutCardInfo = ScoutCardInfo(
-                                                                        matchId!!,
-                                                                        teamId!!,
-                                                                        Table.DEFAULT_UUID,
-                                                                        "",
-                                                                        infoKey.id
-                                                                )
-                                                            }
-
-                                                            scoutCardInfo!!.value = InfoKeyValue.text.toString()
-                                                            VMProvider.getInstance(activityContext).scoutCardInfoViewModel.insert(scoutCardInfo!!)
-
-
-                                                            with(DeleteButton)
-                                                            {
-                                                                if (visibility != View.VISIBLE)
-                                                                    visibility = View.VISIBLE
-                                                            }
-                                                        }
-                                                        else
-                                                            this@ScoutCardInfoFragment.activityContext.showSnackbar("This field has a minimum of " + infoKey.min)
-                                                    }
-
-                                                }
-
-                                                //create a bool layout
-                                                ScoutCardInfoKey.DataType.BOOL ->
-                                                {
-                                                    BooleanLinearLayout.visibility = View.VISIBLE
-                                                    BooleanCheckBox.buttonTintList = this@ScoutCardInfoFragment.activityContext.checkboxBackground
-                                                    (BooleanCheckBox.background as RippleDrawable).setColor(this@ScoutCardInfoFragment.activityContext.checkboxRipple)
-                                                    BooleanCheckBox.isChecked = if (scoutCardInfo?.value?.isNotBlank() == true) scoutCardInfo?.value == "1" else false
-                                                    BooleanCheckBox.setOnCheckedChangeListener { _, checked ->
-                                                        run {
-
-                                                            //if the current robot info isn't a draft, create a new robot info item to save
-                                                            if (scoutCardInfo?.isDraft != true)
-                                                            {
-                                                                scoutCardInfo = ScoutCardInfo(
-                                                                        matchId!!,
-                                                                        teamId!!,
-                                                                        Table.DEFAULT_UUID,
-                                                                        "",
-                                                                        infoKey.id
-                                                                )
-                                                            }
-
-                                                            scoutCardInfo!!.value = if (checked) "1" else "0"
-                                                            VMProvider.getInstance(activityContext).scoutCardInfoViewModel.insert(scoutCardInfo!!)
-
-
-                                                            with(DeleteButton)
-                                                            {
-                                                                if (visibility != View.VISIBLE)
-                                                                    visibility = View.VISIBLE
-                                                            }
-                                                        }
-                                                    }
-
-                                                }
-                                            }
-
-                                            fieldLinearLayout.addView(this)
                                         }
 
-                                        view.ScoutCardInfoFormFieldsLinearLayout.addView(fieldLinearLayout)
-                                    }
+                                fieldView.scoutCardInfoKey = scoutCardInfoView.scoutCardInfoKey
+                                fieldView.scoutCardInfo = scoutCardInfo
 
-                                    layoutFields.add(view)
-                                }
-
-                            },
-                            {
-                                AppLog.error(it)
+                                groupLayout.ScoutCardInfoFormFieldsLinearLayout.addView(groupLayout.root)
                             }
-                    )
 
-            activityContext.runOnUiThread{
-
-                //add all the dynamic form frags to the viewpager
-                for(layoutField in layoutFields)
-                    view.ScoutCardInfoFormListLinearLayout.addView(layoutField)
-
-                isLoading = false
-            }
-
-        }).start()
+                            isLoading = false
+                        },
+                        {
+                            AppLog.error(it)
+                        }
+                )
 
         //gets rid of the shadow on the actionbar
         activityContext.dropActionBar()

@@ -46,4 +46,6 @@ class YearViewModel(application: Application) : AndroidViewModel(application) {
     fun insertAll(years: List<Year>) = viewModelScope.launch {
         repository.insertAll(years)
     }
+
+    suspend fun clearData() = repository.clearData()
 }

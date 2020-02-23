@@ -51,4 +51,6 @@ class RobotInfoViewModel(application: Application) : AndroidViewModel(applicatio
     fun delete(robotInfo: RobotInfo) {
         repository.delete(robotInfo)
     }
+
+    suspend fun clearData() = repository.clearData()
 }

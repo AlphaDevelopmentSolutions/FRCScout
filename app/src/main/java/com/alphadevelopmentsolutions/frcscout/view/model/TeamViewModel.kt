@@ -61,4 +61,6 @@ class TeamViewModel(application: Application) : AndroidViewModel(application) {
 
         return scoutCardInfoRepo.calculateStats(scoutCardInfoRepo.objsViewForMatch(match.id))
     }
+
+    suspend fun clearData() = repository.clearData()
 }

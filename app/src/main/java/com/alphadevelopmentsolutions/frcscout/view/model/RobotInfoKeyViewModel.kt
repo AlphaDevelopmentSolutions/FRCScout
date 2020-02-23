@@ -46,4 +46,6 @@ class RobotInfoKeyViewModel(application: Application) : AndroidViewModel(applica
     fun insertAll(robotInfoKeys: List<RobotInfoKey>) = viewModelScope.launch {
         repository.insertAll(robotInfoKeys)
     }
+
+    suspend fun clearData() = repository.clearData()
 }

@@ -43,4 +43,6 @@ class RobotInfoRepository(private val robotInfoKeyDao: RobotInfoDao) {
         robotInfoKeyDao.delete(robotInfo)
     }
 
+    suspend fun clearData() = robotInfoKeyDao.clear()
+
 }

@@ -85,4 +85,6 @@ class ScoutCardInfoRepository(private val scoutCardInfoDao: ScoutCardInfoDao) {
 
         return statsHashMap
     }
+
+    suspend fun clearData() = scoutCardInfoDao.clear()
 }

@@ -46,4 +46,6 @@ class ScoutCardInfoKeyViewModel(application: Application) : AndroidViewModel(app
     fun insertAll(scoutCardInfos: List<ScoutCardInfo>) = viewModelScope.launch {
         repository.insertAll(scoutCardInfos)
     }
+
+    suspend fun clearData() = repository.clearData()
 }

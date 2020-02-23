@@ -57,4 +57,6 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
 
         return scoutCardInfoRepo.calculateStats(scoutCardInfoRepo.objsViewForEvent(event.id))
     }
+
+    suspend fun clearData() = repository.clearData()
 }

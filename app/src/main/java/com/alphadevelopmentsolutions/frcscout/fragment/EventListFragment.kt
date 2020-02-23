@@ -48,7 +48,7 @@ class EventListFragment : MasterFragment()
         activityContext.isToolbarScrollable = true
 
         //showing this view means the user has not selected an eventId, clear the shared pref
-        KeyStore.getInstance(activityContext).setPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, "")
+        KeyStore.getInstance(activityContext).selectedEventId = null
 
         val eventListRecyclerView = view.EventListRecyclerView
 

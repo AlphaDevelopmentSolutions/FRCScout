@@ -46,4 +46,6 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     fun insertAll(users: List<User>) = viewModelScope.launch {
         repository.insertAll(users)
     }
+
+    suspend fun clearData() = repository.clearData()
 }

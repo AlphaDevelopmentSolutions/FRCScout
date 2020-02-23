@@ -46,4 +46,6 @@ class RobotMediaViewModel(application: Application) : AndroidViewModel(applicati
     fun insertAll(robotMedias: List<RobotMedia>) = viewModelScope.launch {
         repository.insertAll(robotMedias)
     }
+
+    suspend fun clearData() = repository.clearData()
 }

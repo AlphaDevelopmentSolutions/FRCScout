@@ -59,7 +59,15 @@ class TeamFragment : MasterFragment()
                             { team ->
 
 
-                                view.AddPhotoFab.setOnClickListener { activityContext.changeFragment(RobotMediaFragment.newInstance(null, team), true) }
+                                view.AddPhotoFab.setOnClickListener {
+                                    activityContext.changeFragment(
+                                            RobotMediaFragment.newInstance(
+                                                    null,
+                                                    team.id
+                                            ),
+                                            true
+                                    )
+                                }
 
                                 //update the app bar title to the teamId name
                                 activityContext.setToolbarTitle(teamId.toString())

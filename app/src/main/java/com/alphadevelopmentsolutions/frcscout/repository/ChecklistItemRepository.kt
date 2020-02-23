@@ -36,4 +36,5 @@ class ChecklistItemRepository(private val checklistItemDao: ChecklistItemDao) {
         checklistItemDao.insertAll(checklistItems)
     }
 
+    suspend fun clearData() = checklistItemDao.clear()
 }

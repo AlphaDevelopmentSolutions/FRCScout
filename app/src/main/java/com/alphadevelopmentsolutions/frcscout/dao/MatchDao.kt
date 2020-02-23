@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.dao
 import androidx.room.*
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Match
+import com.alphadevelopmentsolutions.frcscout.view.database.MatchDatabaseView
 import io.reactivex.Flowable
 
 @Dao
@@ -26,10 +27,10 @@ interface MatchDao {
      */
     @RawQuery(
             observedEntities = [
-                Match::class
+                MatchDatabaseView::class
             ]
     )
-    fun getObjsWithCustom(sql: SimpleSQLiteQuery): Flowable<List<Match>>
+    fun getObjsWithCustom(sql: SimpleSQLiteQuery): Flowable<List<MatchDatabaseView>>
 
     /**
      * Inserts a new [Match] object into the database

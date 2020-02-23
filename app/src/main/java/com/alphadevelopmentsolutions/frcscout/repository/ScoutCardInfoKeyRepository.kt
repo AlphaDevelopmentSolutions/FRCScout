@@ -36,4 +36,6 @@ class ScoutCardInfoKeyRepository(private val scoutCardInfoKeyDao: ScoutCardInfoK
         scoutCardInfoKeyDao.insertAll(scoutCardInfoKeys)
     }
 
+    suspend fun clearData() = scoutCardInfoKeyDao.clear()
+
 }

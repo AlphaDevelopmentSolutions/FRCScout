@@ -36,4 +36,6 @@ class RobotInfoKeyRepository(private val robotInfoKeyDao: RobotInfoKeyDao) {
         robotInfoKeyDao.insertAll(robotInfoKeys)
     }
 
+    suspend fun clearData() = robotInfoKeyDao.clear()
+
 }

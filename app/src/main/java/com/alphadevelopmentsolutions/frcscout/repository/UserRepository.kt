@@ -36,4 +36,5 @@ class UserRepository(private val userDao: UserDao) {
         userDao.insertAll(users)
     }
 
+    suspend fun clearData() = userDao.clear()
 }

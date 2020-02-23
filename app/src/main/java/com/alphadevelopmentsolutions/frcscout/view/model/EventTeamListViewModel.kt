@@ -46,4 +46,6 @@ class EventTeamListViewModel(application: Application) : AndroidViewModel(applic
     fun insertAll(eventTeamLists: List<EventTeamList>) = viewModelScope.launch {
         repository.insertAll(eventTeamLists)
     }
+
+    suspend fun clearData() = repository.clearData()
 }

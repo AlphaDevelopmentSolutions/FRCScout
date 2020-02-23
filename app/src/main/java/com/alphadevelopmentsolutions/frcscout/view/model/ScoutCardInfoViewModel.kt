@@ -50,4 +50,6 @@ class ScoutCardInfoViewModel(application: Application) : AndroidViewModel(applic
     }
 
     fun delete(scoutCardInfo: ScoutCardInfo) = repository.delete(scoutCardInfo)
+
+    suspend fun clearData() = repository.clearData()
 }

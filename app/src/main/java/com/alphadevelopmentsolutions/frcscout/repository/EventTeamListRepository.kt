@@ -36,4 +36,6 @@ class EventTeamListRepository(private val eventTeamListDao: EventTeamListDao) {
         eventTeamListDao.insertAll(eventTeamLists)
     }
 
+    suspend fun clearData() = eventTeamListDao.clear()
+
 }

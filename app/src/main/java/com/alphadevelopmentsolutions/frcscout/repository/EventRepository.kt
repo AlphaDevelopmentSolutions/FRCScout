@@ -37,4 +37,5 @@ class EventRepository(private val eventDao: EventDao) {
         eventDao.insertAll(events)
     }
 
+    suspend fun clearData() = eventDao.clear()
 }

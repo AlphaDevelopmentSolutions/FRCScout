@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.repository
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Match
 import com.alphadevelopmentsolutions.frcscout.dao.MatchDao
+import com.alphadevelopmentsolutions.frcscout.enums.MatchType
 import com.alphadevelopmentsolutions.frcscout.enums.SortDirection
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.view.database.MatchDatabaseView
@@ -30,7 +31,7 @@ class MatchRepository(private val matchDao: MatchDao) {
     fun objWithCustom(eventId: UUID?, matchId: UUID?, teamId: UUID?, sortDirection: SortDirection = SortDirection.DESC): Flowable<List<MatchDatabaseView>>? {
         var returnFlowable: Flowable<List<MatchDatabaseView>>? = null
 
-        Match.Type.getTypes().forEach {
+        MatchType.getTypes().forEach {
 
             val query = StringBuilder()
             val args = ArrayList<Any>()
@@ -39,17 +40,17 @@ class MatchRepository(private val matchDao: MatchDao) {
 
             if (eventId != null) {
                 query.append(" AND eventId = ? ")
-                args.add(eventId.blueAllianceId)
+                args.add(eventId)
             }
 
             if (matchId != null) {
-                query.append(" AND `key` = ? ")
-                args.add(matchId.key)
+                query.append(" AND id = ? ")
+                args.add(matchId)
             }
 
             if (teamId != null) {
                 query
-                        .append(" AND ${teamId.id} IN (")
+                        .append(" AND $teamId IN (")
 
                         .append("blueAllianceTeamOneId, ")
                         .append("blueAllianceTeamTwoId, ")
@@ -96,4 +97,5 @@ class MatchRepository(private val matchDao: MatchDao) {
         matchDao.insertAll(matchs)
     }
 
+    suspend fun clearData() = matchDao.clear()
 }

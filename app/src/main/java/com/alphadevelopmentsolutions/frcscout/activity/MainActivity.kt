@@ -50,6 +50,9 @@ import kotlinx.android.synthetic.main.layout_dialog_download.view.RobotMediaChec
 import kotlinx.android.synthetic.main.layout_dialog_download.view.ScoutCardInfoCheckBox
 import kotlinx.android.synthetic.main.layout_dialog_upload.view.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -233,16 +236,18 @@ class MainActivity : AppCompatActivity(),
             R.id.LogoutItem ->
             {
                 VMProvider.getInstance(this).apply {
-                    robotInfoKeyViewModel.clearData()
-                    robotInfoViewModel.clearData()
-                    scoutCardInfoKeyViewModel.clearData()
-                    scoutCardInfoViewModel.clearData()
-                    checklistItemViewModel.clearData()
-                    checklistItemResultViewModel.clearData()
-                    robotMediaViewModel.clearData()
-                    teamViewModel.clearData()
-                    userViewModel.clearData()
-                    yearViewModel.clearData()
+                    GlobalScope.launch(Dispatchers.IO) {
+                        robotInfoKeyViewModel.clearData()
+                        robotInfoViewModel.clearData()
+                        scoutCardInfoKeyViewModel.clearData()
+                        scoutCardInfoViewModel.clearData()
+                        checklistItemViewModel.clearData()
+                        checklistItemResultViewModel.clearData()
+                        robotMediaViewModel.clearData()
+                        teamViewModel.clearData()
+                        userViewModel.clearData()
+                        yearViewModel.clearData()
+                    }
                 }
 
                 //Purge yearId media

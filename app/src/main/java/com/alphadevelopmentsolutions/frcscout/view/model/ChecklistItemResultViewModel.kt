@@ -47,4 +47,6 @@ class ChecklistItemResultViewModel(application: Application) : AndroidViewModel(
     fun insertAll(checklistItemResults: List<ChecklistItemResult>) = viewModelScope.launch {
         repository.insertAll(checklistItemResults)
     }
+
+    suspend fun clearData() = repository.clearData()
 }

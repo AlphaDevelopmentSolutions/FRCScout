@@ -36,4 +36,7 @@ class RobotMediaRepository(private val robotMediaDao: RobotMediaDao) {
         robotMediaDao.insertAll(robotMedias)
     }
 
+    fun delete(robotMedia: RobotMedia) = robotMediaDao.delete(robotMedia)
+
+    suspend fun clearData() = robotMediaDao.clear()
 }

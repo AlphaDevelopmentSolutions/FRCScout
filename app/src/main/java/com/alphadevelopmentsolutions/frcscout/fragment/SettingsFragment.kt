@@ -61,13 +61,13 @@ class SettingsFragment : MasterFragment()
     {
         when(page)
         {
-            Page.LICENSES -> return super.onCreateView(inflater.inflate(R.layout.layout_licenses, container, false))
+            Page.LICENSES -> return onCreateView(inflater.inflate(R.layout.layout_licenses, container, false))
 
             else ->
             {
                 activityContext.lockDrawerLayout(true, View.OnClickListener { activityContext.supportFragmentManager.popBackStackImmediate() })
 
-                return super.onCreateView(
+                return onCreateView(
                         inflater.inflate(R.layout.fragment_settings, container, false).apply{
                             AppVersionTextView.text = String.format(context.getString(R.string.app_version), BuildConfig.VERSION_NAME)
                             BuildNumberTextView.text = String.format(context.getString(R.string.build_number), BuildConfig.VERSION_CODE)
