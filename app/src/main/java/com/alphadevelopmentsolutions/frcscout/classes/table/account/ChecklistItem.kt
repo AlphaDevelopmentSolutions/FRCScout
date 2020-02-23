@@ -29,8 +29,5 @@ class ChecklistItem(
     /**
      * @see Table.toString
      */
-    override fun toString(): String
-    {
-        return title
-    }
+    override fun toString() = title
 }

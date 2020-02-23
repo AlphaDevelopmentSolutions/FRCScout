@@ -7,33 +7,50 @@ import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
-import com.alphadevelopmentsolutions.frcscout.classes.table.account.ChecklistItem
-import com.alphadevelopmentsolutions.frcscout.classes.table.account.ChecklistItemResult
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Match
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.User
-import com.alphadevelopmentsolutions.frcscout.interfaces.Status
+import com.alphadevelopmentsolutions.frcscout.enums.Status
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
+import com.alphadevelopmentsolutions.frcscout.classes.table.Table
+import com.alphadevelopmentsolutions.frcscout.classes.table.account.ChecklistItemResult
+import com.alphadevelopmentsolutions.frcscout.extension.init
+import com.alphadevelopmentsolutions.frcscout.interfaces.AppLog
+import com.alphadevelopmentsolutions.frcscout.view.database.ChecklistItemDatabaseView
 import com.google.android.material.button.MaterialButton
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.layout_card_checklist_item.view.*
-import java.util.*
 
-internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, private val checklistItems: ArrayList<ChecklistItem>, private val context: MainActivity) : RecyclerView.Adapter<ChecklistItemListRecyclerViewAdapter.ViewHolder>()
+internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, private val checklistItems: MutableList<ChecklistItemDatabaseView>, private val context: MainActivity) : RecyclerView.Adapter<ChecklistItemListRecyclerViewAdapter.ViewHolder>()
 {
 
-    private val userNamesAdapter: ArrayAdapter<String>
+    private lateinit var userNamesAdapter: ArrayAdapter<User>
+
+    private val vmProvider by lazy {
+        VMProvider.getInstance(context)
+    }
+
+    private val disposable: Disposable
 
     init
     {
-        val userNames = ArrayList<String>()
+        disposable =
+                VMProvider.getInstance(context).userViewModel.objs.init()
+                    .subscribe(
+                            { users ->
+                                userNamesAdapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, users)
+                            },
+                            {
+                                AppLog.error(it)
+                            }
+                    )
+    }
 
-        //get all users
-        for (user in User.getObjects(null, context.database)!!)
-        {
-            userNames.add(user.toString())
-        }
+    override fun onViewDetachedFromWindow(holder: ViewHolder) {
 
-        userNamesAdapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, userNames)
+        disposable.dispose()
 
+        super.onViewDetachedFromWindow(holder)
     }
 
     internal class ViewHolder(val view: View, context: MainActivity) : RecyclerView.ViewHolder(view)
@@ -62,76 +79,54 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
     {
-        val checklistItem = checklistItems[viewHolder.adapterPosition]
+        val checklistItemView = checklistItems[viewHolder.adapterPosition]
 
-        var checklistItemResult: ChecklistItemResult? = null
+        viewHolder.view.TitleTextView.text = checklistItemView.checklistItem.toString()
+        viewHolder.view.DescriptionTextView.text = checklistItemView.checklistItem.description
+        viewHolder.view.StatusTextView.text = checklistItemView.checklistItemResult?.checklistItemResult?.status?.toString() ?: Status.UNSET.toString()
 
-        //filter by matchId id
-        for (storedChecklistItemResult in checklistItem.getResults(null, false, context.database)!!)
-        {
-            if (storedChecklistItemResult.matchId == match.key)
-            {
-                checklistItemResult = storedChecklistItemResult
-                break
-            }
+        checklistItemView.checklistItemResult?.completedBy?.let { completedByUser ->
+            viewHolder.view.CompletedByAutoCompleteTextView.setText(completedByUser.toString())
         }
 
-        //no result found, default a new one
-        if (checklistItemResult == null)
-            checklistItemResult = ChecklistItemResult(
-                    -1,
-                    checklistItem.serverId,
-                    match.key,
+        checklistItemView.checklistItemResult?.checklistItemResult?.status?.let { status ->
 
-                    Status.UNSET,
+            viewHolder.view.StatusTextView.text = status.toString()
 
-                    "",
-                    Date(),
-
-                    true)
-
-        val finalChecklistItemResult = checklistItemResult
-
-        viewHolder.view.TitleTextView.text = checklistItem.title
-        viewHolder.view.DescriptionTextView.text = checklistItem.description
-        viewHolder.view.StatusTextView.text = finalChecklistItemResult.status
-
-        viewHolder.view.CompletedByAutoCompleteTextView.setText(finalChecklistItemResult.completedBy)
-
-        when(finalChecklistItemResult.status)
-        {
-            Status.INCOMPLETE ->
+            when(status)
             {
-                viewHolder.view.StatusTextView.text = Status.INCOMPLETE
-                viewHolder.view.StatusTextView.setTextColor(ContextCompat.getColor(context, R.color.bad))
-            }
-
-            Status.COMPLETE ->
-            {
-                viewHolder.view.StatusTextView.text = Status.COMPLETE
-                viewHolder.view.StatusTextView.setTextColor(ContextCompat.getColor(context, R.color.good))
-            }
-
-            Status.UNSET ->
-            {
-                viewHolder.view.StatusTextView.text = Status.UNSET
-                viewHolder.view.StatusTextView.setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
+                Status.INCOMPLETE -> viewHolder.view.StatusTextView.setTextColor(ContextCompat.getColor(context, R.color.bad))
+                Status.COMPLETE -> viewHolder.view.StatusTextView.setTextColor(ContextCompat.getColor(context, R.color.good))
+                Status.UNSET -> viewHolder.view.StatusTextView.setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
             }
         }
 
         //disable the editing of non draft results
-        if (finalChecklistItemResult.isDraft)
+        if (checklistItemView.checklistItemResult?.checklistItemResult?.isDraft == true)
         {
             viewHolder.view.IncompleteButton.setOnClickListener{
                 if (viewHolder.view.CompletedByAutoCompleteTextView.text.toString() != "")
                 {
-                    viewHolder.view.StatusTextView.text = Status.INCOMPLETE
+                    viewHolder.view.StatusTextView.text = Status.INCOMPLETE.toString()
                     viewHolder.view.StatusTextView.setTextColor(ContextCompat.getColor(context, R.color.bad))
 
-                    finalChecklistItemResult.status = Status.INCOMPLETE
-                    finalChecklistItemResult.completedBy = viewHolder.view.CompletedByAutoCompleteTextView.text.toString()
-                    finalChecklistItemResult.save(context.database)
-
+                    checklistItems[viewHolder.adapterPosition].let { checklistItemView ->
+                        checklistItemView.checklistItemResult?.checklistItemResult?.let {
+                            vmProvider.checklistItemResultViewModel.insert(it)
+                        }
+                        ?:
+                        let {
+                            vmProvider.checklistItemResultViewModel.insert(
+                                    ChecklistItemResult(
+                                            checklistItemView.checklistItem.id,
+                                            match.id,
+                                            Status.INCOMPLETE,
+                                            Table.DEFAULT_UUID,
+                                            Table.DEFAULT_DATE
+                                    )
+                            )
+                        }
+                    }
                 } else
                     context.showSnackbar("Please enter completed by.")
             }
@@ -139,12 +134,26 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
             viewHolder.view.CompleteButton.setOnClickListener{
                 if (viewHolder.view.CompletedByAutoCompleteTextView.text.toString() != "")
                 {
-                    viewHolder.view.StatusTextView.text = Status.COMPLETE
+                    viewHolder.view.StatusTextView.text = Status.COMPLETE.toString()
                     viewHolder.view.StatusTextView.setTextColor(ContextCompat.getColor(context, R.color.good))
 
-                    finalChecklistItemResult.status = Status.COMPLETE
-                    finalChecklistItemResult.completedBy = viewHolder.view.CompletedByAutoCompleteTextView.text.toString()
-                    finalChecklistItemResult.save(context.database)
+                    checklistItems[viewHolder.adapterPosition].let { checklistItemView ->
+                        checklistItemView.checklistItemResult?.checklistItemResult?.let {
+                            vmProvider.checklistItemResultViewModel.insert(it)
+                        }
+                                ?:
+                                let {
+                                    vmProvider.checklistItemResultViewModel.insert(
+                                            ChecklistItemResult(
+                                                    checklistItemView.checklistItem.id,
+                                                    match.id,
+                                                    Status.COMPLETE,
+                                                    Table.DEFAULT_UUID,
+                                                    Table.DEFAULT_DATE
+                                            )
+                                    )
+                                }
+                    }
 
                 } else
                     context.showSnackbar("Please enter completed by.")
