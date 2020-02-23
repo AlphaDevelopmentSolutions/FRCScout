@@ -24,7 +24,7 @@ interface TeamDao {
      * @param id specified the id to sort the [Team] object by
      */
     @Query("SELECT * FROM teams where id = :id")
-    fun getObjWithId(id: String): Flowable<Team>
+    fun getObjWithId(id: UUID): Flowable<Team>
 
     @Query(
             """

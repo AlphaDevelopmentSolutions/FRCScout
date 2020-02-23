@@ -24,7 +24,7 @@ class TeamRepository(private val teamDao: TeamDao) {
      * @param id specified the id to sort the [Team] object by
      * @see TeamDao.getObjWithId
      */
-    fun objWithId(id: String) = teamDao.getObjWithId(id)
+    fun objWithId(id: UUID) = teamDao.getObjWithId(id)
 
     /**
      * Inserts a [Team] object into the database
