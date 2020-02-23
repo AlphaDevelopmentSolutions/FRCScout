@@ -8,6 +8,7 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.account.ChecklistIte
 import com.alphadevelopmentsolutions.frcscout.repository.ChecklistItemResultRepository
 import io.reactivex.Flowable
 import kotlinx.coroutines.launch
+import java.util.*
 
 class ChecklistItemResultViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -18,7 +19,11 @@ class ChecklistItemResultViewModel(application: Application) : AndroidViewModel(
      * Gets all [ChecklistItemResult] objects from the database
      * @see ChecklistItemResultRepository.objs
      */
-    val objs: Flowable<List<ChecklistItemResult>>
+    val objs by lazy {
+        repository.objs
+    }
+
+    fun objsViewWithMatch(matchId: UUID) = repository.objsViewWithMatch(matchId)
 
     /**
      * Gets all [ChecklistItemResult] objects from the database based on [ChecklistItemResult.id]
@@ -26,10 +31,6 @@ class ChecklistItemResultViewModel(application: Application) : AndroidViewModel(
      * @see ChecklistItemResultRepository.objWithId
      */
     fun objWithId(id: String) = repository.objWithId(id)
-
-    init {
-        objs = repository.objs
-    }
 
     /**
      * Inserts a [ChecklistItemResult] object into the database

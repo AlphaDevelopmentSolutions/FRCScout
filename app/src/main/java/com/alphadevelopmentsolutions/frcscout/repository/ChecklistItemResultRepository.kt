@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.repository
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ChecklistItemResult
 import com.alphadevelopmentsolutions.frcscout.dao.ChecklistItemResultDao
 import io.reactivex.Flowable
+import java.util.*
 
 
 class ChecklistItemResultRepository(private val checklistItemResultDao: ChecklistItemResultDao) {
@@ -19,6 +20,8 @@ class ChecklistItemResultRepository(private val checklistItemResultDao: Checklis
      * @see ChecklistItemResultDao.getObjWithId
      */
     fun objWithId(id: String) = checklistItemResultDao.getObjWithId(id)
+
+    fun objsViewWithMatch(matchId: UUID) = checklistItemResultDao.getObjsViewWithMatch(matchId)
 
     /**
      * Inserts a [ChecklistItemResult] object into the database

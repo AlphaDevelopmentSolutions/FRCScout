@@ -5,7 +5,10 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ChecklistItemResult
+import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
+import com.alphadevelopmentsolutions.frcscout.view.database.ChecklistItemDatabaseView
 import io.reactivex.Flowable
+import java.util.*
 
 @Dao
 interface ChecklistItemResultDao {
@@ -22,6 +25,9 @@ interface ChecklistItemResultDao {
      */
     @Query("SELECT * FROM checklist_item_results where id = :id")
     fun getObjWithId(id: String): Flowable<ChecklistItemResult>
+
+    @Query("SELECT * FROM ${TableName.CHECKLIST_ITEM}")
+    fun getObjsViewWithMatch(matchId: UUID): Flowable<List<ChecklistItemDatabaseView>>
 
     /**
      * Inserts a new [ChecklistItemResult] object into the database

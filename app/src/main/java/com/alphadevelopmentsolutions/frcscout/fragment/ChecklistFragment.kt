@@ -8,14 +8,13 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.adapter.ChecklistItemListRecyclerViewAdapter
 import com.alphadevelopmentsolutions.frcscout.adapter.MatchListRecyclerViewAdapter
-import com.alphadevelopmentsolutions.frcscout.classes.table.account.ChecklistItem
-import com.alphadevelopmentsolutions.frcscout.classes.table.core.Match
-import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
-import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.extension.init
 import com.alphadevelopmentsolutions.frcscout.extension.putUUID
+import com.alphadevelopmentsolutions.frcscout.interfaces.AppLog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_match_list.*
@@ -56,7 +55,7 @@ class ChecklistFragment : MasterFragment()
                                 val searchedMatches = ArrayList(it)
                                 var previousSearchLength = 0
 
-                                val matchListRecyclerViewAdapter = MatchListRecyclerViewAdapter(eventId!!, teamId, searchedMatches, activityContext, this.javaClass)
+                                val matchListRecyclerViewAdapter = MatchListRecyclerViewAdapter(teamId, searchedMatches, activityContext, this.javaClass)
                                 recyclerView.adapter = matchListRecyclerViewAdapter
                                 recyclerView.layoutManager = LinearLayoutManager(activityContext)
 
@@ -134,9 +133,22 @@ class ChecklistFragment : MasterFragment()
             view = inflater.inflate(R.layout.fragment_checklist, container, false)
             recyclerView = view.findViewById(R.id.ChecklistItemsRecyclerView)
 
-            val checklistItemListRecyclerViewAdapter = ChecklistItemListRecyclerViewAdapter(matchId!!, ChecklistItem.getObjects(null, database)!!, activityContext)
-            recyclerView.adapter = checklistItemListRecyclerViewAdapter
-            recyclerView.layoutManager = LinearLayoutManager(activityContext)
+            VMProvider.getInstance(activityContext).checklistItemViewModel.objsViewWithMatch(matchId!!).init()
+                    .subscribe(
+                            { checklistItemList ->
+                                val checklistItemListRecyclerViewAdapter = ChecklistItemListRecyclerViewAdapter(
+                                        matchId!!,
+                                        checklistItemList.toMutableList(),
+                                        activityContext
+                                )
+
+                                recyclerView.adapter = checklistItemListRecyclerViewAdapter
+                                recyclerView.layoutManager = LinearLayoutManager(activityContext)
+                            },
+                            {
+                                AppLog.error(it)
+                            }
+                    )
 
             activityContext.setToolbarTitle(matchId.toString())
             activityContext.isToolbarScrollable = false

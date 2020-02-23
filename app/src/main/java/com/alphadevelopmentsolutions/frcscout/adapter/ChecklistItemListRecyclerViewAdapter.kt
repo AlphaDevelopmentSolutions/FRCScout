@@ -20,8 +20,9 @@ import com.alphadevelopmentsolutions.frcscout.view.database.ChecklistItemDatabas
 import com.google.android.material.button.MaterialButton
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.layout_card_checklist_item.view.*
+import java.util.*
 
-internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, private val checklistItems: MutableList<ChecklistItemDatabaseView>, private val context: MainActivity) : RecyclerView.Adapter<ChecklistItemListRecyclerViewAdapter.ViewHolder>()
+internal class ChecklistItemListRecyclerViewAdapter(private val matchId: UUID, private val checklistItems: MutableList<ChecklistItemDatabaseView>, private val context: MainActivity) : RecyclerView.Adapter<ChecklistItemListRecyclerViewAdapter.ViewHolder>()
 {
 
     private lateinit var userNamesAdapter: ArrayAdapter<User>
@@ -119,7 +120,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
                             vmProvider.checklistItemResultViewModel.insert(
                                     ChecklistItemResult(
                                             checklistItemView.checklistItem.id,
-                                            match.id,
+                                            matchId,
                                             Status.INCOMPLETE,
                                             Table.DEFAULT_UUID,
                                             Table.DEFAULT_DATE
@@ -146,7 +147,7 @@ internal class ChecklistItemListRecyclerViewAdapter(private val match: Match, pr
                                     vmProvider.checklistItemResultViewModel.insert(
                                             ChecklistItemResult(
                                                     checklistItemView.checklistItem.id,
-                                                    match.id,
+                                                    matchId,
                                                     Status.COMPLETE,
                                                     Table.DEFAULT_UUID,
                                                     Table.DEFAULT_DATE
