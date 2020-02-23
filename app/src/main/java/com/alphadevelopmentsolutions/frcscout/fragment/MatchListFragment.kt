@@ -41,11 +41,10 @@ class MatchListFragment : MasterFragment()
                                 activityContext.isToolbarScrollable = true
                                 activityContext.isSearchViewVisible = true
 
-                                val searchedMatches = ArrayList(matches)
+                                val searchedMatches = matches.toMutableList()
                                 var previousSearchLength = 0
 
                                 val matchListRecyclerViewAdapter = MatchListRecyclerViewAdapter(
-                                        eventId,
                                         teamId,
                                         searchedMatches,
                                         activityContext,

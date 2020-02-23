@@ -15,9 +15,11 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.core.Match
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.extension.putUUID
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_match_list.*
+import java.util.*
 import kotlin.collections.ArrayList
 
 class ChecklistFragment : MasterFragment()
@@ -162,12 +164,12 @@ class ChecklistFragment : MasterFragment()
          * @param match to be shown checklist items for
          * @return A new instance of fragment [ChecklistFragment].
          */
-        fun newInstance(team: Team, match: Match?): ChecklistFragment
+        fun newInstance(teamId: UUID, matchId: UUID): ChecklistFragment
         {
             val fragment = ChecklistFragment()
             val args = Bundle()
-            args.putString(ARG_TEAM_ID, toJson(team))
-            args.putString(ARG_MATCH_ID, toJson(match))
+            args.putUUID(ARG_TEAM_ID, teamId)
+            args.putUUID(ARG_MATCH_ID, matchId)
             fragment.arguments = args
             return fragment
         }

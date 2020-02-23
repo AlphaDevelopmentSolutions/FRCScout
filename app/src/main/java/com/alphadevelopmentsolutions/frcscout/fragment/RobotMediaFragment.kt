@@ -13,6 +13,8 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.account.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
+import com.alphadevelopmentsolutions.frcscout.extension.putUUID
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_robot_media.view.*
 import java.io.File
@@ -69,7 +71,7 @@ class RobotMediaFragment : MasterFragment()
             //save the new image
             view.RobotMediaSaveButton.setOnClickListener {
 
-                robotMedia.save(database)
+                VMProvider.getInstance(activityContext).robotMediaViewModel.insert(robotMedia)
 
                 activityContext.supportFragmentManager.popBackStackImmediate()
             }
@@ -92,9 +94,7 @@ class RobotMediaFragment : MasterFragment()
             }
         }
 
-        loadingThread.join()
-
-        activityContext.setToolbarTitle("${teamId!!.id} Robot Media")
+        activityContext.setToolbarTitle("Robot Media")
 
         return view
     }
@@ -110,12 +110,10 @@ class RobotMediaFragment : MasterFragment()
                 if (resultCode == Activity.RESULT_OK)
                 {
                     robotMedia = RobotMedia(
-                            -1,
-                            yearId!!.serverId,
-                            eventId!!.blueAllianceId,
-                            teamId!!.id,
-                            mediaFilePath,
-                            true)
+                            eventId!!,
+                            teamId!!,
+                            mediaFilePath
+                    )
 
                     robotMediaImageView.setImageBitmap(robotMedia.imageBitmap)
                 }
@@ -129,7 +127,7 @@ class RobotMediaFragment : MasterFragment()
     override fun onDetach()
     {
         //robot media never saved, delete image
-        if ((!::robotMedia.isInitialized && ::mediaFilePath.isInitialized) || (::robotMedia.isInitialized && robotMedia.id == -1))
+        if ((!::robotMedia.isInitialized && ::mediaFilePath.isInitialized) || (::robotMedia.isInitialized && robotMedia.isDraft))
             File(mediaFilePath).apply {
                 if(exists())
                     delete()
@@ -148,12 +146,12 @@ class RobotMediaFragment : MasterFragment()
          * @param team to get robot media from
          * @return A new instance of fragment [RobotMediaFragment].
          */
-        fun newInstance(robotMedia: RobotMedia?, team: Team): RobotMediaFragment
+        fun newInstance(robotMedia: RobotMedia?, teamId: UUID): RobotMediaFragment
         {
             val fragment = RobotMediaFragment()
             val args = Bundle()
             args.putString(ARG_ROBOT_MEDIA, toJson(robotMedia))
-            args.putString(ARG_TEAM_ID, toJson(team))
+            args.putUUID(ARG_TEAM_ID, teamId)
             fragment.arguments = args
             return fragment
         }

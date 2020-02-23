@@ -5,6 +5,7 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.core.Match
 import com.alphadevelopmentsolutions.frcscout.dao.MatchDao
 import com.alphadevelopmentsolutions.frcscout.enums.SortDirection
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
+import com.alphadevelopmentsolutions.frcscout.view.database.MatchDatabaseView
 import io.reactivex.Flowable
 import java.lang.StringBuilder
 import java.util.*
@@ -26,8 +27,8 @@ class MatchRepository(private val matchDao: MatchDao) {
      */
     fun objWithId(id: String) = matchDao.getObjWithId(id)
 
-    fun objWithCustom(eventId: UUID?, matchId: UUID?, teamId: UUID?, sortDirection: SortDirection = SortDirection.DESC): Flowable<List<Match>>? {
-        var returnFlowable: Flowable<List<Match>>? = null
+    fun objWithCustom(eventId: UUID?, matchId: UUID?, teamId: UUID?, sortDirection: SortDirection = SortDirection.DESC): Flowable<List<MatchDatabaseView>>? {
+        var returnFlowable: Flowable<List<MatchDatabaseView>>? = null
 
         Match.Type.getTypes().forEach {
 

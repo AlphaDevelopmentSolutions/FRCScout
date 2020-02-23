@@ -18,6 +18,9 @@ import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_scout_card_info.view.*
 import kotlinx.android.synthetic.main.layout_card_scout_card_info_form.view.*
 import kotlinx.android.synthetic.main.layout_field_info.view.*
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.LinkedHashMap
 
 class ScoutCardInfoFragment : MasterFragment()
 {

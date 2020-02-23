@@ -9,6 +9,9 @@ import com.alphadevelopmentsolutions.frcscout.adapter.RobotMediaListRecyclerView
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
+import com.alphadevelopmentsolutions.frcscout.extension.init
+import com.alphadevelopmentsolutions.frcscout.interfaces.AppLog
 import kotlinx.android.synthetic.main.fragment_robot_media_list.view.*
 
 class RobotMediaListFragment : MasterFragment()
@@ -18,7 +21,7 @@ class RobotMediaListFragment : MasterFragment()
         return false
     }
 
-    private lateinit var robotMediaListRecyclerViewAdapter: RobotMediaListRecyclerViewAdapter
+    private var robotMediaListRecyclerViewAdapter: RobotMediaListRecyclerViewAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
@@ -26,27 +29,26 @@ class RobotMediaListFragment : MasterFragment()
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_robot_media_list, container, false)
 
-        Thread(Runnable {
+        val oldCount = robotMediaListRecyclerViewAdapter?.itemCount ?: 0
 
-            loadingThread.join()
+        VMProvider.getInstance(activityContext).robotMediaViewModel.objs.init()
+                .subscribe(
+                        { robotMediaList ->
 
-            val oldCount = if(::robotMediaListRecyclerViewAdapter.isInitialized) robotMediaListRecyclerViewAdapter.itemCount else 0
+                            if(robotMediaList.size != oldCount)
+                                robotMediaListRecyclerViewAdapter = RobotMediaListRecyclerViewAdapter(teamId!!, robotMediaList.toMutableList(), activityContext)
 
-            val robotMediaList = RobotMedia.getObjects(null, yearId, eventId, teamId, false, database)
-
-            if(robotMediaList.size != oldCount)
-                robotMediaListRecyclerViewAdapter = RobotMediaListRecyclerViewAdapter(teamId!!, robotMediaList, activityContext)
-
-            if(::robotMediaListRecyclerViewAdapter.isInitialized)
-            {
-                activityContext.runOnUiThread {
-                    view.RobotMediaRecyclerView.layoutManager = LinearLayoutManager(activityContext)
-                    view.RobotMediaRecyclerView.adapter = robotMediaListRecyclerViewAdapter
-                }
-            }
-        }).start()
-
-
+                            robotMediaListRecyclerViewAdapter?.let {
+                                activityContext.runOnUiThread {
+                                    view.RobotMediaRecyclerView.layoutManager = LinearLayoutManager(activityContext)
+                                    view.RobotMediaRecyclerView.adapter = it
+                                }
+                            }
+                        },
+                        {
+                            AppLog.error(it)
+                        }
+                )
         return view
     }
 

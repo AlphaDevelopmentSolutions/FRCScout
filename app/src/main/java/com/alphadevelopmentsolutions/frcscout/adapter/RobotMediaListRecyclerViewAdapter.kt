@@ -20,7 +20,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 
-internal class RobotMediaListRecyclerViewAdapter(private val team: Team, private val robotMediaList: MutableList<RobotMedia>, private val context: MainActivity) : RecyclerView.Adapter<RobotMediaListRecyclerViewAdapter.ViewHolder>()
+internal class RobotMediaListRecyclerViewAdapter(private val teamId: UUID, private val robotMediaList: MutableList<RobotMedia>, private val context: MainActivity) : RecyclerView.Adapter<RobotMediaListRecyclerViewAdapter.ViewHolder>()
 {
     private val robotMediaBitmaps = mutableListOf<Bitmap>()
 
@@ -58,7 +58,15 @@ internal class RobotMediaListRecyclerViewAdapter(private val team: Team, private
 
         viewHolder.view.RobotImageView.setImageBitmap(robotMediaBitmaps[viewHolder.adapterPosition])
 
-        viewHolder.view.ViewRobotMediaButton.setOnClickListener { context.changeFragment(RobotMediaFragment.newInstance(robotMedia, team), true) }
+        viewHolder.view.ViewRobotMediaButton.setOnClickListener {
+            context.changeFragment(
+                    RobotMediaFragment.newInstance(
+                            robotMedia,
+                            teamId
+                    ),
+                    true
+            )
+        }
 
         if(!robotMedia.isDraft)
             viewHolder.view.DeleteRobotMediaButton.visibility = View.GONE
