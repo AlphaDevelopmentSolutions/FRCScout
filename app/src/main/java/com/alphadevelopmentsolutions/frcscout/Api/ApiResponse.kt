@@ -10,11 +10,12 @@ import org.json.JSONException
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
+import java.net.UnknownHostException
 
 
 class ApiResponse(private val api: Api)
 {
-    var responseCode: Int = 401
+    var responseCode: Int = HttpResponseCodes.UNAUTHORIZED
     lateinit var response: JSONArray
 
     /**
@@ -26,11 +27,19 @@ class ApiResponse(private val api: Api)
     @Throws(IOException::class, JSONException::class)
     fun parse(): ApiResponse
     {
-        val response = queryApi()
+        try {
+            val response = queryApi()
 
-        AppLog.log("API Response", response)
 
-        this.response = JSONArray(response)
+            AppLog.log("API Response", response)
+
+            this.response = JSONArray(response)
+
+        }
+        catch(e: UnknownHostException) {
+            responseCode = HttpResponseCodes.ERROR
+            this.response = JSONArray()
+        }
 
         //parse and return the response
         return this
@@ -41,7 +50,7 @@ class ApiResponse(private val api: Api)
      * @return JSON Response from URL
      * @throws IOException
      */
-    @Throws(IOException::class)
+    @Throws(IOException::class, UnknownHostException::class)
     private fun queryApi(): String
     {
         //response from server
