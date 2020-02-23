@@ -13,6 +13,7 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInf
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfoKey
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.extension.putUUID
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_scout_card_info.view.*
 import kotlinx.android.synthetic.main.layout_card_scout_card_info_form.view.*
@@ -390,12 +391,12 @@ class ScoutCardInfoFragment : MasterFragment()
          * @param team to get scout cards from
          * @return A new instance of fragment [ScoutCardInfoFragment].
          */
-        fun newInstance(match: Match, team: Team): ScoutCardInfoFragment
+        fun newInstance(matchId: UUID, teamId: UUID): ScoutCardInfoFragment
         {
             val fragment = ScoutCardInfoFragment()
             val args = Bundle()
-            args.putString(ARG_MATCH_ID, toJson(match))
-            args.putString(ARG_TEAM_ID, toJson(team))
+            args.putUUID(ARG_MATCH_ID, matchId)
+            args.putUUID(ARG_TEAM_ID, teamId)
             fragment.arguments = args
             return fragment
         }

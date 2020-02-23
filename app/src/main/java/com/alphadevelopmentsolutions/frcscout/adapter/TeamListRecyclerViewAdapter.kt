@@ -53,7 +53,7 @@ internal class TeamListRecyclerViewAdapter(
             TeamLocationTextView.text = String.format("%s, %s, %s", team.city, team.stateProvince, team.country)
 
             //load the photo if the file exists
-            if (team.avatarUri != "")
+            if (!team.avatarUri.isNullOrBlank())
                 Picasso.get()
                         .load(Uri.fromFile(File(team.avatarUri)))
                         .fit()
@@ -62,16 +62,37 @@ internal class TeamListRecyclerViewAdapter(
 
             //Sends you to the teamId fragment
             if (matchId == null)
-                ViewTeamButton.setOnClickListener { this@TeamListRecyclerViewAdapter.context.changeFragment(TeamFragment.newInstance(teamList[viewHolder.adapterPosition]), true) }
+                ViewTeamButton.setOnClickListener {
+                    this@TeamListRecyclerViewAdapter.context.changeFragment(
+                            TeamFragment.newInstance(
+                                    teamList[viewHolder.adapterPosition]
+                            ),
+                            true
+                    )
+                }
 
             else
             {
                 ViewTeamButton.text = context.getString(R.string.view_scout_card)
-                ViewTeamButton.setOnClickListener { this@TeamListRecyclerViewAdapter.context.changeFragment(ScoutCardInfoFragment.newInstance(matchId, teamList[viewHolder.adapterPosition].id), true) }
+                ViewTeamButton.setOnClickListener {
+                    this@TeamListRecyclerViewAdapter.context.changeFragment(
+                            ScoutCardInfoFragment.newInstance(
+                                    matchId,
+                                    teamList[viewHolder.adapterPosition].id
+                            ),
+                            true
+                    )
+                }
             }
 
-            TeamNameTextView.setOnClickListener { this@TeamListRecyclerViewAdapter.context.changeFragment(TeamFragment.newInstance(teamList[viewHolder.adapterPosition]), true) }
-
+            TeamNameTextView.setOnClickListener {
+                this@TeamListRecyclerViewAdapter.context.changeFragment(
+                        TeamFragment.newInstance(
+                                teamList[viewHolder.adapterPosition]
+                        ),
+                        true
+                )
+            }
         }
     }
 
