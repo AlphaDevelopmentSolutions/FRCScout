@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.classes.table.account
 
 import androidx.room.Entity
+import com.alphadevelopmentsolutions.frcscout.classes.FormattableDate
 import com.alphadevelopmentsolutions.frcscout.classes.table.Table
 import com.alphadevelopmentsolutions.frcscout.interfaces.Status
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
@@ -14,7 +15,7 @@ class ChecklistItemResult(
         @SerializedName("match_id") var matchId: UUID,
         var status: Status? = null,
         @SerializedName("completed_by") var completedBy: UUID? = null,
-        @SerializedName("completed_date") var completedDate: Date? = null
+        @SerializedName("completed_date") var completedDate: FormattableDate? = null
 ) : Table()
 {
 

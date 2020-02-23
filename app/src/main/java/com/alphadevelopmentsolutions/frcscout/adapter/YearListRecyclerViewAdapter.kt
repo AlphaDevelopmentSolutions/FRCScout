@@ -13,6 +13,7 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.core.Year
 import com.alphadevelopmentsolutions.frcscout.fragment.EventListFragment
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.classes.KeyStore
 import com.google.android.material.button.MaterialButton
 import com.squareup.picasso.Picasso
 import java.io.File
@@ -21,16 +22,6 @@ import java.util.*
 
 internal class YearListRecyclerViewAdapter(private val yearList: ArrayList<Year>, private val context: MainActivity) : RecyclerView.Adapter<YearListRecyclerViewAdapter.ViewHolder>()
 {
-
-    private val simpleDateFormat: SimpleDateFormat
-
-
-    init
-    {
-
-        simpleDateFormat = SimpleDateFormat("MMM d, yyyy")
-    }
-
     class ViewHolder(view: View, context: MainActivity) : RecyclerView.ViewHolder(view)
     {
         var yearTitleTextView: TextView
@@ -64,7 +55,7 @@ internal class YearListRecyclerViewAdapter(private val yearList: ArrayList<Year>
 
         //Set the content on the card
         viewHolder.yearTitleTextView.text = year.toString()
-        viewHolder.yearDateTextView.text = String.format("%s - %s", simpleDateFormat.format(year.startDate.time), simpleDateFormat.format(year.endDate.time))
+        viewHolder.yearDateTextView.text = String.format("%s - %s", year.startDate?.toString(), year.endDate?.toString())
 
         //load the photo if the file exists
         if (year.imageUri != "")
@@ -76,7 +67,7 @@ internal class YearListRecyclerViewAdapter(private val yearList: ArrayList<Year>
 
         //Sends you to the eventId list fragment
         viewHolder.viewButton.setOnClickListener {
-            context.keyStore.setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, yearList[viewHolder.adapterPosition].serverId)
+            KeyStore.getInstance(context).setPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, yearList[viewHolder.adapterPosition].number)
             context.changeFragment(EventListFragment.newInstance(yearList[viewHolder.adapterPosition]), false)
         }
 

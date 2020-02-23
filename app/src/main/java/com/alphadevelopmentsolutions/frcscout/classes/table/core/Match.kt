@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.classes.table.core
 
 import androidx.room.Entity
+import com.alphadevelopmentsolutions.frcscout.classes.FormattableDate
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfoKey
 import com.alphadevelopmentsolutions.frcscout.classes.table.Table
@@ -27,7 +28,7 @@ class Match(
         @SerializedName("red_alliance_team_three_id") var redAllianceTeamThreeId: UUID,
         @SerializedName("blue_alliance_score") var blueAllianceScore: Int? = null,
         @SerializedName("red_alliance_score") var redAllianceScore: Int? = null,
-        var time: Date? = null
+        var time: FormattableDate? = null
 ) : Table()
 {
     /**

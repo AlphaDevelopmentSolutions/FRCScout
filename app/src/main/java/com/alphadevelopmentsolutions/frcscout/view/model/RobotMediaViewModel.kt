@@ -18,7 +18,9 @@ class RobotMediaViewModel(application: Application) : AndroidViewModel(applicati
      * Gets all [RobotMedia] objects from the database
      * @see RobotMediaRepository.objs
      */
-    val objs: Flowable<List<RobotMedia>>
+    val objs by lazy {
+        repository.objs
+    }
 
     /**
      * Gets all [RobotMedia] objects from the database based on [RobotMedia.id]
@@ -27,9 +29,7 @@ class RobotMediaViewModel(application: Application) : AndroidViewModel(applicati
      */
     fun objWithId(id: String) = repository.objWithId(id)
 
-    init {
-        objs = repository.objs
-    }
+    fun delete(robotMedia: RobotMedia) = repository.delete(robotMedia)
 
     /**
      * Inserts a [RobotMedia] object into the database

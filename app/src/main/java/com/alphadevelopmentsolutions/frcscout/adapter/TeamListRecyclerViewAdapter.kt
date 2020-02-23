@@ -61,13 +61,13 @@ internal class TeamListRecyclerViewAdapter(
                         .into(viewHolder.view.TeamLogoImageView)
 
             //Sends you to the teamId fragment
-            if (match == null)
+            if (matchId == null)
                 ViewTeamButton.setOnClickListener { this@TeamListRecyclerViewAdapter.context.changeFragment(TeamFragment.newInstance(teamList[viewHolder.adapterPosition]), true) }
 
             else
             {
                 ViewTeamButton.text = context.getString(R.string.view_scout_card)
-                ViewTeamButton.setOnClickListener { this@TeamListRecyclerViewAdapter.context.changeFragment(ScoutCardInfoFragment.newInstance(match, teamList[viewHolder.adapterPosition]), true) }
+                ViewTeamButton.setOnClickListener { this@TeamListRecyclerViewAdapter.context.changeFragment(ScoutCardInfoFragment.newInstance(matchId, teamList[viewHolder.adapterPosition].id), true) }
             }
 
             TeamNameTextView.setOnClickListener { this@TeamListRecyclerViewAdapter.context.changeFragment(TeamFragment.newInstance(teamList[viewHolder.adapterPosition]), true) }

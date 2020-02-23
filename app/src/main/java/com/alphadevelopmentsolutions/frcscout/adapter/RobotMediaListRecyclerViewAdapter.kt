@@ -11,14 +11,18 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.account.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 import com.alphadevelopmentsolutions.frcscout.fragment.RobotMediaFragment
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.layout_card_robot_media.view.*
 import kotlinx.android.synthetic.main.layout_dialog_confirm.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
-internal class RobotMediaListRecyclerViewAdapter(private val team: Team, private val robotMediaList: ArrayList<RobotMedia>, private val context: MainActivity) : RecyclerView.Adapter<RobotMediaListRecyclerViewAdapter.ViewHolder>()
+internal class RobotMediaListRecyclerViewAdapter(private val team: Team, private val robotMediaList: MutableList<RobotMedia>, private val context: MainActivity) : RecyclerView.Adapter<RobotMediaListRecyclerViewAdapter.ViewHolder>()
 {
-    private val robotMediaBitmaps: ArrayList<Bitmap> = ArrayList()
+    private val robotMediaBitmaps = mutableListOf<Bitmap>()
 
     init
     {
@@ -79,11 +83,12 @@ internal class RobotMediaListRecyclerViewAdapter(private val team: Team, private
                 layout.ConfirmButton.setOnClickListener {
                     confirmDialog!!.dismiss()
 
-                    with(robotMediaList[viewHolder.adapterPosition])
-                    {
-                        if(delete(context.database))
-                        {
-                            robotMediaList.remove(this)
+
+                    GlobalScope.launch(Dispatchers.IO) {
+
+                        robotMediaList[viewHolder.adapterPosition].let {
+                            VMProvider.getInstance(context).robotMediaViewModel.delete(it)
+                            robotMediaList.remove(it)
                             notifyItemRemoved(viewHolder.adapterPosition)
                         }
                     }

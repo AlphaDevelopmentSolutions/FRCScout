@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.classes.table.core
 
 import androidx.room.Entity
+import com.alphadevelopmentsolutions.frcscout.classes.FormattableDate
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.ScoutCardInfoKey
 import com.alphadevelopmentsolutions.frcscout.classes.table.Table
@@ -17,8 +18,8 @@ class Event(
         var city: String? = null,
         @SerializedName("state_province") var stateProvince: String? = null,
         var country: String? = null,
-        @SerializedName("start_time") var startTime: Date? = null,
-        @SerializedName("end_time") var endTime: Date? = null
+        @SerializedName("start_time") var startTime: FormattableDate? = null,
+        @SerializedName("end_time") var endTime: FormattableDate? = null
 ) : Table()
 {
     /**

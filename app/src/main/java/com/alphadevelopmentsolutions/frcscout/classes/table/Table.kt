@@ -1,12 +1,15 @@
 package com.alphadevelopmentsolutions.frcscout.classes.table
 
 import androidx.room.PrimaryKey
+import com.alphadevelopmentsolutions.frcscout.classes.FormattableDate
 import com.fasterxml.uuid.EthernetAddress
 import com.fasterxml.uuid.Generators
+import com.google.gson.annotations.SerializedName
 import java.util.*
 
 abstract class Table protected constructor (
-    @PrimaryKey var id: UUID = DEFAULT_UUID
+    @PrimaryKey var id: UUID = DEFAULT_UUID,
+    @SerializedName("is_draft") var isDraft: Boolean = false
 )
 {
 
@@ -38,10 +41,10 @@ abstract class Table protected constructor (
                 return -1.0
             }
 
-        val DEFAULT_DATE: Date
+        val DEFAULT_DATE: FormattableDate
             get()
             {
-                return Date()
+                return FormattableDate()
             }
 
         val DEFAULT_BOOLEAN: Boolean

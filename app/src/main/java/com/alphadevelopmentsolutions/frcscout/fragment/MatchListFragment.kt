@@ -10,6 +10,7 @@ import com.alphadevelopmentsolutions.frcscout.adapter.MatchListRecyclerViewAdapt
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Team
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.classes.VMProvider
+import com.alphadevelopmentsolutions.frcscout.extension.putUUID
 import com.alphadevelopmentsolutions.frcscout.interfaces.AppLog
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants.TableNames.Companion.EVENT
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -19,10 +20,7 @@ import java.util.*
 
 class MatchListFragment : MasterFragment()
 {
-    override fun onBackPressed() = false
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View?
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_match_list, container, false)
@@ -47,8 +45,8 @@ class MatchListFragment : MasterFragment()
                                 var previousSearchLength = 0
 
                                 val matchListRecyclerViewAdapter = MatchListRecyclerViewAdapter(
-                                        EVENT GOES HERE,
-                                        TEAM GOES HERE,
+                                        eventId,
+                                        teamId,
                                         searchedMatches,
                                         activityContext,
                                         if (teamId == null) TeamListFragment::class.java else ScoutCardInfoFragment::class.java
@@ -165,7 +163,7 @@ class MatchListFragment : MasterFragment()
         {
             val fragment = MatchListFragment()
             val args = Bundle()
-            args.putString(ARG_TEAM_ID, toJson(team))
+            args.putUUID(ARG_TEAM_ID, team?.id)
             fragment.arguments = args
             return fragment
         }
