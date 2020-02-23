@@ -26,7 +26,13 @@ interface ChecklistItemResultDao {
     @Query("SELECT * FROM checklist_item_results where id = :id")
     fun getObjWithId(id: String): Flowable<ChecklistItemResult>
 
-    @Query("SELECT * FROM ${TableName.CHECKLIST_ITEM}")
+    @Query(
+            """
+                SELECT * FROM ${TableName.CHECKLIST_ITEM}
+                LEFT JOIN ${TableName.CHECKLIST_ITEM_RESULT} ON ${TableName.CHECKLIST_ITEM_RESULT}.checklistItemId = ${TableName.CHECKLIST_ITEM}.id
+                WHERE ${TableName.CHECKLIST_ITEM_RESULT}.matchId = :matchId
+                """
+    )
     fun getObjsViewWithMatch(matchId: UUID): Flowable<List<ChecklistItemDatabaseView>>
 
     /**

@@ -8,6 +8,7 @@ import com.alphadevelopmentsolutions.frcscout.classes.table.account.RobotInfo
 import com.alphadevelopmentsolutions.frcscout.repository.RobotInfoRepository
 import io.reactivex.Flowable
 import kotlinx.coroutines.launch
+import java.util.*
 
 class RobotInfoViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -18,7 +19,11 @@ class RobotInfoViewModel(application: Application) : AndroidViewModel(applicatio
      * Gets all [RobotInfo] objects from the database
      * @see RobotInfoRepository.objs
      */
-    val objs: Flowable<List<RobotInfo>>
+    val objs by lazy {
+        repository.objs
+    }
+
+    fun objsViewForTeam(teamId: UUID) = repository.objsViewForTeam(teamId)
 
     /**
      * Gets all [RobotInfo] objects from the database based on [RobotInfo.id]
@@ -26,10 +31,6 @@ class RobotInfoViewModel(application: Application) : AndroidViewModel(applicatio
      * @see RobotInfoRepository.objWithId
      */
     fun objWithId(id: String) = repository.objWithId(id)
-
-    init {
-        objs = repository.objs
-    }
 
     /**
      * Inserts a [RobotInfo] object into the database
@@ -45,5 +46,9 @@ class RobotInfoViewModel(application: Application) : AndroidViewModel(applicatio
      */
     fun insertAll(robotInfos: List<RobotInfo>) = viewModelScope.launch {
         repository.insertAll(robotInfos)
+    }
+
+    fun delete(robotInfo: RobotInfo) {
+        repository.delete(robotInfo)
     }
 }

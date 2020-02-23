@@ -26,8 +26,6 @@ class ConfigViewPagerFragment : MasterFragment()
 
         val view = inflater.inflate(R.layout.fragment_config_view_pager, container, false)
 
-        loadingThread.join()
-
         //add all config frags to viewpager
         val viewPagerAdapter = FragmentViewPagerAdapter(childFragmentManager)
         viewPagerAdapter.addFragment(ConfigFragment.newInstance(1), activityContext.getString(R.string.welcome))

@@ -1,11 +1,11 @@
 package com.alphadevelopmentsolutions.frcscout.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.RobotInfo
+import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
+import com.alphadevelopmentsolutions.frcscout.view.database.RobotInfoDatabaseView
 import io.reactivex.Flowable
+import java.util.*
 
 @Dao
 interface RobotInfoDao {
@@ -22,6 +22,15 @@ interface RobotInfoDao {
      */
     @Query("SELECT * FROM robot_info where id = :id")
     fun getObjWithId(id: String): Flowable<RobotInfo>
+
+    @Query(
+            """
+                SELECT * FROM ${TableName.ROBOT_INFO_KEY}
+                LEFT JOIN ${TableName.ROBOT_INFO} ON ${TableName.ROBOT_INFO}.keyId = ${TableName.ROBOT_INFO_KEY}.id
+                WHERE ${TableName.ROBOT_INFO}.teamId = :teamId
+            """
+    )
+    fun getObjsViewForTeam(teamId: UUID): Flowable<List<RobotInfoDatabaseView>>
 
     /**
      * Inserts a new [RobotInfo] object into the database
@@ -40,4 +49,7 @@ interface RobotInfoDao {
      */
     @Query("DELETE FROM robot_info")
     suspend fun clear()
+
+    @Delete
+    fun delete(robotInfo: RobotInfo)
 }
