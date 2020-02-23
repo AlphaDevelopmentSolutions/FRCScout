@@ -19,6 +19,7 @@ interface Constants
 
             const val TEAM_NUMBER_KEY = "TEAM_NUMBER"
             const val TEAM_NAME_KEY = "TEAM_NAME"
+            const val TEAM_ID_KEY = "TEAM_ID"
             const val APP_NAME_KEY = "APP_NAME"
 
             const val PRIMARY_COLOR_KEY = "PRIMARY_COLOR"
@@ -27,19 +28,6 @@ interface Constants
 
             const val SELECTED_EVENT_KEY = "SELECTED_EVENT"
             const val SELECTED_YEAR_KEY = "SELECTED_YEAR"
-
-            const val DOWNLOAD_EVENTS_KEY = "DOWNLOAD_EVENTS"
-            const val DOWNLOAD_MATCHES_KEY = "DOWNLOAD_MATCHES"
-            const val DOWNLOAD_TEAMS_KEY = "DOWNLOAD_TEAMS"
-            const val DOWNLOAD_CHECKLISTS_KEY = "DOWNLOAD_CHECKLISTS"
-            const val DOWNLOAD_ROBOT_INFO_KEY = "DOWNLOAD_ROBOT_INFO"
-            const val DOWNLOAD_SCOUT_CARD_INFO_KEY = "DOWNLOAD_SCOUT_CARD_INFO"
-            const val DOWNLOAD_ROBOT_MEDIA_KEY = "DOWNLOAD_ROBOT_MEDIA"
-            
-            const val UPLOAD_CHECKLISTS_KEY = "UPLOAD_CHECKLISTS"
-            const val UPLOAD_ROBOT_INFO_KEY = "UPLOAD_ROBOT_INFO"
-            const val UPLOAD_SCOUT_CARD_INFO_KEY = "UPLOAD_SCOUT_CARD_INFO"
-            const val UPLOAD_ROBOT_MEDIA_KEY = "UPLOAD_ROBOT_MEDIA"
         }
     }
 

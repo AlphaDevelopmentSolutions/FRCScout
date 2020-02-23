@@ -152,9 +152,9 @@ class EventListFragment : MasterFragment()
          * @param year to grab events from
          * @return A new instance of fragment [EventListFragment].
          */
-        fun newInstance(year: Year) = EventListFragment().apply {
+        fun newInstance(yearId: UUID) = EventListFragment().apply {
             arguments = Bundle().apply {
-                putUUID(ARG_YEAR_ID, year.id)
+                putUUID(ARG_YEAR_ID, yearId)
             }
         }
     }

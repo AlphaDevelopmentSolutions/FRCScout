@@ -1,8 +1,12 @@
 package com.alphadevelopmentsolutions.frcscout.classes
 
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.preference.PreferenceManager
 import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
+import com.alphadevelopmentsolutions.frcscout.extension.getIntOrNull
+import com.alphadevelopmentsolutions.frcscout.extension.getUUID
+import com.alphadevelopmentsolutions.frcscout.extension.putUUID
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import java.util.*
 
@@ -31,7 +35,7 @@ class KeyStore private constructor (val context: MainActivity)
      * @param key [String] pref key
      * @param value [Any] pref value
      */
-    fun setPreference(key: String, value: Any)
+    private fun setPreference(key: String, value: Any)
     {
         with(sharedPreferences.edit())
         {
@@ -54,7 +58,7 @@ class KeyStore private constructor (val context: MainActivity)
      * @param key [String] pref key
      * @param defaultValue [Any] default pref value
      */
-    fun getPreference(key: String, defaultValue: Any): Any?
+    private fun getPreference(key: String, defaultValue: Any): Any?
     {
         return with(sharedPreferences)
         {
@@ -65,15 +69,7 @@ class KeyStore private constructor (val context: MainActivity)
                 is Boolean -> getBoolean(key, defaultValue)
                 is Long -> getLong(key, defaultValue)
                 is Float -> getFloat(key, defaultValue)
-                is UUID ->
-                    return if (contains(key))
-                        try {
-                            UUID.fromString(getString(key, null))
-                        } catch (e: IllegalArgumentException) {
-                            null
-                        }
-                    else
-                        null
+
                 else -> defaultValue
             }
         }
@@ -96,21 +92,122 @@ class KeyStore private constructor (val context: MainActivity)
 
             setPreference(SELECTED_EVENT_KEY, -1)
             setPreference(SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR))
-
-            setPreference(DOWNLOAD_EVENTS_KEY, true)
-            setPreference(DOWNLOAD_MATCHES_KEY, true)
-            setPreference(DOWNLOAD_TEAMS_KEY, true)
-            setPreference(DOWNLOAD_CHECKLISTS_KEY, true)
-            setPreference(DOWNLOAD_ROBOT_INFO_KEY, true)
-            setPreference(DOWNLOAD_SCOUT_CARD_INFO_KEY, true)
-            setPreference(DOWNLOAD_ROBOT_MEDIA_KEY, false)
-
-            setPreference(UPLOAD_CHECKLISTS_KEY, true)
-            setPreference(UPLOAD_ROBOT_INFO_KEY, true)
-            setPreference(UPLOAD_SCOUT_CARD_INFO_KEY, true)
-            setPreference(UPLOAD_ROBOT_MEDIA_KEY, false)
         }
     }
+
+    var apiKey: String? = null
+        get() = sharedPreferences.getString(Constants.SharedPrefKeys.API_KEY_KEY, null)
+        set(value) {
+            sharedPreferences.edit().putString(Constants.SharedPrefKeys.API_KEY_KEY, value).apply()
+            field = value
+        }
+
+    var coreUsername: String? = null
+        get() = sharedPreferences.getString(Constants.SharedPrefKeys.API_CORE_USERNAME, null)
+        set(value) {
+            sharedPreferences.edit().putString(Constants.SharedPrefKeys.API_CORE_USERNAME, value).apply()
+            field = value
+        }
+
+    var corePassword: String? = null
+        get() = sharedPreferences.getString(Constants.SharedPrefKeys.API_CORE_PASSWORD, null)
+        set(value) {
+            sharedPreferences.edit().putString(Constants.SharedPrefKeys.API_CORE_PASSWORD, value).apply()
+            field = value
+        }
+
+    var teamNumber: Int? = null
+        get() = sharedPreferences.getIntOrNull(Constants.SharedPrefKeys.TEAM_NUMBER_KEY)
+        set(value) {
+
+            if(value != null)
+                sharedPreferences.edit().putInt(Constants.SharedPrefKeys.TEAM_NUMBER_KEY, value).apply()
+
+            else
+                sharedPreferences.edit().remove(Constants.SharedPrefKeys.TEAM_NUMBER_KEY).apply()
+
+            field = value
+        }
+
+    var teamName: String? = null
+        get() = sharedPreferences.getString(Constants.SharedPrefKeys.TEAM_NAME_KEY, null)
+        set(value) {
+            sharedPreferences.edit().putString(Constants.SharedPrefKeys.TEAM_NAME_KEY, value).apply()
+            field = value
+        }
+
+    var teamId: UUID? = null
+        get() = sharedPreferences.getUUID(Constants.SharedPrefKeys.TEAM_ID_KEY)
+        set(value) {
+            sharedPreferences.putUUID(Constants.SharedPrefKeys.TEAM_ID_KEY, value)
+            field = value
+        }
+
+    var appName: String? = null
+        get() = sharedPreferences.getString(Constants.SharedPrefKeys.APP_NAME_KEY, null)
+        set(value) {
+            sharedPreferences.edit().putString(Constants.SharedPrefKeys.APP_NAME_KEY, value).apply()
+            field = value
+        }
+
+    var primaryColor: Int? = null
+        get() {
+            sharedPreferences.getString(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, null)?.let {
+                return Color.parseColor("#$it")
+            }
+
+            return null
+        }
+        set(value) {
+
+            if(value != null)
+                sharedPreferences.edit().putInt(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY, value).apply()
+
+            else
+                sharedPreferences.edit().remove(Constants.SharedPrefKeys.PRIMARY_COLOR_KEY).apply()
+
+            field = value
+        }
+
+    var primaryColorDark: Int? = null
+        get() {
+            sharedPreferences.getString(Constants.SharedPrefKeys.PRIMARY_COLOR_DARK_KEY, null)?.let {
+                return Color.parseColor("#$it")
+            }
+
+            return null
+        }
+        set(value) {
+
+            if(value != null)
+                sharedPreferences.edit().putInt(Constants.SharedPrefKeys.PRIMARY_COLOR_DARK_KEY, value).apply()
+
+            else
+                sharedPreferences.edit().remove(Constants.SharedPrefKeys.PRIMARY_COLOR_DARK_KEY).apply()
+
+            field = value
+        }
+
+    var robotMediaDir: String? = null
+        get() = sharedPreferences.getString(Constants.SharedPrefKeys.TEAM_ROBOT_MEDIA_DIR_KEY, null)
+        set(value) {
+            sharedPreferences.edit().putString(Constants.SharedPrefKeys.TEAM_ROBOT_MEDIA_DIR_KEY, value).apply()
+            field = value
+        }
+
+    var selectedEventId: UUID? = null
+        get() = sharedPreferences.getUUID(Constants.SharedPrefKeys.SELECTED_EVENT_KEY)
+        set(value) {
+            sharedPreferences.putUUID(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, value)
+            field = value
+        }
+
+    var selectedYearId: UUID? = null
+        get() = sharedPreferences.getUUID(Constants.SharedPrefKeys.SELECTED_YEAR_KEY)
+        set(value) {
+            sharedPreferences.putUUID(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, value)
+            field = value
+        }
 
     /**
      * Check all the shared pref settings to validate the app is setup with the required info

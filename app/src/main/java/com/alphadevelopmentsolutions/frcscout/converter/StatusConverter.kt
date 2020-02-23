@@ -3,12 +3,13 @@ package com.alphadevelopmentsolutions.frcscout.converter
 import androidx.room.TypeConverter
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Match
 import com.alphadevelopmentsolutions.frcscout.enums.MatchType
+import com.alphadevelopmentsolutions.frcscout.enums.Status
 
-class MatchTypeConverter {
-
-    @TypeConverter
-    fun matchTypeToString(matchType: MatchType) = matchType.toString()
+class StatusConverter {
 
     @TypeConverter
-    fun matchTypeFromString(matchType: String) = MatchType.fromString(matchType)
+    fun statusToString(status: Status) = status.toString()
+
+    @TypeConverter
+    fun statusFromString(status: String) = Status.fromString(status)
 }

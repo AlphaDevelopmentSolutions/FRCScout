@@ -7,10 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.alphadevelopmentsolutions.frcscout.classes.table.account.*
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.*
-import com.alphadevelopmentsolutions.frcscout.converter.DataTypeConverter
-import com.alphadevelopmentsolutions.frcscout.converter.DateConverter
-import com.alphadevelopmentsolutions.frcscout.converter.MatchTypeConverter
-import com.alphadevelopmentsolutions.frcscout.converter.UUIDConverter
+import com.alphadevelopmentsolutions.frcscout.converter.*
 import com.alphadevelopmentsolutions.frcscout.dao.*
 
 @Database(
@@ -36,7 +33,8 @@ import com.alphadevelopmentsolutions.frcscout.dao.*
             UUIDConverter::class,
             DateConverter::class,
             MatchTypeConverter::class,
-            DataTypeConverter::class
+            DataTypeConverter::class,
+            StatusConverter::class
         ]
 )
 abstract class RDatabase : RoomDatabase() {

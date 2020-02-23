@@ -9,7 +9,7 @@ import com.alphadevelopmentsolutions.frcscout.repository.EventRepository
 import com.alphadevelopmentsolutions.frcscout.repository.ScoutCardInfoRepository
 import io.reactivex.Flowable
 import kotlinx.coroutines.launch
-import java.util.HashMap
+import java.util.*
 import kotlin.math.round
 
 class EventViewModel(application: Application) : AndroidViewModel(application) {
@@ -33,7 +33,7 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
      * @param id specified the id to sort the [Event] object by
      * @see EventRepository.objWithId
      */
-    fun objWithId(id: Int) = repository.objWithId(id)
+    fun objWithId(id: UUID) = repository.objWithId(id)
 
     /**
      * Inserts a [Event] object into the database

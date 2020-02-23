@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.repository
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Event
 import com.alphadevelopmentsolutions.frcscout.dao.EventDao
 import io.reactivex.Flowable
+import java.util.*
 
 
 class EventRepository(private val eventDao: EventDao) {
@@ -18,7 +19,7 @@ class EventRepository(private val eventDao: EventDao) {
      * @param id specified the id to sort the [Event] object by
      * @see EventDao.getObjWithId
      */
-    fun objWithId(id: Int) = eventDao.getObjWithId(id)
+    fun objWithId(id: UUID) = eventDao.getObjWithId(id)
 
     /**
      * Inserts a [Event] object into the database

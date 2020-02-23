@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.alphadevelopmentsolutions.frcscout.classes.table.core.Event
 import io.reactivex.Flowable
+import java.util.*
 
 @Dao
 interface EventDao {
@@ -21,7 +22,7 @@ interface EventDao {
      * @param id specified the id to sort the [Event] object by
      */
     @Query("SELECT * FROM events where id = :id")
-    fun getObjWithId(id: Int): Flowable<Event>
+    fun getObjWithId(id: UUID): Flowable<Event>
 
     /**
      * Inserts a new [Event] object into the database

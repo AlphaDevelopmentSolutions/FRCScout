@@ -176,7 +176,7 @@ class ChecklistFragment : MasterFragment()
          * @param match to be shown checklist items for
          * @return A new instance of fragment [ChecklistFragment].
          */
-        fun newInstance(teamId: UUID, matchId: UUID): ChecklistFragment
+        fun newInstance(teamId: UUID, matchId: UUID?): ChecklistFragment
         {
             val fragment = ChecklistFragment()
             val args = Bundle()
