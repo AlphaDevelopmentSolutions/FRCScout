@@ -111,7 +111,9 @@ class ScoutCardInfoFragment : MasterFragment()
 
                                         ScoutCardInfoKey.DataTypes.BOOL ->
                                         {
-                                            BooleanCheckBox.isChecked = scoutCardInfo?.propertyValue == "1"
+                                            this@ScoutCardInfoFragment.context.runOnUiThread {
+                                                BooleanCheckBox.isChecked = scoutCardInfo?.propertyValue == "1"
+                                            }
                                         }
                                     }
                                 }
@@ -133,7 +135,9 @@ class ScoutCardInfoFragment : MasterFragment()
 
                                         ScoutCardInfoKey.DataTypes.BOOL ->
                                         {
-                                            BooleanCheckBox.isChecked = false
+                                            this@ScoutCardInfoFragment.context.runOnUiThread {
+                                                BooleanCheckBox.isChecked = false
+                                            }
                                         }
                                     }
                                 }
@@ -299,7 +303,9 @@ class ScoutCardInfoFragment : MasterFragment()
                                 BooleanLinearLayout.visibility = View.VISIBLE
                                 BooleanCheckBox.buttonTintList = this@ScoutCardInfoFragment.context.checkboxBackground
                                 (BooleanCheckBox.background as RippleDrawable).setColor(this@ScoutCardInfoFragment.context.checkboxRipple)
-                                BooleanCheckBox.isChecked = if (scoutCardInfo?.propertyValue?.isNotBlank() == true) scoutCardInfo?.propertyValue == "1" else false
+                                this@ScoutCardInfoFragment.context.runOnUiThread {
+                                    BooleanCheckBox.isChecked = if (scoutCardInfo?.propertyValue?.isNotBlank() == true) scoutCardInfo?.propertyValue == "1" else false
+                                }
                                 BooleanCheckBox.setOnCheckedChangeListener { _, checked ->
                                     run {
 
