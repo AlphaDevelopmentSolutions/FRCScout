@@ -23,7 +23,7 @@ android {
         applicationId "com.alphadevelopmentsolutions.frcscout"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 22
+        versionCode 23
         versionName "v4.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,11 +34,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            testCoverageEnabled = true
         }
 
         debug
         {
-            buildConfigField("String", "API_URL", "\"https://www.frcscout.dev\"")
+            buildConfigField("String", "API_URL", "\"https://www.frcscout.app\"")
             testCoverageEnabled = true
         }
     }
