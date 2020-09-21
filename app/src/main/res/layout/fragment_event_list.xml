@@ -7,7 +7,7 @@
     android:background="@color/background"
     android:orientation="vertical"
     android:scrollbars="vertical"
-    tools:context=".Fragments.EventListFragment"
+    tools:context=".ui.EventListFragment"
     tools:listitem="@layout/layout_card_event">
 
 </androidx.recyclerview.widget.RecyclerView>
