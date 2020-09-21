@@ -2,7 +2,8 @@ package com.alphadevelopmentsolutions.frcscout.interfaces
 
 import android.util.Log
 import com.alphadevelopmentsolutions.frcscout.BuildConfig
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.ktx.Firebase
 
 interface AppLog
 {
@@ -12,6 +13,8 @@ interface AppLog
         {
             if(BuildConfig.DEBUG)
                 Log.d(title, message)
+            else
+                FirebaseCrashlytics.getInstance().log("$title: $message")
         }
 
         fun error(exception: Exception)
@@ -19,7 +22,7 @@ interface AppLog
             if(BuildConfig.DEBUG)
                 exception.stackTrace
             else
-                Crashlytics.logException(exception)
+                FirebaseCrashlytics.getInstance().recordException(exception)
         }
     }
 }

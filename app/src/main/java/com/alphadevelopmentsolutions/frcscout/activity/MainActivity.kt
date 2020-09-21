@@ -21,12 +21,12 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentManager
 import com.alphadevelopmentsolutions.frcscout.api.Api
 import com.alphadevelopmentsolutions.frcscout.classes.Database
-import com.alphadevelopmentsolutions.frcscout.classes.KeyStore
 import com.alphadevelopmentsolutions.frcscout.classes.LoadingDialog
 import com.alphadevelopmentsolutions.frcscout.classes.table.*
 import com.alphadevelopmentsolutions.frcscout.ui.*
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.classes.KeyStore
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView

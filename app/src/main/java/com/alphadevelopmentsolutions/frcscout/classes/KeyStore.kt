@@ -48,15 +48,14 @@ class KeyStore(val context: MainActivity? = null)
     {
         return with(sharedPreferences!!)
         {
-            when (defaultValue)
-            {
+            when (defaultValue) {
                 is String -> getString(key, defaultValue)
                 is Int -> getInt(key, defaultValue)
                 is Boolean -> getBoolean(key, defaultValue)
                 is Long -> getLong(key, defaultValue)
                 is Float -> getFloat(key, defaultValue)
                 else -> defaultValue
-            }
+            } as Any
         }
     }
 
