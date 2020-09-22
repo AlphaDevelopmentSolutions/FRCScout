@@ -9,10 +9,10 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
-import com.alphadevelopmentsolutions.frcscout.classes.Database
-import com.alphadevelopmentsolutions.frcscout.classes.table.*
+import com.alphadevelopmentsolutions.frcscout.classes.RDatabase
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.table.*
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.layout_master.view.*
 import kotlinx.android.synthetic.main.layout_view_loading.view.*
@@ -22,7 +22,7 @@ abstract class MasterFragment : Fragment()
 {
     //store the context and database in the master fragment which all other fragments extend from
     protected lateinit var context: MainActivity
-    protected lateinit var database: Database
+    protected lateinit var database: RDatabase
 
     protected var year: Year? = null
 

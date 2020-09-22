@@ -8,11 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.alphadevelopmentsolutions.frcscout.classes.Database
-import com.alphadevelopmentsolutions.frcscout.classes.table.Match
-import com.alphadevelopmentsolutions.frcscout.classes.table.ScoutCardInfo
-import com.alphadevelopmentsolutions.frcscout.classes.table.ScoutCardInfoKey
-import com.alphadevelopmentsolutions.frcscout.classes.table.Team
+import com.alphadevelopmentsolutions.frcscout.classes.RDatabase
+import com.alphadevelopmentsolutions.frcscout.table.Match
+import com.alphadevelopmentsolutions.frcscout.table.ScoutCardInfo
+import com.alphadevelopmentsolutions.frcscout.table.ScoutCardInfoKey
+import com.alphadevelopmentsolutions.frcscout.table.Team
 import com.alphadevelopmentsolutions.frcscout.R
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.LineChart
@@ -53,7 +53,7 @@ class QuickStatsFragment : MasterFragment()
             loadingThread.join()
 
 
-            val matches = Match.getObjects(event!!, null, team!!, database, Database.SortDirection.ASC) //matches for this team
+            val matches = Match.getObjects(event!!, null, team!!, database, RDatabase.SortDirection.ASC) //matches for this team
             val scoutCardInfoKeys = ScoutCardInfoKey.getObjects(year!!, null, database) //scout card info keys for this year
             val scoutCardInfos = ScoutCardInfo.getObjects(event, null, null, null, null, false, database) //scout card infos for this event
 

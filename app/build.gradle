@@ -30,6 +30,9 @@ android {
         versionCode 23
         versionName "v5.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "API_PROTOCOL", "\"https\"")
+        buildConfigField("String", "API_DNS", "\"frcscout.app\"")
     }
     buildTypes {
         release

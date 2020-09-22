@@ -20,13 +20,13 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentManager
 import com.alphadevelopmentsolutions.frcscout.api.Api
-import com.alphadevelopmentsolutions.frcscout.classes.Database
+import com.alphadevelopmentsolutions.frcscout.classes.RDatabase
 import com.alphadevelopmentsolutions.frcscout.classes.LoadingDialog
-import com.alphadevelopmentsolutions.frcscout.classes.table.*
 import com.alphadevelopmentsolutions.frcscout.ui.*
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.classes.KeyStore
+import com.alphadevelopmentsolutions.frcscout.table.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity(),
         MasterFragment.OnFragmentInteractionListener
 {
     private lateinit var context: MainActivity
-    var database: Database = Database(this)
+    var database: RDatabase = RDatabase(this)
     get()
     {
         if (!field.isOpen)
@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity(),
         setContentView(R.layout.activity_main)
 
         context = this
-        database = Database(context)
+        database = RDatabase(context)
         database.open()
 
         setSupportActionBar(MainToolbar)

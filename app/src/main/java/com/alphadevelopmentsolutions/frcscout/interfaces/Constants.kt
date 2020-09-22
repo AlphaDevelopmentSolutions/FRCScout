@@ -2,6 +2,9 @@ package com.alphadevelopmentsolutions.frcscout.interfaces
 
 import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
 import com.alphadevelopmentsolutions.frcscout.BuildConfig
+import com.fasterxml.uuid.EthernetAddress
+import com.fasterxml.uuid.Generators
+import com.fasterxml.uuid.impl.TimeBasedGenerator
 import java.io.File
 
 interface Constants
@@ -64,6 +67,27 @@ interface Constants
         const val API_URL = "$WEB_URL/api/"
 
         const val RECAPTCHA_SITE_KEY = "6Lftl74UAAAAACuMDDwCATDi2sQnQfqK_c4psVt_"
+
+        const val API_DNS = BuildConfig.API_DNS
+        const val API_PROTOCOL = BuildConfig.API_PROTOCOL
+
+        const val MAP_ZOOM = 17f
+
+        const val AUTH_TOKEN = "auth-token"
+        const val API_VERSION = "api-version"
+        const val LAST_UPDATED = "last-updated"
+
+        const val IMAGE_FILE_EXTENSION = ".jpg"
+        const val LOGO_FILE_EXTENSION = ".png"
+
+        const val IMAGE_EXTERNAL_FILES_DIR = "photos"
+        const val LOGO_EXTERNAL_FILES_DIR = "logo"
+
+        const val FILE_AUTHORITY = "${BuildConfig.APPLICATION_ID}.provider"
+
+        val UUID_GENERATOR: TimeBasedGenerator by lazy {
+            Generators.timeBasedGenerator(EthernetAddress.fromInterface())
+        }
 
     }
 
