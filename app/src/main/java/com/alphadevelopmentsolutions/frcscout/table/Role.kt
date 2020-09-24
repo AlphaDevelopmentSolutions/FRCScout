@@ -6,21 +6,22 @@ import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
 import java.util.*
 
 @Entity(
-    tableName = TableName.USER,
+    tableName = TableName.ROLE,
     inheritSuperIndices = true
 )
-class User(
-    var firstName: String,
-    var lastName: String,
-    var email: String,
-    var username: String,
-    var description: String,
-    var avatarUri: String,
+class Role(
+    var name: String,
+    var description: String?,
+    var canManageTeam: Boolean,
+    var canManageUsers: Boolean,
+    var canScout: Boolean,
+    var canCaptureMedia: Boolean,
+    var canManageReports: Boolean,
     var deletedDate: Date? = null,
     var deletedBy: Date? = null,
     var lastModifiedDate: Date = Date(),
     var modifiedById: ByteArray
 ) : Table() {
     override fun toString(): String =
-        "$firstName $lastName"
+        ""
 }
