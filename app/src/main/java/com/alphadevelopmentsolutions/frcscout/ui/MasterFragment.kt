@@ -156,7 +156,8 @@ abstract class MasterFragment : Fragment()
      * Used to override the activities back pressed event
      * @return [Boolean] true to override activities back press event
      */
-    abstract fun onBackPressed() : Boolean
+    open fun onBackPressed() : Boolean =
+        false
 
     companion object
     {
