@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
 import com.alphadevelopmentsolutions.frcscout.table.Event
-import com.alphadevelopmentsolutions.frcscout.ui.MatchListFragment
+import com.alphadevelopmentsolutions.frcscout.ui.matches.MatchListFragment
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.android.material.button.MaterialButton

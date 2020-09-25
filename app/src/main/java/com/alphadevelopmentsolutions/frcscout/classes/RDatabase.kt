@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.alphadevelopmentsolutions.frcscout.dao.MatchDao
 
 @Database(
     entities = [
@@ -23,6 +24,9 @@ import androidx.sqlite.db.SupportSQLiteDatabase
     ]
 )
 abstract class RDatabase : RoomDatabase() {
+
+    abstract fun getMatchDao(): MatchDao
+
     companion object {
         private var instance: RDatabase? = null
 

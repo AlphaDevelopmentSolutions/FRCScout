@@ -24,12 +24,9 @@ import java.lang.reflect.Type
 import java.util.*
 
 internal class MatchListRecyclerViewAdapter(
-        event: Event,
-        private val team: Team?,
-        private val matches: ArrayList<Match>,
-        private val context: MainActivity,
-        private val fragmentOnClick: Type) : RecyclerView.Adapter<MatchListRecyclerViewAdapter.ViewHolder>()
-{
+        private val matches: MutableList<Match>,
+        private val context: MainActivity
+) : RecyclerView.Adapter<MatchListRecyclerViewAdapter.ViewHolder>() {
     private val scoutCards: HashMap<Match, ArrayList<ScoutCardInfo>> = HashMap()
 
     init

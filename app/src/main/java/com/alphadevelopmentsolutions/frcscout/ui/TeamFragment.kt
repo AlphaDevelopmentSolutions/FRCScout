@@ -12,6 +12,7 @@ import androidx.viewpager.widget.ViewPager
 import com.alphadevelopmentsolutions.frcscout.adapter.FragmentViewPagerAdapter
 import com.alphadevelopmentsolutions.frcscout.table.Team
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.ui.matches.MatchListFragment
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_team.view.*
 import java.io.File

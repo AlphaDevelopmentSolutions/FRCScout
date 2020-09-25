@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/background"
-    android:id="@+id/MatchListRecyclerView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scrollbars="vertical"
-    tools:listitem="@layout/layout_card_match"
-    tools:context=".ui.MatchListFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-</androidx.recyclerview.widget.RecyclerView>
+    <data>
+
+    </data>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:background="@color/background"
+        android:id="@+id/MatchListRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        tools:listitem="@layout/layout_card_match"
+        tools:context=".ui.matches.MatchListFragment">
+
+    </androidx.recyclerview.widget.RecyclerView>
+</layout>
