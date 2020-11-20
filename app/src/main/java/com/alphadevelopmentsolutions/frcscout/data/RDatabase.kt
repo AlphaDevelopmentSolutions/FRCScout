@@ -7,10 +7,30 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.alphadevelopmentsolutions.frcscout.data.dao.MatchDao
+import com.alphadevelopmentsolutions.frcscout.data.models.*
 
 @Database(
     entities = [
-
+        ChecklistItem::class,
+        ChecklistItemResult::class,
+        DataType::class,
+        Event::class,
+        EventTeamList::class,
+        Match::class,
+        MatchType::class,
+        RobotInfo::class,
+        RobotInfoKey::class,
+        RobotMedia::class,
+        Role::class,
+        ScoutCardInfo::class,
+        ScoutCardInfoKey::class,
+        ScoutCardInfoKeyState::class,
+        Team::class,
+        TeamAccount::class,
+        User::class,
+        UserRole::class,
+        UserTeamAccount::class,
+        Year::class
     ],
     views = [
 
@@ -30,7 +50,7 @@ abstract class RDatabase : RoomDatabase() {
     companion object {
         private var instance: RDatabase? = null
 
-        private const val DATABASE_NAME = ""
+        private const val DATABASE_NAME = "frcscout.db"
 
         fun getInstance(context: Context): RDatabase {
             return instance ?: synchronized(this) {
@@ -40,11 +60,6 @@ abstract class RDatabase : RoomDatabase() {
                         RDatabase::class.java,
                         DATABASE_NAME
                     )
-                        .addCallback(object : Callback() {
-                            override fun onCreate(db: SupportSQLiteDatabase) {
-                                super.onCreate(db)
-                            }
-                        })
                         .fallbackToDestructiveMigration()
                         .build()
 

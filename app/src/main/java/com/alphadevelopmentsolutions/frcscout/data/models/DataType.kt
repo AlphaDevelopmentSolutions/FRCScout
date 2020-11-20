@@ -3,15 +3,13 @@ package com.alphadevelopmentsolutions.frcscout.data.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
-import com.alphadevelopmentsolutions.frcscout.table.StaticTable
-import com.alphadevelopmentsolutions.frcscout.table.SubmittableTable
 import com.google.gson.annotations.SerializedName
 
 @Entity(
     tableName = TableName.DATA_TYPE,
     inheritSuperIndices = true
 )
-class DataTypes(
+class DataType(
     @SerializedName("name") @ColumnInfo(name = "name") var name: String,
     @SerializedName("can_max") @ColumnInfo(name = "can_max") var canMax: Boolean,
     @SerializedName("can_min") @ColumnInfo(name = "can_min") var canMin: Boolean,
@@ -19,9 +17,9 @@ class DataTypes(
     @SerializedName("can_report") @ColumnInfo(name = "can_report") var canReport: Boolean
 ) : SubmittableTable(null, null, ByteArray(0)) {
 
-    companion object : StaticTable<DataTypes> {
-        override fun create(): DataTypes =
-            DataTypes(
+    companion object : StaticTable<DataType> {
+        override fun create(): DataType =
+            DataType(
                 "",
                 canMax = false,
                 canMin = false,
