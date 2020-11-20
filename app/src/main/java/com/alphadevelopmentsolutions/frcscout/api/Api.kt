@@ -8,6 +8,7 @@ import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.interfaces.HttpResponseCodes
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.api.Api.Set.ChecklistItemResult
+import com.alphadevelopmentsolutions.frcscout.data.models.*
 import com.alphadevelopmentsolutions.frcscout.table.*
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
@@ -348,7 +349,7 @@ abstract class Api internal constructor(
                         }
                 )
         {
-            val eventTeamList: ArrayList<com.alphadevelopmentsolutions.frcscout.table.EventTeamList> = ArrayList()
+            val eventTeamList: ArrayList<com.alphadevelopmentsolutions.frcscout.data.models.EventTeamList> = ArrayList()
 
             override fun execute(): Boolean
             {
@@ -452,7 +453,7 @@ abstract class Api internal constructor(
                         }
                 )
         {
-            val scoutCardInfos: ArrayList<com.alphadevelopmentsolutions.frcscout.table.ScoutCardInfo> = ArrayList()
+            val scoutCardInfos: ArrayList<com.alphadevelopmentsolutions.frcscout.data.models.ScoutCardInfo> = ArrayList()
 
             override fun execute(): Boolean
             {
@@ -608,7 +609,7 @@ abstract class Api internal constructor(
                         }
                 )
         {
-            val robotInfoList: ArrayList<com.alphadevelopmentsolutions.frcscout.table.RobotInfo> = ArrayList()
+            val robotInfoList: ArrayList<com.alphadevelopmentsolutions.frcscout.data.models.RobotInfo> = ArrayList()
 
             override fun execute(): Boolean
             {
@@ -822,12 +823,12 @@ abstract class Api internal constructor(
                             init
                             {
                                 put(API_PARAM_API_ACTION, "GetRobotMedia")
-                                put(com.alphadevelopmentsolutions.frcscout.table.RobotMedia.COLUMN_NAME_TEAM_ID, team?.id?.toString() ?: "")
+                                put(com.alphadevelopmentsolutions.frcscout.data.models.RobotMedia.COLUMN_NAME_TEAM_ID, team?.id?.toString() ?: "")
                             }
                         }
                 )
         {
-            val robotMedia: ArrayList<com.alphadevelopmentsolutions.frcscout.table.RobotMedia> = ArrayList()
+            val robotMedia: ArrayList<com.alphadevelopmentsolutions.frcscout.data.models.RobotMedia> = ArrayList()
 
             override fun execute(): Boolean
             {
@@ -1069,7 +1070,7 @@ abstract class Api internal constructor(
                         }
                 )
         {
-            val checklistItemResults: ArrayList<com.alphadevelopmentsolutions.frcscout.table.ChecklistItemResult> = ArrayList()
+            val checklistItemResults: ArrayList<com.alphadevelopmentsolutions.frcscout.data.models.ChecklistItemResult> = ArrayList()
 
             override fun execute(): Boolean
             {
@@ -1081,13 +1082,13 @@ abstract class Api internal constructor(
                     {
                         val checklistItemResultObject = NullableJSONObject(apiResponse.response.getJSONObject(i))
 
-                        val checklistItemId = checklistItemResultObject.getInt(com.alphadevelopmentsolutions.frcscout.table.ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID)
+                        val checklistItemId = checklistItemResultObject.getInt(com.alphadevelopmentsolutions.frcscout.data.models.ChecklistItemResult.COLUMN_NAME_CHECKLIST_ITEM_ID)
 
-                        val matchId = checklistItemResultObject.getString(com.alphadevelopmentsolutions.frcscout.table.ChecklistItemResult.COLUMN_NAME_MATCH_ID)
-                        val status = checklistItemResultObject.getString(com.alphadevelopmentsolutions.frcscout.table.ChecklistItemResult.COLUMN_NAME_STATUS)
-                        val completedBy = checklistItemResultObject.getStringOrNull(com.alphadevelopmentsolutions.frcscout.table.ChecklistItemResult.COLUMN_NAME_COMPLETED_BY)
+                        val matchId = checklistItemResultObject.getString(com.alphadevelopmentsolutions.frcscout.data.models.ChecklistItemResult.COLUMN_NAME_MATCH_ID)
+                        val status = checklistItemResultObject.getString(com.alphadevelopmentsolutions.frcscout.data.models.ChecklistItemResult.COLUMN_NAME_STATUS)
+                        val completedBy = checklistItemResultObject.getStringOrNull(com.alphadevelopmentsolutions.frcscout.data.models.ChecklistItemResult.COLUMN_NAME_COMPLETED_BY)
 
-                        val completedDate = with(checklistItemResultObject.getStringOrNull(com.alphadevelopmentsolutions.frcscout.table.ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE)) { if (this != null) simpleDateFormat.parse(this) else null }
+                        val completedDate = with(checklistItemResultObject.getStringOrNull(com.alphadevelopmentsolutions.frcscout.data.models.ChecklistItemResult.COLUMN_NAME_COMPLETED_DATE)) { if (this != null) simpleDateFormat.parse(this) else null }
 
                         checklistItemResults.add(
                                 ChecklistItemResult(
@@ -1137,7 +1138,7 @@ abstract class Api internal constructor(
          */
         class RobotInfo(
                 private val context: MainActivity,
-                robotInfo: com.alphadevelopmentsolutions.frcscout.table.RobotInfo) :
+                robotInfo: com.alphadevelopmentsolutions.frcscout.data.models.RobotInfo) :
                 Set(
                         context,
                         context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(),
@@ -1183,7 +1184,7 @@ abstract class Api internal constructor(
          */
         class ScoutCardInfo(
                 private val context: MainActivity,
-                scoutCardInfo: com.alphadevelopmentsolutions.frcscout.table.ScoutCardInfo) :
+                scoutCardInfo: com.alphadevelopmentsolutions.frcscout.data.models.ScoutCardInfo) :
                 Set(
                         context,
                         context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(),
@@ -1232,7 +1233,7 @@ abstract class Api internal constructor(
          */
         class RobotMedia(
                 private val context: MainActivity,
-                robotMedia: com.alphadevelopmentsolutions.frcscout.table.RobotMedia) :
+                robotMedia: com.alphadevelopmentsolutions.frcscout.data.models.RobotMedia) :
                 Set(
                         context,
                         context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(),
@@ -1276,7 +1277,7 @@ abstract class Api internal constructor(
          */
         class ChecklistItemResult(
                 private val context: MainActivity,
-                checklistItemResult: com.alphadevelopmentsolutions.frcscout.table.ChecklistItemResult) :
+                checklistItemResult: com.alphadevelopmentsolutions.frcscout.data.models.ChecklistItemResult) :
                 Set(
                         context,
                         context.keyStore.getPreference(Constants.SharedPrefKeys.API_KEY_KEY, "").toString(),

@@ -8,7 +8,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.adapter.EventListRecyclerViewAdapter
-import com.alphadevelopmentsolutions.frcscout.table.Event
+import com.alphadevelopmentsolutions.frcscout.data.models.Event
 import com.alphadevelopmentsolutions.frcscout.table.Team
 import com.alphadevelopmentsolutions.frcscout.table.Year
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants

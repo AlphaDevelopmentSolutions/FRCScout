@@ -1,6 +1,5 @@
 package com.alphadevelopmentsolutions.frcscout.adapter
 
-import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
@@ -8,9 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
-import com.alphadevelopmentsolutions.frcscout.table.Event
-import com.alphadevelopmentsolutions.frcscout.table.Match
-import com.alphadevelopmentsolutions.frcscout.table.ScoutCardInfo
+import com.alphadevelopmentsolutions.frcscout.data.models.Match
+import com.alphadevelopmentsolutions.frcscout.data.models.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.table.Team
 import com.alphadevelopmentsolutions.frcscout.enums.AllianceColor
 import com.alphadevelopmentsolutions.frcscout.ui.ChecklistFragment
@@ -20,12 +18,11 @@ import com.alphadevelopmentsolutions.frcscout.ui.TeamListFragment
 import com.alphadevelopmentsolutions.frcscout.R
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.layout_card_match.view.*
-import java.lang.reflect.Type
 import java.util.*
 
 internal class MatchListRecyclerViewAdapter(
-        private val matches: MutableList<Match>,
-        private val context: MainActivity
+    private val matches: MutableList<Match>,
+    private val context: MainActivity
 ) : RecyclerView.Adapter<MatchListRecyclerViewAdapter.ViewHolder>() {
     private val scoutCards: HashMap<Match, ArrayList<ScoutCardInfo>> = HashMap()
 

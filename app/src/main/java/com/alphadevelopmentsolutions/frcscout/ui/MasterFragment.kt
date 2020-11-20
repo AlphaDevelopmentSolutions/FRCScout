@@ -9,9 +9,12 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
-import com.alphadevelopmentsolutions.frcscout.classes.RDatabase
+import com.alphadevelopmentsolutions.frcscout.data.RDatabase
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.data.models.Event
+import com.alphadevelopmentsolutions.frcscout.data.models.Match
+import com.alphadevelopmentsolutions.frcscout.data.models.ScoutCardInfo
 import com.alphadevelopmentsolutions.frcscout.table.*
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.layout_master.view.*

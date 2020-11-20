@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.alphadevelopmentsolutions.frcscout.table.RobotInfo
-import com.alphadevelopmentsolutions.frcscout.table.RobotInfoKey
+import com.alphadevelopmentsolutions.frcscout.data.models.RobotInfo
+import com.alphadevelopmentsolutions.frcscout.data.models.RobotInfoKey
 import com.alphadevelopmentsolutions.frcscout.table.Team
 import com.alphadevelopmentsolutions.frcscout.R
 import kotlinx.android.synthetic.main.fragment_robot_info.view.*

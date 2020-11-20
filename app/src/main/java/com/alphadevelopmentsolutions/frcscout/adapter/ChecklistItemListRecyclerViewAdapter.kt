@@ -7,9 +7,9 @@ import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
-import com.alphadevelopmentsolutions.frcscout.table.ChecklistItem
-import com.alphadevelopmentsolutions.frcscout.table.ChecklistItemResult
-import com.alphadevelopmentsolutions.frcscout.table.Match
+import com.alphadevelopmentsolutions.frcscout.data.models.ChecklistItem
+import com.alphadevelopmentsolutions.frcscout.data.models.ChecklistItemResult
+import com.alphadevelopmentsolutions.frcscout.data.models.Match
 import com.alphadevelopmentsolutions.frcscout.table.User
 import com.alphadevelopmentsolutions.frcscout.interfaces.Status
 import com.alphadevelopmentsolutions.frcscout.R

@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.adapter.ChecklistItemListRecyclerViewAdapter
 import com.alphadevelopmentsolutions.frcscout.adapter.MatchListRecyclerViewAdapter
-import com.alphadevelopmentsolutions.frcscout.table.ChecklistItem
-import com.alphadevelopmentsolutions.frcscout.table.Match
+import com.alphadevelopmentsolutions.frcscout.data.models.ChecklistItem
+import com.alphadevelopmentsolutions.frcscout.data.models.Match
 import com.alphadevelopmentsolutions.frcscout.table.Team
 import com.alphadevelopmentsolutions.frcscout.R
 import java.util.*
