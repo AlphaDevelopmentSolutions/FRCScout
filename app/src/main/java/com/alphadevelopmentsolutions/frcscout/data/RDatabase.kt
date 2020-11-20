@@ -5,8 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.sqlite.db.SupportSQLiteDatabase
-import com.alphadevelopmentsolutions.frcscout.data.dao.MatchDao
+import com.alphadevelopmentsolutions.frcscout.data.dao.*
 import com.alphadevelopmentsolutions.frcscout.data.models.*
 
 @Database(
@@ -45,15 +44,34 @@ import com.alphadevelopmentsolutions.frcscout.data.models.*
 )
 abstract class RDatabase : RoomDatabase() {
 
+    abstract fun getChecklistItemDao(): ChecklistItemDao
+    abstract fun getChecklistItemResultDao(): ChecklistItemResultDao
+    abstract fun getDataTypeDao(): DataTypeDao
+    abstract fun getEventDao(): EventDao
+    abstract fun getEventTeamListDao(): EventTeamListDao
     abstract fun getMatchDao(): MatchDao
+    abstract fun getMatchTypeDao(): MatchTypeDao
+    abstract fun getRobotInfoKeyDao(): RobotInfoKeyDao
+    abstract fun getRobotInfoDao(): RobotInfoDao
+    abstract fun getRobotMediaDao(): RobotMediaDao
+    abstract fun getRoleDao(): RoleDao
+    abstract fun geScoutCardInfoKeyDao(): ScoutCardInfoKeyDao
+    abstract fun getScoutCardInfoKeyStateDao(): ScoutCardInfoKeyStateDao
+    abstract fun getScoutCardInfoDao(): ScoutCardInfoDao
+    abstract fun getTeamAccountDao(): TeamAccountDao
+    abstract fun getTeamDao(): TeamDao
+    abstract fun getUserDao(): UserDao
+    abstract fun getUserRoleDao(): UserRoleDao
+    abstract fun getUserTeamAccountDao(): UserTeamAccountDao
+    abstract fun getYearDao(): YearDao
 
     companion object {
-        private var instance: RDatabase? = null
+        private var INSTANCE: RDatabase? = null
 
         private const val DATABASE_NAME = "frcscout.db"
 
         fun getInstance(context: Context): RDatabase {
-            return instance ?: synchronized(this) {
+            return INSTANCE ?: synchronized(this) {
                 val tempInstance =
                     Room.databaseBuilder(
                         context.applicationContext,
@@ -63,9 +81,14 @@ abstract class RDatabase : RoomDatabase() {
                         .fallbackToDestructiveMigration()
                         .build()
 
-                instance = tempInstance
+                INSTANCE = tempInstance
                 tempInstance
             }
+        }
+
+        fun destroyInstance() {
+            INSTANCE?.close()
+            INSTANCE = null
         }
     }
 }
