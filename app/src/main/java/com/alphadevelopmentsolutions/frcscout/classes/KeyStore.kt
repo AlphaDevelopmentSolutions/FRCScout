@@ -2,7 +2,7 @@ package com.alphadevelopmentsolutions.frcscout.classes
 
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
+import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import java.util.*
 

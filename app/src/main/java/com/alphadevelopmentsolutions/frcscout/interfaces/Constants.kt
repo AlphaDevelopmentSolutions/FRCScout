@@ -1,6 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.interfaces
 
-import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
+import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.BuildConfig
 import com.fasterxml.uuid.EthernetAddress
 import com.fasterxml.uuid.Generators

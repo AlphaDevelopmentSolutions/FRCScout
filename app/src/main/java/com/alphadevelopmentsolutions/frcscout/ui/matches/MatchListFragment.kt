@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.alphadevelopmentsolutions.frcscout.adapter.MatchListRecyclerViewAdapter
+import com.alphadevelopmentsolutions.frcscout.adapters.MatchListRecyclerViewAdapter
 import com.alphadevelopmentsolutions.frcscout.databinding.FragmentMatchListBinding
 import com.alphadevelopmentsolutions.frcscout.data.models.Match
 import com.alphadevelopmentsolutions.frcscout.ui.MasterFragment

@@ -1,4 +1,4 @@
-package com.alphadevelopmentsolutions.frcscout.extension
+package com.alphadevelopmentsolutions.frcscout.extensions
 
 import com.alphadevelopmentsolutions.frcscout.interfaces.ByteArrayConverter
 import java.util.*

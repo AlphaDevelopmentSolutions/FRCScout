@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.alphadevelopmentsolutions.frcscout.adapter.YearListRecyclerViewAdapter
+import com.alphadevelopmentsolutions.frcscout.adapters.YearListRecyclerViewAdapter
 import com.alphadevelopmentsolutions.frcscout.table.Year
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
 import com.alphadevelopmentsolutions.frcscout.R

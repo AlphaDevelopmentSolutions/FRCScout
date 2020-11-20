@@ -6,7 +6,7 @@ import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.DecelerateInterpolator
-import com.alphadevelopmentsolutions.frcscout.activity.MainActivity
+import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.R
 import kotlinx.android.synthetic.main.layout_dialog_loading_progress.view.*
 import kotlinx.android.synthetic.main.layout_dialog_loading_spinner.view.*

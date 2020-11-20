@@ -1,4 +1,4 @@
-package com.alphadevelopmentsolutions.frcscout.service
+package com.alphadevelopmentsolutions.frcscout.services
 
 import com.google.firebase.messaging.FirebaseMessagingService
 

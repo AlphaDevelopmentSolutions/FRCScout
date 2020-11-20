@@ -1,6 +1,5 @@
 package com.alphadevelopmentsolutions.frcscout.ui
 
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
@@ -9,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.viewpager.widget.ViewPager
-import com.alphadevelopmentsolutions.frcscout.adapter.FragmentViewPagerAdapter
+import com.alphadevelopmentsolutions.frcscout.adapters.FragmentViewPagerAdapter
 import com.alphadevelopmentsolutions.frcscout.table.Team
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.ui.matches.MatchListFragment

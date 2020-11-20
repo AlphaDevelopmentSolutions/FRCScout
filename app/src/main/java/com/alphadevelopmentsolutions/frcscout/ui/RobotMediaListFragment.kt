@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.alphadevelopmentsolutions.frcscout.adapter.RobotMediaListRecyclerViewAdapter
+import com.alphadevelopmentsolutions.frcscout.adapters.RobotMediaListRecyclerViewAdapter
 import com.alphadevelopmentsolutions.frcscout.data.models.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.table.Team
 import com.alphadevelopmentsolutions.frcscout.R

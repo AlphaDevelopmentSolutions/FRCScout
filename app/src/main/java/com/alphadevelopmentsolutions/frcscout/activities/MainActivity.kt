@@ -1,4 +1,4 @@
-package com.alphadevelopmentsolutions.frcscout.activity
+package com.alphadevelopmentsolutions.frcscout.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
