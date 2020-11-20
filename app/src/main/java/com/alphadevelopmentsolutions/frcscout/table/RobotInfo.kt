@@ -1,8 +1,11 @@
 package com.alphadevelopmentsolutions.frcscout.table
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import com.alphadevelopmentsolutions.frcscout.classes.RDatabase
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
+import com.google.gson.annotations.SerializedName
 import java.util.*
 
 @Entity(
@@ -10,17 +13,26 @@ import java.util.*
     inheritSuperIndices = true
 )
 class RobotInfo(
-    var eventId: ByteArray,
-    var teamId: ByteArray,
-    var keyId: ByteArray,
-    var value: String,
-    var completedById: ByteArray,
-    var isPublic: Boolean = false,
-    var deletedDate: Date? = null,
-    var deletedBy: Date? = null,
-    var lastModifiedDate: Date = Date(),
-    var modifiedById: ByteArray
-) : Table() {
+    @SerializedName("event_id") @ColumnInfo(name = "event_id", index = true) var eventId: ByteArray,
+    @SerializedName("team_id") @ColumnInfo(name = "team_id", index = true) var teamId: ByteArray,
+    @SerializedName("key_id") @ColumnInfo(name = "key_id", index = true) var keyId: ByteArray,
+    @SerializedName("value") @ColumnInfo(name = "value") var value: String,
+    @SerializedName("completed_by_id") @ColumnInfo(name = "completed_by_id", index = true) var completedById: ByteArray,
+    @SerializedName("is_public") @ColumnInfo(name = "is_public", defaultValue = "0") var isPublic: Boolean = false
+) : SubmittableTable(null, null, ByteArray(0)) {
+
+    companion object : StaticTable<RobotInfo> {
+        override fun create(): RobotInfo =
+            RobotInfo(
+                ByteArray(0),
+                ByteArray(0),
+                ByteArray(0),
+                "",
+                ByteArray(0),
+                false
+            )
+    }
+
     override fun toString(): String =
         value
 }

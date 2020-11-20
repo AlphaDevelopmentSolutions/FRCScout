@@ -1,8 +1,12 @@
 package com.alphadevelopmentsolutions.frcscout.table
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import com.alphadevelopmentsolutions.frcscout.classes.RDatabase
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
+import com.google.gson.annotations.SerializedName
 import java.util.*
 
 @Entity(
@@ -10,15 +14,22 @@ import java.util.*
     inheritSuperIndices = true
 )
 class ChecklistItem(
-    var teamAccountId: ByteArray,
-    var yearId: ByteArray,
-    var title: String,
-    var description: String,
-    var deletedDate: Date? = null,
-    var deletedBy: Date? = null,
-    var lastModifiedDate: Date = Date(),
-    var modifiedById: ByteArray
-) : Table() {
+    @SerializedName("team_account_id") @ColumnInfo(name = "team_account_id", index = true) var teamAccountId: ByteArray,
+    @SerializedName("year_id") @ColumnInfo(name = "year_id", index = true) var yearId: ByteArray,
+    @SerializedName("title") @ColumnInfo(name = "title") var title: String,
+    @SerializedName("description") @ColumnInfo(name = "description") var description: String
+) : SubmittableTable(null, null, ByteArray(0)) {
+
+    companion object : StaticTable<ChecklistItem> {
+        override fun create(): ChecklistItem =
+            ChecklistItem(
+                ByteArray(0),
+                ByteArray(0),
+                "",
+                ""
+            )
+    }
+
     override fun toString(): String =
         title
 }

@@ -27,6 +27,7 @@ interface TableName {
         const val TEAM = "teams"
         const val TEAM_ACCOUNT = "team_accounts"
         const val USER = "users"
+        const val USER_ROLE = "user_roles"
         const val USER_TEAM_ACCOUNT = "user_team_accounts"
         const val YEAR = "years"
     }

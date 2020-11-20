@@ -1,8 +1,11 @@
 package com.alphadevelopmentsolutions.frcscout.table
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import com.alphadevelopmentsolutions.frcscout.classes.RDatabase
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
+import com.google.gson.annotations.SerializedName
 import java.util.*
 
 @Entity(
@@ -10,18 +13,32 @@ import java.util.*
     inheritSuperIndices = true
 )
 class Role(
-    var name: String,
-    var description: String?,
-    var canManageTeam: Boolean,
-    var canManageUsers: Boolean,
-    var canScout: Boolean,
-    var canCaptureMedia: Boolean,
-    var canManageReports: Boolean,
-    var deletedDate: Date? = null,
-    var deletedBy: Date? = null,
-    var lastModifiedDate: Date = Date(),
-    var modifiedById: ByteArray
-) : Table() {
+    @SerializedName("team_account_id") @ColumnInfo(name = "team_account_id", index = true) var teamAccountId: ByteArray,
+    @SerializedName("name") @ColumnInfo(name = "name") var name: String,
+    @SerializedName("description") @ColumnInfo(name = "description") var description: String? = null,
+    @SerializedName("can_manage_team") @ColumnInfo(name = "can_manage_team", defaultValue = "0") var canManageTeam: Boolean = false,
+    @SerializedName("can_manage_users") @ColumnInfo(name = "can_manage_users", defaultValue = "0") var canManageUsers: Boolean = false,
+    @SerializedName("can_match_scout") @ColumnInfo(name = "can_match_scout", defaultValue = "0") var canMatchScout: Boolean = false,
+    @SerializedName("can_pit_scout") @ColumnInfo(name = "can_pit_scout", defaultValue = "0") var canPitScout: Boolean = false,
+    @SerializedName("can_capture_media") @ColumnInfo(name = "can_capture_media", defaultValue = "0") var canCaptureMedia: Boolean = false,
+    @SerializedName("can_manage_reports") @ColumnInfo(name = "can_manage_reports", defaultValue = "0") var canManageReports: Boolean = false
+) : SubmittableTable(null, null, ByteArray(0)) {
+
+    companion object : StaticTable<Role> {
+        override fun create(): Role =
+            Role(
+                ByteArray(0),
+                "",
+                null,
+                canManageTeam = false,
+                canManageUsers = false,
+                canMatchScout = false,
+                canPitScout = false,
+                canCaptureMedia = false,
+                canManageReports = false
+            )
+    }
+
     override fun toString(): String =
-        ""
+        name
 }

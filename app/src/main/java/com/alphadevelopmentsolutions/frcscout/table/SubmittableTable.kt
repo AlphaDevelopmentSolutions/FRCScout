@@ -11,11 +11,11 @@ import com.google.gson.annotations.SerializedName
 import java.util.*
 
 @Entity()
-abstract class Table protected constructor(
-    @PrimaryKey @ColumnInfo(name = "id", index = true) var id: ByteArray = Constants.UUID_GENERATOR.generate().toByteArray(),
-    @SerializedName("last_modified") @ColumnInfo(name = "last_modified_date", defaultValue = "(strftime('%s','now'))") var lastModifiedDate: Date = Date(),
-    @Transient @ColumnInfo(name = "is_draft", defaultValue = "0") var isDraft: Boolean = false
-) {
+abstract class SubmittableTable protected constructor(
+    @SerializedName("deleted_date") @ColumnInfo(name = "deleted_date") var deletedDate: Date? = null,
+    @SerializedName("deleted_by_id") @ColumnInfo(name = "deleted_by_id", index = true) var deletedById: ByteArray? = null,
+    @SerializedName("modified_by_id") @ColumnInfo(name = "modified_by_id", index = true) var modifiedById: ByteArray
+) : Table() {
 
     abstract override fun toString(): String
 }
