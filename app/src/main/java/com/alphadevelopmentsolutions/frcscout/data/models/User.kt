@@ -18,7 +18,8 @@ class User(
     @SerializedName("email") @ColumnInfo(name = "email") var email: String,
     @SerializedName("username") @ColumnInfo(name = "username") var username: String,
     @SerializedName("description") @ColumnInfo(name = "description") var description: String? = null,
-    @SerializedName("avatar_uri") @ColumnInfo(name = "avatar_uri") var avatarUri: String? = null
+    @SerializedName("avatar_uri") @ColumnInfo(name = "avatar_uri") var avatarUri: String? = null,
+    @SerializedName("auth_token") @ColumnInfo(name = "auth_token") var authToken: String
 ) : SubmittableTable(null, null, ByteArray(0)) {
 
     companion object : StaticTable<User> {
@@ -29,7 +30,8 @@ class User(
                 "",
                 "",
                 null,
-                null
+                null,
+                ""
             )
     }
 

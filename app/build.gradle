@@ -32,12 +32,14 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "API_PROTOCOL", "\"https\"")
-        buildConfigField("String", "API_DNS", "\"frcscout.app\"")
+        buildConfigField("String", "API_DNS", "\"www.frcscout.app\"")
     }
     buildTypes {
         release
         {
             buildConfigField("String", "API_URL", "\"https://www.frcscout.app\"")
+            buildConfigField("boolean", "isDebugMode", "false")
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
@@ -51,6 +53,8 @@ android {
         debug
         {
             buildConfigField("String", "API_URL", "\"https://www.frcscout.app\"")
+            buildConfigField("boolean", "isDebugMode", "true")
+
             testCoverageEnabled = true
 
             FirebasePerformance {
