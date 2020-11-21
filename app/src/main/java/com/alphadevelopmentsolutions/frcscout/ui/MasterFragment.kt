@@ -27,8 +27,7 @@ import com.alphadevelopmentsolutions.frcscout.enums.FragmentTag
 import com.alphadevelopmentsolutions.frcscout.enums.NavbarState
 import kotlinx.android.synthetic.main.activity_main.*
 
-abstract class MasterFragment : Fragment()
-{
+abstract class MasterFragment : Fragment() {
     /***********************************************************************************
      * Required Vars Section
      ************************************************************************************/

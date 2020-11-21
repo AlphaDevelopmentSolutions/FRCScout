@@ -15,18 +15,17 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import com.alphadevelopmentsolutions.frcscout.ui.*
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.classes.Config
 import com.alphadevelopmentsolutions.frcscout.enums.NavbarState
+import com.alphadevelopmentsolutions.frcscout.ui.MasterFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(),
         NavigationView.OnNavigationItemSelectedListener,
-        MasterFragment.OnFragmentInteractionListener
-{
+        MasterFragment.OnFragmentInteractionListener {
     /**
      * Not saving the bundle fixes an issue that crashes the app when loading dialog frag
      * pauses.
@@ -123,7 +122,6 @@ class MainActivity : AppCompatActivity(),
 
         // Handle navigation view item clicks here.
         when (item.itemId) {
-
         }
 
         return false

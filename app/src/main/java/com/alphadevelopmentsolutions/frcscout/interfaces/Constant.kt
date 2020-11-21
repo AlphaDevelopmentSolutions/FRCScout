@@ -1,14 +1,11 @@
 package com.alphadevelopmentsolutions.frcscout.interfaces
 
-import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.BuildConfig
 import com.fasterxml.uuid.EthernetAddress
 import com.fasterxml.uuid.Generators
 import com.fasterxml.uuid.impl.TimeBasedGenerator
-import java.io.File
 
-interface Constant
-{
+interface Constant {
     companion object {
         const val AUTH_TOKEN: String = "auth-token"
         const val API_VERSION: String = "api-version"

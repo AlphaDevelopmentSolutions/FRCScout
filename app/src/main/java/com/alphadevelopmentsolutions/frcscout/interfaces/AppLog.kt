@@ -4,14 +4,11 @@ import android.util.Log
 import com.alphadevelopmentsolutions.frcscout.BuildConfig
 import com.alphadevelopmentsolutions.frcscout.extensions.launchIO
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.ktx.Firebase
 
-interface AppLog
-{
-    companion object
-    {
+interface AppLog {
+    companion object {
         fun l(title: String, message: String) {
-            if(BuildConfig.DEBUG)
+            if (BuildConfig.DEBUG)
                 Log.d(title, message)
             else {
                 FirebaseCrashlytics.getInstance().log("$title: $message")
@@ -20,7 +17,7 @@ interface AppLog
         }
 
         fun w(title: String, message: String) {
-            if(BuildConfig.DEBUG)
+            if (BuildConfig.DEBUG)
                 Log.w(title, message)
             else {
                 FirebaseCrashlytics.getInstance().log(message)
@@ -29,7 +26,7 @@ interface AppLog
         }
 
         fun e(exception: Exception) {
-            if(BuildConfig.DEBUG)
+            if (BuildConfig.DEBUG)
                 exception.printStackTrace()
             else {
                 FirebaseCrashlytics.getInstance().recordException(exception)
@@ -38,7 +35,7 @@ interface AppLog
         }
 
         fun e(throwable: Throwable) {
-            if(BuildConfig.DEBUG)
+            if (BuildConfig.DEBUG)
                 throwable.printStackTrace()
             else {
                 FirebaseCrashlytics.getInstance().recordException(throwable)

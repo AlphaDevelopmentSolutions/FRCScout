@@ -2,7 +2,6 @@ package com.alphadevelopmentsolutions.frcscout.converters
 
 import androidx.room.TypeConverter
 import com.alphadevelopmentsolutions.frcscout.data.models.ChecklistItemResult
-import java.util.*
 
 class ChecklistStatusConverter {
 

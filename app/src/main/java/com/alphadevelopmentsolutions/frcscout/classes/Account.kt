@@ -1,4 +1,3 @@
 package com.alphadevelopmentsolutions.frcscout.classes
 
-class Account {
-}
+class Account

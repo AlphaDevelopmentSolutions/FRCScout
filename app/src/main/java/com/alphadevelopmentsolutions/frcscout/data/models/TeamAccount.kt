@@ -1,6 +1,5 @@
 package com.alphadevelopmentsolutions.frcscout.data.models
 
-import android.graphics.Color
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
@@ -9,7 +8,7 @@ import java.util.*
 
 @Entity(
     tableName = TableName.TEAM_ACCOUNT,
-    inheritSuperIndices = true,
+    inheritSuperIndices = true
 )
 class TeamAccount(
     @SerializedName("team_id") @ColumnInfo(name = "team_id", index = true) var teamId: ByteArray,
