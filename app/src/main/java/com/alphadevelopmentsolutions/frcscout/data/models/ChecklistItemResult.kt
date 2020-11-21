@@ -4,8 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.enums.ChecklistStatus
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
-import com.alphadevelopmentsolutions.frcscout.table.StaticTable
-import com.alphadevelopmentsolutions.frcscout.table.SubmittableTable
+
 import com.google.gson.annotations.SerializedName
 import java.util.*
 

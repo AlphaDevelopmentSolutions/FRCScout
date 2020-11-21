@@ -5,8 +5,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.alphadevelopmentsolutions.frcscout.converters.ChecklistStatusConverter
+import com.alphadevelopmentsolutions.frcscout.converters.DateConverter
+import com.alphadevelopmentsolutions.frcscout.converters.ItemStateConverter
 import com.alphadevelopmentsolutions.frcscout.data.dao.*
 import com.alphadevelopmentsolutions.frcscout.data.models.*
+import com.alphadevelopmentsolutions.frcscout.enums.ChecklistStatus
 
 @Database(
     entities = [
@@ -39,7 +43,9 @@ import com.alphadevelopmentsolutions.frcscout.data.models.*
 )
 @TypeConverters(
     value = [
-
+        DateConverter::class,
+        ItemStateConverter::class,
+        ChecklistStatusConverter::class
     ]
 )
 abstract class RDatabase : RoomDatabase() {

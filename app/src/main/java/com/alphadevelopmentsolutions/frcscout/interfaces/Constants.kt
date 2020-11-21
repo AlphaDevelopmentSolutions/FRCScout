@@ -16,5 +16,9 @@ interface Constants
 
         const val API_DNS = BuildConfig.API_DNS
         const val API_PROTOCOL = BuildConfig.API_PROTOCOL
+
+        val UUID_GENERATOR: TimeBasedGenerator by lazy {
+            Generators.timeBasedGenerator(EthernetAddress.fromInterface())
+        }
     }
 }

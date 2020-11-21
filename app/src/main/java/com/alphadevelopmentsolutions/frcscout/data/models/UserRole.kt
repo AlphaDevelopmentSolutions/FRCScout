@@ -2,11 +2,8 @@ package com.alphadevelopmentsolutions.frcscout.data.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
-import com.alphadevelopmentsolutions.frcscout.data.RDatabase
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
 import com.google.gson.annotations.SerializedName
-import java.util.*
 
 @Entity(
     tableName = TableName.USER_ROLE,

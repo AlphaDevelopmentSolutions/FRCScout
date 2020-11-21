@@ -3,8 +3,6 @@ package com.alphadevelopmentsolutions.frcscout.data.models
 import android.graphics.Color
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
-import com.alphadevelopmentsolutions.frcscout.data.RDatabase
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
 import com.google.gson.annotations.SerializedName
 import java.util.*
@@ -20,8 +18,8 @@ class TeamAccount(
     @SerializedName("username") @ColumnInfo(name = "username") var username: String,
     @SerializedName("owner_id") @ColumnInfo(name = "owner_id", index = true) var ownerId: ByteArray,
     @SerializedName("avatar_uri") @ColumnInfo(name = "avatar_uri") var avatarUri: String? = null,
-    @SerializedName("primary_color") @ColumnInfo(name = "primary_color") var primaryColor: Color? = null,
-    @SerializedName("accent_color") @ColumnInfo(name = "accent_color") var accentColor: Color? = null,
+    @SerializedName("primary_color") @ColumnInfo(name = "primary_color") var primaryColor: String? = null,
+    @SerializedName("accent_color") @ColumnInfo(name = "accent_color") var accentColor: String? = null,
     @SerializedName("created_date") @ColumnInfo(name = "created_date") var createdDate: Date
 ) : SubmittableTable(null, null, ByteArray(0)) {
 
