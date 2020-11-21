@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="@string/placeholder"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/text"
                 android:textSize="@dimen/text_primary"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"

@@ -2,7 +2,6 @@ package com.alphadevelopmentsolutions.frcscout.data.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import com.alphadevelopmentsolutions.frcscout.enums.ChecklistStatus
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
 
 import com.google.gson.annotations.SerializedName
@@ -15,7 +14,7 @@ import java.util.*
 class ChecklistItemResult(
     @SerializedName("checklist_item_id") @ColumnInfo(name = "checklist_item_id", index = true) var checklistItemId: ByteArray,
     @SerializedName("match_id") @ColumnInfo(name = "match_id", index = true) var matchId: ByteArray,
-    @SerializedName("status") @ColumnInfo(name = "status") var status: ChecklistStatus? = null,
+    @SerializedName("status") @ColumnInfo(name = "status") var status: Status? = null,
     @SerializedName("completed_date") @ColumnInfo(name = "completed_date") var completedDate: Date,
     @SerializedName("completed_by_id") @ColumnInfo(name = "completed_by_id", index = true) var completedById: ByteArray,
     @SerializedName("is_public") @ColumnInfo(name = "is_public", defaultValue = "0") var isPublic: Boolean = false
@@ -35,4 +34,18 @@ class ChecklistItemResult(
 
     override fun toString(): String =
         status?.toString() ?: ""
+
+    enum class Status {
+        COMPLETE,
+        INCOMPLETE;
+
+        companion object {
+            fun fromString(status: String?) =
+                when {
+                    status.equals(COMPLETE.name, ignoreCase = true) -> COMPLETE
+                    status.equals(INCOMPLETE.name, ignoreCase = true) -> INCOMPLETE
+                    else -> null
+                }
+        }
+    }
 }

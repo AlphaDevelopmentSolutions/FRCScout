@@ -3,7 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.api
 import android.content.Context
 import android.os.Build
 import com.alphadevelopmentsolutions.frcscout.BuildConfig
-import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
+import com.alphadevelopmentsolutions.frcscout.interfaces.Constant
 import com.alphadevelopmentsolutions.frcscout.serializers.BooleanSerializer
 import com.alphadevelopmentsolutions.frcscout.serializers.ByteArraySerializer
 import com.alphadevelopmentsolutions.frcscout.serializers.DateSerializer
@@ -40,7 +40,7 @@ interface Api {
         private fun getRetrofitInstance(context: Context): Retrofit {
             return retrofitInstance ?: synchronized(this) {
 
-                "${Constants.API_PROTOCOL}://${Constants.API_DNS}/".let { tempApiUrl ->
+                "${Constant.API_PROTOCOL}://${Constant.API_DNS}/".let { tempApiUrl ->
                     apiUrl = tempApiUrl
 
                     val tempInstance = Retrofit.Builder()
@@ -125,11 +125,11 @@ interface Api {
                         .addHeader(
                             "Cookie",
                             StringBuilder()
-                                .append("${Constants.AUTH_TOKEN}=TOKEN")
+                                .append("${Constant.AUTH_TOKEN}=TOKEN")
                                 .append(";")
-                                .append("${Constants.API_VERSION}=$API_VERSION")
+                                .append("${Constant.API_VERSION}=$API_VERSION")
                                 .append(";")
-                                .append("${Constants.LAST_UPDATED}=LASTUPDATED")
+                                .append("${Constant.LAST_UPDATED}=LASTUPDATED")
                                 .toString()
                         )
                         .build()

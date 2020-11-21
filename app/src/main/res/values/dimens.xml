@@ -30,4 +30,34 @@
     <dimen name="social_media_button_width">40dp</dimen>
     <dimen name="social_media_button_height">40dp</dimen>
     <dimen name="login_input_width">300dp</dimen>
+    <dimen name="fab_margin">@dimen/material_margin</dimen>
+
+    <dimen name="material_margin">8dp</dimen>
+    <dimen name="material_card_elevation">4dp</dimen>
+    <dimen name="material_card_corner_radius">4dp</dimen>
+    <dimen name="material_dialog_corner_radius">8dp</dimen>
+    <dimen name="material_edge_margin">16dp</dimen>
+    <dimen name="material_edge_padding">16dp</dimen>
+    <dimen name="material_card_height">148dp</dimen>
+    <dimen name="material_card_width">344dp</dimen>
+    <dimen name="material_card_image_height">80dp</dimen>
+    <dimen name="material_card_image_width">80dp</dimen>
+    <dimen name="material_text_header">24sp</dimen>
+    <dimen name="material_text_sub_header">18sp</dimen>
+    <dimen name="material_text_support">14sp</dimen>
+    <dimen name="text_table_header">12sp</dimen>
+    <dimen name="icon_width">25dp</dimen>
+    <dimen name="icon_height">25dp</dimen>
+    <dimen name="bottom_sheet_width">280dp</dimen>
+    <dimen name="bottom_sheet_height">120dp</dimen>
+    <dimen name="nav_bar_height">48dp</dimen>
+    <dimen name="dialog_select_height">400dp</dimen>
+    <dimen name="dialog_height">182dp</dimen>
+    <dimen name="dialog_width">344dp</dimen>
+    <dimen name="dialog_loading_width">225dp</dimen>
+    <dimen name="dialog_loading_height">250dp</dimen>
+    <dimen name="material_app_bar_bottom_height">56dp</dimen>
+    <dimen name="grab_bar_width">40dp</dimen>
+    <dimen name="grab_bar_height">10dp</dimen>
+    <dimen name="bottom_sheet_corner_radius">16dp</dimen>
 </resources>

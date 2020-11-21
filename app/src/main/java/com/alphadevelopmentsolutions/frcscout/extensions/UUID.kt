@@ -1,7 +1,17 @@
 package com.alphadevelopmentsolutions.frcscout.extensions
 
-import com.alphadevelopmentsolutions.frcscout.interfaces.ByteArrayConverter
+import java.nio.ByteBuffer
 import java.util.*
 
+/**
+ * Converts a [UUID] object to a new [ByteArray] object
+ * @return [ByteArray] object converted from [UUID]
+ */
 fun UUID.toByteArray(): ByteArray =
-    ByteArrayConverter.fromUUID(this)
+    ByteBuffer.wrap(ByteArray(16)).let {
+
+        it.putLong(this.mostSignificantBits)
+        it.putLong(this.leastSignificantBits)
+
+        return it.array()
+    }

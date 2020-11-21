@@ -4,10 +4,6 @@
 
     <data>
 
-        <variable
-            name="viewModel"
-            type="com.alphadevelopmentsolutions.frcscout.ui.settings.SettingsViewModel" />
-
     </data>
 
     <LinearLayout
@@ -27,14 +23,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/build_info"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/text"
                 android:textSize="@dimen/text_primary" />
 
             <TextView
                 android:id="@+id/AppVersionTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{String.format(@string/app_version, viewModel.version), default = @string/app_version}"
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/text_secondary" />
 
@@ -42,7 +37,6 @@
                 android:id="@+id/BuildNumberTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{String.format(@string/build_number, viewModel.buildNumber), default = @string/build_number}"
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/text_secondary" />
 
@@ -50,7 +44,6 @@
                 android:id="@+id/BuildTypeTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{String.format(@string/build_type, viewModel.buildType), default = @string/build_type}"
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/text_secondary" />
 
@@ -71,7 +64,7 @@
             android:text="@string/licenses"
             android:textAlignment="viewStart"
             android:textAllCaps="false"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/text"
             android:textSize="@dimen/text_primary"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"

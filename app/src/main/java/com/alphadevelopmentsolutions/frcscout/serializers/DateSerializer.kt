@@ -1,5 +1,6 @@
 package com.alphadevelopmentsolutions.frcscout.serializers
 
+import com.alphadevelopmentsolutions.frcscout.extensions.toJson
 import com.google.gson.*
 import java.lang.reflect.Type
 import java.text.ParseException

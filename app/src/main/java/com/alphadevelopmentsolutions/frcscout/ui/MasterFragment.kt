@@ -1,199 +1,407 @@
 package com.alphadevelopmentsolutions.frcscout.ui
 
+import android.animation.ObjectAnimator
+import android.animation.StateListAnimator
 import android.content.Context
-import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
+import android.view.ViewGroup
+import android.widget.SearchView
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
-import com.alphadevelopmentsolutions.frcscout.data.RDatabase
-import com.alphadevelopmentsolutions.frcscout.interfaces.Constants
+import androidx.navigation.NavController
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 import com.alphadevelopmentsolutions.frcscout.R
-import com.alphadevelopmentsolutions.frcscout.data.models.Event
-import com.alphadevelopmentsolutions.frcscout.data.models.Match
-import com.alphadevelopmentsolutions.frcscout.data.models.ScoutCardInfo
-import com.alphadevelopmentsolutions.frcscout.table.*
-import com.google.gson.Gson
-import kotlinx.android.synthetic.main.layout_master.view.*
-import kotlinx.android.synthetic.main.layout_view_loading.view.*
-import java.util.*
+import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
+import com.alphadevelopmentsolutions.frcscout.callbacks.OnConfirmationCallback
+import com.alphadevelopmentsolutions.frcscout.classes.*
+import com.alphadevelopmentsolutions.frcscout.data.repositories.RepositoryProvider
+import com.alphadevelopmentsolutions.frcscout.databinding.LayoutKingFragmentBinding
+import com.alphadevelopmentsolutions.frcscout.enums.FragmentTag
+import com.alphadevelopmentsolutions.frcscout.enums.NavbarState
+import kotlinx.android.synthetic.main.activity_main.*
 
 abstract class MasterFragment : Fragment()
 {
-    //store the context and database in the master fragment which all other fragments extend from
-    protected lateinit var context: MainActivity
-    protected lateinit var database: RDatabase
+    /***********************************************************************************
+     * Required Vars Section
+     ************************************************************************************/
 
-    protected var year: Year? = null
+    /**
+     * Required fragment interaction listener
+     */
+    private var listener: OnFragmentInteractionListener? = null
 
-    protected var event: Event? = null
-
-    private var teamJson: String? = null
-    protected var matchJson: String? = null
-    private var scoutCardJson: String? = null
-    private var pitCardJson: String? = null
-
-    protected var team: Team? = null
-    protected var match: Match? = null
-    protected var scoutCardInfo: ScoutCardInfo? = null
-
-    private lateinit var gson: Gson
-
-    protected lateinit var loadingThread: Thread
-
-    private var mListener: OnFragmentInteractionListener? = null
-
-    override fun onAttach(context: Context)
-    {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener)
-        {
-            mListener = context
-        }
-        else
-        {
-            throw RuntimeException("$context must implement OnFragmentInteractionListener")
-        }
+    /**
+     * Required method
+     */
+    fun onButtonPressed(uri: Uri) {
+        listener?.onFragmentInteraction(uri)
     }
 
-    override fun onDetach()
-    {
-        super.onDetach()
-        mListener = null
-    }
-
-    interface OnFragmentInteractionListener
-    {
+    /**
+     * Required interface
+     */
+    interface OnFragmentInteractionListener {
         fun onFragmentInteraction(uri: Uri)
     }
 
-    private lateinit var masterLayout: View
-    private lateinit var loadingView: View
-
-    protected fun onCreateView(view: View): View?
-    {
-        loadingView = LayoutInflater.from(context).inflate(R.layout.layout_view_loading, null).apply {
-
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
-            MainLoadingProgressBar.indeterminateDrawable.setColorFilter(this@MasterFragment.context.primaryColor, PorterDuff.Mode.SRC_IN)
-
-        }
-
-        masterLayout = LayoutInflater.from(context).inflate(R.layout.layout_master, null).apply {
-
-            if(isLoading)
-                MasterLinearLayout.addView(loadingView)
-
-            MasterLinearLayout.addView(view)
-        }
-
-
-
-        return masterLayout
+    /**
+     * Required setting of [listener]
+     */
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
     }
 
-    protected var isLoading = false
-    set(value)
-    {
-        if(value != field)
-        {
-            if(::masterLayout.isInitialized && ::loadingView.isInitialized)
-            {
-                if (value)
-                    masterLayout.MasterLinearLayout.addView(loadingView)
-                else
-                    masterLayout.MasterLinearLayout.removeView(loadingView)
+    /**
+     * Required listener handling
+     */
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnFragmentInteractionListener)
+            listener = context
+
+        else
+            throw RuntimeException("$context must implement OnFragmentInteractionListener")
+    }
+
+    /***********************************************************************************
+     * Useful Vars Section
+     ************************************************************************************/
+
+    /**
+     * Holds the instance of the [MainActivity]
+     */
+    lateinit var activityContext: MainActivity
+
+    /**
+     * [Config] throughout the app
+     */
+    protected val config: Config by lazy {
+        activityContext.config
+    }
+
+    /**
+     * [Account] object for the current logged in user
+     */
+    protected val account: Account by lazy {
+        Account()
+    }
+
+    /**
+     * @see MainActivity.navController
+     */
+    protected val navController: NavController by lazy {
+        findNavController()
+    }
+
+    /**
+     * Default [RepositoryProvider] for fragments
+     */
+    protected val repositoryProvider by lazy {
+        RepositoryProvider.getInstance(activityContext)
+    }
+
+    /***********************************************************************************
+     * Abstract Fields Section
+     ************************************************************************************/
+
+    abstract val TAG: FragmentTag
+
+    /***********************************************************************************
+     * Functions Section
+     ************************************************************************************/
+
+    /**
+     * Removes the current fragment from the navigation controller
+     * @see MainActivity.removeCurrentFragment
+     */
+    fun remove() =
+        activityContext.removeCurrentFragment()
+
+    /**
+     * Navigates to the specified [NavDirections] using the [navController]
+     * @param directions [NavDirections] direction to use when navigating
+     */
+    protected fun navigate(directions: NavDirections) = navController.navigate(directions)
+
+    /**
+     * Variable that holds whether the action bar should be dropped or not
+     * When set it will attempt to drop the action bar if the [kingView] is initialized
+     */
+    protected var isActionBarDropped: Boolean = false
+        set(value) {
+
+            kingView?.AppBarLayout?.let {
+                if (value) {
+                    it.stateListAnimator =
+                        StateListAnimator().apply {
+                            addState(listOf<Int>().toIntArray(), ObjectAnimator.ofFloat(it, "elevation", 0f))
+                        }
+                } else {
+                    it.stateListAnimator =
+                        StateListAnimator().apply {
+                            addState(listOf<Int>().toIntArray(), ObjectAnimator.ofFloat(it, "elevation", 4f))
+                        }
+                }
             }
 
             field = value
         }
-    }
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
-        super.onCreate(savedInstanceState)
+    /**
+     * [SaveButtonWrapper] object called when the [LayoutKingFragmentBinding.SaveTextView] is visible or clicked
+     */
+    protected var onSaveWrapper: SaveButtonWrapper? = null
+        set(value) {
+            kingView?.SaveTextView?.text = value?.title ?: ""
+            kingView?.SaveTextView?.setOnClickListener(value?.clickListener)
 
-        //assign context and database vars
-        context = activity as MainActivity
-        database = context.database
-        gson = Gson()
-
-        //check if any args were passed, specifically for team and match json
-        if (arguments != null)
-        {
-            teamJson = arguments!!.getString(ARG_TEAM_JSON)
-            matchJson = arguments!!.getString(ARG_MATCH_JSON)
-            scoutCardJson = arguments!!.getString(ARG_PARAM_SCOUT_CARD_JSON)
-            pitCardJson = arguments!!.getString(ARG_PARAM_PIT_CARD_JSON)
+            field = value
         }
 
-        //create and start the thread to load the json vars
-        loadingThread = Thread(Runnable {
+    /**
+     * [View.OnClickListener] for when the [LayoutKingFragmentBinding.Toolbar] is clicked
+     */
+    protected var onCancelListener: View.OnClickListener = View.OnClickListener { undoChangesDialog.show(activityContext) }
+        set(value) {
+            kingView?.Toolbar?.setNavigationOnClickListener(onCancelListener)
 
-            year = Year(-1, context.keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_YEAR_KEY, Calendar.getInstance().get(Calendar.YEAR)) as Int).apply { load(context.database) }
+            field = value
+        }
 
-            val eventId = context.keyStore.getPreference(Constants.SharedPrefKeys.SELECTED_EVENT_KEY, -1) as Int
-            if (eventId > 0)
-                event = Event(eventId).apply { load(context.database) }
+    /**
+     * [ConfirmDialogFragment] object that is shown when the [onCancelListener] is called
+     */
+    protected val undoChangesDialog: ConfirmDialogFragment by lazy {
+        ConfirmDialogFragment.newInstance(
+            object : OnConfirmationCallback {
+                override fun onConfirm() {
+                    remove()
+                }
 
-            //load the team from json, if available
-            if (teamJson != null && teamJson != "")
-                team = gson.fromJson(teamJson, Team::class.java)
-
-            //load the match from json, if available
-            if (matchJson != null && matchJson != "")
-                match = gson.fromJson(matchJson, Match::class.java)
-
-            //load the scout card from json, if available
-            if (scoutCardJson != null && scoutCardJson != "")
-                scoutCardInfo = gson.fromJson(scoutCardJson, ScoutCardInfo::class.java)
-        })
-
-        loadingThread.start()
+                override fun onCancel() {}
+            },
+            getString(R.string.undo_changes),
+            getString(R.string.undo_changes_desc)
+        )
     }
 
     /**
-     * Used to override the activities back pressed event
-     * @return [Boolean] true to override activities back press event
+     * [Menu] object that gets inflated when the [MainActivity.onCreateView] is called
      */
-    open fun onBackPressed() : Boolean =
-        false
+    protected open fun getMenu(): Menu =
+        Menu(
+            null,
+            null
+        )
 
-    companion object
-    {
-        @JvmStatic
-        protected val ARG_TEAM_JSON = "TEAM_JSON"
+    /**
+     * State of the [LayoutKingFragmentBinding.Toolbar] and [SalesActivity.MainDrawerLayout]
+     */
+    private var navbarState: NavbarState = NavbarState.LOCKED
+        set(value) {
 
-        @JvmStatic
-        protected val ARG_MATCH_JSON = "MATCH_JSON"
+            activityContext.navbarState = value
 
-        @JvmStatic
-        protected val ARG_PARAM_SCOUT_CARD_JSON = "SCOUT_CARD_JSON"
+            kingView?.let { kingView ->
 
-        @JvmStatic
-        protected val ARG_PARAM_PIT_CARD_JSON = "PIT_CARD_JSON"
+                val toolbar = kingView.Toolbar
 
-        @JvmStatic
-        protected var staticGson: Gson? = null
+                // Inflate the menu passed from the fragment
+                getMenu().let { menu ->
+                    menu.menuResId?.let { resId ->
+                        toolbar.inflateMenu(resId)
+                        toolbar.setOnMenuItemClickListener(menu.onClick)
+                    }
+                }
 
-        /**
-         * Converts fields to json regardless if they are null or not
-         * @param object to convert to json
-         * @return null | string json object
-         */
-        @JvmStatic
-        protected fun toJson(`object`: Any?): String?
-        {
-            if (staticGson == null)
-                staticGson = Gson()
+                // If a search query listener was passed, attach that to the search action
+                searchItemQueryListener?.let { listener ->
+                    toolbar.menu.findItem(R.id.action_search).let { searchItem ->
+                        val searchView = searchItem.actionView as SearchView
 
-            return if (`object` == null)
-                null
-            else
-                staticGson!!.toJson(`object`)
+                        searchView.setOnQueryTextListener(listener)
+                    }
+                }
+
+                // If a filter listener was passed, attach that to the filter action
+                filterItemOnClickListener?.let { listener ->
+                    toolbar.menu.findItem(R.id.action_filter)?.setOnMenuItemClickListener(listener)
+                }
+
+                @Suppress("NON_EXHAUSTIVE_WHEN")
+                when (value) {
+
+                    /**
+                     * Drawer is locked
+                     * [LayoutKingFragmentBinding.SaveTextView] is hidden
+                     * [Toolbar.getNavigationIcon] is hidden
+                     */
+                    NavbarState.LOCKED ->
+                    {
+                        // Make the textview invisible
+                        if (kingView.SaveTextView.isVisible)
+                            kingView.SaveTextView.isVisible = false
+
+                        // Remove the nav icon & remove click listener
+                        toolbar.navigationIcon = null
+                        toolbar.setNavigationOnClickListener(null)
+                    }
+
+                    /**
+                     * Drawer is locked with a back button
+                     * [LayoutKingFragmentBinding.SaveTextView] is hidden
+                     * [Toolbar.getNavigationIcon] shown as a [R.drawable.ic_arrow_back_white_24dp] and [KingActivity.onBackPressed] is called on click
+                     */
+                    NavbarState.LOCKED_WITH_BACK ->
+                    {
+                        // Make the textview invisible
+                        if (kingView.SaveTextView.isVisible)
+                            kingView.SaveTextView.isVisible = false
+
+                        // Set the icon to the back arrow & and add remove the current fragment when pressed
+                        toolbar.navigationIcon = ResourcesCompat.getDrawable(resources, R.drawable.ic_arrow_back_white_24dp, null)
+                        toolbar.setNavigationOnClickListener {
+                            remove()
+                        }
+                    }
+
+                    /**
+                     * Drawer is unlocked
+                     * [LayoutKingFragmentBinding.SaveTextView] is hidden
+                     * [Toolbar.getNavigationIcon] shown as [R.drawable.ic_dehaze_white_24dp] and the drawer is opened on click
+                     */
+                    NavbarState.DRAWER ->
+                    {
+                        // Make the textview invisible
+                        if (kingView.SaveTextView.isVisible)
+                            kingView.SaveTextView.isVisible = false
+
+                        // Set the icon to the dehaze icon & and set the drawer to open on click
+                        toolbar.navigationIcon = ResourcesCompat.getDrawable(resources, R.drawable.ic_dehaze_white_24dp, null)
+                        toolbar.setNavigationOnClickListener {
+                            activityContext.MainDrawerLayout.openDrawer(
+                                GravityCompat.START
+                            )
+                        }
+                    }
+
+                    /**
+                     * [Toolbar] is in edit mode
+                     * [LayoutKingFragmentBinding.SaveTextView] shown and onclick is set to [onSaveWrapper]
+                     * [Toolbar.getNavigationIcon] is shown as [R.drawable.ic_close_white_24dp] and onclick is set to [onCancelListener]
+                     */
+                    NavbarState.EDIT ->
+                    {
+                        // Make the textview invisible
+                        if (!kingView.SaveTextView.isVisible)
+                            kingView.SaveTextView.isVisible = true
+
+                        // Set the icon to the close icon & and set the oncancellistener to be called on click
+                        kingView.Toolbar.navigationIcon = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_close_white_24dp, null)
+                        kingView.Toolbar.setNavigationOnClickListener(onCancelListener)
+
+                        // Set the save wrapper contents to the save text view
+                        onSaveWrapper?.let { wrapper ->
+                            kingView.SaveTextView.text = wrapper.title
+                            kingView.SaveTextView.setOnClickListener { wrapper.clickListener.onClick(it) }
+                        }
+                    }
+                }
+            }
+
+            field = value
         }
+
+    /**
+     * Holds the [LayoutKingFragmentBinding] for all fragments
+     */
+    protected var kingView: LayoutKingFragmentBinding? = null
+
+    /**
+     * Holds the listener of what to do when the search view is clicked
+     */
+    protected var searchItemQueryListener: SearchView.OnQueryTextListener? = null
+        set(value) {
+
+            (kingView?.Toolbar?.menu?.findItem(R.id.action_search)?.actionView as SearchView?)?.setOnQueryTextListener(value)
+
+            field = value
+        }
+
+    /**
+     * Holds the listener of what to do when the filter view is clicked
+     */
+    protected var filterItemOnClickListener: MenuItem.OnMenuItemClickListener? = null
+        set(value) {
+
+            kingView?.Toolbar?.menu?.findItem(R.id.action_filter)?.setOnMenuItemClickListener(value)
+
+            field = value
+        }
+
+    /**
+     * Initializes the [activityContext] with the [KingActivity]
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        activityContext = activity as MainActivity
+    }
+
+    /**
+     * Takes the [view] passed and appends it to the [kingView]
+     * @param view [View] view to add to [kingView]
+     * @param state [NavbarState] state of the navigation bar
+     * @param title [String] if not null, sets the title of the [LayoutKingFragmentBinding.Toolbar]
+     */
+    protected open fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        view: View,
+        state: NavbarState,
+        title: String? = null
+    ): View {
+
+        LayoutKingFragmentBinding.inflate(inflater, container, false).let { kingView ->
+
+            this.kingView = kingView
+
+            kingView.KingLayout.addView(view)
+            kingView.config = config
+            kingView.Toolbar.title = title ?: ""
+
+            isActionBarDropped = isActionBarDropped
+            navbarState = state
+
+            return kingView.root
+        }
+    }
+
+    /**
+     * Restarts the current [MainActivity]
+     * Useful when handling orientation changes
+     */
+    fun restart() = activityContext.restartFragment(this)
+
+    fun onBackPressed(): Boolean {
+
+        // If the fragment is currently in edit mode, call the onCancelListener
+        if (navbarState == NavbarState.EDIT) {
+
+            onCancelListener.onClick(null)
+
+            return true
+        }
+
+        return false
     }
 }

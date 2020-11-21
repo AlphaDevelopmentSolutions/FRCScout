@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="description"
+            type="String" />
+
+        <variable
+            name="cancelButtonText"
+            type="String" />
+
+        <variable
+            name="confirmButtonText"
+            type="String" />
+
+        <variable
+            name="handlers"
+            type="com.alphadevelopmentsolutions.frcscout.classes.ConfirmDialogFragment" />
+
+        <variable
+            name="config"
+            type="com.alphadevelopmentsolutions.frcscout.classes.Config" />
+
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/CustomDialogCardView"
+        tools:context=".view.dialog.LoadingDialogFragment">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/TitleTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/material_edge_margin"
+                android:layout_marginTop="@dimen/material_edge_margin"
+                android:layout_marginEnd="@dimen/material_edge_margin"
+                android:text="@{title ?? @string/delete}"
+                android:textColor="@color/text"
+                android:textSize="@dimen/material_text_header"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/DescriptionTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/material_edge_margin"
+                android:layout_marginTop="@dimen/material_margin"
+                android:layout_marginEnd="@dimen/material_edge_margin"
+                android:text="@{description ?? @string/confirm_delete}"
+                android:textColor="@color/text_secondary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/TitleTextView" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/CancelButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/material_margin"
+                android:layout_marginBottom="@dimen/material_edge_margin"
+                android:text="@{cancelButtonText ?? @string/cancel}"
+                android:onClick="@{() -> handlers.cancel()}"
+                android:textColor="@{config.primaryColor}"
+                rippleColor="@{config.primaryColor}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ConfirmButton" />
+
+            <Button
+                android:id="@+id/ConfirmButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/material_edge_margin"
+                android:layout_marginBottom="@dimen/material_edge_margin"
+                android:backgroundTint="@{config.primaryColor}"
+                android:text="@{confirmButtonText ?? @string/confirm}"
+                android:onClick="@{() -> handlers.confirm()}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>

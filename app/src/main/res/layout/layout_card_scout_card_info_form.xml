@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/material_padding"
                     android:text="@string/placeholder"
-                    android:textColor="@color/text_primary"
+                    android:textColor="@color/text"
                     android:textSize="@dimen/text_primary"
                     android:textStyle="bold" />
 

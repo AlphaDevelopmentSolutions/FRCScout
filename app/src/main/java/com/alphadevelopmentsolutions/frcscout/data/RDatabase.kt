@@ -10,7 +10,6 @@ import com.alphadevelopmentsolutions.frcscout.converters.DateConverter
 import com.alphadevelopmentsolutions.frcscout.converters.ItemStateConverter
 import com.alphadevelopmentsolutions.frcscout.data.dao.*
 import com.alphadevelopmentsolutions.frcscout.data.models.*
-import com.alphadevelopmentsolutions.frcscout.enums.ChecklistStatus
 
 @Database(
     entities = [

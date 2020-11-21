@@ -1,25 +1,24 @@
 package com.alphadevelopmentsolutions.frcscout.converters
 
 import androidx.room.TypeConverter
-import com.alphadevelopmentsolutions.frcscout.data.models.UserTeamAccount
-import com.alphadevelopmentsolutions.frcscout.enums.ChecklistStatus
+import com.alphadevelopmentsolutions.frcscout.data.models.ChecklistItemResult
 import java.util.*
 
 class ChecklistStatusConverter {
 
     /**
-     * Converts a [ChecklistStatus] to the [String] version
-     * @param status [ChecklistStatus] to be converted
-     * @return [String] version of the supplied [ChecklistStatus]
+     * Converts a [ChecklistItemResult.Status] to the [String] version
+     * @param status [ChecklistItemResult.Status] to be converted
+     * @return [String] version of the supplied [ChecklistItemResult.Status]
      */
     @TypeConverter
-    fun toString(status: ChecklistStatus?): String? = status?.name
+    fun toString(status: ChecklistItemResult.Status?): String? = status?.name
 
     /**
-     * Converts a [String] to the [ChecklistStatus] version
+     * Converts a [String] to the [ChecklistItemResult.Status] version
      * @param status [String] to be converted
-     * @return [ChecklistStatus] version of the supplied [String]
+     * @return [ChecklistItemResult.Status] version of the supplied [String]
      */
     @TypeConverter
-    fun fromString(status: String?): ChecklistStatus? = ChecklistStatus.fromString(status)
+    fun fromString(status: String?): ChecklistItemResult.Status? = ChecklistItemResult.Status.fromString(status)
 }

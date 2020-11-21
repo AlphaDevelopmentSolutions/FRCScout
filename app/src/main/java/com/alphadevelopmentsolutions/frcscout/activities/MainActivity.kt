@@ -17,8 +17,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.alphadevelopmentsolutions.frcscout.ui.*
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.classes.Config
 import com.alphadevelopmentsolutions.frcscout.enums.NavbarState
-import com.alphadevelopmentsolutions.frcscout.table.*
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
@@ -35,10 +35,7 @@ class MainActivity : AppCompatActivity(),
     @SuppressLint("MissingSuperCall")
     override fun onSaveInstanceState(outState: Bundle) {}
 
-    /**
-     * [Config] object for the currently logged in vendor configuration
-     */
-    lateinit var config: Config
+    var config: Config = Config()
 
     /**
      * [NavController] used to navigate throughout the [R.id.nav_graph]

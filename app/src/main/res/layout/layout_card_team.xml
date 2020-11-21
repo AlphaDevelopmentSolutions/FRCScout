@@ -32,7 +32,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:text="@string/placeholder"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/text"
                 android:textSize="@dimen/text_primary"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/TeamLogoImageView"
