@@ -8,7 +8,7 @@ import java.util.*
  */
 fun Date.toJson(): String =
     DateFormatter.getInstance().let {
-        it.timeZone = TimeZone.getTimeZone("UTC")
+//        it.timeZone = TimeZone.getTimeZone("UTC")
         it.applyPattern("yyyy-MM-dd HH:mm:ss")
         val json = it.format(this)
         it.timeZone = TimeZone.getDefault()

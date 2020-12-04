@@ -1,44 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:orientation="vertical"
-    tools:context=".ui.TeamListFragment">
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
 
     <LinearLayout
-        android:id="@+id/AllianceViewPagerLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        tools:context=".ui.TeamListFragment">
 
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/AllianceTabLayout"
+        <LinearLayout
+            android:id="@+id/AllianceViewPagerLinearLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/primary"
-            android:elevation="@dimen/toolbar_elevation"
-            app:tabTextColor="@android:color/white"
-            tools:layout_editor_absoluteY="200dp" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/AllianceViewPager"
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/AllianceTabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/primary"
+                android:elevation="@dimen/toolbar_elevation"
+                app:tabTextColor="@android:color/white"
+                tools:layout_editor_absoluteY="200dp" />
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/AllianceViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/TeamsRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            tools:listitem="@layout/layout_card_team" />
     </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/TeamsRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        tools:listitem="@layout/layout_card_team" />
-</LinearLayout>
+</layout>

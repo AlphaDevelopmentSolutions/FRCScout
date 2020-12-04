@@ -10,7 +10,60 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".ui.settings.SettingsFragment">
+        tools:context=".ui.fragments.settings.SettingsFragment">
+
+        <LinearLayout
+            android:id="@+id/year_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/year"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_primary" />
+
+            <TextView
+                android:id="@+id/year_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/material_text_support" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/event"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_primary" />
+
+            <TextView
+                android:id="@+id/event_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder_string"
+                android:textSize="@dimen/material_text_support" />
+        </LinearLayout>
+
+        <include
+            layout="@layout/layout_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,21 +80,21 @@
                 android:textSize="@dimen/text_primary" />
 
             <TextView
-                android:id="@+id/AppVersionTextView"
+                android:id="@+id/version_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/text_secondary" />
 
             <TextView
-                android:id="@+id/BuildNumberTextView"
+                android:id="@+id/build_number_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/text_secondary" />
 
             <TextView
-                android:id="@+id/BuildTypeTextView"
+                android:id="@+id/build_type_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_secondary"
@@ -55,9 +108,12 @@
             android:layout_height="@dimen/divider_height" />
 
         <TextView
-            android:id="@+id/LicensesButton"
+            android:id="@+id/licenses_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
             android:fontFamily="sans-serif"
             android:letterSpacing="0"
             android:padding="16dp"
@@ -65,10 +121,7 @@
             android:textAlignment="viewStart"
             android:textAllCaps="false"
             android:textColor="@color/text"
-            android:textSize="@dimen/text_primary"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true" />
+            android:textSize="@dimen/text_primary" />
 
         <include
             layout="@layout/layout_divider"

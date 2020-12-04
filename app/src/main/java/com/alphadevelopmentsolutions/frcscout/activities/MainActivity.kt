@@ -5,11 +5,13 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
@@ -17,8 +19,9 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.classes.Config
+import com.alphadevelopmentsolutions.frcscout.databinding.ActivityMainBinding
 import com.alphadevelopmentsolutions.frcscout.enums.NavbarState
-import com.alphadevelopmentsolutions.frcscout.ui.MasterFragment
+import com.alphadevelopmentsolutions.frcscout.ui.fragments.MasterFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
@@ -40,7 +43,7 @@ class MainActivity : AppCompatActivity(),
      * [NavController] used to navigate throughout the [R.id.nav_graph]
      */
     protected val navController: NavController by lazy {
-        findNavController(R.id.MainFrame)
+        findNavController(R.id.main_frame)
     }
 
     /**
@@ -48,8 +51,8 @@ class MainActivity : AppCompatActivity(),
      */
     private val host: NavHostFragment?
         get() =
-            if (supportFragmentManager.findFragmentById(R.id.MainFrame) is NavHostFragment)
-                supportFragmentManager.findFragmentById(R.id.MainFrame) as NavHostFragment
+            if (supportFragmentManager.findFragmentById(R.id.main_frame) is NavHostFragment)
+                supportFragmentManager.findFragmentById(R.id.main_frame) as NavHostFragment
             else
                 null
 
@@ -68,19 +71,32 @@ class MainActivity : AppCompatActivity(),
     var navbarState: NavbarState = NavbarState.DRAWER
         set(value) {
             when (value) {
-                NavbarState.LOCKED -> MainDrawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-                NavbarState.LOCKED_WITH_BACK -> MainDrawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-                NavbarState.EDIT -> MainDrawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-                NavbarState.DRAWER -> MainDrawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                NavbarState.LOCKED -> binding.mainDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                NavbarState.LOCKED_WITH_BACK -> binding.mainDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                NavbarState.EDIT -> binding.mainDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                NavbarState.DRAWER -> binding.mainDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
             }
 
             field = value
         }
 
+    lateinit var binding: ActivityMainBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+        binding.navView.setNavigationItemSelectedListener(this)
+
+//        setContentView(R.layout.test)
+
+    }
+
     override fun onBackPressed() {
         when {
             // Close the drawer if open
-            MainDrawerLayout?.isDrawerOpen(GravityCompat.START) == true -> MainDrawerLayout?.closeDrawer(GravityCompat.START)
+            binding.mainDrawerLayout.isDrawerOpen(GravityCompat.START) -> binding.mainDrawerLayout.closeDrawer(GravityCompat.START)
 
             // If the drawer is closed, call the KingFragment.onBackPressed method
             else ->
@@ -118,7 +134,7 @@ class MainActivity : AppCompatActivity(),
      */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
-        MainDrawerLayout?.closeDrawer(GravityCompat.START)
+        binding.mainDrawerLayout.closeDrawer(GravityCompat.START)
 
         // Handle navigation view item clicks here.
         when (item.itemId) {
@@ -154,7 +170,7 @@ class MainActivity : AppCompatActivity(),
      */
     fun showSnackbar(message: String, length: Int = Snackbar.LENGTH_LONG) {
         hideKeyboard()
-        Snackbar.make(findViewById(R.id.MainFrame), message, length).show()
+        Snackbar.make(findViewById(R.id.main_frame), message, length).show()
     }
 
     /**

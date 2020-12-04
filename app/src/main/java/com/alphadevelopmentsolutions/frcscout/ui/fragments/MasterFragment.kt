@@ -1,4 +1,4 @@
-package com.alphadevelopmentsolutions.frcscout.ui
+package com.alphadevelopmentsolutions.frcscout.ui.fragments
 
 import android.animation.ObjectAnimator
 import android.animation.StateListAnimator
@@ -287,7 +287,7 @@ abstract class MasterFragment : Fragment() {
                         // Set the icon to the dehaze icon & and set the drawer to open on click
                         toolbar.navigationIcon = ResourcesCompat.getDrawable(resources, R.drawable.ic_dehaze_white_24dp, null)
                         toolbar.setNavigationOnClickListener {
-                            activityContext.MainDrawerLayout.openDrawer(
+                            activityContext.binding.mainDrawerLayout.openDrawer(
                                 GravityCompat.START
                             )
                         }

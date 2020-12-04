@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/teamListFragmentDestination">
 
+    <fragment
+        android:id="@+id/settingsFragmentDestination"
+        android:name="com.alphadevelopmentsolutions.frcscout.ui.fragments.settings.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_settings"/>
+    <fragment
+        android:id="@+id/teamListFragmentDestination"
+        android:name="com.alphadevelopmentsolutions.frcscout.ui.fragments.teams.TeamListFragment"
+        tools:layout="@layout/fragment_team_list"
+        android:label="TeamListFragment" >
+        <action
+            android:id="@+id/action_teamListFragmentDestination_to_settingsFragmentDestination"
+            app:destination="@id/settingsFragmentDestination" />
+    </fragment>
 </navigation>

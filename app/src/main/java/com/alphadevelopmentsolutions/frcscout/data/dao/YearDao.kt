@@ -13,4 +13,7 @@ abstract class YearDao : MasterDao<Year>() {
         """
     )
     abstract fun deleteAll()
+
+    @Query("SELECT * FROM ${TableName.YEAR} WHERE is_draft = IFNULL(:isDraft, 1) OR is_draft = IFNULL(:isDraft, 0)")
+    abstract fun getAllRaw(isDraft: Boolean? = null): List<Year>
 }

@@ -12,7 +12,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="@dimen/material_padding"
         android:layout_weight="1"
-        android:text="@string/placeholder" />
+        android:text="@string/placeholder_string" />
 
     <ImageView
         android:id="@+id/DeleteButton"

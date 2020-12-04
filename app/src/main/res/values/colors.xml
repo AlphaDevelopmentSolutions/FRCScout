@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <color name="primary">#03A9F4</color>
-    <color name="primary_dark">#0288D1</color>
+<!--    <color name="primary">#03A9F4</color>-->
+<!--    <color name="primary_dark">#0288D1</color>-->
     <color name="primary_darker">#0285CC</color>
     <color name="primary_light">#B3E5FC</color>
-    <color name="accent">@color/primary_dark</color>
+<!--    <color name="accent">@color/primary_dark</color>-->
+    <color name="primary">#808080</color>
+    <color name="primary_dark">#292929</color>
+    <color name="accent">#0F0</color>
     <color name="text">#212121</color>
     <color name="text_secondary">#757575</color>
     <color name="text_secondary_light">#ECECEC</color>
     <color name="text_light">#FFFFFF</color>
-    <color name="text_link">@color/primary_dark</color>
+    <color name="text_link">#0288D1</color>
     <color name="divider">#0C000000</color>
     <color name="ripple">#dcdcdc</color>
     <color name="background">#FAFAFA</color>

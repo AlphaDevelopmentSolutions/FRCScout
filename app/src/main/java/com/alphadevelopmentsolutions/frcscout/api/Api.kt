@@ -3,22 +3,31 @@ package com.alphadevelopmentsolutions.frcscout.api
 import android.content.Context
 import android.os.Build
 import com.alphadevelopmentsolutions.frcscout.BuildConfig
+import com.alphadevelopmentsolutions.frcscout.extensions.toJson
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constant
 import com.alphadevelopmentsolutions.frcscout.serializers.BooleanSerializer
 import com.alphadevelopmentsolutions.frcscout.serializers.ByteArraySerializer
 import com.alphadevelopmentsolutions.frcscout.serializers.DateSerializer
+import com.alphadevelopmentsolutions.frcscout.singletons.KeyStore
 import com.google.firebase.perf.FirebasePerformance
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 interface Api {
+
+    @POST("api/get")
+    fun getData(): Call<AppData>
 
     companion object {
         const val API_VERSION = 1
@@ -40,7 +49,8 @@ interface Api {
         private fun getRetrofitInstance(context: Context): Retrofit {
             return retrofitInstance ?: synchronized(this) {
 
-                "${Constant.API_PROTOCOL}://${Constant.API_DNS}/".let { tempApiUrl ->
+//                "${Constant.API_PROTOCOL}://${Constant.API_DNS}/".let { tempApiUrl ->
+                "http://192.168.50.227:8080/".let { tempApiUrl ->
                     apiUrl = tempApiUrl
 
                     val tempInstance = Retrofit.Builder()
@@ -125,11 +135,11 @@ interface Api {
                         .addHeader(
                             "Cookie",
                             StringBuilder()
-                                .append("${Constant.AUTH_TOKEN}=TOKEN")
+                                .append("${Constant.AUTH_TOKEN}=4a82e3b9-344d-11eb-b736-5c80b67a2786")
                                 .append(";")
                                 .append("${Constant.API_VERSION}=$API_VERSION")
                                 .append(";")
-                                .append("${Constant.LAST_UPDATED}=LASTUPDATED")
+                                .append("${Constant.LAST_UPDATED}=${KeyStore.getInstance(context).lastUpdated.toJson()}")
                                 .toString()
                         )
                         .build()

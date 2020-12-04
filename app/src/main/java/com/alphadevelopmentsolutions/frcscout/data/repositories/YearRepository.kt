@@ -8,5 +8,5 @@ class YearRepository(private val dao: YearDao) : MasterRepository<Year>(dao), Su
         dao.deleteAll()
 
     override fun getAllRaw(isDraft: Boolean?): List<Year> =
-        listOf()
+        dao.getAllRaw(isDraft)
 }

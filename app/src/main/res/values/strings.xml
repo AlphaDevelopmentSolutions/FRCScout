@@ -3,7 +3,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="placeholder">\???</string>
+    <string name="placeholder_string">\???</string>
     <string name="view_card">view card</string>
     <string name="team_logo">Team Logo</string>
     <string name="versus">VS</string>
@@ -316,5 +316,8 @@
     <string name="filter">Filter</string>
     <string name="undo_changes">Undo Changes</string>
     <string name="undo_changes_desc">Are you sure you want to undo your changes? This can\'t be undone.</string>
+    <string name="year">Year</string>
+    <string name="event">Event</string>
+    <string name="create_new">Create New</string>
 
 </resources>

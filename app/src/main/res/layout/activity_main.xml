@@ -7,7 +7,7 @@
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
-        android:id="@+id/MainDrawerLayout"
+        android:id="@+id/main_drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
@@ -17,18 +17,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
 
-            <fragment
+            <androidx.fragment.app.FragmentContainerView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 app:defaultNavHost="true"
-                android:id="@+id/MainFrame" />
+                app:navGraph="@navigation/nav_graph"
+                android:id="@+id/main_frame" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <com.google.android.material.navigation.NavigationView
-            android:id="@+id/NavView"
+            android:id="@+id/nav_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
