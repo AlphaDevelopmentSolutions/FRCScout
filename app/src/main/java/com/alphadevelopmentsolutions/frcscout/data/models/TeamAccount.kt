@@ -20,7 +20,7 @@ class TeamAccount(
     @SerializedName("primary_color") @ColumnInfo(name = "primary_color") var primaryColor: String? = null,
     @SerializedName("accent_color") @ColumnInfo(name = "accent_color") var accentColor: String? = null,
     @SerializedName("created_date") @ColumnInfo(name = "created_date") var createdDate: Date
-) : SubmittableTable(null, null, ByteArray(0)) {
+) : Table() {
 
     companion object : StaticTable<TeamAccount> {
         override fun create(): TeamAccount =

@@ -60,4 +60,7 @@
     <dimen name="grab_bar_width">40dp</dimen>
     <dimen name="grab_bar_height">10dp</dimen>
     <dimen name="bottom_sheet_corner_radius">16dp</dimen>
+    <dimen name="loading_anim_width">100dp</dimen>
+    <dimen name="loading_anim_height">100dp</dimen>
+
 </resources>

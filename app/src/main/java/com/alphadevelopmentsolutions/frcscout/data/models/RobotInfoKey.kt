@@ -20,7 +20,7 @@ class RobotInfoKey(
     @SerializedName("max") @ColumnInfo(name = "max") var max: Int? = null,
     @SerializedName("null_zeros") @ColumnInfo(name = "null_zeros") var nullZeros: Boolean? = null,
     @SerializedName("include_in_reports") @ColumnInfo(name = "include_in_reports") var includeInReports: Boolean? = null
-) : SubmittableTable(null, null, ByteArray(0)) {
+) : Table() {
 
     companion object : StaticTable<RobotInfoKey> {
         override fun create(): RobotInfoKey =

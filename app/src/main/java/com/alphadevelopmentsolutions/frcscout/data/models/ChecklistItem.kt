@@ -14,7 +14,7 @@ class ChecklistItem(
     @SerializedName("year_id") @ColumnInfo(name = "year_id", index = true) var yearId: ByteArray,
     @SerializedName("title") @ColumnInfo(name = "title") var title: String,
     @SerializedName("description") @ColumnInfo(name = "description") var description: String
-) : SubmittableTable(null, null, ByteArray(0)) {
+) : Table() {
 
     companion object : StaticTable<ChecklistItem> {
         override fun create(): ChecklistItem =

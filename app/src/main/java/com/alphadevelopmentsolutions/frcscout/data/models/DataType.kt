@@ -15,7 +15,7 @@ class DataType(
     @SerializedName("can_min") @ColumnInfo(name = "can_min") var canMin: Boolean,
     @SerializedName("can_null_zeros") @ColumnInfo(name = "can_null_zeros") var canNullZeros: Boolean,
     @SerializedName("can_report") @ColumnInfo(name = "can_report") var canReport: Boolean
-) : SubmittableTable(null, null, ByteArray(0)) {
+) : Table() {
 
     companion object : StaticTable<DataType> {
         override fun create(): DataType =

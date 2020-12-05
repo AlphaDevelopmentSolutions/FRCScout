@@ -8,6 +8,7 @@ interface TableName {
         const val DELETED_RECORDS = "deleted_records"
         const val LOG_DRAFT = "log_draft"
         const val LOG_DELETE = "log_delete"
+        const val PHOTO_FILE = "photo_files"
 
         const val CHECKLIST_ITEM = "checklist_items"
         const val CHECKLIST_ITEM_RESULT = "checklist_items_results"

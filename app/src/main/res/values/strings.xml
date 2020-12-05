@@ -162,6 +162,20 @@
     <string name="app_version">App Version - %1$s</string>
     <string name="build_number">Build Number - %1$s</string>
     <string name="build_type">Build Type - %1$s</string>
+    <string name="ellipses_dynamic">%1$s…</string>
+    <string name="uploading_updates">Uploading Updates</string>
+    <string name="upload_complete">Upload Complete</string>
+    <string name="preparing_photos">Preparing Photos</string>
+    <string name="uploading_photo_bundle_dynamic">Uploading Photo Bundle %1$d/%2$d</string>
+    <string name="downloading_updates">Downloading Updates</string>
+    <string name="download_complete">Download Complete</string>
+    <string name="error_403">You are not logged in</string>
+    <string name="error_412">Your app is out of date</string>
+    <string name="error_general">There was an error performing this action</string>
+    <string name="downloading_photo_bundle_dynamic">Downloading Photo Bundle %1$d/%2$d</string>
+    <string name="load_failure">Uh Oh!</string>
+    <string name="load_success">All Set!</string>
+    <string name="syncing">Syncing</string>
 
     <string name="license_frcscout">
         Copyright &#169; 2019 Alpha Development Solutions

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.api.Api
+import com.alphadevelopmentsolutions.frcscout.api.ApiViewModel
 import com.alphadevelopmentsolutions.frcscout.callbacks.OnItemSelectedListener
 import com.alphadevelopmentsolutions.frcscout.classes.SaveButtonWrapper
 import com.alphadevelopmentsolutions.frcscout.data.models.Year
@@ -31,19 +32,11 @@ class TeamListFragment(override val TAG: FragmentTag = FragmentTag.TEAM_LIST) : 
         onCancelListener =
             View.OnClickListener {
                 launchIO {
-                    val lastUpdated = Date()
-
-                    val response = Api.getInstance(activityContext).getData().execute()
-
-                    if (response.isSuccessful) {
-                        response.body()?.let { appData ->
-                            KeyStore.getInstance(activityContext).lastUpdated = Date(0)
-
-                            RepositoryProvider.getInstance(activityContext).let { repositoryProvider ->
-                                repositoryProvider.yearRepository.insertAll(appData.yearList)
-                            }
-                        }
-                    }
+                    ApiViewModel.getInstance(activityContext)
+                        .sync(
+                            activityContext,
+                            null
+                        )
                 }
             }
 

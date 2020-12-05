@@ -2,8 +2,13 @@ package com.alphadevelopmentsolutions.frcscout.api
 
 import android.content.Context
 import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import com.alphadevelopmentsolutions.frcscout.BuildConfig
+import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.callbacks.OnProgressCallback
+import com.alphadevelopmentsolutions.frcscout.data.models.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.extensions.toJson
+import com.alphadevelopmentsolutions.frcscout.factories.PhotoFileFactory
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constant
 import com.alphadevelopmentsolutions.frcscout.serializers.BooleanSerializer
 import com.alphadevelopmentsolutions.frcscout.serializers.ByteArraySerializer
@@ -11,16 +16,19 @@ import com.alphadevelopmentsolutions.frcscout.serializers.DateSerializer
 import com.alphadevelopmentsolutions.frcscout.singletons.KeyStore
 import com.google.firebase.perf.FirebasePerformance
 import com.google.gson.GsonBuilder
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.Response
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
+import org.apache.commons.compress.utils.IOUtils
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
+import retrofit2.http.Headers
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -28,6 +36,26 @@ interface Api {
 
     @POST("api/get")
     fun getData(): Call<AppData>
+
+    @Headers("Accept: application/json")
+    @POST("api/set")
+    fun setData(@Body appData: AppData): Call<ApiResponse.Set.Base>
+
+    @Multipart
+    @Headers("Accept: application/json")
+    @POST("api/set/photos")
+    fun setPhotos(@Part multiparts: List<MultipartBody.Part>): Call<ApiResponse.Set.Photos>
+
+    @Headers("Accept: application/json")
+    @POST("api/get/photos")
+    @Streaming
+    fun getPhotos(@Body photoFiles: List<RobotMedia>): Call<ResponseBody>
+
+    @FormUrlEncoded
+    @Headers("Accept: application/json")
+    @POST("api/login")
+    fun login(@Field("email") email: String, @Field("password") password: String): Call<ApiResponse.Account.Login>
+
 
     companion object {
         const val API_VERSION = 1
@@ -135,7 +163,7 @@ interface Api {
                         .addHeader(
                             "Cookie",
                             StringBuilder()
-                                .append("${Constant.AUTH_TOKEN}=4a82e3b9-344d-11eb-b736-5c80b67a2786")
+                                .append("${Constant.AUTH_TOKEN}=b6c94a91-36a9-11eb-86bc-5c80b67a2786")
                                 .append(";")
                                 .append("${Constant.API_VERSION}=$API_VERSION")
                                 .append(";")
@@ -197,6 +225,129 @@ interface Api {
          */
         fun setInterceptorLevel(level: HttpLoggingInterceptor.Level) {
             loggingInterceptor.level = level
+        }
+
+        /**
+         * Downloads a list of images
+         * @param context [AppCompatActivity] used to get the [okHttpInstance] and the default app filesdir
+         * @param photos [List] of [RobotMedia] objects to download from the web
+         * @param onProgressCallback [OnProgressCallback] progress callback to update
+         */
+        @Suppress("RedundantSuspendModifier")
+        suspend fun getPhotos(context: AppCompatActivity, photos: MutableList<RobotMedia>, onProgressCallback: OnProgressCallback? = null): List<RobotMedia> {
+
+            if (BuildConfig.DEBUG)
+                setInterceptorLevel(HttpLoggingInterceptor.Level.HEADERS)
+
+            onProgressCallback?.onProgressChange("Cleaning Up Old Photo Files...")
+
+            // Remove all files that are not going to be downloaded
+            PhotoFileFactory.files(context).forEach currentForeach@{ file ->
+
+                var shouldFileStay = false
+
+                photos.forEach { photo ->
+                    if (photo.uri == file.name) {
+                        shouldFileStay = true
+                        return@currentForeach
+                    }
+                }
+
+                if (!shouldFileStay)
+                    file.delete()
+            }
+
+            val imagesPerChunk = 10
+
+            val photosToDownloadChunks = mutableListOf<MutableList<RobotMedia>>()
+
+            photos.forEachIndexed { index, photo ->
+
+                // Attempt to retrieve the local image file
+                PhotoFileFactory.getFile(
+                    photo.uri,
+                    context
+                ).let { localImageFile ->
+
+                    // Prev image file exists, update local file uri for that photo
+                    if (localImageFile != null) {
+                        photos[index] = photo.apply {
+                            localFileUri = localImageFile.absolutePath
+                        }
+                    }
+
+                    // Local image file does not exist, download new image
+                    else {
+                        var recordInserted = false
+
+                        photosToDownloadChunks.forEach { photosToDownload ->
+
+                            if (photosToDownload.size < imagesPerChunk) {
+                                photosToDownload.add(photo)
+                                recordInserted = true
+                            }
+                        }
+
+                        if (!recordInserted)
+                            photosToDownloadChunks.add(mutableListOf(photo))
+                    }
+                }
+            }
+
+            photosToDownloadChunks.forEachIndexed { index, photosToDownload ->
+
+                onProgressCallback?.onProgressChange(
+                    String.format(
+                        context.getString(R.string.ellipses_dynamic),
+                        String.format(
+                            context.getString(R.string.downloading_photo_bundle_dynamic),
+                            index + 1,
+                            photosToDownloadChunks.size
+                        )
+                    )
+                )
+
+                getInstance(context)
+                    .getPhotos(photosToDownload.toList())
+                    .execute()
+                    .let { responseBody ->
+
+                        // Decompress the tar archive that was sent back
+                        responseBody.body()?.let { body ->
+                            try {
+                                val tarArchiveInputStream = TarArchiveInputStream(body.byteStream())
+                                var tarArchiveEntry: TarArchiveEntry?
+
+                                do {
+                                    tarArchiveEntry = tarArchiveInputStream.nextTarEntry
+
+                                    tarArchiveEntry?.let { entry ->
+
+                                        if (!entry.isDirectory) {
+                                            val currentFile = File(PhotoFileFactory.getFileDir(context), entry.name)
+                                            val parent = currentFile.parentFile
+
+                                            if (parent?.exists() == false)
+                                                parent.mkdirs()
+
+                                            if (IOUtils.copy(tarArchiveInputStream, FileOutputStream(currentFile), 1024 * 1024) > 0) {
+                                                photos.forEach { photo ->
+                                                    if (photo.uri == entry.name)
+                                                        photo.localFileUri = currentFile.absolutePath
+                                                }
+                                            }
+                                        }
+                                    }
+                                } while (tarArchiveEntry != null)
+                            } catch (e: IOException) {}
+                        }
+                    }
+            }
+
+            if (BuildConfig.DEBUG)
+                setInterceptorLevel(HttpLoggingInterceptor.Level.BODY)
+
+            return photos.toList()
         }
     }
 }

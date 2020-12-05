@@ -14,7 +14,7 @@ class ScoutCardInfoKeyState(
     @SerializedName("year_id") @ColumnInfo(name = "year_id", index = true) var yearId: ByteArray,
     @SerializedName("name") @ColumnInfo(name = "name") var name: String,
     @SerializedName("description") @ColumnInfo(name = "description") var description: String? = null
-) : SubmittableTable(null, null, ByteArray(0)) {
+) : Table() {
 
     companion object : StaticTable<ScoutCardInfoKeyState> {
         override fun create(): ScoutCardInfoKeyState =

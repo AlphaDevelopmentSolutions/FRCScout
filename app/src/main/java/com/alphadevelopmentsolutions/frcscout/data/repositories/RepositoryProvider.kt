@@ -60,9 +60,33 @@ class RepositoryProvider private constructor(context: Context) {
         )
     }
 
-    val matchRepo by lazy {
+    val logDeleteRepository by lazy {
+        LogDeleteRepository(
+            rDatabase.getLogDeleteDao()
+        )
+    }
+
+    val logDraftRepository by lazy {
+        LogDraftRepository(
+            rDatabase.getLogDraftDao()
+        )
+    }
+
+    val matchRepository by lazy {
         MatchRepository(
             rDatabase.getMatchDao()
+        )
+    }
+
+    val matchTypeRepository by lazy {
+        MatchTypeRepository(
+            rDatabase.getMatchTypeDao()
+        )
+    }
+
+    val photoFileRepository by lazy {
+        PhotoFileRepository(
+            rDatabase.getPhotoFileDao()
         )
     }
 
@@ -105,6 +129,12 @@ class RepositoryProvider private constructor(context: Context) {
     val scoutCardInfoRepository by lazy {
         ScoutCardInfoRepository(
             rDatabase.getScoutCardInfoDao()
+        )
+    }
+
+    val teamRepository by lazy {
+        TeamRepository(
+            rDatabase.getTeamDao()
         )
     }
 

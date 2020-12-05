@@ -20,7 +20,7 @@ class Role(
     @SerializedName("can_pit_scout") @ColumnInfo(name = "can_pit_scout", defaultValue = "0") var canPitScout: Boolean = false,
     @SerializedName("can_capture_media") @ColumnInfo(name = "can_capture_media", defaultValue = "0") var canCaptureMedia: Boolean = false,
     @SerializedName("can_manage_reports") @ColumnInfo(name = "can_manage_reports", defaultValue = "0") var canManageReports: Boolean = false
-) : SubmittableTable(null, null, ByteArray(0)) {
+) : Table() {
 
     companion object : StaticTable<Role> {
         override fun create(): Role =

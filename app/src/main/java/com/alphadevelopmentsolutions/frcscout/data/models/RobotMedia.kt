@@ -16,6 +16,7 @@ class RobotMedia(
     @SerializedName("team_id") @ColumnInfo(name = "team_id", index = true) var teamId: ByteArray,
     @SerializedName("created_by_id") @ColumnInfo(name = "created_by_id", index = true) var createdById: ByteArray,
     @SerializedName("uri") @ColumnInfo(name = "uri") var uri: String,
+    @Transient @ColumnInfo(name = "local_file_uri", defaultValue = "null") var localFileUri: String? = null,
     @SerializedName("is_public") @ColumnInfo(name = "is_public", defaultValue = "0") var isPublic: Boolean = false
 ) : SubmittableTable(null, null, ByteArray(0)) {
 
@@ -27,6 +28,7 @@ class RobotMedia(
                 ByteArray(0),
                 ByteArray(0),
                 "",
+                null,
                 false
             )
     }
