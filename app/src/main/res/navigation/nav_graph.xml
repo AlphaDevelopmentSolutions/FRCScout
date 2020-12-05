@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/teamListFragmentDestination">
+    app:startDestination="@id/loginFragmentDestination">
 
     <fragment
         android:id="@+id/settingsFragmentDestination"
@@ -18,5 +18,14 @@
         <action
             android:id="@+id/action_teamListFragmentDestination_to_settingsFragmentDestination"
             app:destination="@id/settingsFragmentDestination" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragmentDestination"
+        android:name="com.alphadevelopmentsolutions.frcscout.ui.fragments.login.LoginFragment"
+        tools:layout="@layout/fragment_login"
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragmentDestination_to_teamListFragmentDestination"
+            app:destination="@id/teamListFragmentDestination" />
     </fragment>
 </navigation>

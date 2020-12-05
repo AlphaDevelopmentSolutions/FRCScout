@@ -90,8 +90,8 @@ abstract class MasterFragment : Fragment() {
     /**
      * [Account] object for the current logged in user
      */
-    protected val account: Account by lazy {
-        Account()
+    protected val account: Account? by lazy {
+        Account.getInstance(activityContext)
     }
 
     /**
@@ -138,7 +138,7 @@ abstract class MasterFragment : Fragment() {
     protected var isActionBarDropped: Boolean = false
         set(value) {
 
-            kingView?.AppBarLayout?.let {
+            kingView?.appbarLayout?.let {
                 if (value) {
                     it.stateListAnimator =
                         StateListAnimator().apply {
@@ -156,22 +156,22 @@ abstract class MasterFragment : Fragment() {
         }
 
     /**
-     * [SaveButtonWrapper] object called when the [LayoutKingFragmentBinding.SaveTextView] is visible or clicked
+     * [SaveButtonWrapper] object called when the [LayoutKingFragmentBinding.saveTextView] is visible or clicked
      */
     protected var onSaveWrapper: SaveButtonWrapper? = null
         set(value) {
-            kingView?.SaveTextView?.text = value?.title ?: ""
-            kingView?.SaveTextView?.setOnClickListener(value?.clickListener)
+            kingView?.saveTextView?.text = value?.title ?: ""
+            kingView?.saveTextView?.setOnClickListener(value?.clickListener)
 
             field = value
         }
 
     /**
-     * [View.OnClickListener] for when the [LayoutKingFragmentBinding.Toolbar] is clicked
+     * [View.OnClickListener] for when the [LayoutKingFragmentBinding.toolbar] is clicked
      */
     protected var onCancelListener: View.OnClickListener = View.OnClickListener { undoChangesDialog.show(activityContext) }
         set(value) {
-            kingView?.Toolbar?.setNavigationOnClickListener(onCancelListener)
+            kingView?.toolbar?.setNavigationOnClickListener(onCancelListener)
 
             field = value
         }
@@ -203,7 +203,7 @@ abstract class MasterFragment : Fragment() {
         )
 
     /**
-     * State of the [LayoutKingFragmentBinding.Toolbar] and [SalesActivity.MainDrawerLayout]
+     * State of the [LayoutKingFragmentBinding.toolbar] and [SalesActivity.MainDrawerLayout]
      */
     private var navbarState: NavbarState = NavbarState.LOCKED
         set(value) {
@@ -212,7 +212,7 @@ abstract class MasterFragment : Fragment() {
 
             kingView?.let { kingView ->
 
-                val toolbar = kingView.Toolbar
+                val toolbar = kingView.toolbar
 
                 // Inflate the menu passed from the fragment
                 getMenu().let { menu ->
@@ -241,14 +241,14 @@ abstract class MasterFragment : Fragment() {
 
                     /**
                      * Drawer is locked
-                     * [LayoutKingFragmentBinding.SaveTextView] is hidden
-                     * [Toolbar.getNavigationIcon] is hidden
+                     * [LayoutKingFragmentBinding.saveTextView] is hidden
+                     * [toolbar.getNavigationIcon] is hidden
                      */
                     NavbarState.LOCKED ->
                     {
                         // Make the textview invisible
-                        if (kingView.SaveTextView.isVisible)
-                            kingView.SaveTextView.isVisible = false
+                        if (kingView.saveTextView.isVisible)
+                            kingView.saveTextView.isVisible = false
 
                         // Remove the nav icon & remove click listener
                         toolbar.navigationIcon = null
@@ -257,14 +257,14 @@ abstract class MasterFragment : Fragment() {
 
                     /**
                      * Drawer is locked with a back button
-                     * [LayoutKingFragmentBinding.SaveTextView] is hidden
-                     * [Toolbar.getNavigationIcon] shown as a [R.drawable.ic_arrow_back_white_24dp] and [KingActivity.onBackPressed] is called on click
+                     * [LayoutKingFragmentBinding.saveTextView] is hidden
+                     * [toolbar.getNavigationIcon] shown as a [R.drawable.ic_arrow_back_white_24dp] and [KingActivity.onBackPressed] is called on click
                      */
                     NavbarState.LOCKED_WITH_BACK ->
                     {
                         // Make the textview invisible
-                        if (kingView.SaveTextView.isVisible)
-                            kingView.SaveTextView.isVisible = false
+                        if (kingView.saveTextView.isVisible)
+                            kingView.saveTextView.isVisible = false
 
                         // Set the icon to the back arrow & and add remove the current fragment when pressed
                         toolbar.navigationIcon = ResourcesCompat.getDrawable(resources, R.drawable.ic_arrow_back_white_24dp, null)
@@ -275,14 +275,14 @@ abstract class MasterFragment : Fragment() {
 
                     /**
                      * Drawer is unlocked
-                     * [LayoutKingFragmentBinding.SaveTextView] is hidden
-                     * [Toolbar.getNavigationIcon] shown as [R.drawable.ic_dehaze_white_24dp] and the drawer is opened on click
+                     * [LayoutKingFragmentBinding.saveTextView] is hidden
+                     * [toolbar.getNavigationIcon] shown as [R.drawable.ic_dehaze_white_24dp] and the drawer is opened on click
                      */
                     NavbarState.DRAWER ->
                     {
                         // Make the textview invisible
-                        if (kingView.SaveTextView.isVisible)
-                            kingView.SaveTextView.isVisible = false
+                        if (kingView.saveTextView.isVisible)
+                            kingView.saveTextView.isVisible = false
 
                         // Set the icon to the dehaze icon & and set the drawer to open on click
                         toolbar.navigationIcon = ResourcesCompat.getDrawable(resources, R.drawable.ic_dehaze_white_24dp, null)
@@ -294,25 +294,29 @@ abstract class MasterFragment : Fragment() {
                     }
 
                     /**
-                     * [Toolbar] is in edit mode
-                     * [LayoutKingFragmentBinding.SaveTextView] shown and onclick is set to [onSaveWrapper]
-                     * [Toolbar.getNavigationIcon] is shown as [R.drawable.ic_close_white_24dp] and onclick is set to [onCancelListener]
+                     * [toolbar] is in edit mode
+                     * [LayoutKingFragmentBinding.saveTextView] shown and onclick is set to [onSaveWrapper]
+                     * [toolbar.getNavigationIcon] is shown as [R.drawable.ic_close_white_24dp] and onclick is set to [onCancelListener]
                      */
                     NavbarState.EDIT ->
                     {
                         // Make the textview invisible
-                        if (!kingView.SaveTextView.isVisible)
-                            kingView.SaveTextView.isVisible = true
+                        if (!kingView.saveTextView.isVisible)
+                            kingView.saveTextView.isVisible = true
 
                         // Set the icon to the close icon & and set the oncancellistener to be called on click
-                        kingView.Toolbar.navigationIcon = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_close_white_24dp, null)
-                        kingView.Toolbar.setNavigationOnClickListener(onCancelListener)
+                        kingView.toolbar.navigationIcon = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_close_white_24dp, null)
+                        kingView.toolbar.setNavigationOnClickListener(onCancelListener)
 
                         // Set the save wrapper contents to the save text view
                         onSaveWrapper?.let { wrapper ->
-                            kingView.SaveTextView.text = wrapper.title
-                            kingView.SaveTextView.setOnClickListener { wrapper.clickListener.onClick(it) }
+                            kingView.saveTextView.text = wrapper.title
+                            kingView.saveTextView.setOnClickListener { wrapper.clickListener.onClick(it) }
                         }
+                    }
+
+                    NavbarState.INVISIBLE -> {
+                        // Do Nothing
                     }
                 }
             }
@@ -331,7 +335,7 @@ abstract class MasterFragment : Fragment() {
     protected var searchItemQueryListener: SearchView.OnQueryTextListener? = null
         set(value) {
 
-            (kingView?.Toolbar?.menu?.findItem(R.id.action_search)?.actionView as SearchView?)?.setOnQueryTextListener(value)
+            (kingView?.toolbar?.menu?.findItem(R.id.action_search)?.actionView as SearchView?)?.setOnQueryTextListener(value)
 
             field = value
         }
@@ -342,7 +346,7 @@ abstract class MasterFragment : Fragment() {
     protected var filterItemOnClickListener: MenuItem.OnMenuItemClickListener? = null
         set(value) {
 
-            kingView?.Toolbar?.menu?.findItem(R.id.action_filter)?.setOnMenuItemClickListener(value)
+            kingView?.toolbar?.menu?.findItem(R.id.action_filter)?.setOnMenuItemClickListener(value)
 
             field = value
         }
@@ -360,7 +364,7 @@ abstract class MasterFragment : Fragment() {
      * Takes the [view] passed and appends it to the [kingView]
      * @param view [View] view to add to [kingView]
      * @param state [NavbarState] state of the navigation bar
-     * @param title [String] if not null, sets the title of the [LayoutKingFragmentBinding.Toolbar]
+     * @param title [String] if not null, sets the title of the [LayoutKingFragmentBinding.toolbar]
      */
     protected open fun onCreateView(
         inflater: LayoutInflater,
@@ -374,9 +378,14 @@ abstract class MasterFragment : Fragment() {
 
             this.kingView = kingView
 
-            kingView.KingLayout.addView(view)
+            kingView.kingLayout.addView(view)
             kingView.config = config
-            kingView.Toolbar.title = title ?: ""
+            
+            if (state == NavbarState.INVISIBLE)
+                kingView.appbarLayout.visibility = View.GONE
+            else
+                kingView.toolbar.title = title ?: ""
+
 
             isActionBarDropped = isActionBarDropped
             navbarState = state

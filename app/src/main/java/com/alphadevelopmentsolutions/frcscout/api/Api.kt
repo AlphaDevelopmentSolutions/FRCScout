@@ -54,7 +54,7 @@ interface Api {
     @FormUrlEncoded
     @Headers("Accept: application/json")
     @POST("api/login")
-    fun login(@Field("email") email: String, @Field("password") password: String): Call<ApiResponse.Account.Login>
+    fun login(@Field("username") username: String, @Field("password") password: String): Call<ApiResponse.Account.Login>
 
 
     companion object {

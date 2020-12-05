@@ -1,13 +1,15 @@
-package com.alphadevelopmentsolutions.frcscout.ui.fragments.settings
+package com.alphadevelopmentsolutions.frcscout.ui.fragments.login
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
 
-class SettingsViewModelFactory(
-    val activity: MainActivity
+class LoginViewModelFactory(
+    val activity: MainActivity,
+    val navController: NavController
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-        SettingsViewModel(activity) as T
+        LoginViewModel(activity, navController) as T
 }

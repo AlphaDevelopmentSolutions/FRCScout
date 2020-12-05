@@ -9,14 +9,13 @@ import com.google.gson.annotations.SerializedName
     tableName = TableName.USER,
     inheritSuperIndices = true
 )
-class User(
-    @SerializedName("first_name") @ColumnInfo(name = "first_name") var firstName: String,
-    @SerializedName("last_name") @ColumnInfo(name = "last_name") var lastName: String,
-    @SerializedName("email") @ColumnInfo(name = "email") var email: String,
-    @SerializedName("username") @ColumnInfo(name = "username") var username: String,
-    @SerializedName("description") @ColumnInfo(name = "description") var description: String? = null,
-    @SerializedName("avatar_uri") @ColumnInfo(name = "avatar_uri") var avatarUri: String? = null,
-    @SerializedName("auth_token") @ColumnInfo(name = "auth_token") var authToken: String
+open class User(
+    @SerializedName("first_name") @ColumnInfo(name = "first_name") open var firstName: String,
+    @SerializedName("last_name") @ColumnInfo(name = "last_name") open var lastName: String,
+    @SerializedName("email") @ColumnInfo(name = "email") open var email: String,
+    @SerializedName("username") @ColumnInfo(name = "username") open var username: String,
+    @SerializedName("description") @ColumnInfo(name = "description") open var description: String? = null,
+    @SerializedName("avatar_uri") @ColumnInfo(name = "avatar_uri") open var avatarUri: String? = null
 ) : Table() {
 
     companion object : StaticTable<User> {
@@ -27,8 +26,7 @@ class User(
                 "",
                 "",
                 null,
-                null,
-                ""
+                null
             )
     }
 

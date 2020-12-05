@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.security.keystore.UserNotAuthenticatedException
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 import com.alphadevelopmentsolutions.frcscout.BuildConfig
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
@@ -295,12 +294,12 @@ open class ApiViewModel(application: Application) : AndroidViewModel(application
         return false
     }
 
-    suspend fun login(context: MainActivity, email: String, password: String, recaptchaTokenResult: String?): Boolean {
+    suspend fun login(context: MainActivity, username: String, password: String, recaptchaTokenResult: String?): Boolean {
 
         val response =
             Api.getInstance(context)
                 .login(
-                    email,
+                    username,
                     password
                 ).execute()
 

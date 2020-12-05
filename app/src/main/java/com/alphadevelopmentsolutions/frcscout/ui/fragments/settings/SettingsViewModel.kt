@@ -17,11 +17,8 @@ import com.alphadevelopmentsolutions.frcscout.singletons.KeyStore
 import com.alphadevelopmentsolutions.frcscout.ui.dialogs.SelectDialogFragment
 
 class SettingsViewModel(
-    application: Application,
-    private val activity: MainActivity
-) : AndroidViewModel(application) {
-
-    private val context: Context = application
+    private val context: MainActivity
+) : ViewModel() {
 
     val year: MutableLiveData<String> = MutableLiveData()
     val event: MutableLiveData<String> = MutableLiveData()
@@ -30,11 +27,11 @@ class SettingsViewModel(
     private var eventSelectDialogFragment: SelectDialogFragment? = null
 
     fun onYearLayoutClicked() {
-        yearSelectDialogFragment?.show(activity)
+        yearSelectDialogFragment?.show(context)
     }
 
     fun onEventLayoutClicked() {
-        eventSelectDialogFragment?.show(activity)
+        eventSelectDialogFragment?.show(context)
     }
 
     init {
