@@ -3,33 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/SearchItem"
+        android:id="@+id/search_item"
         android:icon="@drawable/ic_search_white_24dp"
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always" />
 
 
-
     <item
-        android:id="@+id/RefreshDataItem"
-        android:icon="@drawable/ic_cloud_download_white_24dp"
+        android:id="@+id/sync_item"
+        android:icon="@drawable/ic_baseline_sync_white_24dp"
         android:title="@string/refresh_data"
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/UploadDataItem"
-        android:icon="@drawable/ic_cloud_upload_white_24dp"
-        android:title="@string/upload_data"
-        app:showAsAction="always" />
-
-    <item
-        android:id="@+id/LogoutItem"
-        android:title="@string/logout"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/SettingsItem"
+        android:id="@+id/settings_item"
         android:title="@string/settings"
         app:showAsAction="never" />
 

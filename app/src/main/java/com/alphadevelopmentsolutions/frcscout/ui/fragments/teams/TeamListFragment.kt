@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.api.Api
 import com.alphadevelopmentsolutions.frcscout.api.ApiViewModel
 import com.alphadevelopmentsolutions.frcscout.callbacks.OnItemSelectedListener
+import com.alphadevelopmentsolutions.frcscout.classes.Menu
 import com.alphadevelopmentsolutions.frcscout.classes.SaveButtonWrapper
 import com.alphadevelopmentsolutions.frcscout.data.models.Year
 import com.alphadevelopmentsolutions.frcscout.data.repositories.RepositoryProvider
@@ -29,30 +31,43 @@ class TeamListFragment(override val TAG: FragmentTag = FragmentTag.TEAM_LIST) : 
 
         binding = FragmentTeamListBinding.inflate(inflater, container, false)
 
-        onCancelListener =
-            View.OnClickListener {
-                launchIO {
-                    ApiViewModel.getInstance(activityContext)
-                        .sync(
-                            activityContext,
-                            null
-                        )
-                }
-            }
-
-        onSaveWrapper =
-            SaveButtonWrapper(
-                "Save"
-            ) {
-                navigate(TeamListFragmentDirections.actionTeamListFragmentDestinationToSettingsFragmentDestination())
-            }
-
         return onCreateView(
             inflater,
             container,
             binding.root,
-            NavbarState.EDIT,
+            NavbarState.DRAWER,
             getString(R.string.teams)
         )
     }
+
+    override fun getMenu() =
+        Menu(
+            R.menu.main
+        ) {
+            var isHandled = false
+
+            when (it.itemId) {
+                R.id.sync_item -> {
+
+                    launchIO {
+                        ApiViewModel.getInstance(activityContext)
+                            .sync(
+                                activityContext,
+                                null
+                            )
+                    }
+
+                    isHandled = true
+                }
+
+                R.id.settings_item -> {
+                    navigate(TeamListFragmentDirections.actionTeamListFragmentDestinationToSettingsFragmentDestination())
+
+                    isHandled = true
+                }
+            }
+
+
+            isHandled
+        }
 }

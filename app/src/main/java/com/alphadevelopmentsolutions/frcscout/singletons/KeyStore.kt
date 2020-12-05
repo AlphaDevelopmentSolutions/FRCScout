@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.singletons
 import android.content.Context
 import android.content.SharedPreferences
 import com.alphadevelopmentsolutions.frcscout.classes.Account
+import com.alphadevelopmentsolutions.frcscout.data.models.Event
 import com.alphadevelopmentsolutions.frcscout.data.models.Year
 import com.alphadevelopmentsolutions.frcscout.interfaces.KeyStoreKey
 import java.util.*
@@ -115,6 +116,34 @@ class KeyStore private constructor(
             sharedPreferences.edit()
                 .putString(
                     KeyStoreKey.YEAR_JSON,
+                    GsonInstance.getInstance()
+                        .toJson(value)
+                )
+                .apply()
+        }
+
+    /**
+     * JSON [String] holding the apps [Year] object
+     * @return [Year] object
+     */
+    var selectedEvent: Event?
+        get() {
+            val json =
+                sharedPreferences.getString(
+                    KeyStoreKey.EVENT_JSON,
+                    null
+                ) ?: return null
+
+            return GsonInstance.getInstance()
+                .fromJson(
+                    json,
+                    Event::class.java
+                )
+        }
+        set(value) {
+            sharedPreferences.edit()
+                .putString(
+                    KeyStoreKey.EVENT_JSON,
                     GsonInstance.getInstance()
                         .toJson(value)
                 )

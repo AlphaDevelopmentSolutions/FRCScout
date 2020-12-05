@@ -4,6 +4,10 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.alphadevelopmentsolutions.frcscout.ui.fragments.settings.SettingsViewModel" />
+
     </data>
 
     <LinearLayout
@@ -19,6 +23,7 @@
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
+            android:onClick="@{() -> viewModel.onYearLayoutClicked()}"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -31,17 +36,20 @@
 
             <TextView
                 android:id="@+id/year_textview"
+                android:text="@{viewModel.year}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/material_text_support" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/event_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
+            android:onClick="@{() -> viewModel.onEventLayoutClicked()}"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -56,7 +64,7 @@
                 android:id="@+id/event_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/placeholder_string"
+                android:text="@{viewModel.event}"
                 android:textSize="@dimen/material_text_support" />
         </LinearLayout>
 

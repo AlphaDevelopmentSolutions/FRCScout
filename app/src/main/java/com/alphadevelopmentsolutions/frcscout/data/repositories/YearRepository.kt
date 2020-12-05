@@ -7,6 +7,6 @@ class YearRepository(private val dao: YearDao) : MasterRepository<Year>(dao) {
     override suspend fun deleteAll() =
         dao.deleteAll()
 
-    fun getAllRaw(isDraft: Boolean?): List<Year> =
+    fun getAllRaw(isDraft: Boolean?) =
         dao.getAllRaw(isDraft)
 }
