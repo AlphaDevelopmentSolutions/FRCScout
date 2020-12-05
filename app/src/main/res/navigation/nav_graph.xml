@@ -23,6 +23,9 @@
             app:popUpTo="@id/matchListFragmentDestination"
             app:popUpToInclusive="true"
             app:destination="@id/matchListFragmentDestination" />
+        <action
+            android:id="@+id/action_teamListFragmentDestination_to_teamFragmentDestination"
+            app:destination="@id/teamFragmentDestination" />
     </fragment>
     <fragment
         android:id="@+id/loginFragmentDestination"
@@ -48,5 +51,17 @@
             app:popUpTo="@id/teamListFragmentDestination"
             app:popUpToInclusive="true"
             app:destination="@id/teamListFragmentDestination" />
+        <action
+            android:id="@+id/action_matchListFragmentDestination_to_teamFragmentDestination"
+            app:destination="@id/teamFragmentDestination" />
+    </fragment>
+    <fragment
+        android:id="@+id/teamFragmentDestination"
+        android:name="com.alphadevelopmentsolutions.frcscout.ui.fragments.team.TeamFragment"
+        tools:layout="@layout/fragment_team"
+        android:label="TeamFragment" >
+        <argument
+            android:name="team"
+            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
     </fragment>
 </navigation>

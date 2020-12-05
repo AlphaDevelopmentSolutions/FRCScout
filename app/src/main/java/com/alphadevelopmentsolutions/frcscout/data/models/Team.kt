@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 @Entity(
     tableName = TableName.TEAM,
@@ -22,7 +23,7 @@ class Team(
     @SerializedName("youtube_url") @ColumnInfo(name = "youtube_url") var youtubeUrl: String? = null,
     @SerializedName("website_url") @ColumnInfo(name = "website_url") var websiteUrl: String? = null,
     @SerializedName("avatar_uri") @ColumnInfo(name = "avatar_uri") var avatarUri: String? = null
-) : Table() {
+) : Table(), Serializable {
 
     companion object : StaticTable<Team> {
         override fun create(): Team =

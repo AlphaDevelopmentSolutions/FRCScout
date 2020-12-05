@@ -37,15 +37,7 @@ class TeamListRecyclerViewAdapter(
 
         holder.binding.viewButton.setOnClickListener {
             navController.navigate(
-                TeamListFragmentDirections.actionTeamListFragmentDestinationToSettingsFragmentDestination() // TODO: Change to team page
-            )
-        }
-
-        team.avatarUri?.let { uri ->
-            GlideInstance.loadPhoto(
-                context,
-                holder.binding.logoImageView,
-                uri
+                TeamListFragmentDirections.actionTeamListFragmentDestinationToTeamFragmentDestination(teamList[holder.adapterPosition])
             )
         }
     }

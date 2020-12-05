@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.room.Embedded
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.api.ApiViewModel
 import com.alphadevelopmentsolutions.frcscout.classes.Menu
@@ -14,7 +15,12 @@ import com.alphadevelopmentsolutions.frcscout.enums.NavbarState
 import com.alphadevelopmentsolutions.frcscout.extensions.launchIO
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.MasterFragment
 
-class MatchListFragment(override val TAG: FragmentTag = FragmentTag.MATCH_LIST) : MasterFragment() {
+class MatchListFragment(private val isEmbedded: Boolean, override val TAG: FragmentTag = FragmentTag.MATCH_LIST) : MasterFragment() {
+
+    companion object {
+        fun newInstance(isEmbedded: Boolean) =
+            MatchListFragment(isEmbedded)
+    }
 
     private lateinit var binding: FragmentMatchListBinding
     private lateinit var viewModel: MatchListViewModel
@@ -27,7 +33,7 @@ class MatchListFragment(override val TAG: FragmentTag = FragmentTag.MATCH_LIST) 
             inflater,
             container,
             binding.root,
-            NavbarState.DRAWER,
+            if (!isEmbedded) NavbarState.DRAWER else NavbarState.INVISIBLE,
             getString(R.string.matches)
         )
     }
