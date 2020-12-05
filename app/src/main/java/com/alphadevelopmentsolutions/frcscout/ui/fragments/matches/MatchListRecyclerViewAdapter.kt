@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.data.models.Match
+import com.alphadevelopmentsolutions.frcscout.data.models.Team
 import com.alphadevelopmentsolutions.frcscout.databinding.LayoutCardMatchBinding
 import com.alphadevelopmentsolutions.frcscout.databinding.LayoutCardTeamBinding
 import com.alphadevelopmentsolutions.frcscout.singletons.GlideInstance
@@ -36,9 +37,14 @@ class MatchListRecyclerViewAdapter(
         val match = matchList[holder.adapterPosition]
 
         holder.binding.matchDatabaseView = match
+        holder.binding.handlers = this
     }
 
     override fun getItemCount(): Int {
         return matchList.size
+    }
+
+    fun navigateToTeam(team: Team) {
+        navController.navigate(MatchListFragmentDirections.actionMatchListFragmentDestinationToTeamFragmentDestination(team))
     }
 }

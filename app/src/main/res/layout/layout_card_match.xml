@@ -8,6 +8,10 @@
             name="matchDatabaseView"
             type="com.alphadevelopmentsolutions.frcscout.ui.fragments.matches.MatchDatabaseView" />
 
+        <variable
+            name="handlers"
+            type="com.alphadevelopmentsolutions.frcscout.ui.fragments.matches.MatchListRecyclerViewAdapter" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -71,6 +75,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:padding="@dimen/material_padding"
+                            android:onClick="@{() -> handlers.navigateToTeam(matchDatabaseView.blueAllianceTeamOne)}"
                             android:text="@{String.valueOf(matchDatabaseView.blueAllianceTeamOne.number), default = @string/default_team_number}"
                             android:textAlignment="center" />
 
@@ -81,6 +86,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:padding="@dimen/material_padding"
+                            android:onClick="@{() -> handlers.navigateToTeam(matchDatabaseView.blueAllianceTeamTwo)}"
                             android:text="@{String.valueOf(matchDatabaseView.blueAllianceTeamTwo.number), default = @string/default_team_number}"
                             android:textAlignment="center" />
 
@@ -91,6 +97,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:padding="@dimen/material_padding"
+                            android:onClick="@{() -> handlers.navigateToTeam(matchDatabaseView.blueAllianceTeamThree)}"
                             android:text="@{String.valueOf(matchDatabaseView.blueAllianceTeamThree.number), default = @string/default_team_number}"
                             android:textAlignment="center" />
 
@@ -117,6 +124,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:padding="@dimen/material_padding"
+                            android:onClick="@{() -> handlers.navigateToTeam(matchDatabaseView.redAllianceTeamOne)}"
                             android:text="@{String.valueOf(matchDatabaseView.redAllianceTeamOne.number), default = @string/default_team_number}"
                             android:textAlignment="center" />
 
@@ -127,6 +135,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:padding="@dimen/material_padding"
+                            android:onClick="@{() -> handlers.navigateToTeam(matchDatabaseView.redAllianceTeamTwo)}"
                             android:text="@{String.valueOf(matchDatabaseView.redAllianceTeamTwo.number), default = @string/default_team_number}"
                             android:textAlignment="center" />
 
@@ -137,6 +146,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:padding="@dimen/material_padding"
+                            android:onClick="@{() -> handlers.navigateToTeam(matchDatabaseView.redAllianceTeamThree)}"
                             android:text="@{String.valueOf(matchDatabaseView.redAllianceTeamThree.number), default = @string/default_team_number}"
                             android:textAlignment="center" />
 

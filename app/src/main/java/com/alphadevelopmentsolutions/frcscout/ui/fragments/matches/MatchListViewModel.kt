@@ -11,7 +11,8 @@ import com.alphadevelopmentsolutions.frcscout.singletons.KeyStore
 class MatchListViewModel(
     application: Application,
     private val lifecycleOwner: LifecycleOwner,
-    navController: NavController
+    navController: NavController,
+    private val team: Team?
 ) : AndroidViewModel(application) {
 
     private val context = application
@@ -34,7 +35,8 @@ class MatchListViewModel(
 
     init {
         KeyStore.getInstance(context).selectedEvent?.let { event ->
-            RepositoryProvider.getInstance(context).matchRepository.getForEvent(event).observe<MutableList<MatchDatabaseView>>(
+
+            RepositoryProvider.getInstance(context).matchRepository.getForEvent(event, team).observe<MutableList<MatchDatabaseView>>(
                 lifecycleOwner,
                 {
                     matchList = it

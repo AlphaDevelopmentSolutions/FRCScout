@@ -9,17 +9,22 @@ import androidx.room.Embedded
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.api.ApiViewModel
 import com.alphadevelopmentsolutions.frcscout.classes.Menu
+import com.alphadevelopmentsolutions.frcscout.data.models.Team
 import com.alphadevelopmentsolutions.frcscout.databinding.FragmentMatchListBinding
 import com.alphadevelopmentsolutions.frcscout.enums.FragmentTag
 import com.alphadevelopmentsolutions.frcscout.enums.NavbarState
 import com.alphadevelopmentsolutions.frcscout.extensions.launchIO
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.MasterFragment
 
-class MatchListFragment(private val isEmbedded: Boolean, override val TAG: FragmentTag = FragmentTag.MATCH_LIST) : MasterFragment() {
+class MatchListFragment(
+    private val isEmbedded: Boolean = false,
+    private val team: Team? = null,
+    override val TAG: FragmentTag = FragmentTag.MATCH_LIST
+) : MasterFragment() {
 
     companion object {
-        fun newInstance(isEmbedded: Boolean) =
-            MatchListFragment(isEmbedded)
+        fun newInstance(isEmbedded: Boolean, team: Team? = null) =
+            MatchListFragment(isEmbedded, team)
     }
 
     private lateinit var binding: FragmentMatchListBinding
@@ -41,7 +46,7 @@ class MatchListFragment(private val isEmbedded: Boolean, override val TAG: Fragm
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = ViewModelProvider(this, MatchListViewModelFactory(activityContext, this, navController)).get(MatchListViewModel::class.java)
+        viewModel = ViewModelProvider(this, MatchListViewModelFactory(activityContext, this, navController, team)).get(MatchListViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
     }

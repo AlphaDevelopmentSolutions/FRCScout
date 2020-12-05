@@ -43,7 +43,7 @@ class TeamViewModel(
         viewPagerAdapter.addFragment(
             ViewPagerFragment(
                 context.getString(R.string.matches),
-                MatchListFragment.newInstance(true)
+                MatchListFragment.newInstance(true, team)
             )
         )
     }

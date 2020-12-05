@@ -20,10 +20,24 @@ abstract class MatchDao : MasterDao<Match>() {
     @Transaction
     @Query(
         """
-            SELECT * 
+            SELECT ${TableName.MATCH}.* 
             FROM ${TableName.MATCH}
-            WHERE event_id = :eventId
+            WHERE ${TableName.MATCH}.event_id = :eventId AND
+            IFNULL(
+                :teamId
+                IN 
+                (
+                    blue_alliance_team_one_id,
+                    blue_alliance_team_two_id,
+                    blue_alliance_team_three_id,
+                    red_alliance_team_one_id,
+                    red_alliance_team_two_id,
+                    red_alliance_team_three_id
+                ),
+                1
+            )
+            ORDER BY type_id, match_number, set_number 
         """
     )
-    abstract fun getForEvent(eventId: ByteArray): LiveData<MutableList<MatchDatabaseView>>
+    abstract fun getForEvent(eventId: ByteArray, teamId: ByteArray?): LiveData<MutableList<MatchDatabaseView>>
 }

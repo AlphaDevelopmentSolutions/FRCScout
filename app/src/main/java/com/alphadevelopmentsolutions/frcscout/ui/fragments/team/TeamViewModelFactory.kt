@@ -15,5 +15,5 @@ class TeamViewModelFactory(
     val team: Team
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-        TeamViewModel(activity.application, activity, childFragmentManager, team) as T
+        TeamViewModel(activity.application, childFragmentManager, team) as T
 }
