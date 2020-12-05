@@ -306,10 +306,10 @@ open class ApiViewModel(application: Application) : AndroidViewModel(application
         if (response.isSuccessful) {
             response.body()?.let {
 
-                KeyStore.getInstance(context).authToken = it.account.authToken
-                KeyStore.getInstance(context).account = it.account
+                KeyStore.getInstance(context).authToken = it.authToken
+                KeyStore.getInstance(context).account = it
 
-                it.account.initialize(context)
+                it.initialize(context)
 
                 return true
             }

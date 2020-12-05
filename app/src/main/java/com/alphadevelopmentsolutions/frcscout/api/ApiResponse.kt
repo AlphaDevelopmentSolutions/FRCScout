@@ -70,10 +70,4 @@ interface ApiResponse {
             val response: List<DynamicSuccessErrorCode> = listOf()
         )
     }
-
-    interface Account {
-        class Login(
-            val account: com.alphadevelopmentsolutions.frcscout.classes.Account
-        )
-    }
 }

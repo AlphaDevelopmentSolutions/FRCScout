@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.alphadevelopmentsolutions.frcscout.BuildConfig
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.callbacks.OnProgressCallback
+import com.alphadevelopmentsolutions.frcscout.classes.Account
 import com.alphadevelopmentsolutions.frcscout.data.models.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.extensions.toJson
 import com.alphadevelopmentsolutions.frcscout.factories.PhotoFileFactory
@@ -54,7 +55,7 @@ interface Api {
     @FormUrlEncoded
     @Headers("Accept: application/json")
     @POST("api/login")
-    fun login(@Field("username") username: String, @Field("password") password: String): Call<ApiResponse.Account.Login>
+    fun login(@Field("username") username: String, @Field("password") password: String): Call<Account>
 
 
     companion object {

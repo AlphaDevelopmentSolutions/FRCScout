@@ -10,20 +10,14 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.annotations.SerializedName
 
 class Account(
-    override var firstName: String,
-    override var lastName: String,
-    override var email: String,
-    override var username: String,
-    override var description: String? = null,
-    override var avatarUri: String? = null,
-    val authToken: String
-) : User(
-    firstName,
-    lastName,
-    email,
-    username,
-    description,
-    avatarUri
+    @SerializedName("id") var id: ByteArray,
+    @SerializedName("first_name") var firstName: String,
+    @SerializedName("last_name") var lastName: String,
+    @SerializedName("email") var email: String,
+    @SerializedName("username") var username: String,
+    @SerializedName("description") var description: String? = null,
+    @SerializedName("avatar_uri") var avatarUri: String? = null,
+    @SerializedName("auth_token") val authToken: String
 ) {
     companion object {
 
