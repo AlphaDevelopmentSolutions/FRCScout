@@ -22,6 +22,8 @@ import com.alphadevelopmentsolutions.frcscout.classes.Config
 import com.alphadevelopmentsolutions.frcscout.databinding.ActivityMainBinding
 import com.alphadevelopmentsolutions.frcscout.enums.NavbarState
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.MasterFragment
+import com.alphadevelopmentsolutions.frcscout.ui.fragments.matches.MatchListFragmentDirections
+import com.alphadevelopmentsolutions.frcscout.ui.fragments.teams.TeamListFragmentDirections
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
@@ -138,6 +140,13 @@ class MainActivity : AppCompatActivity(),
 
         // Handle navigation view item clicks here.
         when (item.itemId) {
+            R.id.nav_matches -> {
+                navController.navigate(TeamListFragmentDirections.actionTeamListFragmentDestinationToMatchListFragmentDestination())
+            }
+
+            R.id.nav_teams -> {
+                navController.navigate(MatchListFragmentDirections.actionMatchListFragmentDestinationToTeamListFragmentDestination())
+            }
         }
 
         return false

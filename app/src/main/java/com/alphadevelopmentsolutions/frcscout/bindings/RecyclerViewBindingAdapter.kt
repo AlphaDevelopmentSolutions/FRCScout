@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.teams.TeamListRecyclerViewAdapter
 
 @BindingAdapter("rvAdapter")
-fun RecyclerView.bindRecyclerViewAdapter(adapter: RecyclerView.Adapter<TeamListRecyclerViewAdapter.ViewHolder>) {
+fun <T: RecyclerView.ViewHolder> RecyclerView.bindRecyclerViewAdapter(adapter: RecyclerView.Adapter<T>) {
     layoutManager = LinearLayoutManager(context)
 
     setAdapter(adapter)

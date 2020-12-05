@@ -30,7 +30,6 @@ class TeamListViewModel(
 
     private val context = application
 
-    private lateinit var teamListLiveData: LiveData<MutableList<Team>>
     private var teamList: MutableList<Team> = mutableListOf()
         set(value) {
             field.clear()
@@ -49,9 +48,7 @@ class TeamListViewModel(
 
     init {
         KeyStore.getInstance(context).selectedEvent?.let { event ->
-            teamListLiveData = RepositoryProvider.getInstance(context).teamRepository.getAtEvent(event)
-
-            teamListLiveData.observe<MutableList<Team>>(
+            RepositoryProvider.getInstance(context).teamRepository.getAtEvent(event).observe<MutableList<Team>>(
                 lifecycleOwner,
                 {
                     teamList = it

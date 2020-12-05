@@ -2,19 +2,12 @@ package com.alphadevelopmentsolutions.frcscout.ui.fragments.teams
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
-import com.alphadevelopmentsolutions.frcscout.R
-import com.alphadevelopmentsolutions.frcscout.callbacks.OnItemSelectedListener
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
 import com.alphadevelopmentsolutions.frcscout.databinding.LayoutCardTeamBinding
 import com.alphadevelopmentsolutions.frcscout.singletons.GlideInstance
-import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.layout_selectable_item.view.*
 
 class TeamListRecyclerViewAdapter(
     private val context: Context,
@@ -22,7 +15,7 @@ class TeamListRecyclerViewAdapter(
     private val navController: NavController
 ) : RecyclerView.Adapter<TeamListRecyclerViewAdapter.ViewHolder>() {
 
-    class ViewHolder(val teamCardBinding: LayoutCardTeamBinding) : RecyclerView.ViewHolder(teamCardBinding.root)
+    class ViewHolder(val binding: LayoutCardTeamBinding) : RecyclerView.ViewHolder(binding.root)
 
     private val layoutInflater by lazy {
         LayoutInflater.from(context)
@@ -40,9 +33,9 @@ class TeamListRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val team = teamList[holder.adapterPosition]
 
-        holder.teamCardBinding.team = team
+        holder.binding.team = team
 
-        holder.teamCardBinding.viewButton.setOnClickListener {
+        holder.binding.viewButton.setOnClickListener {
             navController.navigate(
                 TeamListFragmentDirections.actionTeamListFragmentDestinationToSettingsFragmentDestination() // TODO: Change to team page
             )
@@ -51,7 +44,7 @@ class TeamListRecyclerViewAdapter(
         team.avatarUri?.let { uri ->
             GlideInstance.loadPhoto(
                 context,
-                holder.teamCardBinding.logoImageView,
+                holder.binding.logoImageView,
                 uri
             )
         }

@@ -23,5 +23,5 @@ class MatchType(
     }
 
     override fun toString(): String =
-        key
+        name
 }

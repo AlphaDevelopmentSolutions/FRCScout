@@ -21,7 +21,7 @@
         tools:context=".ui.TeamListFragment">
 
         <LinearLayout
-            android:id="@+id/AllianceViewPagerLinearLayout"
+            android:id="@+id/alliance_viewpager_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -30,7 +30,7 @@
 
 
             <com.google.android.material.tabs.TabLayout
-                android:id="@+id/AllianceTabLayout"
+                android:id="@+id/alliance_tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/primary"
@@ -39,14 +39,14 @@
                 tools:layout_editor_absoluteY="200dp" />
 
             <androidx.viewpager.widget.ViewPager
-                android:id="@+id/AllianceViewPager"
+                android:id="@+id/alliance_viewpager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/TeamsRecyclerView"
+            android:id="@+id/team_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical"
