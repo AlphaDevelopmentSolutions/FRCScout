@@ -26,6 +26,9 @@ class LoginFragment(override val TAG: FragmentTag = FragmentTag.LOGIN) : MasterF
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
+        if (account != null)
+            navigate(LoginFragmentDirections.actionLoginFragmentDestinationToTeamListFragmentDestination())
+
         binding = FragmentLoginBinding.inflate(inflater, container, false)
 
         return onCreateView(

@@ -65,7 +65,7 @@ interface Api {
         private var instance: Api? = null
         private var apiUrl: String? = null
         private val loggingInterceptor by lazy {
-            HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
+            HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.HEADERS }
         }
         private val firebaseInstance by lazy {
             FirebasePerformance.getInstance()
@@ -225,7 +225,8 @@ interface Api {
          * @param level [HttpLoggingInterceptor.Level] level of logging to apply to the [Api]
          */
         fun setInterceptorLevel(level: HttpLoggingInterceptor.Level) {
-            loggingInterceptor.level = level
+//            loggingInterceptor.level = level
+            loggingInterceptor.level = HttpLoggingInterceptor.Level.HEADERS
         }
 
         /**

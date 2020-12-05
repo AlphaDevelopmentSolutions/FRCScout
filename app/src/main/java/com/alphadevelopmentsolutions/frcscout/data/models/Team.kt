@@ -32,6 +32,12 @@ class Team(
             )
     }
 
+    val location: String
+        get() =
+            "${(city ?: "")} " +
+                "${(stateProvince ?: "")} " +
+                (country ?: "")
+
     override fun toString(): String =
         name
 }

@@ -5,6 +5,10 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.alphadevelopmentsolutions.frcscout.ui.fragments.teams.TeamListViewModel" />
+
     </data>
 
     <LinearLayout
@@ -46,6 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical"
+            app:rvAdapter="@{viewModel.teamListRecyclerViewAdapter}"
             tools:listitem="@layout/layout_card_team" />
     </LinearLayout>
 </layout>

@@ -26,6 +26,8 @@
         android:label="LoginFragment" >
         <action
             android:id="@+id/action_loginFragmentDestination_to_teamListFragmentDestination"
+            app:popUpTo="@id/teamListFragmentDestination"
+            app:popUpToInclusive="true"
             app:destination="@id/teamListFragmentDestination" />
     </fragment>
 </navigation>

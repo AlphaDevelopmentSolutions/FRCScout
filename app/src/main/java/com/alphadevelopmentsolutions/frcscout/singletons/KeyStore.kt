@@ -155,12 +155,13 @@ class KeyStore private constructor(
      * @return [Year] object
      */
     var lastUpdated: Date
-        get() = Date(
-            sharedPreferences.getLong(
-                KeyStoreKey.LAST_UPDATED,
-                0
+        get() =
+            Date(
+                sharedPreferences.getLong(
+                    KeyStoreKey.LAST_UPDATED,
+                    0
+                )
             )
-        )
         set(value) {
             sharedPreferences.edit()
                 .putLong(

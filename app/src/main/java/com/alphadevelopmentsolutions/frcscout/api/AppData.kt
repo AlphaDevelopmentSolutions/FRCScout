@@ -8,7 +8,7 @@ class AppData(
     @SerializedName("checklist_item_results") var checklistItemResultList: List<ChecklistItemResult> = listOf(),
     @SerializedName("data_types") var dataTypeList: List<DataType> = listOf(),
     @SerializedName("events") var eventList: List<Event> = listOf(),
-    @SerializedName("event_team_lists") var eventTeamListList: List<EventTeamList> = listOf(),
+    @SerializedName("event_team_list") var eventTeamListList: List<EventTeamList> = listOf(),
     @SerializedName("matches") var matchList: List<Match> = listOf(),
     @SerializedName("match_types") var matchTypeList: List<MatchType> = listOf(),
     @SerializedName("robot_info") var robotInfoList: List<RobotInfo> = listOf(),
