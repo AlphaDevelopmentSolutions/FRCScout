@@ -63,5 +63,29 @@
         <argument
             android:name="team"
             app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
+        <action
+            android:id="@+id/action_teamFragmentDestination_to_robotMediaFragmentDestination"
+            app:destination="@id/robotMediaFragmentDestination" />
     </fragment>
+    <fragment
+        android:id="@+id/robotMediaFragmentDestination"
+        android:name="com.alphadevelopmentsolutions.frcscout.ui.fragments.media.RobotMediaFragment"
+        tools:layout="@layout/fragment_robot_media"
+        android:label="RobotMediaFragment" >
+        <argument
+            android:name="media"
+            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.RobotMedia"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="team"
+            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Team"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/robotMediaListFragmentDestination"
+        android:name="com.alphadevelopmentsolutions.frcscout.ui.fragments.medialist.RobotMediaListFragment"
+        tools:layout="@layout/fragment_robot_media_list"
+        android:label="RobotMediaListFragment" />
 </navigation>

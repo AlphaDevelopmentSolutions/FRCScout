@@ -24,4 +24,13 @@ abstract class RobotMediaDao : MasterDao<RobotMedia>() {
         """
     )
     abstract fun getForTeam(eventId: ByteArray, teamId: ByteArray?): LiveData<MutableList<RobotMedia>>
+
+    @Query(
+        """
+            SELECT *
+            FROM ${TableName.ROBOT_MEDIA}
+            WHERE id = :mediaId
+        """
+    )
+    abstract fun getFromId(mediaId: ByteArray): LiveData<RobotMedia>
 }

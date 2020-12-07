@@ -7,6 +7,8 @@ import com.alphadevelopmentsolutions.frcscout.data.models.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
 import com.alphadevelopmentsolutions.frcscout.data.repositories.RepositoryProvider
 import com.alphadevelopmentsolutions.frcscout.singletons.KeyStore
+import com.alphadevelopmentsolutions.frcscout.ui.fragments.team.TeamFragmentDirections
+import com.alphadevelopmentsolutions.frcscout.ui.fragments.teams.TeamListFragmentDirections
 
 class RobotMediaListViewModel(
     application: Application,
@@ -46,6 +48,10 @@ class RobotMediaListViewModel(
     }
 
     fun createMedia() {
-
+        team?.let {
+            navController.navigate(
+                TeamFragmentDirections.actionTeamFragmentDestinationToRobotMediaFragmentDestination(null, it)
+            )
+        }
     }
 }

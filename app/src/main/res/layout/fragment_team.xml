@@ -204,6 +204,7 @@
             android:id="@+id/add_photo_fab"
             app:fabShowOwner="@{viewModel.lifecycleOwner}"
             app:fabShowData="@{viewModel.showFab}"
+            android:onClick="@{() -> viewModel.createMedia()}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"

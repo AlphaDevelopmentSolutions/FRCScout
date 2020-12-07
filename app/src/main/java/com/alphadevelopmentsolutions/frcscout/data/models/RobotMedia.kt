@@ -5,6 +5,7 @@ import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 @Entity(
     tableName = TableName.ROBOT_MEDIA,
@@ -18,7 +19,7 @@ class RobotMedia(
     @SerializedName("uri") @ColumnInfo(name = "uri") var uri: String,
     @Transient @ColumnInfo(name = "local_file_uri", defaultValue = "null") var localFileUri: String? = null,
     @SerializedName("is_public") @ColumnInfo(name = "is_public", defaultValue = "0") var isPublic: Boolean = false
-) : SubmittableTable(null, null, ByteArray(0)) {
+) : SubmittableTable(null, null, ByteArray(0)), Serializable {
 
     companion object : StaticTable<RobotMedia> {
         override fun create(): RobotMedia =

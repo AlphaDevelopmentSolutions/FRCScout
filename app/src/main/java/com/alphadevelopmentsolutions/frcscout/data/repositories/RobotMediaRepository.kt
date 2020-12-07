@@ -20,4 +20,7 @@ class RobotMediaRepository(private val dao: RobotMediaDao) : MasterRepository<Ro
 
     fun getForTeam(event: Event, team: Team?) =
         dao.getForTeam(event.id, team?.id)
+
+    fun getFromId(media: RobotMedia) =
+        dao.getFromId(media.id)
 }

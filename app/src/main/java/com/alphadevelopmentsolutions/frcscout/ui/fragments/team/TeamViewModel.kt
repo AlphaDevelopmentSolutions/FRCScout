@@ -42,21 +42,31 @@ class TeamViewModel(
 
         }
 
+    private val matchListFragment by lazy {
+        MatchListFragment.newInstance(true, team)
+    }
+
+    private val robotMediaListFragment by lazy {
+        RobotMediaListFragment.newInstance(team)
+    }
+
     init {
         viewPagerAdapter.addFragment(
             ViewPagerFragment(
                 context.getString(R.string.matches),
-                MatchListFragment.newInstance(true, team)
+                matchListFragment
             )
         )
 
         viewPagerAdapter.addFragment(
             ViewPagerFragment(
                 context.getString(R.string.media),
-                RobotMediaListFragment.newInstance(team)
+                robotMediaListFragment
             )
         )
+    }
 
-
+    fun createMedia() {
+        robotMediaListFragment.createMedia()
     }
 }
