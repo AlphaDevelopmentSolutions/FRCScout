@@ -18,3 +18,8 @@ import com.alphadevelopmentsolutions.frcscout.ui.fragments.teams.TeamListRecycle
 fun ViewPager.setImage(adapter: FragmentViewPagerAdapter) {
     setAdapter(adapter)
 }
+
+@BindingAdapter("vpChangeListener")
+fun ViewPager.addOnPageChangeListener(listener: ViewPager.OnPageChangeListener) {
+    addOnPageChangeListener(listener)
+}

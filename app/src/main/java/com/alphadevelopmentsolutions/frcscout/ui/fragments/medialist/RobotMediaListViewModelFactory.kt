@@ -1,7 +1,5 @@
-package com.alphadevelopmentsolutions.frcscout.ui.fragments.team
+package com.alphadevelopmentsolutions.frcscout.ui.fragments.medialist
 
-import android.app.Application
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -9,12 +7,12 @@ import androidx.navigation.NavController
 import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
 
-class TeamViewModelFactory(
+class RobotMediaListViewModelFactory(
     val activity: MainActivity,
-    val childFragmentManager: FragmentManager,
     val lifecycleOwner: LifecycleOwner,
-    val team: Team
+    val navController: NavController,
+    val team: Team?
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-        TeamViewModel(activity.application, childFragmentManager, lifecycleOwner, team) as T
+        RobotMediaListViewModel(activity.application, lifecycleOwner, navController, team) as T
 }

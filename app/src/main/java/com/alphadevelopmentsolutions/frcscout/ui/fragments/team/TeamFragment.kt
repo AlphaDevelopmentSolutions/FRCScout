@@ -26,6 +26,7 @@ import com.alphadevelopmentsolutions.frcscout.ui.dialogs.SelectDialogFragment
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.MasterFragment
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.login.LoginViewModel
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.login.LoginViewModelFactory
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
 class TeamFragment(override val TAG: FragmentTag = FragmentTag.TEAM_LIST) : MasterFragment() {
@@ -39,6 +40,7 @@ class TeamFragment(override val TAG: FragmentTag = FragmentTag.TEAM_LIST) : Mast
 
         binding = FragmentTeamBinding.inflate(inflater, container, false)
 
+        binding.addPhotoFab.hide()
         return onCreateView(
             inflater,
             container,
@@ -51,7 +53,7 @@ class TeamFragment(override val TAG: FragmentTag = FragmentTag.TEAM_LIST) : Mast
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = ViewModelProvider(this, TeamViewModelFactory(activityContext, childFragmentManager, args.team)).get(TeamViewModel::class.java)
+        viewModel = ViewModelProvider(this, TeamViewModelFactory(activityContext, childFragmentManager, this, args.team)).get(TeamViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
     }

@@ -38,6 +38,7 @@
 
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/viewpager"
+                app:vpChangeListener="@{viewModel.viewPagerOnPageChangeListener}"
                 app:vpAdapter="@{viewModel.viewPagerAdapter}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -200,12 +201,15 @@
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/AddPhotoFab"
+            android:id="@+id/add_photo_fab"
+            app:fabShowOwner="@{viewModel.lifecycleOwner}"
+            app:fabShowData="@{viewModel.showFab}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+
             android:src="@drawable/ic_photo_camera_white_24dp" />
 
 
