@@ -15,7 +15,7 @@ object Constant {
 
     const val IMAGE_FILE_EXTENSION = ".jpg"
 
-    const val IMAGE_EXTERNAL_FILES_DIR = "photos"
+    const val IMAGE_EXTERNAL_FILES_DIR = "robot-media"
 
     const val FILE_AUTHORITY = "${BuildConfig.APPLICATION_ID}.provider"
 
