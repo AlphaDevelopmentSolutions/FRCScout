@@ -62,5 +62,6 @@
     <dimen name="bottom_sheet_corner_radius">16dp</dimen>
     <dimen name="loading_anim_width">100dp</dimen>
     <dimen name="loading_anim_height">100dp</dimen>
+    <dimen name="robot_media_dimen">100dp</dimen>
 
 </resources>

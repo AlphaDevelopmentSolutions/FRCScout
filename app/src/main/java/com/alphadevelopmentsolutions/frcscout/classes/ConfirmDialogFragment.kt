@@ -146,8 +146,8 @@ class ConfirmDialogFragment : MasterDialogFragment() {
             onConfirmationCallback: OnConfirmationCallback,
             titleText: String? = null,
             descriptionText: String? = null,
-            cancelButtonText: String? = null,
-            confirmButtonText: String? = null
+            confirmButtonText: String? = null,
+            cancelButtonText: String? = null
         ) =
             ConfirmDialogFragment().apply {
                 arguments = Bundle().apply {

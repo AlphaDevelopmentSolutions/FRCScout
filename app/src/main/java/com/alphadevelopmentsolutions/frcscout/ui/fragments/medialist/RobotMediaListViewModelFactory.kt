@@ -14,5 +14,5 @@ class RobotMediaListViewModelFactory(
     val team: Team?
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-        RobotMediaListViewModel(activity.application, lifecycleOwner, navController, team) as T
+        RobotMediaListViewModel(activity, lifecycleOwner, navController, team) as T
 }

@@ -15,8 +15,7 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:rvAdapter="@{viewModel.robotMediaListRecyclerViewAdapter}"
+        app:rvFlexAdapter="@{viewModel.robotMediaListRecyclerViewAdapter}"
         tools:listitem="@layout/layout_card_robot_media">
 
     </androidx.recyclerview.widget.RecyclerView>

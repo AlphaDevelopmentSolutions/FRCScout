@@ -6,11 +6,11 @@
 
         <variable
             name="matchDatabaseView"
-            type="com.alphadevelopmentsolutions.frcscout.ui.fragments.matches.MatchDatabaseView" />
+            type="com.alphadevelopmentsolutions.frcscout.ui.fragments.matchlist.MatchDatabaseView" />
 
         <variable
             name="handlers"
-            type="com.alphadevelopmentsolutions.frcscout.ui.fragments.matches.MatchListRecyclerViewAdapter" />
+            type="com.alphadevelopmentsolutions.frcscout.ui.fragments.matchlist.MatchListRecyclerViewAdapter" />
 
     </data>
 

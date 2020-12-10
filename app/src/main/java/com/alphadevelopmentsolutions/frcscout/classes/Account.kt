@@ -23,9 +23,13 @@ class Account(
 
         private var INSTANCE: Account? = null
 
-        fun getInstance(context: Context) =
+        fun getInstance(context: Context?) =
             INSTANCE ?: synchronized(this) {
-                val tempInstance = KeyStore.getInstance(context).account
+                var tempInstance: Account? = null
+
+                context?.let {
+                    tempInstance = KeyStore.getInstance(it).account
+                }
 
                 INSTANCE = tempInstance
                 tempInstance

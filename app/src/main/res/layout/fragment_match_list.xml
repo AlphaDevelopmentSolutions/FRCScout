@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.alphadevelopmentsolutions.frcscout.ui.fragments.matches.MatchListViewModel" />
+            type="com.alphadevelopmentsolutions.frcscout.ui.fragments.matchlist.MatchListViewModel" />
 
     </data>
 

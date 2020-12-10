@@ -1,11 +1,10 @@
-package com.alphadevelopmentsolutions.frcscout.ui.fragments.matches
+package com.alphadevelopmentsolutions.frcscout.ui.fragments.matchlist
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.room.Embedded
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.api.ApiViewModel
 import com.alphadevelopmentsolutions.frcscout.classes.Menu

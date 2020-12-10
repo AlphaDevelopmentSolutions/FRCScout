@@ -1,15 +1,12 @@
-package com.alphadevelopmentsolutions.frcscout.ui.fragments.matches
+package com.alphadevelopmentsolutions.frcscout.ui.fragments.matchlist
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
-import com.alphadevelopmentsolutions.frcscout.data.models.Match
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
 import com.alphadevelopmentsolutions.frcscout.databinding.LayoutCardMatchBinding
-import com.alphadevelopmentsolutions.frcscout.databinding.LayoutCardTeamBinding
-import com.alphadevelopmentsolutions.frcscout.singletons.GlideInstance
 import kotlinx.android.synthetic.main.layout_selectable_item.view.*
 
 class MatchListRecyclerViewAdapter(

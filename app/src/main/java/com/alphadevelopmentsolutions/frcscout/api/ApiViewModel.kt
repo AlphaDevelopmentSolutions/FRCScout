@@ -15,6 +15,7 @@ import com.alphadevelopmentsolutions.frcscout.classes.PhotoFileChunk
 import com.alphadevelopmentsolutions.frcscout.data.repositories.RepositoryProvider
 import com.alphadevelopmentsolutions.frcscout.exceptions.ApiException
 import com.alphadevelopmentsolutions.frcscout.exceptions.PreconditionFailedException
+import com.alphadevelopmentsolutions.frcscout.extensions.runOnUiThread
 import com.alphadevelopmentsolutions.frcscout.interfaces.AppLog
 import com.alphadevelopmentsolutions.frcscout.interfaces.HttpResponseCode
 import com.alphadevelopmentsolutions.frcscout.singletons.KeyStore
@@ -362,7 +363,7 @@ open class ApiViewModel(application: Application) : AndroidViewModel(application
                 onAnimationCompleteCallback
             )
 
-        context.runOnUiThread {
+        runOnUiThread {
             dialog.show(context)
         }
 
@@ -377,7 +378,7 @@ open class ApiViewModel(application: Application) : AndroidViewModel(application
             context.showSnackbar(context.getString(R.string.no_internet))
         }
 
-        context.runOnUiThread {
+        runOnUiThread {
             when {
                 fullSuccess -> dialog.success()
                 else -> dialog.failure()

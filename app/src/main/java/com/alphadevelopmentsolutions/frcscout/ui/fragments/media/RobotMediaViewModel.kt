@@ -26,6 +26,7 @@ import com.alphadevelopmentsolutions.frcscout.data.models.PhotoFile
 import com.alphadevelopmentsolutions.frcscout.data.models.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
 import com.alphadevelopmentsolutions.frcscout.data.repositories.RepositoryProvider
+import com.alphadevelopmentsolutions.frcscout.extensions.runOnUiThread
 import com.alphadevelopmentsolutions.frcscout.factories.PhotoFileFactory
 import com.alphadevelopmentsolutions.frcscout.interfaces.AppLog
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constant
@@ -56,10 +57,15 @@ class RobotMediaViewModel(
     private var photoFile: File? = null
 
     var mediaSet = false
+    var mediaProvided = false
 
     init {
-        if (media != null)
+        if (media != null) {
             mediaSet = true
+            mediaProvided = true
+
+            photoUri.value = media?.localFileUri
+        }
 
         else if (team != null) {
             createMedia(team)
@@ -120,7 +126,7 @@ class RobotMediaViewModel(
 
                         override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                             media?.let {
-                                context.runOnUiThread {
+                                runOnUiThread {
                                     photoUri.value = (output.savedUri ?: Uri.fromFile(photoFile)).path
 
                                     mediaLayout.visibility = View.VISIBLE
@@ -135,9 +141,11 @@ class RobotMediaViewModel(
     }
 
     override fun onCleared() {
-        cameraExecutor.shutdown()
+        if (!mediaProvided) {
+            cameraExecutor.shutdown()
 
-        displayManager.unregisterDisplayListener(displayListener)
+            displayManager.unregisterDisplayListener(displayListener)
+        }
 
         super.onCleared()
     }
@@ -159,7 +167,7 @@ class RobotMediaViewModel(
             lifecycleOwner.lifecycle.coroutineScope.launch(Dispatchers.IO) {
                 RepositoryProvider.getInstance(context).robotMediaRepository.insert(it)
 
-                context.runOnUiThread {
+                runOnUiThread {
                     context.removeCurrentFragment()
                 }
             }
@@ -292,8 +300,10 @@ class RobotMediaViewModel(
     }
 
     fun onConfigurationChanged(cameraSwitchButton: ImageButton) {
-        // Enable or disable switching between cameras
-        updateCameraSwitchButton(cameraSwitchButton)
+        if (!mediaSet) {
+            // Enable or disable switching between cameras
+            updateCameraSwitchButton(cameraSwitchButton)
+        }
     }
 
     private val displayListener = object : DisplayManager.DisplayListener {
@@ -310,25 +320,27 @@ class RobotMediaViewModel(
     }
 
     fun onViewCreated(cameraPreviewView: PreviewView, cameraSwitchButton: ImageButton) {
-        // Initialize our background executor
-        cameraExecutor = Executors.newSingleThreadExecutor()
+        if (!mediaSet) {
+            // Initialize our background executor
+            cameraExecutor = Executors.newSingleThreadExecutor()
 
-        broadcastManager = LocalBroadcastManager.getInstance(context)
+            broadcastManager = LocalBroadcastManager.getInstance(context)
 
-        // Every time the orientation of device changes, update rotation for use cases
-        displayManager.registerDisplayListener(displayListener, null)
+            // Every time the orientation of device changes, update rotation for use cases
+            displayManager.registerDisplayListener(displayListener, null)
 
-        // Wait for the views to be properly laid out
-        cameraPreviewView.post {
+            // Wait for the views to be properly laid out
+            cameraPreviewView.post {
 
-            // Keep track of the display in which this view is attached
-            displayId = cameraPreviewView.display.displayId
+                // Keep track of the display in which this view is attached
+                displayId = cameraPreviewView.display.displayId
 
-            // Build UI controls
+                // Build UI controls
 //            updateCameraUi()
 
-            // Set up the camera and its use cases
-            setupCamera(cameraPreviewView, cameraSwitchButton)
+                // Set up the camera and its use cases
+                setupCamera(cameraPreviewView, cameraSwitchButton)
+            }
         }
     }
 }

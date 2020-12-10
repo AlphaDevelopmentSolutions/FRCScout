@@ -8,7 +8,7 @@ import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.adapters.FragmentViewPagerAdapter
 import com.alphadevelopmentsolutions.frcscout.classes.ViewPagerFragment
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
-import com.alphadevelopmentsolutions.frcscout.ui.fragments.matches.MatchListFragment
+import com.alphadevelopmentsolutions.frcscout.ui.fragments.matchlist.MatchListFragment
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.medialist.RobotMediaListFragment
 
 class TeamViewModel(

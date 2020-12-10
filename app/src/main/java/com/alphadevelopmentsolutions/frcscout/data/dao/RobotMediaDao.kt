@@ -21,6 +21,7 @@ abstract class RobotMediaDao : MasterDao<RobotMedia>() {
             FROM ${TableName.ROBOT_MEDIA}
             WHERE event_id = :eventId
             AND IFNULL(team_id = :teamId, 1)
+            AND deleted_date IS NULL
         """
     )
     abstract fun getForTeam(eventId: ByteArray, teamId: ByteArray?): LiveData<MutableList<RobotMedia>>

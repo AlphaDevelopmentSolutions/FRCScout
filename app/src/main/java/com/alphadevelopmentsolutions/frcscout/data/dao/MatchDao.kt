@@ -1,12 +1,11 @@
 package com.alphadevelopmentsolutions.frcscout.data.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.alphadevelopmentsolutions.frcscout.data.models.Match
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
-import com.alphadevelopmentsolutions.frcscout.ui.fragments.matches.MatchDatabaseView
+import com.alphadevelopmentsolutions.frcscout.ui.fragments.matchlist.MatchDatabaseView
 
 @Dao
 abstract class MatchDao : MasterDao<Match>() {
@@ -39,5 +38,5 @@ abstract class MatchDao : MasterDao<Match>() {
             ORDER BY type_id, match_number, set_number 
         """
     )
-    abstract fun getForEvent(eventId: ByteArray, teamId: ByteArray?): LiveData<MutableList<MatchDatabaseView>>
+    abstract fun getForEvent(eventId: ByteArray, teamId: ByteArray?): MutableList<MatchDatabaseView>
 }

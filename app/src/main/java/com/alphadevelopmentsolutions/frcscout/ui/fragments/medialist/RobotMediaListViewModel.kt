@@ -3,45 +3,38 @@ package com.alphadevelopmentsolutions.frcscout.ui.fragments.medialist
 import android.app.Application
 import androidx.lifecycle.*
 import androidx.navigation.NavController
+import androidx.recyclerview.widget.DiffUtil
+import com.alphadevelopmentsolutions.frcscout.FRCScoutApplication
+import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.data.models.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
 import com.alphadevelopmentsolutions.frcscout.data.repositories.RepositoryProvider
+import com.alphadevelopmentsolutions.frcscout.extensions.launchIO
+import com.alphadevelopmentsolutions.frcscout.extensions.runOnUiThread
 import com.alphadevelopmentsolutions.frcscout.singletons.KeyStore
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.team.TeamFragmentDirections
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.teams.TeamListFragmentDirections
+import kotlinx.coroutines.launch
 
 class RobotMediaListViewModel(
-    application: Application,
+    private val context: MainActivity,
     private val lifecycleOwner: LifecycleOwner,
     private val navController: NavController,
     private val team: Team?
-) : AndroidViewModel(application) {
-
-    private val context = application
-
-    private var robotMediaList: MutableList<RobotMedia> = mutableListOf()
-        set(value) {
-            field.clear()
-            field.addAll(value)
-
-            robotMediaListRecyclerViewAdapter.notifyDataSetChanged()
-        }
+) : AndroidViewModel(context.application) {
 
     val robotMediaListRecyclerViewAdapter =
         RobotMediaListRecyclerViewAdapter(
             context,
-            robotMediaList,
             navController
         )
 
-
     init {
         KeyStore.getInstance(context).selectedEvent?.let { event ->
-
             RepositoryProvider.getInstance(context).robotMediaRepository.getForTeam(event, team).observe<MutableList<RobotMedia>>(
                 lifecycleOwner,
                 {
-                    robotMediaList = it
+                    robotMediaListRecyclerViewAdapter.setData(it)
                 }
             )
         }

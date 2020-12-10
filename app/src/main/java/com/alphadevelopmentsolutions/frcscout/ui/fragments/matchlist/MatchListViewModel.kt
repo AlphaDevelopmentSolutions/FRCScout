@@ -1,11 +1,14 @@
-package com.alphadevelopmentsolutions.frcscout.ui.fragments.matches
+package com.alphadevelopmentsolutions.frcscout.ui.fragments.matchlist
 
 import android.app.Application
+import android.os.Looper
 import androidx.lifecycle.*
 import androidx.navigation.NavController
-import com.alphadevelopmentsolutions.frcscout.data.models.Match
+import com.alphadevelopmentsolutions.frcscout.FRCScoutApplication
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
 import com.alphadevelopmentsolutions.frcscout.data.repositories.RepositoryProvider
+import com.alphadevelopmentsolutions.frcscout.extensions.launchIO
+import com.alphadevelopmentsolutions.frcscout.extensions.runOnUiThread
 import com.alphadevelopmentsolutions.frcscout.singletons.KeyStore
 
 class MatchListViewModel(
@@ -22,7 +25,9 @@ class MatchListViewModel(
             field.clear()
             field.addAll(value)
 
-            matchListRecyclerViewAdapter.notifyDataSetChanged()
+            runOnUiThread {
+                matchListRecyclerViewAdapter.notifyDataSetChanged()
+            }
         }
 
     val matchListRecyclerViewAdapter =
@@ -36,12 +41,9 @@ class MatchListViewModel(
     init {
         KeyStore.getInstance(context).selectedEvent?.let { event ->
 
-            RepositoryProvider.getInstance(context).matchRepository.getForEvent(event, team).observe<MutableList<MatchDatabaseView>>(
-                lifecycleOwner,
-                {
-                    matchList = it
-                }
-            )
+            launchIO(lifecycleOwner) {
+                matchList = RepositoryProvider.getInstance(context).matchRepository.getForEvent(event, team)
+            }
         }
     }
 }

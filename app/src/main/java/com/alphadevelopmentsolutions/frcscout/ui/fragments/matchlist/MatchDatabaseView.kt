@@ -1,4 +1,4 @@
-package com.alphadevelopmentsolutions.frcscout.ui.fragments.matches
+package com.alphadevelopmentsolutions.frcscout.ui.fragments.matchlist
 
 import androidx.room.Embedded
 import androidx.room.Relation

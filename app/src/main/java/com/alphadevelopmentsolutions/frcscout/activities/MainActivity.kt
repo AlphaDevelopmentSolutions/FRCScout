@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.StringRes
@@ -22,7 +21,7 @@ import com.alphadevelopmentsolutions.frcscout.classes.Config
 import com.alphadevelopmentsolutions.frcscout.databinding.ActivityMainBinding
 import com.alphadevelopmentsolutions.frcscout.enums.NavbarState
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.MasterFragment
-import com.alphadevelopmentsolutions.frcscout.ui.fragments.matches.MatchListFragmentDirections
+import com.alphadevelopmentsolutions.frcscout.ui.fragments.matchlist.MatchListFragmentDirections
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.teams.TeamListFragmentDirections
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar

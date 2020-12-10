@@ -40,7 +40,7 @@
     </fragment>
     <fragment
         android:id="@+id/matchListFragmentDestination"
-        android:name="com.alphadevelopmentsolutions.frcscout.ui.fragments.matches.MatchListFragment"
+        android:name="com.alphadevelopmentsolutions.frcscout.ui.fragments.matchlist.MatchListFragment"
         tools:layout="@layout/fragment_match_list"
         android:label="MatchListFragment" >
         <action
