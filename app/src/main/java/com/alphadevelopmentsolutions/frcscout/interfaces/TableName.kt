@@ -20,6 +20,7 @@ interface TableName {
         const val MATCH_TYPE = "match_types"
         const val ROBOT_INFO = "robot_info"
         const val ROBOT_INFO_KEY = "robot_info_keys"
+        const val ROBOT_INFO_KEY_STATE = "robot_info_key_states"
         const val ROBOT_MEDIA = "robot_media"
         const val ROLE = "roles"
         const val SCOUT_CARD_INFO = "scout_card_info"

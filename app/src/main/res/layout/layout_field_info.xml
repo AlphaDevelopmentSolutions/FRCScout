@@ -1,94 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/material_padding">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/InfoKeyTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginEnd="@dimen/material_padding"
-        android:layout_weight="1"
-        android:text="@string/placeholder_string" />
+    <data>
 
-    <ImageView
-        android:id="@+id/DeleteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="@dimen/material_padding"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone"
-        app:srcCompat="@drawable/ic_delete_black_24dp" />
+        <import type="android.view.View"/>
+        <import type="com.alphadevelopmentsolutions.frcscout.data.models.DataType.BackendDataType"/>
+
+        <variable
+            name="robotInfoView"
+            type="com.alphadevelopmentsolutions.frcscout.ui.fragments.robotinfo.RobotInfoView" />
+
+    </data>
 
     <LinearLayout
-        android:id="@+id/IntegerLinearLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <Button
-            android:id="@+id/MinusButton"
-            android:layout_width="@dimen/field_width"
-            android:layout_height="@dimen/field_height"
-            app:icon="@drawable/ic_remove_white_24dp"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp" />
+        android:padding="@dimen/material_padding">
 
         <TextView
-            android:id="@+id/InfoKeyValue"
+            android:id="@+id/info_key_title_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/material_padding"
+            android:layout_weight="1"
+            android:text="@{robotInfoView.robotInfoKeyView.robotInfoKey.name, default = @string/placeholder_string}" />
+
+        <ImageView
+            android:id="@+id/delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/material_padding"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_delete_black_24dp" />
+
+        <LinearLayout
+            android:id="@+id/int_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/material_padding"
-            android:paddingEnd="@dimen/material_padding"
-            android:text="@string/number_placeholder"
-            android:textSize="20sp" />
+            android:orientation="horizontal"
+            android:visibility="@{robotInfoView.robotInfoKeyView.dataType.backendDataType == BackendDataType.INTEGER ? View.VISIBLE : View.GONE, default = gone}">
 
-        <Button
-            android:id="@+id/PlusButton"
-            android:layout_width="@dimen/field_width"
-            android:layout_height="@dimen/field_height"
-            app:icon="@drawable/ic_add_white_24dp"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp" />
+            <Button
+                android:id="@+id/minus_button"
+                android:layout_width="@dimen/field_width"
+                android:layout_height="@dimen/field_height"
+                app:icon="@drawable/ic_remove_white_24dp"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/info_key_value_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/material_padding"
+                android:paddingEnd="@dimen/material_padding"
+                android:text="@{robotInfoView.robotInfo.value}"
+                android:textSize="20sp" />
 
-    <LinearLayout
-        android:id="@+id/BooleanLinearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:orientation="horizontal"
-        android:visibility="gone">
+            <Button
+                android:id="@+id/plus_button"
+                android:layout_width="@dimen/field_width"
+                android:layout_height="@dimen/field_height"
+                app:icon="@drawable/ic_add_white_24dp"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp" />
 
+        </LinearLayout>
 
-        <CheckBox
-            android:id="@+id/BooleanCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/TextLinearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-
-        <EditText
-            android:id="@+id/TextEditText"
+        <LinearLayout
+            android:id="@+id/boolean_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName" />
-    </LinearLayout>
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="@{robotInfoView.robotInfoKeyView.dataType.backendDataType == BackendDataType.BOOLEAN ? View.VISIBLE : View.GONE, default = gone}">
 
-</LinearLayout>
+
+            <CheckBox
+                android:id="@+id/boolean_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="@{Boolean.parseBoolean(robotInfoView.robotInfo.value)}"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/text_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:visibility="@{robotInfoView.robotInfoKeyView.dataType.backendDataType == BackendDataType.STRING ? View.VISIBLE : View.GONE, default = gone}">
+
+
+            <EditText
+                android:id="@+id/text_edit_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:text="@{robotInfoView.robotInfo.value}"
+                android:inputType="textPersonName" />
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

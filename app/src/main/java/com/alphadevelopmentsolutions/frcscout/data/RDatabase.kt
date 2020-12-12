@@ -29,6 +29,7 @@ import com.alphadevelopmentsolutions.frcscout.interfaces.Trigger
         PhotoFile::class,
         RobotInfo::class,
         RobotInfoKey::class,
+        RobotInfoKeyState::class,
         RobotMedia::class,
         Role::class,
         ScoutCardInfo::class,
