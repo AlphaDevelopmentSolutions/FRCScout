@@ -28,6 +28,8 @@ class TeamListViewModel(
     navController: NavController
 ) : AndroidViewModel(application) {
 
+    val event: Event?
+
     private val context = application
 
     private var teamList: MutableList<Team> = mutableListOf()
@@ -47,7 +49,8 @@ class TeamListViewModel(
 
 
     init {
-        KeyStore.getInstance(context).selectedEvent?.let { event ->
+        event = KeyStore.getInstance(context).selectedEvent
+        event?.let { event ->
             RepositoryProvider.getInstance(context).teamRepository.getAtEvent(event).observe<MutableList<Team>>(
                 lifecycleOwner,
                 {

@@ -5,52 +5,74 @@
 
     <data>
 
+        <import type="android.view.View"/>
+
         <variable
             name="viewModel"
             type="com.alphadevelopmentsolutions.frcscout.ui.fragments.teams.TeamListViewModel" />
 
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/background"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical"
-        tools:context=".ui.TeamListFragment">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/alliance_viewpager_linear_layout"
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="gone"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:background="@color/background"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
 
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/alliance_tab_layout"
+            <LinearLayout
+                android:id="@+id/alliance_viewpager_linear_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/primary"
-                android:elevation="@dimen/toolbar_elevation"
-                app:tabTextColor="@android:color/white"
-                tools:layout_editor_absoluteY="200dp" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/alliance_viewpager"
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/alliance_tab_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/primary"
+                    android:elevation="@dimen/toolbar_elevation"
+                    app:tabTextColor="@android:color/white"
+                    tools:layout_editor_absoluteY="200dp" />
+
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/alliance_viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/team_recyclerview"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                app:rvAdapter="@{viewModel.teamListRecyclerViewAdapter}"
+                tools:listitem="@layout/layout_card_team"
+                tools:visibility="invisible" />
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/team_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            app:rvAdapter="@{viewModel.teamListRecyclerViewAdapter}"
-            tools:listitem="@layout/layout_card_team" />
-    </LinearLayout>
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_event_selected"
+            android:textColor="@color/disabled"
+            android:visibility="@{viewModel.event == null ? View.VISIBLE : View.GONE, default = visible}"
+            android:textSize="@dimen/material_text_sub_header"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/linearLayout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
