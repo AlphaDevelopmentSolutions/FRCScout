@@ -8,6 +8,6 @@ class EventRepository(private val dao: EventDao) : MasterRepository<Event>(dao) 
     override suspend fun deleteAll() =
         dao.deleteAll()
 
-    fun getInYear(year: Year) =
+    suspend fun getInYear(year: Year) =
         dao.getInYear(year.id)
 }

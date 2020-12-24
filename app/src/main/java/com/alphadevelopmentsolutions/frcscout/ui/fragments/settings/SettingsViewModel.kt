@@ -1,15 +1,14 @@
 package com.alphadevelopmentsolutions.frcscout.ui.fragments.settings
 
-import android.app.Application
-import android.content.Context
-import androidx.databinding.BaseObservable
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MediatorLiveData
+import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.callbacks.OnItemSelectedListener
+import com.alphadevelopmentsolutions.frcscout.classes.Account
 import com.alphadevelopmentsolutions.frcscout.data.models.Event
+import com.alphadevelopmentsolutions.frcscout.data.models.Role
+import com.alphadevelopmentsolutions.frcscout.data.models.UserTeamAccount
 import com.alphadevelopmentsolutions.frcscout.data.models.Year
 import com.alphadevelopmentsolutions.frcscout.data.repositories.RepositoryProvider
 import com.alphadevelopmentsolutions.frcscout.extensions.launchIO
@@ -20,11 +19,13 @@ class SettingsViewModel(
     private val context: MainActivity
 ) : ViewModel() {
 
-    val year: MutableLiveData<String> = MutableLiveData()
-    val event: MutableLiveData<String> = MutableLiveData()
+    val year: ObservableField<String> = ObservableField()
+    val event: ObservableField<String> = ObservableField()
+    val userTeamAccount: ObservableField<String> = ObservableField()
 
     private var yearSelectDialogFragment: SelectDialogFragment? = null
     private var eventSelectDialogFragment: SelectDialogFragment? = null
+    private var userTeamAccountSelectDialogFragment: SelectDialogFragment? = null
 
     fun onYearLayoutClicked() {
         yearSelectDialogFragment?.show(context)
@@ -34,13 +35,17 @@ class SettingsViewModel(
         eventSelectDialogFragment?.show(context)
     }
 
+    fun onTeamAccountLayoutClicked() {
+        userTeamAccountSelectDialogFragment?.show(context)
+    }
+
     init {
         launchIO {
             setupYearSelectDialog()
         }
 
         KeyStore.getInstance(context).selectedYear?.let { selectedYear ->
-            year.value = selectedYear.number.toString()
+            year.set(selectedYear.number.toString())
 
             launchIO {
                 setupEventSelectDialog(selectedYear)
@@ -48,7 +53,13 @@ class SettingsViewModel(
         }
 
         KeyStore.getInstance(context).selectedEvent?.let { selectedEvent ->
-            event.value = selectedEvent.toString()
+            event.set(selectedEvent.toString())
+        }
+
+        Account.getInstance(context)?.let { account ->
+            launchIO {
+                setupUserTeamAccountSelectDialog()
+            }
         }
     }
 
@@ -63,7 +74,7 @@ class SettingsViewModel(
                             if (selectedItem is Year) {
                                 KeyStore.getInstance(context).selectedYear = selectedItem
 
-                                year.value = selectedItem.number.toString()
+                                year.set(selectedItem.number.toString())
 
                                 launchIO {
                                     setupEventSelectDialog(selectedItem)
@@ -86,11 +97,38 @@ class SettingsViewModel(
                         if (selectedItem is Event) {
                             KeyStore.getInstance(context).selectedEvent = selectedItem
 
-                            event.value = selectedItem.toString()
+                            event.set(selectedItem.toString())
                         }
                     }
                 },
                 eventList
+            )
+    }
+
+    private suspend fun setupUserTeamAccountSelectDialog() {
+        val userTeamAccountList = RepositoryProvider.getInstance(context).userTeamAccountRepository.getAllRawView()
+
+        userTeamAccountSelectDialogFragment  =
+            SelectDialogFragment.newInstance(
+                object : OnItemSelectedListener {
+                    override fun onItemSelected(selectedItem: Any) {
+                        if (selectedItem is UserTeamAccountView) {
+                            launchIO {
+                                Account.getInstance(context)?.let { account ->
+
+                                    val roleList = RepositoryProvider.getInstance(context).roleRepository.getListForUserTeamAccount(selectedItem.userTeamAccount)
+
+                                    account.roleMatrix = Role.generateMatrix(roleList, selectedItem.teamAccount.id)
+                                    account.userTeamAccount = selectedItem.userTeamAccount
+                                    Account.setInstance(account, context)
+
+                                    userTeamAccount.set(selectedItem.toString())
+                                }
+                            }
+                        }
+                    }
+                },
+                userTeamAccountList
             )
     }
 }

@@ -68,6 +68,32 @@
                 android:textSize="@dimen/material_text_support" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/team_account_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{() -> viewModel.onTeamAccountLayoutClicked()}"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/team"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_primary" />
+
+            <TextView
+                android:id="@+id/user_team_account_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.userTeamAccount}"
+                android:textSize="@dimen/material_text_support" />
+        </LinearLayout>
+
         <include
             layout="@layout/layout_divider"
             android:layout_width="match_parent"

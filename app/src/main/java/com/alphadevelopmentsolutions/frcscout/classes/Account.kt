@@ -2,7 +2,10 @@ package com.alphadevelopmentsolutions.frcscout.classes
 
 import android.content.Context
 import androidx.room.ColumnInfo
+import com.alphadevelopmentsolutions.frcscout.data.models.Role
+import com.alphadevelopmentsolutions.frcscout.data.models.TeamAccount
 import com.alphadevelopmentsolutions.frcscout.data.models.User
+import com.alphadevelopmentsolutions.frcscout.data.models.UserTeamAccount
 import com.alphadevelopmentsolutions.frcscout.extensions.toUUID
 import com.alphadevelopmentsolutions.frcscout.singletons.KeyStore
 import com.google.firebase.FirebaseApp
@@ -18,7 +21,9 @@ class Account(
     @SerializedName("username") var username: String,
     @SerializedName("description") var description: String? = null,
     @SerializedName("avatar_uri") var avatarUri: String? = null,
-    @SerializedName("auth_token") val authToken: String
+    @SerializedName("auth_token") val authToken: String,
+    @Transient var userTeamAccount: UserTeamAccount? = null,
+    @Transient var roleMatrix: Role? = null
 ) {
     companion object {
 
@@ -35,6 +40,14 @@ class Account(
                 INSTANCE = tempInstance
                 tempInstance
             }
+
+        fun setInstance(account: Account, context: Context) {
+            INSTANCE.let {
+                INSTANCE = account
+
+                KeyStore.getInstance(context).account = account
+            }
+        }
 
         fun initialize(context: Context) {
             getInstance(context)?.let { account ->

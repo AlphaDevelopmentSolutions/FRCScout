@@ -12,6 +12,7 @@ import com.alphadevelopmentsolutions.frcscout.callbacks.OnAnimationCompleteCallb
 import com.alphadevelopmentsolutions.frcscout.callbacks.OnProgressCallback
 import com.alphadevelopmentsolutions.frcscout.classes.Account
 import com.alphadevelopmentsolutions.frcscout.classes.PhotoFileChunk
+import com.alphadevelopmentsolutions.frcscout.data.models.Role
 import com.alphadevelopmentsolutions.frcscout.data.repositories.RepositoryProvider
 import com.alphadevelopmentsolutions.frcscout.exceptions.ApiException
 import com.alphadevelopmentsolutions.frcscout.exceptions.PreconditionFailedException
@@ -268,8 +269,18 @@ open class ApiViewModel(application: Application) : AndroidViewModel(application
                     repositoryProvider.userTeamAccountRepository.insertAll(appData.userTeamAccountList)
                     repositoryProvider.yearRepository.insertAll(appData.yearList)
 
-                    Account.getInstance(context).let { user ->
-                        KeyStore.getInstance(context).account = user
+                    // TODO: Update account on data download
+                    Account.getInstance(context)?.let { account ->
+                        account.userTeamAccount?.let { userTeamAccount ->
+                            val roleList = RepositoryProvider.getInstance(context).roleRepository.getListForUserTeamAccount(userTeamAccount)
+
+                            account.roleMatrix = Role.generateMatrix(
+                                roleList,
+                                userTeamAccount.teamAccountId
+                            )
+                        }
+
+                        Account.setInstance(account, context)
                     }
 
                     robotMediaRepository.insertAll(
@@ -307,8 +318,7 @@ open class ApiViewModel(application: Application) : AndroidViewModel(application
             response.body()?.let {
 
                 KeyStore.getInstance(context).authToken = it.authToken
-                KeyStore.getInstance(context).account = it
-
+                Account.setInstance(it, context)
                 Account.initialize(context)
 
                 return true

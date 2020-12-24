@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.alphadevelopmentsolutions.frcscout.classes.Account
 import com.alphadevelopmentsolutions.frcscout.data.models.Event
+import com.alphadevelopmentsolutions.frcscout.data.models.TeamAccount
 import com.alphadevelopmentsolutions.frcscout.data.models.Year
 import com.alphadevelopmentsolutions.frcscout.interfaces.KeyStoreKey
 import java.util.*
@@ -123,8 +124,8 @@ class KeyStore private constructor(
         }
 
     /**
-     * JSON [String] holding the apps [Year] object
-     * @return [Year] object
+     * JSON [String] holding the apps [Event] object
+     * @return [Event] object
      */
     var selectedEvent: Event?
         get() {

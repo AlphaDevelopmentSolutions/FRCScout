@@ -10,6 +10,14 @@ import com.google.gson.annotations.SerializedName
     tableName = TableName.ROLE,
     inheritSuperIndices = true
 )
+
+/**
+ * When this class is used as a matrix in the [Account] instance, it takes all [Role]
+ * objects assigned to an [Account] for a [TeamAccount] and merges the permissions together
+ *
+ * When merging permissions, decision is treated as an OR gate
+ * e.g. permission = (permissionValue1 == true) || (permissionValue2 == true) ...
+ */
 class Role(
     @SerializedName("team_account_id") @ColumnInfo(name = "team_account_id", index = true) var teamAccountId: ByteArray,
     @SerializedName("name") @ColumnInfo(name = "name") var name: String,
@@ -35,6 +43,38 @@ class Role(
                 canCaptureMedia = false,
                 canManageReports = false
             )
+
+        /**
+         * Merges permissions into a role matrix
+         * @return [Role] merged permissions
+         */
+        fun generateMatrix(roleList: List<Role>, teamAccountId: ByteArray): Role {
+            val roleMatrix = create()
+
+            roleMatrix.teamAccountId = teamAccountId
+
+            roleList.forEach { role ->
+                if (!roleMatrix.canManageTeam)
+                    roleMatrix.canManageTeam = role.canManageTeam
+
+                if (!roleMatrix.canManageUsers)
+                    roleMatrix.canManageUsers = role.canManageUsers
+
+                if (!roleMatrix.canMatchScout)
+                    roleMatrix.canMatchScout = role.canMatchScout
+
+                if (!roleMatrix.canPitScout)
+                    roleMatrix.canPitScout = role.canPitScout
+
+                if (!roleMatrix.canCaptureMedia)
+                    roleMatrix.canCaptureMedia = role.canCaptureMedia
+
+                if (!roleMatrix.canManageReports)
+                    roleMatrix.canManageReports = role.canManageReports
+            }
+
+            return roleMatrix
+        }
     }
 
     override fun toString(): String =

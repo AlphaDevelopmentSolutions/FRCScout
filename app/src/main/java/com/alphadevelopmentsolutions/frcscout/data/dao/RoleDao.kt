@@ -13,4 +13,14 @@ abstract class RoleDao : MasterDao<Role>() {
         """
     )
     abstract fun deleteAll()
+
+    @Query(
+        """
+            SELECT r.*
+            FROM ${TableName.ROLE} r
+            LEFT JOIN ${TableName.USER_ROLE} ur ON ur.role_id = r.id
+            WHERE ur.user_team_account_list_id = :userTeamAccountId
+        """
+    )
+    abstract suspend fun getListForUserTeamAccount(userTeamAccountId: ByteArray): List<Role>
 }

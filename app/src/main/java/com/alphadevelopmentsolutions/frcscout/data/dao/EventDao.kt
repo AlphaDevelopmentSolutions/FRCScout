@@ -22,5 +22,5 @@ abstract class EventDao : MasterDao<Event>() {
             WHERE year_id = :yearId
         """
     )
-    abstract fun getInYear(yearId: ByteArray): List<Event>
+    abstract suspend fun getInYear(yearId: ByteArray): List<Event>
 }
