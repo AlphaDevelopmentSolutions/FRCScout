@@ -3,6 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.ui.fragments.media
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.hardware.Camera
 import android.hardware.display.DisplayManager
 import android.media.MediaScannerConnection
@@ -26,11 +27,13 @@ import com.alphadevelopmentsolutions.frcscout.data.models.PhotoFile
 import com.alphadevelopmentsolutions.frcscout.data.models.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
 import com.alphadevelopmentsolutions.frcscout.data.repositories.RepositoryProvider
+import com.alphadevelopmentsolutions.frcscout.exceptions.NudityException
 import com.alphadevelopmentsolutions.frcscout.extensions.runOnUiThread
 import com.alphadevelopmentsolutions.frcscout.factories.PhotoFileFactory
 import com.alphadevelopmentsolutions.frcscout.interfaces.AppLog
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constant
 import com.alphadevelopmentsolutions.frcscout.singletons.KeyStore
+import com.nipunru.nsfwdetector.NSFWDetector
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -87,6 +90,7 @@ class RobotMediaViewModel(
                     event.id,
                     team.id,
                     account.id,
+                    null,
                     tempPhotoFile.name,
                     tempPhotoFile.absolutePath
                 )
@@ -127,10 +131,24 @@ class RobotMediaViewModel(
                         override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                             media?.let {
                                 runOnUiThread {
-                                    photoUri.value = (output.savedUri ?: Uri.fromFile(photoFile)).path
 
-                                    mediaLayout.visibility = View.VISIBLE
-                                    cameraLayout.visibility = View.GONE
+                                    val uri = (output.savedUri ?: Uri.fromFile(photoFile)).path
+
+                                    NSFWDetector.isNSFW(
+                                        BitmapFactory.decodeFile(uri)
+                                    ) { isNSFW, confidence, image ->
+                                        if (!isNSFW) {
+                                            photoUri.value = uri
+
+                                            mediaLayout.visibility = View.VISIBLE
+                                            cameraLayout.visibility = View.GONE
+                                        }
+                                        else {
+                                            AppLog.e(NudityException(confidence, Account.getInstance(context)?.id ?: ByteArray(0)))
+
+                                            cancelCapture(cameraLayout, mediaLayout)
+                                        }
+                                    }
                                 }
                             }
                         }

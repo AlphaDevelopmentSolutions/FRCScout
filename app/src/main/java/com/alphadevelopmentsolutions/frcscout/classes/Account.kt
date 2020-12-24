@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import com.alphadevelopmentsolutions.frcscout.data.models.User
 import com.alphadevelopmentsolutions.frcscout.extensions.toUUID
 import com.alphadevelopmentsolutions.frcscout.singletons.KeyStore
+import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.annotations.SerializedName
@@ -34,15 +35,16 @@ class Account(
                 INSTANCE = tempInstance
                 tempInstance
             }
-    }
 
-    fun initialize(context: Context) {
-        getInstance(context)?.let { account ->
-            val id = account.id.toUUID().toString()
+        fun initialize(context: Context) {
+            getInstance(context)?.let { account ->
+                val id = account.id.toUUID().toString()
 
-            FirebaseAnalytics.getInstance(context).setUserProperty("USER_UUID", id)
-            FirebaseCrashlytics.getInstance().setUserId(id)
-            FirebaseCrashlytics.getInstance().setCustomKey("USER_UUID", id)
+                FirebaseApp.initializeApp(context)
+                FirebaseAnalytics.getInstance(context).setUserProperty("USER_UUID", id)
+                FirebaseCrashlytics.getInstance().setUserId(id)
+                FirebaseCrashlytics.getInstance().setCustomKey("USER_UUID", id)
+            }
         }
     }
 }

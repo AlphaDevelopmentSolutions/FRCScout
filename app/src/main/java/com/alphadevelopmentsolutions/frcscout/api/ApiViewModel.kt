@@ -309,7 +309,7 @@ open class ApiViewModel(application: Application) : AndroidViewModel(application
                 KeyStore.getInstance(context).authToken = it.authToken
                 KeyStore.getInstance(context).account = it
 
-                it.initialize(context)
+                Account.initialize(context)
 
                 return true
             }
@@ -369,7 +369,7 @@ open class ApiViewModel(application: Application) : AndroidViewModel(application
         var fullSuccess = false
 
         try {
-            val submitSuccess = submitData(context, dialog.onProgressCallback)
+            val submitSuccess = true //submitData(context, dialog.onProgressCallback)
             val fetchSuccess = if (submitSuccess) fetchData(context, dialog.onProgressCallback) else false
 
             fullSuccess = submitSuccess && fetchSuccess

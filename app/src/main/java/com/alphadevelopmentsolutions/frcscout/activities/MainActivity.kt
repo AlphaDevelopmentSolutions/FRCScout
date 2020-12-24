@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.alphadevelopmentsolutions.frcscout.R
+import com.alphadevelopmentsolutions.frcscout.classes.Account
 import com.alphadevelopmentsolutions.frcscout.classes.Config
 import com.alphadevelopmentsolutions.frcscout.databinding.ActivityMainBinding
 import com.alphadevelopmentsolutions.frcscout.enums.NavbarState
@@ -86,12 +87,11 @@ class MainActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Account.initialize(this)
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         binding.navView.setNavigationItemSelectedListener(this)
-
-//        setContentView(R.layout.test)
-
     }
 
     override fun onBackPressed() {

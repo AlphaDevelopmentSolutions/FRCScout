@@ -7,6 +7,9 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 interface AppLog {
     companion object {
+
+        private const val TAG = "AppLog"
+
         fun l(title: String, message: String) {
             if (BuildConfig.DEBUG)
                 Log.d(title, message)
@@ -25,18 +28,9 @@ interface AppLog {
             }
         }
 
-        fun e(exception: Exception) {
-            if (BuildConfig.DEBUG)
-                exception.printStackTrace()
-            else {
-                FirebaseCrashlytics.getInstance().recordException(exception)
-                sendReports()
-            }
-        }
-
         fun e(throwable: Throwable) {
             if (BuildConfig.DEBUG)
-                throwable.printStackTrace()
+                Log.e(TAG, "Exception", throwable)
             else {
                 FirebaseCrashlytics.getInstance().recordException(throwable)
                 sendReports()
