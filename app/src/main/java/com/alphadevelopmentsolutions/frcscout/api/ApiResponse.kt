@@ -1,6 +1,5 @@
 package com.alphadevelopmentsolutions.frcscout.api
 
-import com.alphadevelopmentsolutions.frcscout.classes.DynamicSuccessErrorCode
 import com.alphadevelopmentsolutions.frcscout.classes.SuccessErrorCode
 import com.google.gson.annotations.SerializedName
 
@@ -65,9 +64,5 @@ interface ApiResponse {
                 return nonDuplicatedErrorCodes.toList()
             }
         }
-
-        class Photos(
-            val response: List<DynamicSuccessErrorCode> = listOf()
-        )
     }
 }

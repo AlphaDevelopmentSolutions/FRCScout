@@ -63,7 +63,6 @@ open class ApiViewModel(application: Application) : AndroidViewModel(application
                 robotInfoList = repositoryProvider.robotInfoRepository.getAllRaw(true)
                 robotMediaList = repositoryProvider.robotMediaRepository.getAllRaw(true)
                 scoutCardInfoList = repositoryProvider.scoutCardInfoRepository.getAllRaw(true)
-
             }
 
         onProgressCallback?.onProgressChange(
@@ -205,11 +204,11 @@ open class ApiViewModel(application: Application) : AndroidViewModel(application
                     // Validate a response came back
                     response.body()?.let {
 
-                        it.response.forEach { successErrorCode ->
+                        it.forEach { dynamicResponse ->
 
                             when {
                                 // Delete the photo file if it was submitted successfully
-                                successErrorCode.success && successErrorCode.id != null -> repositoryProvider.photoFileRepository.delete(successErrorCode.id)
+                                dynamicResponse.success && dynamicResponse.id != null -> repositoryProvider.photoFileRepository.delete(dynamicResponse.id)
                                 else -> fullSuccess = false
                             }
                         }
@@ -370,7 +369,7 @@ open class ApiViewModel(application: Application) : AndroidViewModel(application
         var fullSuccess = false
 
         try {
-            val submitSuccess = true //submitData(context, dialog.onProgressCallback)
+            val submitSuccess = submitData(context, dialog.onProgressCallback)
             val fetchSuccess = if (submitSuccess) fetchData(context, dialog.onProgressCallback) else false
 
             fullSuccess = submitSuccess && fetchSuccess

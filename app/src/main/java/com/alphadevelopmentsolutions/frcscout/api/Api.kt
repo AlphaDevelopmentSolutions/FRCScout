@@ -7,6 +7,7 @@ import com.alphadevelopmentsolutions.frcscout.BuildConfig
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.callbacks.OnProgressCallback
 import com.alphadevelopmentsolutions.frcscout.classes.Account
+import com.alphadevelopmentsolutions.frcscout.classes.DynamicResponse
 import com.alphadevelopmentsolutions.frcscout.data.models.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.extensions.toJson
 import com.alphadevelopmentsolutions.frcscout.factories.PhotoFileFactory
@@ -44,8 +45,8 @@ interface Api {
 
     @Multipart
     @Headers("Accept: application/json")
-    @POST("api/set/photos")
-    fun setPhotos(@Part multiparts: List<MultipartBody.Part>): Call<ApiResponse.Set.Photos>
+    @POST("api/set/media")
+    fun setPhotos(@Part multiparts: List<MultipartBody.Part>): Call<List<DynamicResponse>>
 
     @Headers("Accept: application/json")
     @POST("api/get/photos")
