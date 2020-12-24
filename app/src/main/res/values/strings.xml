@@ -336,7 +336,7 @@
     <string name="create_new">Create New</string>
     <string name="default_team_name">Villanova Wiredcats</string>
     <string name="default_team_number">5885</string>
-    <string name="default_team_location">Lasalle Ontario Canada</string>
+    <string name="default_team_location">Lasalle, Ontario, Canada</string>
     <string name="default_match_title">Quals 1</string>
     <string name="no_event_selected">No Event Selected!</string>
 

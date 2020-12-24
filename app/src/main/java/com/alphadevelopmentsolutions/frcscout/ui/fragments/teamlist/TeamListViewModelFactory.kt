@@ -1,6 +1,5 @@
-package com.alphadevelopmentsolutions.frcscout.ui.fragments.teams
+package com.alphadevelopmentsolutions.frcscout.ui.fragments.teamlist
 
-import android.app.Application
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

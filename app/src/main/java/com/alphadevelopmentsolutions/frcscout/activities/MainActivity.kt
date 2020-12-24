@@ -20,10 +20,11 @@ import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.classes.Account
 import com.alphadevelopmentsolutions.frcscout.classes.Config
 import com.alphadevelopmentsolutions.frcscout.databinding.ActivityMainBinding
+import com.alphadevelopmentsolutions.frcscout.enums.FragmentTag
 import com.alphadevelopmentsolutions.frcscout.enums.NavbarState
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.MasterFragment
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.matchlist.MatchListFragmentDirections
-import com.alphadevelopmentsolutions.frcscout.ui.fragments.teams.TeamListFragmentDirections
+import com.alphadevelopmentsolutions.frcscout.ui.fragments.teamlist.TeamListFragmentDirections
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
@@ -102,29 +103,36 @@ class MainActivity : AppCompatActivity(),
             // If the drawer is closed, call the KingFragment.onBackPressed method
             else ->
             {
-                var masterFragment: MasterFragment? = null
-
-                // Attempt to find the current king fragment that called the onBackPressed
-                host?.let { host ->
-                    host.childFragmentManager.fragments.let rev@{
-                        it.forEach { fragment ->
-
-                            if (fragment is MasterFragment) {
-                                masterFragment = fragment
-                                return@rev
-                            }
-                        }
-                    }
-                }
-
                 // If the king fragment was found & it returns true, act as if the kingFragment ate the
                 // callback and ignore further commands
-                if (masterFragment?.onBackPressed() != true) {
+                if (getCurrentFragment()?.onBackPressed() != true) {
                     hideKeyboard()
                     super.onBackPressed()
                 }
             }
         }
+    }
+
+    /**
+     * Gets the currently displayed fragment
+     */
+    private fun getCurrentFragment(): MasterFragment? {
+        var masterFragment: MasterFragment? = null
+
+        // Attempt to find the current king fragment that called the onBackPressed
+        host?.let { host ->
+            host.childFragmentManager.fragments.let rev@{
+                it.forEach { fragment ->
+
+                    if (fragment is MasterFragment) {
+                        masterFragment = fragment
+                        return@rev
+                    }
+                }
+            }
+        }
+
+        return masterFragment
     }
 
     override fun onFragmentInteraction(uri: Uri) {}
@@ -137,14 +145,19 @@ class MainActivity : AppCompatActivity(),
 
         binding.mainDrawerLayout.closeDrawer(GravityCompat.START)
 
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_matches -> {
-                navController.navigate(TeamListFragmentDirections.actionTeamListFragmentDestinationToMatchListFragmentDestination())
-            }
+        getCurrentFragment()?.TAG?.let { fragmentTag ->
+            when (item.itemId) {
+                R.id.nav_matches -> {
+                    when (fragmentTag) {
+                        FragmentTag.TEAM_LIST -> navController.navigate(TeamListFragmentDirections.actionTeamListFragmentDestinationToMatchListFragmentDestination())
+                    }
+                }
 
-            R.id.nav_teams -> {
-                navController.navigate(MatchListFragmentDirections.actionMatchListFragmentDestinationToTeamListFragmentDestination())
+                R.id.nav_teams -> {
+                    when (fragmentTag) {
+                        FragmentTag.MATCH_LIST -> navController.navigate(MatchListFragmentDirections.actionMatchListFragmentDestinationToTeamListFragmentDestination())
+                    }
+                }
             }
         }
 

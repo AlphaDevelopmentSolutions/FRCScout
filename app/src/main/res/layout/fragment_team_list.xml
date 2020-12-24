@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="com.alphadevelopmentsolutions.frcscout.ui.fragments.teams.TeamListViewModel" />
+            type="com.alphadevelopmentsolutions.frcscout.ui.fragments.teamlist.TeamListViewModel" />
 
     </data>
 

@@ -1,4 +1,4 @@
-package com.alphadevelopmentsolutions.frcscout.ui.fragments.teams
+package com.alphadevelopmentsolutions.frcscout.ui.fragments.teamlist
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,7 +7,6 @@ import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
 import com.alphadevelopmentsolutions.frcscout.databinding.LayoutCardTeamBinding
-import com.alphadevelopmentsolutions.frcscout.singletons.GlideInstance
 
 class TeamListRecyclerViewAdapter(
     private val context: Context,

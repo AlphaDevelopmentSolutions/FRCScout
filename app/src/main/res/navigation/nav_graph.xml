@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_settings"/>
     <fragment
         android:id="@+id/teamListFragmentDestination"
-        android:name="com.alphadevelopmentsolutions.frcscout.ui.fragments.teams.TeamListFragment"
+        android:name="com.alphadevelopmentsolutions.frcscout.ui.fragments.teamlist.TeamListFragment"
         tools:layout="@layout/fragment_team_list"
         android:label="TeamListFragment" >
         <action

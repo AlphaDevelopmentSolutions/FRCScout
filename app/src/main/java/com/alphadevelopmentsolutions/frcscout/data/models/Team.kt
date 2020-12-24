@@ -5,6 +5,7 @@ import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
+import java.lang.StringBuilder
 
 @Entity(
     tableName = TableName.TEAM,
@@ -34,10 +35,30 @@ class Team(
     }
 
     val location: String
-        get() =
-            "${(city ?: "")} " +
-                "${(stateProvince ?: "")} " +
-                (country ?: "")
+        get() {
+            val stringBuilder = StringBuilder()
+
+            if (city != null)
+                stringBuilder.append(city)
+
+            if (stateProvince != null) {
+
+                if (stringBuilder.isNotBlank())
+                    stringBuilder.append(", ")
+
+                stringBuilder.append(stateProvince)
+            }
+
+            if (country != null) {
+
+                if (stringBuilder.isNotBlank())
+                    stringBuilder.append(", ")
+
+                stringBuilder.append(country)
+            }
+
+            return stringBuilder.toString()
+        }
 
     override fun toString(): String =
         name
