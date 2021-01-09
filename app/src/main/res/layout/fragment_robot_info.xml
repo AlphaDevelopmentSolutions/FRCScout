@@ -19,7 +19,9 @@
                     android:id="@+id/form_linear_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    robotInfoForm="@{viewModel.robotInfoView}"
+                    robotInfoForm="@{viewModel.robotInfoKeyViewList}"
+                    event="@{viewModel.event}"
+                    team="@{viewModel.team}"
                     android:orientation="vertical" />
 
         </androidx.core.widget.NestedScrollView>

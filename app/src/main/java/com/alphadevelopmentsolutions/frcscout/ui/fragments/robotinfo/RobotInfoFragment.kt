@@ -18,14 +18,13 @@ import com.alphadevelopmentsolutions.frcscout.extensions.launchIO
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.MasterFragment
 
 class RobotInfoFragment(
-    private val event: Event,
     private val team: Team,
     override val TAG: FragmentTag = FragmentTag.MATCH_LIST
 ) : MasterFragment() {
 
     companion object {
-        fun newInstance(event: Event, team: Team) =
-            RobotInfoFragment(event, team)
+        fun newInstance(team: Team) =
+            RobotInfoFragment(team)
     }
 
     private lateinit var binding: FragmentRobotInfoBinding
@@ -47,7 +46,7 @@ class RobotInfoFragment(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = ViewModelProvider(this, RobotInfoViewModelFactory(activityContext, this, event, team)).get(RobotInfoViewModel::class.java)
+        viewModel = ViewModelProvider(this, RobotInfoViewModelFactory(activityContext, this, team)).get(RobotInfoViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
     }

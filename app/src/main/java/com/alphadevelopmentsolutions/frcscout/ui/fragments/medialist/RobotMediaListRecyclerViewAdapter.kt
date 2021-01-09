@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
 import com.alphadevelopmentsolutions.frcscout.callbacks.OnConfirmationCallback
+import com.alphadevelopmentsolutions.frcscout.classes.Account
 import com.alphadevelopmentsolutions.frcscout.classes.ConfirmDialogFragment
 import com.alphadevelopmentsolutions.frcscout.data.models.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.data.repositories.RepositoryProvider
@@ -67,7 +68,10 @@ class RobotMediaListRecyclerViewAdapter(
             object : OnConfirmationCallback {
                 override fun onConfirm() {
                     launchIO {
-                        RepositoryProvider.getInstance(context).robotMediaRepository.delete(robotMedia)
+                        Account.getInstance(context)?.let { account ->
+                            robotMedia.markDeleted(account)
+                            RepositoryProvider.getInstance(context).robotMediaRepository.delete(robotMedia)
+                        }
                     }
                 }
 

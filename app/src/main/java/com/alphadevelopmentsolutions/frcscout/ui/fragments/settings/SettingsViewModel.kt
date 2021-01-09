@@ -72,9 +72,13 @@ class SettingsViewModel(
                     object : OnItemSelectedListener {
                         override fun onItemSelected(selectedItem: Any) {
                             if (selectedItem is Year) {
-                                KeyStore.getInstance(context).selectedYear = selectedItem
+                                KeyStore.getInstance(context).apply {
+                                    selectedYear = selectedItem
+                                    selectedEvent = null
+                                }
 
                                 year.set(selectedItem.number.toString())
+                                event.set("")
 
                                 launchIO {
                                     setupEventSelectDialog(selectedItem)

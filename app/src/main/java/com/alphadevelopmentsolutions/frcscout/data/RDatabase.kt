@@ -68,6 +68,7 @@ abstract class RDatabase : RoomDatabase() {
     abstract fun getMatchTypeDao(): MatchTypeDao
     abstract fun getPhotoFileDao(): PhotoFileDao
     abstract fun getRobotInfoKeyDao(): RobotInfoKeyDao
+    abstract fun getRobotInfoKeyStateDao(): RobotInfoKeyStateDao
     abstract fun getRobotInfoDao(): RobotInfoDao
     abstract fun getRobotMediaDao(): RobotMediaDao
     abstract fun getRoleDao(): RoleDao

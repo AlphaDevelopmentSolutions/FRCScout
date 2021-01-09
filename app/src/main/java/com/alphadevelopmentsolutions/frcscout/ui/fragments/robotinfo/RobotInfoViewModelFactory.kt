@@ -11,9 +11,8 @@ import com.alphadevelopmentsolutions.frcscout.data.models.Team
 class RobotInfoViewModelFactory(
     val activity: MainActivity,
     val lifecycleOwner: LifecycleOwner,
-    val event: Event,
     val team: Team
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-        RobotInfoViewModel(activity.application, lifecycleOwner, event, team) as T
+        RobotInfoViewModel(activity.application, lifecycleOwner, team) as T
 }

@@ -1,9 +1,11 @@
 package com.alphadevelopmentsolutions.frcscout.data.repositories
 
 import com.alphadevelopmentsolutions.frcscout.data.dao.RobotInfoKeyDao
+import com.alphadevelopmentsolutions.frcscout.data.dao.RobotInfoKeyStateDao
 import com.alphadevelopmentsolutions.frcscout.data.models.RobotInfoKey
+import com.alphadevelopmentsolutions.frcscout.data.models.RobotInfoKeyState
 
-class RobotInfoKeRepository(private val dao: RobotInfoKeyDao) : MasterRepository<RobotInfoKey>(dao) {
+class RobotInfoKeyStateRepository(private val dao: RobotInfoKeyStateDao) : MasterRepository<RobotInfoKeyState>(dao) {
     override suspend fun deleteAll() =
         dao.deleteAll()
 }

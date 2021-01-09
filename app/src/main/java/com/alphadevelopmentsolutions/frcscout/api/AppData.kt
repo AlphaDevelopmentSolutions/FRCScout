@@ -13,6 +13,7 @@ class AppData(
     @SerializedName("match_types") var matchTypeList: List<MatchType> = listOf(),
     @SerializedName("robot_info") var robotInfoList: List<RobotInfo> = listOf(),
     @SerializedName("robot_info_keys") var robotInfoKeyList: List<RobotInfoKey> = listOf(),
+    @SerializedName("robot_info_key_states") var robotInfoKeyStateList: List<RobotInfoKeyState> = listOf(),
     @SerializedName("robot_media") var robotMediaList: List<RobotMedia> = listOf(),
     @SerializedName("role") var roleList: List<Role> = listOf(),
     @SerializedName("scout_card_info") var scoutCardInfoList: List<ScoutCardInfo> = listOf(),

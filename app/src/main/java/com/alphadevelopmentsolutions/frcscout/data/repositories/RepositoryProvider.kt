@@ -90,15 +90,21 @@ class RepositoryProvider private constructor(context: Context) {
         )
     }
 
-    val robotInfoKeRepository by lazy {
-        RobotInfoKeRepository(
+    val robotInfoRepository by lazy {
+        RobotInfoRepository(
+            rDatabase.getRobotInfoDao()
+        )
+    }
+
+    val robotInfoKeyRepository by lazy {
+        RobotInfoKeyRepository(
             rDatabase.getRobotInfoKeyDao()
         )
     }
 
-    val robotInfoRepository by lazy {
-        RobotInfoRepository(
-            rDatabase.getRobotInfoDao()
+    val robotInfoKeyStateRepository by lazy {
+        RobotInfoKeyStateRepository(
+            rDatabase.getRobotInfoKeyStateDao()
         )
     }
 

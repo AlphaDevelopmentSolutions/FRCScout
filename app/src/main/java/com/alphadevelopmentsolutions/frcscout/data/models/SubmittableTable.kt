@@ -2,6 +2,7 @@ package com.alphadevelopmentsolutions.frcscout.data.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import com.alphadevelopmentsolutions.frcscout.classes.Account
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
@@ -13,4 +14,16 @@ abstract class SubmittableTable protected constructor(
 ) : Table() {
 
     abstract override fun toString(): String
+
+    fun markDeleted(account: Account) {
+        deletedDate = Date()
+        deletedById = account.id
+
+        markModified(account)
+    }
+
+    fun markModified(account: Account) {
+        lastModifiedDate = Date()
+        modifiedById = account.id
+    }
 }

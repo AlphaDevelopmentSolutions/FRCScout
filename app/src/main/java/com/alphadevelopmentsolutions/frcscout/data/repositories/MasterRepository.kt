@@ -6,7 +6,9 @@ abstract class MasterRepository<Table>(private val dao: MasterDao<Table>) {
 
     open suspend fun insert(obj: Table) = dao.upsert(obj)
     open suspend fun insertAll(objs: List<Table>) = dao.upsertAll(objs)
-    open suspend fun delete(obj: Table) = dao.delete(obj)
+    open suspend fun delete(obj: Table?) {
+        obj?.let { dao.delete(it) }
+    }
 
     abstract suspend fun deleteAll()
 }

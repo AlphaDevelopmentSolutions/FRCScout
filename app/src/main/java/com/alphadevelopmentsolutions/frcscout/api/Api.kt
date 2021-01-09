@@ -165,7 +165,7 @@ interface Api {
                         .addHeader(
                             "Cookie",
                             StringBuilder()
-                                .append("${Constant.AUTH_TOKEN}=b6c94a91-36a9-11eb-86bc-5c80b67a2786")
+                                .append("${Constant.AUTH_TOKEN}=${Account.getInstance(context)?.authToken}")
                                 .append(";")
                                 .append("${Constant.API_VERSION}=$API_VERSION")
                                 .append(";")

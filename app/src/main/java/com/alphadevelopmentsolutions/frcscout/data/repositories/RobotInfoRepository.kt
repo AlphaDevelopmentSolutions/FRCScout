@@ -12,6 +12,12 @@ class RobotInfoRepository(private val dao: RobotInfoDao) : MasterRepository<Robo
     override fun getAllRaw(isDraft: Boolean?): List<RobotInfo> =
         listOf()
 
-    suspend fun getForTeamAtEvent(event: Event, team: Team) =
-        dao.getForTeamAtEvent(event.id, team.id)
+    override suspend fun delete(obj: RobotInfo?) {
+        obj?.let {
+            insert(it)
+        }
+    }
+
+    suspend fun getForTeamAtEvent(team: Team, event: Event) =
+        dao.getForTeamAtEvent(team.id, event.id)
 }

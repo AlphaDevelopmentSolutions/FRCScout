@@ -10,6 +10,7 @@ import com.alphadevelopmentsolutions.frcscout.classes.ViewPagerFragment
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.matchlist.MatchListFragment
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.medialist.RobotMediaListFragment
+import com.alphadevelopmentsolutions.frcscout.ui.fragments.robotinfo.RobotInfoFragment
 
 class TeamViewModel(
     application: Application,
@@ -33,7 +34,7 @@ class TeamViewModel(
             }
 
             override fun onPageSelected(position: Int) {
-                showFab.value = position == 1
+                showFab.value = position == 2
             }
 
             override fun onPageScrollStateChanged(state: Int) {
@@ -46,6 +47,10 @@ class TeamViewModel(
         MatchListFragment.newInstance(true, team)
     }
 
+    private val robotInfoFragment by lazy {
+        RobotInfoFragment.newInstance(team)
+    }
+
     private val robotMediaListFragment by lazy {
         RobotMediaListFragment.newInstance(team)
     }
@@ -55,6 +60,13 @@ class TeamViewModel(
             ViewPagerFragment(
                 context.getString(R.string.matches),
                 matchListFragment
+            )
+        )
+
+        viewPagerAdapter.addFragment(
+            ViewPagerFragment(
+                context.getString(R.string.info),
+                robotInfoFragment
             )
         )
 

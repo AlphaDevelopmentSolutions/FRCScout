@@ -17,11 +17,10 @@ class RobotMediaRepository(private val dao: RobotMediaDao) : MasterRepository<Ro
     override fun getAllRaw(isDraft: Boolean?): List<RobotMedia> =
         listOf()
 
-    override suspend fun delete(obj: RobotMedia) {
-        obj.deletedDate = Date()
-        obj.deletedById = Account.getInstance(null)?.id
-
-        insert(obj)
+    override suspend fun delete(obj: RobotMedia?) {
+        obj?.let {
+            insert(it)
+        }
     }
 
     suspend fun downloadPhotos(objs: MutableList<RobotMedia>, context: AppCompatActivity, onProgressCallback: OnProgressCallback? = null) =
