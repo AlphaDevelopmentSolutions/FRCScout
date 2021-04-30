@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.ui.fragments.team
 
 import android.app.Application
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.*
 import androidx.viewpager.widget.ViewPager
@@ -24,7 +25,7 @@ class TeamViewModel(
 
     val viewPagerAdapter =
         FragmentViewPagerAdapter(
-            childFragmentManager
+            application as FragmentActivity
         )
 
     val viewPagerOnPageChangeListener =

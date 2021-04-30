@@ -2,6 +2,7 @@ package com.alphadevelopmentsolutions.frcscout.ui.fragments.matchlist
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
@@ -35,6 +36,23 @@ class MatchListRecyclerViewAdapter(
 
         holder.binding.matchDatabaseView = match
         holder.binding.handlers = this
+
+        holder.binding.viewMatchButton.apply {
+            visibility = View.VISIBLE
+            setOnClickListener {
+                navController.navigate(
+                    MatchListFragmentDirections.actionMatchListFragmentDestinationToMatchFragment(
+                        match.blueAllianceTeamOne,
+                        match.blueAllianceTeamTwo,
+                        match.blueAllianceTeamThree,
+                        match.redAllianceTeamOne,
+                        match.redAllianceTeamTwo,
+                        match.redAllianceTeamThree
+                    )
+                )
+            }
+        }
+
     }
 
     override fun getItemCount(): Int {

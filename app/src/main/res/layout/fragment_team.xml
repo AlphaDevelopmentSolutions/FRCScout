@@ -36,7 +36,7 @@
                 app:tabTextColor="@android:color/white"
                 tools:layout_editor_absoluteY="200dp" />
 
-            <androidx.viewpager.widget.ViewPager
+            <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewpager"
                 app:vpChangeListener="@{viewModel.viewPagerOnPageChangeListener}"
                 app:vpAdapter="@{viewModel.viewPagerAdapter}"

@@ -54,6 +54,9 @@
         <action
             android:id="@+id/action_matchListFragmentDestination_to_teamFragmentDestination"
             app:destination="@id/teamFragmentDestination" />
+        <action
+            android:id="@+id/action_matchListFragmentDestination_to_matchFragment"
+            app:destination="@id/matchFragment" />
     </fragment>
     <fragment
         android:id="@+id/teamFragmentDestination"
@@ -88,4 +91,27 @@
         android:name="com.alphadevelopmentsolutions.frcscout.ui.fragments.medialist.RobotMediaListFragment"
         tools:layout="@layout/fragment_robot_media_list"
         android:label="RobotMediaListFragment" />
+    <fragment
+        android:id="@+id/matchFragment"
+        android:name="com.alphadevelopmentsolutions.frcscout.ui.fragments.match.MatchFragment"
+        android:label="MatchFragment" >
+        <argument
+            android:name="bat1"
+            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
+        <argument
+            android:name="bat2"
+            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
+        <argument
+            android:name="bat3"
+            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
+        <argument
+            android:name="rat1"
+            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
+        <argument
+            android:name="rat2"
+            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
+        <argument
+            android:name="rat3"
+            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
+    </fragment>
 </navigation>

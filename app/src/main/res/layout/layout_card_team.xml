@@ -3,10 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="kotlin.jvm.functions.Function0"/>
+        <import type="kotlin.Unit"/>
+        <import type="java.util.function.Consumer" />
 
         <variable
             name="team"
             type="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
+
+        <variable
+            name="onViewClick"
+            type="Consumer&lt;Object>" />
 
     </data>
 
@@ -92,6 +99,7 @@
                     android:textColor="@color/text_link"
                     android:textSize="@dimen/text_secondary"
                     android:textStyle="bold"
+                    android:onClick="@{() -> onViewClick.accept(1)}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 

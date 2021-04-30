@@ -1,11 +1,13 @@
 package com.alphadevelopmentsolutions.frcscout.adapters
 
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.alphadevelopmentsolutions.frcscout.classes.ViewPagerFragment
 
-class FragmentViewPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class FragmentViewPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
     private val fragmentList: ArrayList<Fragment> = ArrayList()
     private val titleList: ArrayList<String> = ArrayList()
 
@@ -18,15 +20,15 @@ class FragmentViewPagerAdapter(fragmentManager: FragmentManager) : FragmentPager
         titleList.add(fragment.title)
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
+    fun getTitle(position: Int): String {
         return titleList[position]
     }
 
-    override fun getItem(position: Int): Fragment {
-        return fragmentList[position]
+    override fun getItemCount(): Int {
+        return fragmentList.size
     }
 
-    override fun getCount(): Int {
-        return fragmentList.size
+    override fun createFragment(position: Int): Fragment {
+        return fragmentList[position]
     }
 }
