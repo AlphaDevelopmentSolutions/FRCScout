@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.*
 import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.adapters.FragmentViewPagerAdapter
 import com.alphadevelopmentsolutions.frcscout.classes.ViewPagerFragment
@@ -15,7 +16,7 @@ import com.alphadevelopmentsolutions.frcscout.ui.fragments.robotinfo.RobotInfoFr
 
 class TeamViewModel(
     application: Application,
-    childFragmentManager: FragmentManager,
+    fragmentActivity: FragmentActivity,
     val lifecycleOwner: LifecycleOwner,
     val team: Team
 ) : AndroidViewModel(application) {
@@ -25,23 +26,14 @@ class TeamViewModel(
 
     val viewPagerAdapter =
         FragmentViewPagerAdapter(
-            application as FragmentActivity
+            fragmentActivity
         )
 
     val viewPagerOnPageChangeListener =
-        object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
-            }
-
+        object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 showFab.value = position == 2
             }
-
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
-
         }
 
     private val matchListFragment by lazy {

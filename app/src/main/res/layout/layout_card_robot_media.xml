@@ -23,6 +23,6 @@
         android:cropToPadding="true"
         app:glideSrc="@{robotMedia.localFileUri}"
         android:onClick="@{() -> handlers.navigateToMedia(robotMedia)}"
-        onLongClick="@{() -> handlers.deleteMedia(robotMedia)}"
+        app:onLongClick="@{() -> handlers.deleteMedia(robotMedia)}"
         tools:srcCompat="@tools:sample/avatars"/>
 </layout>

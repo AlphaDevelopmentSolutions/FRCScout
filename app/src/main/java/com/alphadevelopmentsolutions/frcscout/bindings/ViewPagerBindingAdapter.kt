@@ -1,16 +1,21 @@
 package com.alphadevelopmentsolutions.frcscout.bindings
 
 import androidx.databinding.BindingAdapter
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.alphadevelopmentsolutions.frcscout.adapters.FragmentViewPagerAdapter
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
-@BindingAdapter("vpAdapter")
-fun ViewPager2.setImage(adapter: FragmentViewPagerAdapter) {
-    setAdapter(adapter)
+@BindingAdapter(value = ["vpAdapter", "vpTabLayout"])
+fun ViewPager2.setAdapter(adapter: FragmentViewPagerAdapter, tabLayout: TabLayout) {
+    this.adapter = adapter
+
+    TabLayoutMediator(tabLayout, this) { tab, position ->
+        tab.text = adapter.getTitle(position)
+    }.attach()
 }
 
-@BindingAdapter("vpChangeListener")
-fun ViewPager2.addOnPageChangeListener(listener: ViewPager.OnPageChangeListener) {
-    addOnPageChangeListener(listener)
+@BindingAdapter("vpPageChangeCallback")
+fun ViewPager2.registerOnPageChangeCallback(callback: ViewPager2.OnPageChangeCallback) {
+    this.registerOnPageChangeCallback(callback)
 }

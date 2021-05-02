@@ -53,7 +53,7 @@ class TeamFragment(override val TAG: FragmentTag = FragmentTag.TEAM_LIST) : Mast
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = ViewModelProvider(this, TeamViewModelFactory(activityContext, childFragmentManager, this, args.team)).get(TeamViewModel::class.java)
+        viewModel = ViewModelProvider(this, TeamViewModelFactory(activityContext, this, args.team)).get(TeamViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
     }

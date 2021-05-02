@@ -23,6 +23,6 @@ class MatchDetailViewModel(
      * Navigate to the team fragment
      */
     fun onViewTeamClicked(team: Team) {
-        val d = 0
+        navController.navigate(MatchFragmentDirections.actionMatchFragmentToTeamFragmentDestination(team))
     }
 }

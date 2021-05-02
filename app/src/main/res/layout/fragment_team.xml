@@ -32,14 +32,14 @@
                 android:background="@color/primary"
                 android:elevation="@dimen/toolbar_elevation"
                 app:tabMode="scrollable"
-                app:tlViewPager="@{() -> viewpager}"
                 app:tabTextColor="@android:color/white"
                 tools:layout_editor_absoluteY="200dp" />
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewpager"
-                app:vpChangeListener="@{viewModel.viewPagerOnPageChangeListener}"
+                app:vpPageChangeCallback="@{viewModel.viewPagerOnPageChangeListener}"
                 app:vpAdapter="@{viewModel.viewPagerAdapter}"
+                app:vpTabLayout="@{tabLayout}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
