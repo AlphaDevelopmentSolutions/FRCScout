@@ -1,6 +1,7 @@
 package com.alphadevelopmentsolutions.frcscout.ui.fragments.robotinfo
 
 import android.app.Application
+import androidx.databinding.ObservableField
 import androidx.lifecycle.*
 import com.alphadevelopmentsolutions.frcscout.classes.Account
 import com.alphadevelopmentsolutions.frcscout.data.models.Event
@@ -16,7 +17,7 @@ class RobotInfoViewModel(
 ) : AndroidViewModel(application) {
     private val context = application
 
-    var robotInfoKeyViewList: List<RobotInfoKeyView> = listOf()
+    var robotInfoKeyViewList: ObservableField<List<RobotInfoKeyView>> = ObservableField(listOf())
 
     var event: Event? = null
 
@@ -32,9 +33,7 @@ class RobotInfoViewModel(
 
         if (event != null && year != null && userTeamAccount != null) {
             launchIO(lifecycleOwner) {
-                robotInfoKeyViewList = RepositoryProvider.getInstance(application).robotInfoKeyRepository.getList(year, userTeamAccount)
-
-                val d = 0
+                robotInfoKeyViewList.set(RepositoryProvider.getInstance(application).robotInfoKeyRepository.getList(year, userTeamAccount))
             }
         }
     }

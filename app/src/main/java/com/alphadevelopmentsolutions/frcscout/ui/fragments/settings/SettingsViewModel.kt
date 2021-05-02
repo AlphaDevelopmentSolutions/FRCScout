@@ -57,6 +57,10 @@ class SettingsViewModel(
         }
 
         Account.getInstance(context)?.let { account ->
+            account.userTeamAccount?.let {
+                userTeamAccount.set(it.toString())
+            }
+
             launchIO {
                 setupUserTeamAccountSelectDialog()
             }

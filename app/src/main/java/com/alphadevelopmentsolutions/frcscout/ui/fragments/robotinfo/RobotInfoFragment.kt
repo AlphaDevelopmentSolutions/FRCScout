@@ -43,8 +43,8 @@ class RobotInfoFragment(
         )
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(this, RobotInfoViewModelFactory(activityContext, this, team)).get(RobotInfoViewModel::class.java)
         binding.viewModel = viewModel

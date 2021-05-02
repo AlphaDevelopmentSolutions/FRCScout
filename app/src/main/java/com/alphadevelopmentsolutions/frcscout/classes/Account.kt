@@ -22,8 +22,8 @@ class Account(
     @SerializedName("description") var description: String? = null,
     @SerializedName("avatar_uri") var avatarUri: String? = null,
     @SerializedName("auth_token") val authToken: String,
-    @Transient var userTeamAccount: UserTeamAccount? = null,
-    @Transient var roleMatrix: Role? = null
+    @SerializedName("user_team_account") var userTeamAccount: UserTeamAccount? = null,
+    @SerializedName("role_matrix") var roleMatrix: Role? = null
 ) {
     companion object {
 

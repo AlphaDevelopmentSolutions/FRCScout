@@ -14,119 +14,177 @@ import com.alphadevelopmentsolutions.frcscout.data.repositories.RepositoryProvid
 import com.alphadevelopmentsolutions.frcscout.databinding.LayoutCardInfoFormBinding
 import com.alphadevelopmentsolutions.frcscout.databinding.LayoutFieldInfoBinding
 import com.alphadevelopmentsolutions.frcscout.extensions.launchIO
+import com.alphadevelopmentsolutions.frcscout.extensions.runOnUiThread
 import com.alphadevelopmentsolutions.frcscout.extensions.toByteArray
 import com.alphadevelopmentsolutions.frcscout.interfaces.Constant
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.robotinfo.RobotInfoKeyView
+import java.util.concurrent.CountDownLatch
 
 @BindingAdapter(value = ["robotInfoForm", "event", "team"])
 fun LinearLayout.setRobotInfoForm(robotInfoKeyViewList: List<RobotInfoKeyView>, event: Event?, team: Team) {
-    val layoutInflater = LayoutInflater.from(context)
+    if (robotInfoKeyViewList.isNotEmpty()) {
+        val layoutInflater = LayoutInflater.from(context)
 
-    var previousRobotInfoKeyView: RobotInfoKeyView? = null
+        var previousRobotInfoKeyView: RobotInfoKeyView? = null
+        var currentLayoutCardInfoFormBinding: LayoutCardInfoFormBinding? = null
 
-    // Robot info doesn't get updated, the deleted time gets set
-    // and a new record is created
-    var tempCurrentRobotInfo: RobotInfo? = null
+        // Robot info doesn't get updated, the deleted time gets set
+        // and a new record is created
+        var tempCurrentRobotInfo: RobotInfo? = null
 
-    val account = Account.getInstance(context)
+        val account = Account.getInstance(context)
 
-    if (account != null && event != null) {
-        launchIO {
-            val robotInfoList = RepositoryProvider.getInstance(context).robotInfoRepository.getForTeamAtEvent(team, event)
+        if (account != null && event != null) {
+            launchIO {
+                val robotInfoList = RepositoryProvider.getInstance(context).robotInfoRepository.getForTeamAtEvent(team, event)
 
-            robotInfoKeyViewList.forEach { robotInfoKeyView ->
+                robotInfoKeyViewList.forEach { robotInfoKeyView ->
 
-                robotInfoList.forEach { potentialRobotInfo ->
-                    if (potentialRobotInfo.keyId.contentEquals(robotInfoKeyView.robotInfoKey.id)) {
-                        tempCurrentRobotInfo = potentialRobotInfo
-                    }
-                }
-
-                val finalCurrentRobotInfo = tempCurrentRobotInfo
-
-                val fieldInfoLayout = LayoutFieldInfoBinding.inflate(layoutInflater).apply {
-                    val newRobotInfo: RobotInfo by lazy {
-                        if (finalCurrentRobotInfo?.isDraft == false || finalCurrentRobotInfo == null)
-                            RobotInfo.create().apply {
-                                id = Constant.UUID_GENERATOR.generate().toByteArray()
-                                this.eventId = event.id
-                                this.teamId = team.id
-                                keyId = robotInfoKeyView.robotInfoKey.id
-                                completedById = account.id
-                            }
-                        else
-                            finalCurrentRobotInfo
+                    robotInfoList.forEach { potentialRobotInfo ->
+                        if (potentialRobotInfo.keyId.contentEquals(robotInfoKeyView.robotInfoKey.id)) {
+                            tempCurrentRobotInfo = potentialRobotInfo
+                        }
                     }
 
-                    this.robotInfo = newRobotInfo
+                    val finalCurrentRobotInfo = tempCurrentRobotInfo
 
-                    val robotInfoKey = robotInfoKeyView.robotInfoKey
+                    val latch = CountDownLatch(1)
 
-                    when (robotInfoKeyView.dataType.backendDataType){
-                        DataType.BackendDataType.STRING -> {
-                            textEditText.addTextChangedListener {
+                    lateinit var fieldInfoLayout: LayoutFieldInfoBinding
 
-                                newRobotInfo.value = it?.toString() ?: ""
-                                newRobotInfo.markModified(account)
+                    runOnUiThread {
+                        fieldInfoLayout = LayoutFieldInfoBinding.inflate(layoutInflater)
 
-                                launchIO {
-                                    RepositoryProvider.getInstance(context).robotInfoRepository.insert(newRobotInfo)
+                        latch.countDown()
+                    }
 
-                                    if (finalCurrentRobotInfo?.isDraft == false && finalCurrentRobotInfo.deletedDate == null) {
-                                        finalCurrentRobotInfo.markDeleted(account)
-                                        finalCurrentRobotInfo.let {
-                                            RepositoryProvider.getInstance(context).robotInfoRepository.delete(finalCurrentRobotInfo)
+                    latch.await()
+
+                    fieldInfoLayout.apply {
+                        val newRobotInfo: RobotInfo by lazy {
+                            if (finalCurrentRobotInfo?.isDraft == false || finalCurrentRobotInfo == null)
+                                RobotInfo.create().apply {
+                                    id = Constant.UUID_GENERATOR.generate().toByteArray()
+                                    this.eventId = event.id
+                                    this.teamId = team.id
+                                    keyId = robotInfoKeyView.robotInfoKey.id
+                                    completedById = account.id
+                                }
+                            else
+                                finalCurrentRobotInfo
+                        }
+
+                        this.robotInfo = newRobotInfo
+                        this.robotInfoKeyView = robotInfoKeyView
+
+                        val robotInfoKey = robotInfoKeyView.robotInfoKey
+
+                        when (robotInfoKeyView.dataType.backendDataType) {
+                            DataType.BackendDataType.STRING -> {
+                                textEditText.addTextChangedListener {
+
+                                    newRobotInfo.value = it?.toString() ?: ""
+                                    newRobotInfo.markModified(account)
+
+                                    launchIO {
+                                        RepositoryProvider.getInstance(context).robotInfoRepository.insert(newRobotInfo)
+
+                                        if (finalCurrentRobotInfo?.isDraft == false && finalCurrentRobotInfo.deletedDate == null) {
+                                            finalCurrentRobotInfo.markDeleted(account)
+                                            finalCurrentRobotInfo.let {
+                                                RepositoryProvider.getInstance(context).robotInfoRepository.delete(finalCurrentRobotInfo)
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
 
-                        DataType.BackendDataType.INTEGER -> {
-                            val min = robotInfoKey.min
-                            val max = robotInfoKey.max
+                            DataType.BackendDataType.INTEGER -> {
+                                val min = robotInfoKey.min
+                                val max = robotInfoKey.max
 
-                            var currentValue =
-                                try {
-                                    val parsedValue = finalCurrentRobotInfo?.value?.toInt() ?: min ?: 0
+                                var currentValue =
+                                    try {
+                                        val parsedValue = finalCurrentRobotInfo?.value?.toInt()
+                                            ?: min ?: 0
 
-                                    if (min != null && max != null) {
-                                        if (parsedValue >= min && parsedValue <= max)
-                                            parsedValue
-                                        else
-                                            min
-                                    }
-                                    else if (min != null) {
-                                        if (parsedValue >= min)
-                                            parsedValue
-                                        else
-                                            min
-                                    }
-                                    else if (max != null) {
-                                        if (parsedValue <= max)
-                                            parsedValue
-                                        else
+                                        if (min != null && max != null) {
+                                            if (parsedValue >= min && parsedValue <= max)
+                                                parsedValue
+                                            else
+                                                min
+                                        } else if (min != null) {
+                                            if (parsedValue >= min)
+                                                parsedValue
+                                            else
+                                                min
+                                        } else if (max != null) {
+                                            if (parsedValue <= max)
+                                                parsedValue
+                                            else
+                                                0
+                                        } else
                                             0
+                                    } catch (e: NumberFormatException) {
+                                        min ?: 0
                                     }
-                                    else
-                                        0
+
+                                plusButton.setOnClickListener {
+                                    val newValue = currentValue + 1
+
+                                    if (max != null && newValue > max)
+                                        Toast.makeText(context, "This field has a maximum value of $max", Toast.LENGTH_SHORT).show()
+                                    else {
+                                        currentValue = newValue
+
+                                        infoKeyValueTextView.text = newRobotInfo.value
+
+                                        newRobotInfo.value = newValue.toString()
+                                        newRobotInfo.markModified(account)
+
+                                        launchIO {
+                                            RepositoryProvider.getInstance(context).robotInfoRepository.insert(newRobotInfo)
+
+                                            if (finalCurrentRobotInfo?.isDraft == false && finalCurrentRobotInfo.deletedDate == null) {
+                                                finalCurrentRobotInfo.markDeleted(account)
+                                                finalCurrentRobotInfo.let {
+                                                    RepositoryProvider.getInstance(context).robotInfoRepository.delete(finalCurrentRobotInfo)
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
-                                catch (e: NumberFormatException) {
-                                    min ?: 0
+
+                                minusButton.setOnClickListener {
+                                    val newValue = currentValue - 1
+
+                                    if (min != null && newValue < min)
+                                        Toast.makeText(context, "This field has a minimum value of $min", Toast.LENGTH_SHORT).show()
+                                    else {
+                                        currentValue = newValue
+
+                                        infoKeyValueTextView.text = newRobotInfo.value
+
+                                        newRobotInfo.value = newValue.toString()
+                                        newRobotInfo.markModified(account)
+
+                                        launchIO {
+                                            RepositoryProvider.getInstance(context).robotInfoRepository.insert(newRobotInfo)
+
+                                            if (finalCurrentRobotInfo?.isDraft == false && finalCurrentRobotInfo.deletedDate == null) {
+                                                finalCurrentRobotInfo.markDeleted(account)
+                                                finalCurrentRobotInfo.let {
+                                                    RepositoryProvider.getInstance(context).robotInfoRepository.delete(finalCurrentRobotInfo)
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
+                            }
 
-                            plusButton.setOnClickListener {
-                                val newValue = currentValue + 1
-
-                                if (max != null && newValue > max)
-                                    Toast.makeText(context, "This field has a maximum value of $max", Toast.LENGTH_SHORT).show()
-                                else {
-                                    currentValue = newValue
-
-                                    infoKeyValueTextView.text = newRobotInfo.value
-
-                                    newRobotInfo.value = newValue.toString()
-                                    newRobotInfo.markModified(account)
+                            DataType.BackendDataType.BOOLEAN -> {
+                                booleanCheckbox.setOnCheckedChangeListener { _, isChecked ->
+                                    newRobotInfo.value = isChecked.toString()
 
                                     launchIO {
                                         RepositoryProvider.getInstance(context).robotInfoRepository.insert(newRobotInfo)
@@ -136,70 +194,41 @@ fun LinearLayout.setRobotInfoForm(robotInfoKeyViewList: List<RobotInfoKeyView>, 
                                             finalCurrentRobotInfo.let {
                                                 RepositoryProvider.getInstance(context).robotInfoRepository.delete(finalCurrentRobotInfo)
                                             }
-                                        }
-                                    }
-                                }
-                            }
-
-                            minusButton.setOnClickListener {
-                                val newValue = currentValue -1
-
-                                if (min != null && newValue < min)
-                                    Toast.makeText(context, "This field has a minimum value of $min", Toast.LENGTH_SHORT).show()
-                                else {
-                                    currentValue = newValue
-
-                                    infoKeyValueTextView.text = newRobotInfo.value
-
-                                    newRobotInfo.value = newValue.toString()
-                                    newRobotInfo.markModified(account)
-
-                                    launchIO {
-                                        RepositoryProvider.getInstance(context).robotInfoRepository.insert(newRobotInfo)
-
-                                        if (finalCurrentRobotInfo?.isDraft == false && finalCurrentRobotInfo.deletedDate == null) {
-                                            finalCurrentRobotInfo.markDeleted(account)
-                                            finalCurrentRobotInfo.let {
-                                                RepositoryProvider.getInstance(context).robotInfoRepository.delete(finalCurrentRobotInfo)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        DataType.BackendDataType.BOOLEAN -> {
-                            booleanCheckbox.setOnCheckedChangeListener { _, isChecked ->
-                                newRobotInfo.value = isChecked.toString()
-
-                                launchIO {
-                                    RepositoryProvider.getInstance(context).robotInfoRepository.insert(newRobotInfo)
-
-                                    if (finalCurrentRobotInfo?.isDraft == false && finalCurrentRobotInfo.deletedDate == null) {
-                                        finalCurrentRobotInfo.markDeleted(account)
-                                        finalCurrentRobotInfo.let {
-                                            RepositoryProvider.getInstance(context).robotInfoRepository.delete(finalCurrentRobotInfo)
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
 
-                if (!previousRobotInfoKeyView?.robotInfoKeyState?.id.contentEquals(robotInfoKeyView.robotInfoKeyState.id)) {
-                    addView(
-                        LayoutCardInfoFormBinding.inflate(layoutInflater).apply {
-                            cardTitle.text = robotInfoKeyView.robotInfoKeyState.name
-                            fieldsLayout.addView(fieldInfoLayout.root)
-                        }.root
-                    )
-                }
-                else {
-                    addView(fieldInfoLayout.root)
-                }
+                    val uiLatch = CountDownLatch(1)
 
-                previousRobotInfoKeyView = robotInfoKeyView
+                    if (!previousRobotInfoKeyView?.robotInfoKeyState?.id.contentEquals(robotInfoKeyView.robotInfoKeyState.id)) {
+                        runOnUiThread {
+                            LayoutCardInfoFormBinding.inflate(layoutInflater).apply {
+                                currentLayoutCardInfoFormBinding = this
+
+                                cardTitle.text = robotInfoKeyView.robotInfoKeyState.name
+                                fieldsLayout.addView(fieldInfoLayout.root)
+
+                                addView(root)
+                            }
+
+
+                            uiLatch.countDown()
+                        }
+                    } else {
+                        runOnUiThread {
+                            currentLayoutCardInfoFormBinding?.fieldsLayout?.addView(fieldInfoLayout.root)
+
+                            uiLatch.countDown()
+                        }
+                    }
+
+                    uiLatch.await()
+
+                    previousRobotInfoKeyView = robotInfoKeyView
+                }
             }
         }
     }
