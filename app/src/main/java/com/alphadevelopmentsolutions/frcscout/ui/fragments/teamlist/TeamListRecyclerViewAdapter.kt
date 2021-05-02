@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
 import com.alphadevelopmentsolutions.frcscout.databinding.LayoutCardTeamBinding
+import java.util.function.Consumer
 
 class TeamListRecyclerViewAdapter(
     private val context: Context,
@@ -33,8 +34,7 @@ class TeamListRecyclerViewAdapter(
         val team = teamList[holder.adapterPosition]
 
         holder.binding.team = team
-
-        holder.binding.viewButton.setOnClickListener {
+        holder.binding.onViewClick = Consumer {
             navController.navigate(
                 TeamListFragmentDirections.actionTeamListFragmentDestinationToTeamFragmentDestination(teamList[holder.adapterPosition])
             )

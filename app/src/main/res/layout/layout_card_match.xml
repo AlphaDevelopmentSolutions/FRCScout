@@ -55,6 +55,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -74,8 +75,8 @@
                             android:layout_weight="1"
                             android:clickable="true"
                             android:focusable="true"
-                            android:padding="@dimen/material_padding"
                             android:onClick="@{() -> handlers.navigateToTeam(matchDatabaseView.blueAllianceTeamOne)}"
+                            android:padding="@dimen/material_padding"
                             android:text="@{String.valueOf(matchDatabaseView.blueAllianceTeamOne.number), default = @string/default_team_number}"
                             android:textAlignment="center" />
 
@@ -85,8 +86,8 @@
                             android:layout_weight="1"
                             android:clickable="true"
                             android:focusable="true"
-                            android:padding="@dimen/material_padding"
                             android:onClick="@{() -> handlers.navigateToTeam(matchDatabaseView.blueAllianceTeamTwo)}"
+                            android:padding="@dimen/material_padding"
                             android:text="@{String.valueOf(matchDatabaseView.blueAllianceTeamTwo.number), default = @string/default_team_number}"
                             android:textAlignment="center" />
 
@@ -96,8 +97,8 @@
                             android:layout_weight="1"
                             android:clickable="true"
                             android:focusable="true"
-                            android:padding="@dimen/material_padding"
                             android:onClick="@{() -> handlers.navigateToTeam(matchDatabaseView.blueAllianceTeamThree)}"
+                            android:padding="@dimen/material_padding"
                             android:text="@{String.valueOf(matchDatabaseView.blueAllianceTeamThree.number), default = @string/default_team_number}"
                             android:textAlignment="center" />
 
@@ -123,8 +124,8 @@
                             android:layout_weight="1"
                             android:clickable="true"
                             android:focusable="true"
-                            android:padding="@dimen/material_padding"
                             android:onClick="@{() -> handlers.navigateToTeam(matchDatabaseView.redAllianceTeamOne)}"
+                            android:padding="@dimen/material_padding"
                             android:text="@{String.valueOf(matchDatabaseView.redAllianceTeamOne.number), default = @string/default_team_number}"
                             android:textAlignment="center" />
 
@@ -134,8 +135,8 @@
                             android:layout_weight="1"
                             android:clickable="true"
                             android:focusable="true"
-                            android:padding="@dimen/material_padding"
                             android:onClick="@{() -> handlers.navigateToTeam(matchDatabaseView.redAllianceTeamTwo)}"
+                            android:padding="@dimen/material_padding"
                             android:text="@{String.valueOf(matchDatabaseView.redAllianceTeamTwo.number), default = @string/default_team_number}"
                             android:textAlignment="center" />
 
@@ -145,8 +146,8 @@
                             android:layout_weight="1"
                             android:clickable="true"
                             android:focusable="true"
-                            android:padding="@dimen/material_padding"
                             android:onClick="@{() -> handlers.navigateToTeam(matchDatabaseView.redAllianceTeamThree)}"
+                            android:padding="@dimen/material_padding"
                             android:text="@{String.valueOf(matchDatabaseView.redAllianceTeamThree.number), default = @string/default_team_number}"
                             android:textAlignment="center" />
 
