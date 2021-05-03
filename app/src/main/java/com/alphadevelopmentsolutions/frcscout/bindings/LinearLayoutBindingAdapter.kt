@@ -28,10 +28,6 @@ fun LinearLayout.setRobotInfoForm(robotInfoKeyViewList: List<RobotInfoKeyView>, 
         var previousRobotInfoKeyView: RobotInfoKeyView? = null
         var currentLayoutCardInfoFormBinding: LayoutCardInfoFormBinding? = null
 
-        // Robot info doesn't get updated, the deleted time gets set
-        // and a new record is created
-        var tempCurrentRobotInfo: RobotInfo? = null
-
         val account = Account.getInstance(context)
 
         if (account != null && event != null) {
@@ -39,6 +35,10 @@ fun LinearLayout.setRobotInfoForm(robotInfoKeyViewList: List<RobotInfoKeyView>, 
                 val robotInfoList = RepositoryProvider.getInstance(context).robotInfoRepository.getForTeamAtEvent(team, event)
 
                 robotInfoKeyViewList.forEach { robotInfoKeyView ->
+
+                    // Robot info doesn't get updated, the deleted time gets set
+                    // and a new record is created
+                    var tempCurrentRobotInfo: RobotInfo? = null
 
                     robotInfoList.forEach { potentialRobotInfo ->
                         if (potentialRobotInfo.keyId.contentEquals(robotInfoKeyView.robotInfoKey.id)) {
@@ -74,7 +74,6 @@ fun LinearLayout.setRobotInfoForm(robotInfoKeyViewList: List<RobotInfoKeyView>, 
                                 finalCurrentRobotInfo
                         }
 
-                        this.robotInfo = newRobotInfo
                         this.robotInfoKeyView = robotInfoKeyView
 
                         val robotInfoKey = robotInfoKeyView.robotInfoKey
@@ -129,6 +128,8 @@ fun LinearLayout.setRobotInfoForm(robotInfoKeyViewList: List<RobotInfoKeyView>, 
                                         min ?: 0
                                     }
 
+                                newRobotInfo.value = currentValue.toString()
+
                                 plusButton.setOnClickListener {
                                     val newValue = currentValue + 1
 
@@ -137,10 +138,10 @@ fun LinearLayout.setRobotInfoForm(robotInfoKeyViewList: List<RobotInfoKeyView>, 
                                     else {
                                         currentValue = newValue
 
-                                        infoKeyValueTextView.text = newRobotInfo.value
-
                                         newRobotInfo.value = newValue.toString()
                                         newRobotInfo.markModified(account)
+
+                                        infoKeyValueTextView.text = newRobotInfo.value
 
                                         launchIO {
                                             RepositoryProvider.getInstance(context).robotInfoRepository.insert(newRobotInfo)
@@ -163,10 +164,9 @@ fun LinearLayout.setRobotInfoForm(robotInfoKeyViewList: List<RobotInfoKeyView>, 
                                     else {
                                         currentValue = newValue
 
-                                        infoKeyValueTextView.text = newRobotInfo.value
-
                                         newRobotInfo.value = newValue.toString()
                                         newRobotInfo.markModified(account)
+                                        infoKeyValueTextView.text = newRobotInfo.value
 
                                         launchIO {
                                             RepositoryProvider.getInstance(context).robotInfoRepository.insert(newRobotInfo)
@@ -199,6 +199,8 @@ fun LinearLayout.setRobotInfoForm(robotInfoKeyViewList: List<RobotInfoKeyView>, 
                                 }
                             }
                         }
+
+                        this.robotInfo = newRobotInfo
                     }
 
                     val uiLatch = CountDownLatch(1)
