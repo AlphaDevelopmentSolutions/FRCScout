@@ -1,15 +1,12 @@
 package com.alphadevelopmentsolutions.frcscout.ui.fragments.medialist
 
-import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.alphadevelopmentsolutions.frcscout.R
-import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
+import com.alphadevelopmentsolutions.frcscout.ui.MainActivity
 import com.alphadevelopmentsolutions.frcscout.callbacks.OnConfirmationCallback
 import com.alphadevelopmentsolutions.frcscout.classes.Account
 import com.alphadevelopmentsolutions.frcscout.classes.ConfirmDialogFragment
@@ -17,7 +14,6 @@ import com.alphadevelopmentsolutions.frcscout.data.models.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.data.repositories.RepositoryProvider
 import com.alphadevelopmentsolutions.frcscout.databinding.LayoutCardRobotMediaBinding
 import com.alphadevelopmentsolutions.frcscout.extensions.launchIO
-import com.alphadevelopmentsolutions.frcscout.extensions.runOnUiThread
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.team.TeamFragmentDirections
 import com.google.android.flexbox.FlexboxLayoutManager
 

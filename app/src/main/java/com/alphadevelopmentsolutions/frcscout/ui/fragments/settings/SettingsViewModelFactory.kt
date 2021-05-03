@@ -1,9 +1,8 @@
 package com.alphadevelopmentsolutions.frcscout.ui.fragments.settings
 
-import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
+import com.alphadevelopmentsolutions.frcscout.ui.MainActivity
 
 class SettingsViewModelFactory(
     val activity: MainActivity

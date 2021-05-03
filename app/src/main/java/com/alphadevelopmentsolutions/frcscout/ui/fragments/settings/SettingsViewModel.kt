@@ -1,14 +1,12 @@
 package com.alphadevelopmentsolutions.frcscout.ui.fragments.settings
 
 import androidx.databinding.ObservableField
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
+import com.alphadevelopmentsolutions.frcscout.ui.MainActivity
 import com.alphadevelopmentsolutions.frcscout.callbacks.OnItemSelectedListener
 import com.alphadevelopmentsolutions.frcscout.classes.Account
 import com.alphadevelopmentsolutions.frcscout.data.models.Event
 import com.alphadevelopmentsolutions.frcscout.data.models.Role
-import com.alphadevelopmentsolutions.frcscout.data.models.UserTeamAccount
 import com.alphadevelopmentsolutions.frcscout.data.models.Year
 import com.alphadevelopmentsolutions.frcscout.data.repositories.RepositoryProvider
 import com.alphadevelopmentsolutions.frcscout.extensions.launchIO

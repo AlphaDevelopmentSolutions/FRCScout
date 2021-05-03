@@ -2,7 +2,7 @@ package com.alphadevelopmentsolutions.frcscout.ui.fragments.medialist
 
 import androidx.lifecycle.*
 import androidx.navigation.NavController
-import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
+import com.alphadevelopmentsolutions.frcscout.ui.MainActivity
 import com.alphadevelopmentsolutions.frcscout.data.models.RobotMedia
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
 import com.alphadevelopmentsolutions.frcscout.data.repositories.RepositoryProvider

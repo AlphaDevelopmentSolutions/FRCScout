@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.alphadevelopmentsolutions.frcscout.BuildConfig
 import com.alphadevelopmentsolutions.frcscout.R
-import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
+import com.alphadevelopmentsolutions.frcscout.ui.MainActivity
 import com.alphadevelopmentsolutions.frcscout.callbacks.OnAnimationCompleteCallback
 import com.alphadevelopmentsolutions.frcscout.callbacks.OnProgressCallback
 import com.alphadevelopmentsolutions.frcscout.classes.Account

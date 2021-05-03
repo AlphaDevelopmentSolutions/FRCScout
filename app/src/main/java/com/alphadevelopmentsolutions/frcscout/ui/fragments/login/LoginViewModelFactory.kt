@@ -1,10 +1,9 @@
 package com.alphadevelopmentsolutions.frcscout.ui.fragments.login
 
-import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
+import com.alphadevelopmentsolutions.frcscout.ui.MainActivity
 
 class LoginViewModelFactory(
     val activity: MainActivity,

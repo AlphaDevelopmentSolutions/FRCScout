@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.alphadevelopmentsolutions.frcscout.R
-import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
+import com.alphadevelopmentsolutions.frcscout.ui.MainActivity
 import com.alphadevelopmentsolutions.frcscout.callbacks.OnConfirmationCallback
 import com.alphadevelopmentsolutions.frcscout.databinding.FragmentDialogConfirmBinding
 

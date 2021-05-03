@@ -1,4 +1,4 @@
-package com.alphadevelopmentsolutions.frcscout.activities
+package com.alphadevelopmentsolutions.frcscout.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -20,6 +21,7 @@ import com.alphadevelopmentsolutions.frcscout.R
 import com.alphadevelopmentsolutions.frcscout.classes.Account
 import com.alphadevelopmentsolutions.frcscout.classes.Config
 import com.alphadevelopmentsolutions.frcscout.databinding.ActivityMainBinding
+import com.alphadevelopmentsolutions.frcscout.databinding.NavHeaderMainBinding
 import com.alphadevelopmentsolutions.frcscout.enums.FragmentTag
 import com.alphadevelopmentsolutions.frcscout.enums.NavbarState
 import com.alphadevelopmentsolutions.frcscout.ui.fragments.MasterFragment
@@ -93,6 +95,13 @@ class MainActivity : AppCompatActivity(),
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         binding.navView.setNavigationItemSelectedListener(this)
+
+        Account.getInstance(this)?.let { account ->
+            val navHeader = binding.navView.getHeaderView(0)
+            navHeader.findViewById<TextView>(R.id.user_full_name_text_view).text = account.toString()
+            navHeader.findViewById<TextView>(R.id.username_text_view).text = account.username
+
+        }
     }
 
     override fun onBackPressed() {

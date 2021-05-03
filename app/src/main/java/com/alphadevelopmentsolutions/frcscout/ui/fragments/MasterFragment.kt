@@ -18,7 +18,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.alphadevelopmentsolutions.frcscout.R
-import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
+import com.alphadevelopmentsolutions.frcscout.ui.MainActivity
 import com.alphadevelopmentsolutions.frcscout.callbacks.OnConfirmationCallback
 import com.alphadevelopmentsolutions.frcscout.classes.*
 import com.alphadevelopmentsolutions.frcscout.data.repositories.RepositoryProvider

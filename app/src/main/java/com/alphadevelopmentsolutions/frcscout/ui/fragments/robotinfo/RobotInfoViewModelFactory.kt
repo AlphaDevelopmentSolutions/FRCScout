@@ -3,9 +3,7 @@ package com.alphadevelopmentsolutions.frcscout.ui.fragments.robotinfo
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
-import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
-import com.alphadevelopmentsolutions.frcscout.data.models.Event
+import com.alphadevelopmentsolutions.frcscout.ui.MainActivity
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
 
 class RobotInfoViewModelFactory(

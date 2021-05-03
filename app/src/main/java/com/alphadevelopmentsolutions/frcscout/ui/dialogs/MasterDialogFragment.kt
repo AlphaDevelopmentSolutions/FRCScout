@@ -6,7 +6,7 @@ import android.graphics.drawable.ColorDrawable
 import androidx.annotation.CallSuper
 import androidx.annotation.DimenRes
 import androidx.fragment.app.DialogFragment
-import com.alphadevelopmentsolutions.frcscout.activities.MainActivity
+import com.alphadevelopmentsolutions.frcscout.ui.MainActivity
 
 abstract class MasterDialogFragment : DialogFragment() {
 

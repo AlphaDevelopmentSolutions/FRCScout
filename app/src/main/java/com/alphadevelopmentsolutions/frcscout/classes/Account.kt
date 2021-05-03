@@ -60,4 +60,8 @@ class Account(
             }
         }
     }
+
+    override fun toString(): String {
+        return "$firstName $lastName"
+    }
 }
