@@ -96,25 +96,24 @@
         android:name="com.alphadevelopmentsolutions.frcscout.ui.fragments.match.MatchFragment"
         android:label="MatchFragment" >
         <argument
-            android:name="bat1"
-            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
-        <argument
-            android:name="bat2"
-            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
-        <argument
-            android:name="bat3"
-            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
-        <argument
-            android:name="rat1"
-            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
-        <argument
-            android:name="rat2"
-            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
-        <argument
-            android:name="rat3"
-            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
+            android:name="matchDatabaseView"
+            app:argType="com.alphadevelopmentsolutions.frcscout.ui.fragments.matchlist.MatchDatabaseView" />
         <action
             android:id="@+id/action_matchFragment_to_teamFragmentDestination"
             app:destination="@id/teamFragmentDestination" />
+        <action
+            android:id="@+id/action_matchFragmentDestination_to_scoutCardFragmentDestination"
+            app:destination="@id/scoutCardFragmentDestination" />
+    </fragment>
+    <fragment
+        android:id="@+id/scoutCardFragmentDestination"
+        android:name="com.alphadevelopmentsolutions.frcscout.ui.fragments.scoutcard.ScoutCardFragment"
+        android:label="ScoutCardFragment" >
+        <argument
+            android:name="match"
+            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Match" />
+        <argument
+            android:name="team"
+            app:argType="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
     </fragment>
 </navigation>

@@ -4,15 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import com.alphadevelopmentsolutions.frcscout.ui.MainActivity
-import com.alphadevelopmentsolutions.frcscout.data.models.Team
+import com.alphadevelopmentsolutions.frcscout.enums.AllianceColor
+import com.alphadevelopmentsolutions.frcscout.ui.fragments.matchlist.MatchDatabaseView
 
 class MatchDetailViewModelFactory(
-    val activity: MainActivity,
-    val navController: NavController,
-    val team1: Team,
-    val team2: Team,
-    val team3: Team
+    private val activity: MainActivity,
+    private val navController: NavController,
+    private val matchDatabaseView: MatchDatabaseView,
+    private val allianceColor: AllianceColor
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-        MatchDetailViewModel(activity.application, navController, team1, team2, team3) as T
+        MatchDetailViewModel(activity.application, navController, matchDatabaseView, allianceColor) as T
 }

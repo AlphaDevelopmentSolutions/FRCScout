@@ -5,6 +5,7 @@ import androidx.room.Relation
 import com.alphadevelopmentsolutions.frcscout.data.models.Match
 import com.alphadevelopmentsolutions.frcscout.data.models.MatchType
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
+import java.io.Serializable
 
 class MatchDatabaseView(
     @Embedded val match: Match,
@@ -15,7 +16,7 @@ class MatchDatabaseView(
     @Relation(parentColumn = "red_alliance_team_one_id", entityColumn = "id", entity = Team::class) val redAllianceTeamOne: Team,
     @Relation(parentColumn = "red_alliance_team_two_id", entityColumn = "id", entity = Team::class) val redAllianceTeamTwo: Team,
     @Relation(parentColumn = "red_alliance_team_three_id", entityColumn = "id", entity = Team::class) val redAllianceTeamThree: Team
-) {
+) : Serializable {
     override fun toString() =
         "$matchType ${match.matchNumber}"
 }

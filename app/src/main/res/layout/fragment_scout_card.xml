@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <data>
+
+                <variable
+                    name="viewModel"
+                    type="com.alphadevelopmentsolutions.frcscout.ui.fragments.scoutcard.ScoutCardViewModel" />
+
+        </data>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:scrollbars="vertical">
+
+                <LinearLayout
+                    android:id="@+id/form_linear_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    scoutCardInfoForm="@{viewModel.scoutCardInfoKeyViewList}"
+                    match="@{viewModel.match}"
+                    team="@{viewModel.team}"
+                    android:orientation="vertical" />
+
+        </androidx.core.widget.NestedScrollView>
+</layout>

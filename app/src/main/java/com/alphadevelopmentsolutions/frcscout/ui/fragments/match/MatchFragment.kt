@@ -14,6 +14,7 @@ import com.alphadevelopmentsolutions.frcscout.classes.ViewPagerFragment
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
 import com.alphadevelopmentsolutions.frcscout.databinding.FragmentMatchBinding
 import com.alphadevelopmentsolutions.frcscout.databinding.FragmentMatchListBinding
+import com.alphadevelopmentsolutions.frcscout.enums.AllianceColor
 import com.alphadevelopmentsolutions.frcscout.enums.FragmentTag
 import com.alphadevelopmentsolutions.frcscout.enums.NavbarState
 import com.alphadevelopmentsolutions.frcscout.extensions.launchIO
@@ -38,9 +39,8 @@ class MatchFragment(
                     ViewPagerFragment(
                         getString(R.string.blue_alliance),
                         MatchDetailFragment.newInstance(
-                            args.bat1,
-                            args.bat2,
-                            args.bat3
+                            args.matchDatabaseView,
+                            AllianceColor.BLUE
                         )
                     )
                 )
@@ -49,9 +49,8 @@ class MatchFragment(
                     ViewPagerFragment(
                         getString(R.string.red_alliance),
                         MatchDetailFragment.newInstance(
-                            args.rat1,
-                            args.rat2,
-                            args.rat3
+                            args.matchDatabaseView,
+                            AllianceColor.RED
                         )
                     )
                 )

@@ -8,12 +8,16 @@
         <import type="com.alphadevelopmentsolutions.frcscout.data.models.DataType.BackendDataType"/>
 
         <variable
-            name="robotInfoKeyView"
-            type="com.alphadevelopmentsolutions.frcscout.ui.fragments.robotinfo.RobotInfoKeyView" />
+            name="title"
+            type="String" />
 
         <variable
-            name="robotInfo"
-            type="com.alphadevelopmentsolutions.frcscout.data.models.RobotInfo" />
+            name="value"
+            type="String" />
+
+        <variable
+            name="backendDataType"
+            type="com.alphadevelopmentsolutions.frcscout.data.models.DataType.BackendDataType" />
 
     </data>
 
@@ -29,7 +33,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/material_padding"
             android:layout_weight="1"
-            android:text="@{robotInfoKeyView.robotInfoKey.name, default = @string/placeholder_string}" />
+            android:text="@{title, default = @string/placeholder_string}" />
 
         <ImageView
             android:id="@+id/delete_button"
@@ -47,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:visibility="@{robotInfoKeyView.dataType.backendDataType == BackendDataType.INTEGER ? View.VISIBLE : View.GONE, default = gone}">
+            android:visibility="@{backendDataType == BackendDataType.INTEGER ? View.VISIBLE : View.GONE, default = gone}">
 
             <Button
                 android:id="@+id/minus_button"
@@ -63,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/material_padding"
                 android:paddingEnd="@dimen/material_padding"
-                android:text="@{robotInfo != null ? robotInfo.value : ``}"
+                android:text="@{value}"
                 android:textSize="20sp" />
 
             <Button
@@ -82,14 +86,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:orientation="horizontal"
-            android:visibility="@{robotInfoKeyView.dataType.backendDataType == BackendDataType.BOOLEAN ? View.VISIBLE : View.GONE, default = gone}">
+            android:visibility="@{backendDataType == BackendDataType.BOOLEAN ? View.VISIBLE : View.GONE, default = gone}">
 
 
             <CheckBox
                 android:id="@+id/boolean_checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="@{robotInfo != null &amp;&amp; robotInfoKeyView.dataType.backendDataType == BackendDataType.BOOLEAN ? Boolean.parseBoolean(robotInfo.value) : false}"/>
+                android:checked="@{backendDataType == BackendDataType.BOOLEAN ? Boolean.parseBoolean(value) : false}"/>
         </LinearLayout>
 
         <LinearLayout
@@ -98,7 +102,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
-            android:visibility="@{robotInfoKeyView.dataType.backendDataType == BackendDataType.STRING ? View.VISIBLE : View.GONE, default = gone}">
+            android:visibility="@{backendDataType == BackendDataType.STRING ? View.VISIBLE : View.GONE, default = gone}">
 
 
             <EditText
@@ -106,7 +110,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:text="@{robotInfo != null ? robotInfo.value : ``}"
+                android:text="@{value}"
                 android:inputType="textPersonName" />
         </LinearLayout>
 

@@ -22,21 +22,21 @@
             <include
                 layout="@layout/layout_card_team"
                 app:team="@{viewModel.team1}"
-                app:onViewClick="@{() -> viewModel.onViewTeamClicked(viewModel.team1)}"
+                app:onViewClick="@{() -> viewModel.onTeamButtonClicked(viewModel.team1)}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <include
                 layout="@layout/layout_card_team"
                 app:team="@{viewModel.team2}"
-                app:onViewClick="@{() -> viewModel.onViewTeamClicked(viewModel.team2)}"
+                app:onViewClick="@{() -> viewModel.onTeamButtonClicked(viewModel.team2)}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <include
                 layout="@layout/layout_card_team"
                 app:team="@{viewModel.team3}"
-                app:onViewClick="@{() -> viewModel.onViewTeamClicked(viewModel.team3)}"
+                app:onViewClick="@{() -> viewModel.onTeamButtonClicked(viewModel.team3)}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

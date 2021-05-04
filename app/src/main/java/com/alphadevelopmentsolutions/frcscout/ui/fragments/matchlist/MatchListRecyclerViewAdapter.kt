@@ -41,14 +41,7 @@ class MatchListRecyclerViewAdapter(
             visibility = View.VISIBLE
             setOnClickListener {
                 navController.navigate(
-                    MatchListFragmentDirections.actionMatchListFragmentDestinationToMatchFragment(
-                        match.blueAllianceTeamOne,
-                        match.blueAllianceTeamTwo,
-                        match.blueAllianceTeamThree,
-                        match.redAllianceTeamOne,
-                        match.redAllianceTeamTwo,
-                        match.redAllianceTeamThree
-                    )
+                    MatchListFragmentDirections.actionMatchListFragmentDestinationToMatchFragment(match)
                 )
             }
         }

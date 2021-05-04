@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import com.alphadevelopmentsolutions.frcscout.interfaces.TableName
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 import java.util.*
 
 @Entity(
@@ -25,7 +26,7 @@ class Match(
     @SerializedName("blue_alliance_score") @ColumnInfo(name = "blue_alliance_score") var blueAllianceScore: Int? = null,
     @SerializedName("red_alliance_score") @ColumnInfo(name = "red_alliance_score") var redAllianceScore: Int? = null,
     @SerializedName("time") @ColumnInfo(name = "time") var time: Date? = null
-) : Table() {
+) : Table(), Serializable {
 
     companion object : StaticTable<Match> {
         override fun create(): Match =
