@@ -38,6 +38,13 @@ class MatchDetailViewModel(
      * Navigate to the team fragment
      */
     fun onTeamButtonClicked(team: Team) {
+        navController.navigate(MatchFragmentDirections.actionMatchFragmentToTeamFragmentDestination(team))
+    }
+
+    /**
+     * Navigate to the scout card fragment
+     */
+    fun onScoutCardButtonClicked(team: Team) {
         navController.navigate(MatchFragmentDirections.actionMatchFragmentDestinationToScoutCardFragmentDestination(matchDatabaseView.match, team))
     }
 }

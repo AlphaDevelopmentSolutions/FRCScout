@@ -12,8 +12,16 @@
             type="com.alphadevelopmentsolutions.frcscout.data.models.Team" />
 
         <variable
-            name="onViewClick"
+            name="onNameClick"
             type="Consumer&lt;Object>" />
+
+        <variable
+            name="onButtonClick"
+            type="Consumer&lt;Object>" />
+
+        <variable
+            name="buttonText"
+            type="String" />
 
     </data>
 
@@ -49,6 +57,7 @@
                     android:textColor="@color/text"
                     android:textSize="@dimen/material_text_sub_header"
                     android:textStyle="bold"
+                    android:onClick="@{() -> onNameClick != null ? onNameClick.accept(1) : null}"
                     app:layout_constraintEnd_toStartOf="@+id/logo_image_view"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -61,6 +70,7 @@
                     android:text="@{String.valueOf(team.number), default = @string/default_team_number}"
                     android:textColor="@color/text"
                     android:textSize="@dimen/material_text_sub_header"
+                    android:onClick="@{() -> onNameClick != null ? onNameClick.accept(1) : null}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/name_text_view" />
 
@@ -94,12 +104,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="1dp"
-                    android:text="@string/view_team"
+                    android:text="@{buttonText != null ? buttonText : @string/view_team, default = @string/view_team}"
                     android:textAllCaps="true"
                     android:textColor="@color/text_link"
                     android:textSize="@dimen/text_secondary"
                     android:textStyle="bold"
-                    android:onClick="@{() -> onViewClick.accept(1)}"
+                    android:onClick="@{() -> onButtonClick.accept(1)}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 

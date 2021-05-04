@@ -34,7 +34,7 @@ class TeamListRecyclerViewAdapter(
         val team = teamList[holder.adapterPosition]
 
         holder.binding.team = team
-        holder.binding.onViewClick = Consumer {
+        holder.binding.onButtonClick = Consumer {
             navController.navigate(
                 TeamListFragmentDirections.actionTeamListFragmentDestinationToTeamFragmentDestination(teamList[holder.adapterPosition])
             )

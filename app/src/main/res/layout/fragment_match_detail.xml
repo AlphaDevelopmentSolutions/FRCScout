@@ -21,22 +21,28 @@
             android:orientation="vertical">
             <include
                 layout="@layout/layout_card_team"
+                app:buttonText="@{@string/view_scout_card}"
                 app:team="@{viewModel.team1}"
-                app:onViewClick="@{() -> viewModel.onTeamButtonClicked(viewModel.team1)}"
+                app:onNameClick="@{() -> viewModel.onTeamButtonClicked(viewModel.team1)}"
+                app:onButtonClick="@{() -> viewModel.onScoutCardButtonClicked(viewModel.team1)}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <include
                 layout="@layout/layout_card_team"
+                app:buttonText="@{@string/view_scout_card}"
                 app:team="@{viewModel.team2}"
-                app:onViewClick="@{() -> viewModel.onTeamButtonClicked(viewModel.team2)}"
+                app:onNameClick="@{() -> viewModel.onTeamButtonClicked(viewModel.team2)}"
+                app:onButtonClick="@{() -> viewModel.onScoutCardButtonClicked(viewModel.team2)}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <include
                 layout="@layout/layout_card_team"
+                app:buttonText="@{@string/view_scout_card}"
                 app:team="@{viewModel.team3}"
-                app:onViewClick="@{() -> viewModel.onTeamButtonClicked(viewModel.team3)}"
+                app:onNameClick="@{() -> viewModel.onTeamButtonClicked(viewModel.team3)}"
+                app:onButtonClick="@{() -> viewModel.onScoutCardButtonClicked(viewModel.team3)}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
