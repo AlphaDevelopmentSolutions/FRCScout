@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity(),
     /**
      * Gets the currently displayed fragment
      */
-    private fun getCurrentFragment(): MasterFragment? {
+    fun getCurrentFragment(): MasterFragment? {
         var masterFragment: MasterFragment? = null
 
         // Attempt to find the current king fragment that called the onBackPressed

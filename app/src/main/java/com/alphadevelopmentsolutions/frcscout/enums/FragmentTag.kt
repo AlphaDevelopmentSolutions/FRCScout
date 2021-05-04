@@ -7,5 +7,6 @@ enum class FragmentTag {
     MATCH_LIST,
     MATCH_DETAIL,
     MATCH,
-    TEAM_LIST
+    TEAM_LIST,
+    TEAM
 }

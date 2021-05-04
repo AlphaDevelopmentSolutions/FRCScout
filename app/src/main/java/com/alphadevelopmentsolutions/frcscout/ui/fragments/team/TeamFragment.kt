@@ -29,7 +29,7 @@ import com.alphadevelopmentsolutions.frcscout.ui.fragments.login.LoginViewModelF
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
-class TeamFragment(override val TAG: FragmentTag = FragmentTag.TEAM_LIST) : MasterFragment() {
+class TeamFragment(override val TAG: FragmentTag = FragmentTag.TEAM) : MasterFragment() {
 
     private lateinit var binding: FragmentTeamBinding
     private lateinit var viewModel: TeamViewModel
@@ -50,11 +50,20 @@ class TeamFragment(override val TAG: FragmentTag = FragmentTag.TEAM_LIST) : Mast
         )
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(this, TeamViewModelFactory(activityContext, this, args.team)).get(TeamViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        binding.run {
+            viewpager.adapter = null
+        }
     }
 }

@@ -6,8 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
+import com.alphadevelopmentsolutions.frcscout.FRCScoutApplication
 import com.alphadevelopmentsolutions.frcscout.data.models.Team
 import com.alphadevelopmentsolutions.frcscout.databinding.LayoutCardMatchBinding
+import com.alphadevelopmentsolutions.frcscout.enums.FragmentTag
+import com.alphadevelopmentsolutions.frcscout.ui.MainActivity
+import com.alphadevelopmentsolutions.frcscout.ui.fragments.team.TeamFragmentDirections
 import kotlinx.android.synthetic.main.layout_selectable_item.view.*
 
 class MatchListRecyclerViewAdapter(
@@ -40,12 +44,30 @@ class MatchListRecyclerViewAdapter(
         holder.binding.viewMatchButton.apply {
             visibility = View.VISIBLE
             setOnClickListener {
-                navController.navigate(
-                    MatchListFragmentDirections.actionMatchListFragmentDestinationToMatchFragment(match)
-                )
+                if (this@MatchListRecyclerViewAdapter.context is FRCScoutApplication) {
+                    val activity = this@MatchListRecyclerViewAdapter.context.activeActivity
+
+                    if (activity is MainActivity) {
+                        when (activity.getCurrentFragment()?.TAG) {
+                            FragmentTag.MATCH_LIST -> {
+                                navController.navigate(
+                                    MatchListFragmentDirections.actionMatchListFragmentDestinationToMatchFragment(match)
+                                )
+                            }
+
+                            FragmentTag.TEAM -> {
+                                navController.navigate(
+                                    TeamFragmentDirections.actionTeamFragmentDestinationToMatchFragmentDestination(match)
+                                )
+                            }
+
+                            // Ignore
+                            else -> { }
+                        }
+                    }
+                }
             }
         }
-
     }
 
     override fun getItemCount(): Int {

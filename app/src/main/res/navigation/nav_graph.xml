@@ -69,6 +69,9 @@
         <action
             android:id="@+id/action_teamFragmentDestination_to_robotMediaFragmentDestination"
             app:destination="@id/robotMediaFragmentDestination" />
+        <action
+            android:id="@+id/action_teamFragmentDestination_to_matchFragmentDestination"
+            app:destination="@id/matchFragmentDestination" />
     </fragment>
     <fragment
         android:id="@+id/robotMediaFragmentDestination"
